@@ -32,7 +32,7 @@ use Exception;
  */
 class Cache
 {
-    const CACHE_VERSION = 0;
+    const CACHE_VERSION = 1;
 
     // directory used for storing data
     public static $cacheDir = false;
@@ -41,7 +41,7 @@ class Cache
     public static $prefix = 'scssphp_';
 
     // force a refresh : 'once' for refreshing the first hit on a cache only, true to never use the cache in this hit
-    public static $forceFefresh = false;
+    public static $forceRefresh = false;
 
     // specifies the number of seconds after which data cached will be seen as 'garbage' and potentially cleaned up
     public static $gcLifetime = 604800;
