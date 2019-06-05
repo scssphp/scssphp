@@ -4617,10 +4617,19 @@ class Compiler
                 $key = $keys[$i];
                 $value = $values[$i];
 
+                switch ($key[0]) {
+                    case Type::T_LIST:
+                    case Type::T_MAP:
+                        break;
+                    default:
+                        $key = [Type::T_KEYWORD, $this->compileStringContent($this->coerceString($key))];
+                        break;
+                }
+
                 $list[] = [
                     Type::T_LIST,
                     '',
-                    [[Type::T_KEYWORD, $this->compileStringContent($this->coerceString($key))], $value]
+                    [$key, $value]
                 ];
             }
 
