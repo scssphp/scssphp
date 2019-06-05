@@ -87,3 +87,15 @@ body.while {
   color: 3;
   background-color: 4;
   color: 5; }
+/* line 173, inputs/looping.scss */
+.bg-gray-0 {
+  background-color: #f8f9fa; }
+/* line 173, inputs/looping.scss */
+.bg-gray-1 {
+  background-color: #f1f3f5; }
+/* line 173, inputs/looping.scss */
+.bg-red-0 {
+  background-color: #fff5f5; }
+/* line 173, inputs/looping.scss */
+.bg-red-1 {
+  background-color: #ffe3e3; }

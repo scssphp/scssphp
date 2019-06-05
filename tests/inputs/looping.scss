@@ -151,3 +151,27 @@ body.while {
         color: "not reached";
     }
 }
+
+// looping on map with key being a map also
+$oc-gray-list: (
+        "0": #f8f9fa,
+        "1": #f1f3f5
+);
+
+$oc-red-list: (
+        "0": #fff5f5,
+        "1": #ffe3e3
+);
+
+$oc-color-list: (
+        $oc-gray-list: "gray",
+        $oc-red-list: "red"
+);
+
+@each $color-list, $color-name in $oc-color-list {
+  @each $color-index, $color in $color-list {
+    .bg-#{$color-name}-#{$color-index} {
+      background-color: $color;
+    }
+  }
+}
