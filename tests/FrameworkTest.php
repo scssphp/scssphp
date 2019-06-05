@@ -17,12 +17,12 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
 {
     protected static $frameworks = [
         [
-            "frameworkVerion" => "twbs/bootstrap4.3",
+            "frameworkVersion" => "twbs/bootstrap4.3",
             "inputdirectory" => "../vendor/twbs/bootstrap/scss/",
             "inputfiles" => "bootstrap.scss",
         ],
         [
-            "frameworkVerion" => "zurb/foundation6.5",
+            "frameworkVersion" => "zurb/foundation6.5",
             "inputdirectory" => "../vendor/zurb/foundation/assets/",
             "inputfiles" => "foundation.scss",
         ]
@@ -52,7 +52,7 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider frameworkProvider
      */
-    public function testFramework($frameworkVerion, $inputdirectory, $inputfiles)
+    public function testFramework($frameworkVersion, $inputdirectory, $inputfiles)
     {
         $this->scss->addImportPath($inputdirectory);
 
