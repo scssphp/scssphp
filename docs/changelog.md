@@ -5,6 +5,21 @@ title: Changelog
 
 ## Changelog
 
+* **1.0.0** -- June 4, 2019
+  * Moving development to ScssPhp organization, https://github.com/scssphp/
+  * Online documentation can be found at http://scssphp.github.com/scssphp/
+  * Renamed namespace from Leafo to ScssPhp
+  * Support parent selector and selector functions (Cerdic)
+  * Improve {% raw %}and{% endraw %}/{% raw %}or{% endraw %} compatibility (robocoder)
+  * Backslash newline fix (Netmosfera, Cerdic)
+  * Variable nesting/scoping issue (dleffler, Cerdic)
+  * Interpolation in block comments (vicary, Cerdic)
+  * Parser should match some utf8 symbols (ostrolucky, Cerdic)
+  * Incorrectly evaluating expressions within Unicode range (timknight, Cerdic)
+  * Problem with first comment on ampersand-nested class (blackgearit, Cerdic)
+  * Parsing missing http(s) protocol from {% raw %}url(){% endraw %} (sebastianwebb, robocoder)
+  * Add source column to thrown error message (slprime, robocoder)
+  * Detect invalid CSS outside of selector (JMitnik, robocoder)
 * **0.8.3** -- May 31, 2019
   * grid-template-columns (gKreator, Cerdic)
   * {% raw %}self{% endraw %} in selector and parse improvements (designerno1, Cerdic)

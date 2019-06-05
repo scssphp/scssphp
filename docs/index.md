@@ -25,7 +25,7 @@ In order to manually compile code from PHP you must create an instance of the
 options, then run the compiler with the `compile` method.
 
 {% highlight php startinline=true %}
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
 
@@ -57,7 +57,7 @@ If the import path is set to `array()` then importing is effectively disabled.
 The default import path is `array('')`, which means the current directory.
 
 {% highlight php startinline=true %}
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
 $scss->setImportPaths('assets/stylesheets/');
@@ -71,7 +71,7 @@ functions. This allows you to load paths from a database, or HTTP, or using
 files that SCSS would otherwise not process (such as vanilla CSS imports).
 
 {% highlight php startinline=true %}
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
 $scss->addImportPath(function($path) {
@@ -97,7 +97,7 @@ method. If the variable is also defined in your scss source, use the `!default`
 flag to prevent your preset variables from being overridden.
 
 {% highlight php startinline=true %}
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 -
 $scss = new Compiler();
 $scss->setVariables(array(
@@ -120,17 +120,17 @@ default formatter.
 
 Five formatters are included:
 
-* `Leafo\ScssPhp\Formatter\Expanded`
-* `Leafo\ScssPhp\Formatter\Nested` *(default)*
-* `Leafo\ScssPhp\Formatter\Compressed`
-* `Leafo\ScssPhp\Formatter\Compact`
-* `Leafo\ScssPhp\Formatter\Crunched`
+* `ScssPhp\ScssPhp\Formatter\Expanded`
+* `ScssPhp\ScssPhp\Formatter\Nested` *(default)*
+* `ScssPhp\ScssPhp\Formatter\Compressed`
+* `ScssPhp\ScssPhp\Formatter\Compact`
+* `ScssPhp\ScssPhp\Formatter\Crunched`
 
 We can change the formatting using the `setFormatter` method.
 
 * `setFormatter($formatterName)` sets the current formatter to `$formatterName`,
   the name of a class as a string that implements the formatting interface. See
-  the source for `Leafo\ScssPhp\Formatter\Expanded` for an example.
+  the source for `ScssPhp\ScssPhp\Formatter\Expanded` for an example.
 
 Given the following SCSS:
 
@@ -155,7 +155,7 @@ Given the following SCSS:
 
 The formatters output the following:
 
-`Leafo\ScssPhp\Formatter\Expanded`:
+`ScssPhp\ScssPhp\Formatter\Expanded`:
 
 {% highlight css %}
 /*! Comment */
@@ -171,7 +171,7 @@ The formatters output the following:
 }
 {% endhighlight %}
 
-`Leafo\ScssPhp\Formatter\Nested`:
+`ScssPhp\ScssPhp\Formatter\Nested`:
 
 {% highlight css %}
 /*! Comment */
@@ -185,7 +185,7 @@ The formatters output the following:
   color: silver; }
 {% endhighlight %}
 
-`Leafo\ScssPhp\Formatter\Compact`:
+`ScssPhp\ScssPhp\Formatter\Compact`:
 
 {% highlight css %}
 /*! Comment */
@@ -196,13 +196,13 @@ The formatters output the following:
 .footer .copyright { color:silver; }
 {% endhighlight %}
 
-`Leafo\ScssPhp\Formatter\Compressed`:
+`ScssPhp\ScssPhp\Formatter\Compressed`:
 
 {% highlight css %}
 /* Comment*/.navigation ul{line-height:20px;color:blue;}.navigation ul a{color:red;}.footer .copyright{color:silver;}
 {% endhighlight %}
 
-`Leafo\ScssPhp\Formatter\Crunched`:
+`ScssPhp\ScssPhp\Formatter\Crunched`:
 
 {% highlight css %}
 .navigation ul{line-height:20px;color:blue;}.navigation ul a{color:red;}.footer .copyright{color:silver;}
@@ -220,7 +220,7 @@ This works well in combination with frontend debugging tools such as https://add
 To activate this feature, call the `setLineNumberStyle` method after creating a new instance of class `Compiler`.
 
 {% highlight php startinline=true %}
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 $directory = 'css';
 
@@ -235,22 +235,33 @@ echo $scss->compile('
 
 ### Source Maps
 
+Source Maps are useful in debugging compiled css files using browser developer tools.
+
 To enable source maps, use the `setSourceMap()' and `setSourceMapOptions()` methods.
 
 {% highlight php startinline=true %}
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
-$scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
+$scss->setSourceMap(Compiler::SOURCE_MAP_FILE);
 $scss->setSourceMapOptions([
+    // absolute path to write .map file
     'sourceMapWriteTo'  => '/var/www/vhost/my-style.map',
+
+    // relative or full url to the above .map file
     'sourceMapURL'      => 'content/themes/THEME/assets/css/my-style.map',
-    'sourceMapFilename' => 'my-style',
+
+    // (optional) relative or full url to the .css file
+    'sourceMapFilename' => 'my-style.css',
+
+    // partial path (server root) removed (normalized) to create a relative url
     'sourceMapBasepath' => '/var/www/vhost',
+
+    // (optional) prepended to 'source' field entries for relocating source files
     'sourceRoot'        => '/',
 ]);
 
-// use Compiler::SOURCE_MAP_FILE for file-based source maps
+// use Compiler::SOURCE_MAP_INLINE for inline (comment-based) source maps
 {% endhighlight %}
 
 ### Custom Functions
@@ -293,7 +304,7 @@ As an example, a function called `add-two` is registered, which adds two numbers
 together. PHP's anonymous function syntax is used to define the function.
 
 {% highlight php startinline=true %}
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
 
@@ -313,7 +324,7 @@ Using a prototype and kwargs, functions can take named parameters. In this next 
 we register a function called `divide` which divides a named dividend by a named divisor.
 
 {% highlight php startinline=true %}
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
 
@@ -345,7 +356,7 @@ environment where the content may be untrusted (e.g., user uploaded) because
 the exception stack trace may contain sensitive data.
 
 {% highlight php startinline=true %}
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 try {
     $scss = new Compiler();

@@ -16,7 +16,7 @@ Create a file, like `style.php`:
 require_once "scssphp/scss.inc.php";
 require_once "scssphp/example/Server.php";
 
-use Leafo\ScssPhp\Server;
+use ScssPhp\ScssPhp\Server;
 
 $directory = "stylesheets";
 
@@ -66,11 +66,11 @@ Just call the `serve` method to let it render its output.
 Here's an example of creating a SCSS server that outputs compressed CSS:
 
 {% highlight php startinline=true %}
-use Leafo\ScssPhp\Compiler;
-use Leafo\ScssPhp\Server;
+use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Server;
 
 $scss = new Compiler();
-$scss->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
+$scss->setFormatter('ScssPhp\ScssPhp\Formatter\Compressed');
 
 $server = new Server('stylesheets', null, $scss);
 $server->serve();

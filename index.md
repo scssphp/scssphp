@@ -11,8 +11,8 @@ mixins, imports, nesting, color manipulation, functions, and control directives.
 line tool for running the compiler from a terminal/shell or script.
 
 <div class="github-buttons">
-<iframe src="http://ghbtns.com/github-btn.html?user=leafo&repo=scssphp&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
-<iframe src="http://ghbtns.com/github-btn.html?user=leafo&repo=scssphp&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95px" height="20px"></iframe>
+<iframe src="http://ghbtns.com/github-btn.html?user=scssphp&repo=scssphp&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
+<iframe src="http://ghbtns.com/github-btn.html?user=scssphp&repo=scssphp&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95px" height="20px"></iframe>
 </div>
 
 <a name="installing"></a>
@@ -30,7 +30,7 @@ If you use [Packagist][2] for installing packages, then you can update your `com
 {% highlight json %}
 {
     "require": {
-        "leafo/scssphp": "{{ site.current_version }}"
+        "scssphp/scssphp": "{{ site.current_version }}"
     }
 }
 {% endhighlight %}
@@ -86,7 +86,7 @@ invoke the `Compiler` class:
 {% highlight php startinline=true %}
 require_once "scssphp/scss.inc.php";
 
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
 
