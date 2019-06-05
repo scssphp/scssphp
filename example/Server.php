@@ -2,18 +2,18 @@
 /**
  * SCSSPHP
  *
- * @copyright 2012-2017 Leaf Corcoran
+ * @copyright 2012-2019 Leaf Corcoran
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
- * @link http://leafo.github.io/scssphp
+ * @link http://scssphp.github.io/scssphp
  */
 
-namespace Leafo\ScssPhp;
+namespace ScssPhp\ScssPhp;
 
-use Leafo\ScssPhp\Compiler;
-use Leafo\ScssPhp\Exception\ServerException;
-use Leafo\ScssPhp\Version;
+use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Exception\ServerException;
+use ScssPhp\ScssPhp\Version;
 
 /**
  * Server
@@ -38,7 +38,7 @@ class Server
     private $cacheDir;
 
     /**
-     * @var \Leafo\ScssPhp\Compiler
+     * @var \ScssPhp\ScssPhp\Compiler
      */
     private $scss;
 
@@ -270,7 +270,7 @@ class Server
      *
      * @return string|bool
      *
-     * @throws \Leafo\ScssPhp\Exception\ServerException
+     * @throws \ScssPhp\ScssPhp\Exception\ServerException
      */
     public function compileFile($in, $out = null)
     {
@@ -395,7 +395,7 @@ class Server
      *
      * @return string Compiled CSS results
      *
-     * @throws \Leafo\ScssPhp\Exception\ServerException
+     * @throws \ScssPhp\ScssPhp\Exception\ServerException
      */
     public function checkedCachedCompile($in, $out, $force = false)
     {
@@ -484,9 +484,9 @@ class Server
     /**
      * Constructor
      *
-     * @param string                       $dir      Root directory to .scss files
-     * @param string                       $cacheDir Cache directory
-     * @param \Leafo\ScssPhp\Compiler|null $scss     SCSS compiler instance
+     * @param string                         $dir      Root directory to .scss files
+     * @param string                         $cacheDir Cache directory
+     * @param \ScssPhp\ScssPhp\Compiler|null $scss     SCSS compiler instance
      */
     public function __construct($dir, $cacheDir = null, $scss = null)
     {

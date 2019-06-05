@@ -2,16 +2,16 @@
 /**
  * SCSSPHP
  *
- * @copyright 2012-2015 Leaf Corcoran
+ * @copyright 2012-2019 Leaf Corcoran
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
- * @link http://leafo.github.io/scssphp
+ * @link http://scssphp.github.io/scssphp
  */
 
-namespace Leafo\ScssPhp\Tests;
+namespace ScssPhp\ScssPhp\Tests;
 
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 /**
  * Scss Test - extracts tests from https://github.com/sass/sass/blob/stable/test/sass/scss/scss_test.rb
@@ -43,7 +43,7 @@ class ScssTest extends \PHPUnit_Framework_TestCase
         }
 
         $compiler = new Compiler();
-        $compiler->setFormatter('Leafo\ScssPhp\Formatter\\' . ($style ? ucfirst($style) : 'Nested'));
+        $compiler->setFormatter('ScssPhp\ScssPhp\Formatter\\' . ($style ? ucfirst($style) : 'Nested'));
 
         $actual = $compiler->compile($scss);
 

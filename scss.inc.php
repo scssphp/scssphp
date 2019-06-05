@@ -3,7 +3,7 @@ if (version_compare(PHP_VERSION, '5.6') < 0) {
     throw new \Exception('scssphp requires PHP 5.6 or above');
 }
 
-if (! class_exists('Leafo\ScssPhp\Version', false)) {
+if (! class_exists('ScssPhp\ScssPhp\Version', false)) {
     include_once __DIR__ . '/src/Base/Range.php';
     include_once __DIR__ . '/src/Block.php';
     include_once __DIR__ . '/src/Cache.php';

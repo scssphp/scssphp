@@ -2,17 +2,17 @@
 /**
  * SCSSPHP
  *
- * @copyright 2012-2015 Leaf Corcoran
+ * @copyright 2012-2019 Leaf Corcoran
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
- * @link http://leafo.github.io/scssphp
+ * @link http://scssphp.github.io/scssphp
  */
 
-namespace Leafo\ScssPhp\Tests;
+namespace ScssPhp\ScssPhp\Tests;
 
-use Leafo\ScssPhp\Compiler;
-use Leafo\ScssPhp\LineCommentator;
+use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\LineCommentator;
 
 function _dump($value)
 {

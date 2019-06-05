@@ -2,21 +2,21 @@
 /**
  * SCSSPHP
  *
- * @copyright 2012-2018 Leaf Corcoran
+ * @copyright 2012-2019 Leaf Corcoran
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
- * @link http://leafo.github.io/scssphp
+ * @link http://scssphp.github.io/scssphp
  */
 
-namespace Leafo\ScssPhp;
+namespace ScssPhp\ScssPhp;
 
-use Leafo\ScssPhp\Block;
-use Leafo\ScssPhp\Cache;
-use Leafo\ScssPhp\Compiler;
-use Leafo\ScssPhp\Exception\ParserException;
-use Leafo\ScssPhp\Node;
-use Leafo\ScssPhp\Type;
+use ScssPhp\ScssPhp\Block;
+use ScssPhp\ScssPhp\Cache;
+use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Exception\ParserException;
+use ScssPhp\ScssPhp\Node;
+use ScssPhp\ScssPhp\Type;
 
 /**
  * Parser
@@ -75,10 +75,10 @@ class Parser
      *
      * @api
      *
-     * @param string               $sourceName
-     * @param integer              $sourceIndex
-     * @param string               $encoding
-     * @param \Leafo\ScssPhp\Cache $cache
+     * @param string                 $sourceName
+     * @param integer                $sourceIndex
+     * @param string                 $encoding
+     * @param \ScssPhp\ScssPhp\Cache $cache
      */
     public function __construct($sourceName, $sourceIndex = 0, $encoding = 'utf-8', $cache = null)
     {
@@ -126,7 +126,7 @@ class Parser
      *
      * @param string $msg
      *
-     * @throws \Leafo\ScssPhp\Exception\ParserException
+     * @throws \ScssPhp\ScssPhp\Exception\ParserException
      */
     public function throwParseError($msg = 'parse error')
     {
@@ -150,7 +150,7 @@ class Parser
      *
      * @param string $buffer
      *
-     * @return \Leafo\ScssPhp\Block
+     * @return \ScssPhp\ScssPhp\Block
      */
     public function parse($buffer)
     {
@@ -736,7 +736,7 @@ class Parser
      * @param array   $selectors
      * @param integer $pos
      *
-     * @return \Leafo\ScssPhp\Block
+     * @return \ScssPhp\ScssPhp\Block
      */
     protected function pushBlock($selectors, $pos = 0)
     {
@@ -773,7 +773,7 @@ class Parser
      * @param string  $type
      * @param integer $pos
      *
-     * @return \Leafo\ScssPhp\Block
+     * @return \ScssPhp\ScssPhp\Block
      */
     protected function pushSpecialBlock($type, $pos)
     {
@@ -786,7 +786,7 @@ class Parser
     /**
      * Pop scope and return last block
      *
-     * @return \Leafo\ScssPhp\Block
+     * @return \ScssPhp\ScssPhp\Block
      *
      * @throws \Exception
      */

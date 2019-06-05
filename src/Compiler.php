@@ -2,27 +2,27 @@
 /**
  * SCSSPHP
  *
- * @copyright 2012-2018 Leaf Corcoran
+ * @copyright 2012-2019 Leaf Corcoran
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
- * @link http://leafo.github.io/scssphp
+ * @link http://scssphp.github.io/scssphp
  */
 
-namespace Leafo\ScssPhp;
+namespace ScssPhp\ScssPhp;
 
-use Leafo\ScssPhp\Base\Range;
-use Leafo\ScssPhp\Block;
-use Leafo\ScssPhp\Cache;
-use Leafo\ScssPhp\Colors;
-use Leafo\ScssPhp\Compiler\Environment;
-use Leafo\ScssPhp\Exception\CompilerException;
-use Leafo\ScssPhp\Formatter\OutputBlock;
-use Leafo\ScssPhp\Node;
-use Leafo\ScssPhp\SourceMap\SourceMapGenerator;
-use Leafo\ScssPhp\Type;
-use Leafo\ScssPhp\Parser;
-use Leafo\ScssPhp\Util;
+use ScssPhp\ScssPhp\Base\Range;
+use ScssPhp\ScssPhp\Block;
+use ScssPhp\ScssPhp\Cache;
+use ScssPhp\ScssPhp\Colors;
+use ScssPhp\ScssPhp\Compiler\Environment;
+use ScssPhp\ScssPhp\Exception\CompilerException;
+use ScssPhp\ScssPhp\Formatter\OutputBlock;
+use ScssPhp\ScssPhp\Node;
+use ScssPhp\ScssPhp\SourceMap\SourceMapGenerator;
+use ScssPhp\ScssPhp\Type;
+use ScssPhp\ScssPhp\Parser;
+use ScssPhp\ScssPhp\Util;
 
 /**
  * The scss compiler and parser.
@@ -130,15 +130,15 @@ class Compiler
     protected $sourceMapOptions = [];
 
     /**
-     * @var string|\Leafo\ScssPhp\Formatter
+     * @var string|\ScssPhp\ScssPhp\Formatter
      */
-    protected $formatter = 'Leafo\ScssPhp\Formatter\Nested';
+    protected $formatter = 'ScssPhp\ScssPhp\Formatter\Nested';
 
     protected $rootEnv;
     protected $rootBlock;
 
     /**
-     * @var \Leafo\ScssPhp\Compiler\Environment
+     * @var \ScssPhp\ScssPhp\Compiler\Environment
      */
     protected $env;
     protected $scope;
@@ -300,7 +300,7 @@ class Compiler
      *
      * @param string $path
      *
-     * @return \Leafo\ScssPhp\Parser
+     * @return \ScssPhp\ScssPhp\Parser
      */
     protected function parserFactory($path)
     {
@@ -362,7 +362,7 @@ class Compiler
      * @param string $type
      * @param array  $selectors
      *
-     * @return \Leafo\ScssPhp\Formatter\OutputBlock
+     * @return \ScssPhp\ScssPhp\Formatter\OutputBlock
      */
     protected function makeOutputBlock($type, $selectors = null)
     {
@@ -390,7 +390,7 @@ class Compiler
     /**
      * Compile root
      *
-     * @param \Leafo\ScssPhp\Block $rootBlock
+     * @param \ScssPhp\ScssPhp\Block $rootBlock
      */
     protected function compileRoot(Block $rootBlock)
     {
@@ -429,8 +429,8 @@ class Compiler
     /**
      * Flatten selectors
      *
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $block
-     * @param string                               $parentKey
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     * @param string                                 $parentKey
      */
     protected function flattenSelectors(OutputBlock $block, $parentKey = null)
     {
@@ -796,7 +796,7 @@ class Compiler
     /**
      * Compile media
      *
-     * @param \Leafo\ScssPhp\Block $media
+     * @param \ScssPhp\ScssPhp\Block $media
      */
     protected function compileMedia(Block $media)
     {
@@ -879,9 +879,9 @@ class Compiler
     /**
      * Media parent
      *
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $scope
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $scope
      *
-     * @return \Leafo\ScssPhp\Formatter\OutputBlock
+     * @return \ScssPhp\ScssPhp\Formatter\OutputBlock
      */
     protected function mediaParent(OutputBlock $scope)
     {
@@ -899,7 +899,7 @@ class Compiler
     /**
      * Compile directive
      *
-     * @param \Leafo\ScssPhp\Block $block
+     * @param \ScssPhp\ScssPhp\Block $block
      */
     protected function compileDirective(Block $block)
     {
@@ -919,7 +919,7 @@ class Compiler
     /**
      * Compile at-root
      *
-     * @param \Leafo\ScssPhp\Block $block
+     * @param \ScssPhp\ScssPhp\Block $block
      */
     protected function compileAtRoot(Block $block)
     {
@@ -970,8 +970,8 @@ class Compiler
     /**
      * Filter at-root scope depending of with/without option
      *
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $scope
-     * @param mixed                                $without
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $scope
+     * @param mixed                                  $without
      *
      * @return mixed
      */
@@ -1038,8 +1038,8 @@ class Compiler
      * found missing selector from a at-root compilation in the previous scope
      * (if at-root is just enclosing a property, the selector is in the parent tree)
      *
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $scope
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $previousScope
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $scope
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $previousScope
      *
      * @return mixed
      */
@@ -1061,8 +1061,8 @@ class Compiler
     /**
      * Find a selector by the depth node in the scope
      *
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $scope
-     * @param integer                              $depth
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $scope
+     * @param integer                                $depth
      *
      * @return array
      */
@@ -1139,7 +1139,7 @@ class Compiler
      * @param array   $envs
      * @param integer $without
      *
-     * @return \Leafo\ScssPhp\Compiler\Environment
+     * @return \ScssPhp\ScssPhp\Compiler\Environment
      */
     protected function filterWithout($envs, $without)
     {
@@ -1162,8 +1162,8 @@ class Compiler
     /**
      * Filter WITH rules
      *
-     * @param integer                                                   $without
-     * @param \Leafo\ScssPhp\Block|\Leafo\ScssPhp\Formatter\OutputBlock $block
+     * @param integer                                                       $without
+     * @param \ScssPhp\ScssPhp\Block|\ScssPhp\ScssPhp\Formatter\OutputBlock $block
      *
      * @return boolean
      */
@@ -1195,8 +1195,8 @@ class Compiler
     /**
      * Compile keyframe block
      *
-     * @param \Leafo\ScssPhp\Block $block
-     * @param array                $selectors
+     * @param \ScssPhp\ScssPhp\Block $block
+     * @param array                  $selectors
      */
     protected function compileKeyframeBlock(Block $block, $selectors)
     {
@@ -1223,8 +1223,8 @@ class Compiler
     /**
      * Compile nested block
      *
-     * @param \Leafo\ScssPhp\Block $block
-     * @param array                $selectors
+     * @param \ScssPhp\ScssPhp\Block $block
+     * @param array                  $selectors
      */
     protected function compileNestedBlock(Block $block, $selectors)
     {
@@ -1285,7 +1285,7 @@ class Compiler
      *
      * @see Compiler::compileChild()
      *
-     * @param \Leafo\ScssPhp\Block $block
+     * @param \ScssPhp\ScssPhp\Block $block
      */
     protected function compileBlock(Block $block)
     {
@@ -1640,9 +1640,9 @@ class Compiler
     /**
      * Compile children and return result
      *
-     * @param array                                $stms
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $out
-     * @param string                               $traceName
+     * @param array                                  $stms
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
+     * @param string                                 $traceName
      *
      * @return array|null
      */
@@ -1666,10 +1666,10 @@ class Compiler
     /**
      * Compile children and throw exception if unexpected @return
      *
-     * @param array                                $stms
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $out
-     * @param \Leafo\ScssPhp\Block                 $selfParent
-     * @param string                               $traceName
+     * @param array                                  $stms
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
+     * @param \ScssPhp\ScssPhp\Block                 $selfParent
+     * @param string                                 $traceName
      *
      * @throws \Exception
      */
@@ -1993,9 +1993,9 @@ class Compiler
     /**
      * Compile import; returns true if the value was something that could be imported
      *
-     * @param array                                $rawPath
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $out
-     * @param boolean                              $once
+     * @param array                                  $rawPath
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
+     * @param boolean                                $once
      *
      * @return boolean
      */
@@ -2041,8 +2041,8 @@ class Compiler
     /**
      * Compile child; returns a value to halt execution
      *
-     * @param array                                $child
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $out
+     * @param array                                  $child
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
      *
      * @return array
      */
@@ -2548,7 +2548,7 @@ class Compiler
      * @param array   $value
      * @param boolean $inExp
      *
-     * @return array|\Leafo\ScssPhp\Node\Number
+     * @return array|\ScssPhp\ScssPhp\Node\Number
      */
     protected function reduce($value, $inExp = false)
     {
@@ -2825,7 +2825,7 @@ class Compiler
      * @param array $left
      * @param array $right
      *
-     * @return \Leafo\ScssPhp\Node\Number
+     * @return \ScssPhp\ScssPhp\Node\Number
      */
     protected function opAddNumberNumber($left, $right)
     {
@@ -2838,7 +2838,7 @@ class Compiler
      * @param array $left
      * @param array $right
      *
-     * @return \Leafo\ScssPhp\Node\Number
+     * @return \ScssPhp\ScssPhp\Node\Number
      */
     protected function opMulNumberNumber($left, $right)
     {
@@ -2851,7 +2851,7 @@ class Compiler
      * @param array $left
      * @param array $right
      *
-     * @return \Leafo\ScssPhp\Node\Number
+     * @return \ScssPhp\ScssPhp\Node\Number
      */
     protected function opSubNumberNumber($left, $right)
     {
@@ -2864,7 +2864,7 @@ class Compiler
      * @param array $left
      * @param array $right
      *
-     * @return array|\Leafo\ScssPhp\Node\Number
+     * @return array|\ScssPhp\ScssPhp\Node\Number
      */
     protected function opDivNumberNumber($left, $right)
     {
@@ -2881,7 +2881,7 @@ class Compiler
      * @param array $left
      * @param array $right
      *
-     * @return \Leafo\ScssPhp\Node\Number
+     * @return \ScssPhp\ScssPhp\Node\Number
      */
     protected function opModNumberNumber($left, $right)
     {
@@ -3181,7 +3181,7 @@ class Compiler
      * @param array $left
      * @param array $right
      *
-     * @return \Leafo\ScssPhp\Node\Number
+     * @return \ScssPhp\ScssPhp\Node\Number
      */
     protected function opCmpNumberNumber($left, $right)
     {
@@ -3435,8 +3435,8 @@ class Compiler
     /**
      * Find the final set of selectors
      *
-     * @param \Leafo\ScssPhp\Compiler\Environment $env
-     * @param \Leafo\ScssPhp\Block                $selfParent
+     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
+     * @param \ScssPhp\ScssPhp\Block                $selfParent
      *
      * @return array
      */
@@ -3551,8 +3551,8 @@ class Compiler
     /**
      * Multiply media
      *
-     * @param \Leafo\ScssPhp\Compiler\Environment $env
-     * @param array                               $childQueries
+     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
+     * @param array                                 $childQueries
      *
      * @return array
      */
@@ -3602,7 +3602,7 @@ class Compiler
     /**
      * Convert env linked list to stack
      *
-     * @param \Leafo\ScssPhp\Compiler\Environment $env
+     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
      *
      * @return array
      */
@@ -3620,7 +3620,7 @@ class Compiler
      *
      * @param array $envs
      *
-     * @return \Leafo\ScssPhp\Compiler\Environment
+     * @return \ScssPhp\ScssPhp\Compiler\Environment
      */
     protected function extractEnv($envs)
     {
@@ -3635,9 +3635,9 @@ class Compiler
     /**
      * Push environment
      *
-     * @param \Leafo\ScssPhp\Block $block
+     * @param \ScssPhp\ScssPhp\Block $block
      *
-     * @return \Leafo\ScssPhp\Compiler\Environment
+     * @return \ScssPhp\ScssPhp\Compiler\Environment
      */
     protected function pushEnv(Block $block = null)
     {
@@ -3663,7 +3663,7 @@ class Compiler
     /**
      * Get store environment
      *
-     * @return \Leafo\ScssPhp\Compiler\Environment
+     * @return \ScssPhp\ScssPhp\Compiler\Environment
      */
     protected function getStoreEnv()
     {
@@ -3673,11 +3673,11 @@ class Compiler
     /**
      * Set variable
      *
-     * @param string                              $name
-     * @param mixed                               $value
-     * @param boolean                             $shadow
-     * @param \Leafo\ScssPhp\Compiler\Environment $env
-     * @param mixed                               $valueUnreduced
+     * @param string                                $name
+     * @param mixed                                 $value
+     * @param boolean                               $shadow
+     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
+     * @param mixed                                 $valueUnreduced
      */
     protected function set($name, $value, $shadow = false, Environment $env = null, $valueUnreduced = null)
     {
@@ -3697,10 +3697,10 @@ class Compiler
     /**
      * Set existing variable
      *
-     * @param string                              $name
-     * @param mixed                               $value
-     * @param \Leafo\ScssPhp\Compiler\Environment $env
-     * @param mixed                               $valueUnreduced
+     * @param string                                $name
+     * @param mixed                                 $value
+     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
+     * @param mixed                                 $valueUnreduced
      */
     protected function setExisting($name, $value, Environment $env, $valueUnreduced = null)
     {
@@ -3736,10 +3736,10 @@ class Compiler
     /**
      * Set raw variable
      *
-     * @param string                              $name
-     * @param mixed                               $value
-     * @param \Leafo\ScssPhp\Compiler\Environment $env
-     * @param mixed                               $valueUnreduced
+     * @param string                                $name
+     * @param mixed                                 $value
+     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
+     * @param mixed                                 $valueUnreduced
      */
     protected function setRaw($name, $value, Environment $env, $valueUnreduced = null)
     {
@@ -3755,10 +3755,10 @@ class Compiler
      *
      * @api
      *
-     * @param string                              $name
-     * @param boolean                             $shouldThrow
-     * @param \Leafo\ScssPhp\Compiler\Environment $env
-     * @param boolean                             $unreduced
+     * @param string                                $name
+     * @param boolean                               $shouldThrow
+     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
+     * @param boolean                               $unreduced
      *
      * @return mixed|null
      */
@@ -3817,8 +3817,8 @@ class Compiler
     /**
      * Has variable?
      *
-     * @param string                              $name
-     * @param \Leafo\ScssPhp\Compiler\Environment $env
+     * @param string                                $name
+     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
      *
      * @return boolean
      */
@@ -4042,8 +4042,8 @@ class Compiler
     /**
      * Import file
      *
-     * @param string                               $path
-     * @param \Leafo\ScssPhp\Formatter\OutputBlock $out
+     * @param string                                 $path
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
      */
     protected function importFile($path, OutputBlock $out)
     {
@@ -4138,7 +4138,7 @@ class Compiler
      *
      * @param boolean $ignoreErrors
      *
-     * @return \Leafo\ScssPhp\Compiler
+     * @return \ScssPhp\ScssPhp\Compiler
      */
     public function setIgnoreErrors($ignoreErrors)
     {
@@ -4154,7 +4154,7 @@ class Compiler
      *
      * @param string $msg Message with optional sprintf()-style vararg parameters
      *
-     * @throws \Leafo\ScssPhp\Exception\CompilerException
+     * @throws \ScssPhp\ScssPhp\Exception\CompilerException
      */
     public function throwError($msg)
     {
@@ -4524,7 +4524,7 @@ class Compiler
      *
      * @param mixed $value
      *
-     * @return array|\Leafo\ScssPhp\Node\Number
+     * @return array|\ScssPhp\ScssPhp\Node\Number
      */
     protected function coerceValue($value)
     {
@@ -6201,7 +6201,7 @@ class Compiler
      *
      * @return array
      *
-     * @throws \Leafo\ScssPhp\Exception\CompilerException
+     * @throws \ScssPhp\ScssPhp\Exception\CompilerException
      */
     protected function selectorAppend($selectors)
     {

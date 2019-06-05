@@ -3,11 +3,11 @@
 /**
  * SCSSPHP
  *
- * @copyright 2012-2015 Leaf Corcoran
+ * @copyright 2012-2019 Leaf Corcoran
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
- * @link http://leafo.github.io/scssphp
+ * @link http://scssphp.github.io/scssphp
  */
 
 error_reporting(E_ALL);
@@ -18,9 +18,9 @@ if (version_compare(PHP_VERSION, '5.4') < 0) {
 
 include __DIR__ . '/../scss.inc.php';
 
-use Leafo\ScssPhp\Compiler;
-use Leafo\ScssPhp\Parser;
-use Leafo\ScssPhp\Version;
+use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Parser;
+use ScssPhp\ScssPhp\Version;
 
 $style = null;
 $loadPaths = null;
@@ -197,7 +197,7 @@ if ($precision) {
 }
 
 if ($style) {
-    $scss->setFormatter('Leafo\\ScssPhp\\Formatter\\' . ucfirst($style));
+    $scss->setFormatter('ScssPhp\\ScssPhp\\Formatter\\' . ucfirst($style));
 }
 
 if ($sourceMap) {
