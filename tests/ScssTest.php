@@ -54,6 +54,22 @@ class ScssTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Unescape escaped chars in the ruby file like \# or ||
+     * @param $string
+     * @return mixed
+     */
+    protected function unEscapeString($string)
+    {
+        if (strpos($string, "\\") !== false) {
+            $string = str_replace('\\#', '#', $string);
+            $string = str_replace('\\\\', '\\', $string);
+            $string = str_replace('\\r', "\r", $string);
+            $string = str_replace('\\n', "\n", $string);
+        }
+        return $string;
+    }
+
+    /**
      * @return array
      */
     public function provideTests()
@@ -182,7 +198,7 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                         continue 2;
                     }
 
-                    $css[] = $lines[$i];
+                    $css[] = $this->unEscapeString($lines[$i]);
 
                     break;
 
@@ -193,7 +209,7 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                         continue 2;
                     }
 
-                    $scss[] = $lines[$i];
+                    $scss[] = $this->unEscapeString($lines[$i]);
 
                     break;
 
