@@ -76,6 +76,11 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    protected function reformatOutput($css) {
+        $css = str_replace("}\n\n", "}\n", $css);
+        return $css;
+    }
+
     /**
      * @return array
      */
@@ -131,7 +136,7 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
                             $input = $part;
                             break;
                         case 'output.css':
-                            $output = $part;
+                            $output = $this->reformatOutput($part);
                             $hasOutput = true;
                             break;
                         case 'error':
