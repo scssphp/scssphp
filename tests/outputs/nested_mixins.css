@@ -16,3 +16,8 @@ div .container {
 @media print, screen and (min-width:640px) {
         .element {
           float: left; } }
+
+.a {
+  x: y; }
+  .a .inner {
+    x: y; }

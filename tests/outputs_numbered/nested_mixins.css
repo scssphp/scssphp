@@ -24,3 +24,9 @@ div .container .bar {
 /* line 45, inputs/nested_mixins.scss */
 .element {
   float: left; } }
+/* line 61, inputs/nested_mixins.scss */
+.a {
+  x: y; }
+/* line 63, inputs/nested_mixins.scss */
+.a .inner {
+  x: y; }
