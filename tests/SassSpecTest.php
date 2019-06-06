@@ -78,6 +78,7 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
 
     protected function reformatOutput($css) {
         $css = str_replace("}\n\n", "}\n", $css);
+        $css = str_replace(",\n", ", ", $css);
         return $css;
     }
 
