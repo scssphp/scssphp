@@ -172,3 +172,12 @@ div.popup, .prepend div.foo {
 
 .myclass {
   color: red; }
+
+.foo3, .baz3, .bar3 {
+  a: b; }
+
+.bar3, .foo3, .baz3 {
+  c: d; }
+
+.baz3, .bar3, .foo3 {
+  e: f; }

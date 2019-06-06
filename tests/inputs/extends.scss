@@ -410,3 +410,6 @@ $placeholdername: 'myplaceholder';
 }
 
 
+.foo3 {a: b; @extend .bar3}
+.bar3 {c: d; @extend .baz3}
+.baz3 {e: f; @extend .foo3}

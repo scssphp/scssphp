@@ -284,3 +284,13 @@ div.popup, .prepend div.foo {
 .myclass {
   color: red; }
 /* line 408, inputs/extends.scss */
+/* line 413, inputs/extends.scss */
+
+.foo3, .baz3, .bar3 {
+  a: b; }
+/* line 414, inputs/extends.scss */
+.bar3, .foo3, .baz3 {
+  c: d; }
+/* line 415, inputs/extends.scss */
+.baz3, .bar3, .foo3 {
+  e: f; }
