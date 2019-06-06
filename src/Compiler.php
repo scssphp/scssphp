@@ -529,6 +529,9 @@ class Compiler
         static $partsPile = [];
 
         $selector = $this->glueFunctionSelectors($selector);
+        if (count($selector) == 1 && in_array(reset($selector), $partsPile)) {
+            return;
+        }
 
         foreach ($selector as $i => $part) {
             if ($i < $from) {
