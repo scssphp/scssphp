@@ -4438,7 +4438,7 @@ class Compiler
         // assign the keyword args
         foreach ((array) $argValues as $arg) {
             if (! empty($arg[0])) {
-                if (! isset($args[$arg[0][1]])) {
+                if (! isset($args[$arg[0][1]]) || $args[$arg[0][1]][3]) {
                     if ($hasVariable) {
                         $deferredKeywordArgs[$arg[0][1]] = $arg[1];
                     } else {
