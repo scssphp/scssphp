@@ -21,7 +21,7 @@ use ScssPhp\ScssPhp\Compiler;
 class SassSpecTest extends \PHPUnit_Framework_TestCase
 {
 
-    static $scss;
+    protected static $scss;
 
     /**
      * {@inheritDoc}
@@ -95,7 +95,8 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    protected function reformatOutput($css) {
+    protected function reformatOutput($css)
+    {
         $css = str_replace("}\n\n", "}\n", $css);
         $css = str_replace(",\n", ", ", $css);
         return $css;
@@ -111,7 +112,7 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
         $specs = [];
         $subdir = '';
         for ($depth = 0; $depth < 7; $depth++) {
-            $specs = array_merge( $specs, glob($dir . $subdir . '/*.hrx'));
+            $specs = array_merge($specs, glob($dir . $subdir . '/*.hrx'));
             $subdir .= '/*';
         }
 
@@ -122,9 +123,11 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
             $fileName = substr($fileName, strlen($dir) +1);
             $baseTestName = substr($fileName, 0, -4);
 
-            $subTests = explode('================================================================================', $spec);
+            $subTests = explode(
+                '================================================================================',
+                $spec
+            );
             foreach ($subTests as $subTest) {
-
                 $subNname = '';
                 $input = '';
                 $output = '';
@@ -194,15 +197,14 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
                     || strpos($baseTestName, 'libsass-todo-tests') !== false
                     || strlen($input) > $sizeLimit) {
                     $skippedTests[] = $test;
-                }
-                else {
+                } else {
                     $tests[] = $test;
                 }
             }
         }
 
         $nb_tests = count($tests);
-        foreach ($tests as $k=>$test) {
+        foreach ($tests as $k => $test) {
             $rang = ($k+1) . "/" . $nb_tests . '. ';
             $tests[$k][0] = $rang . $tests[$k][0];
         }
