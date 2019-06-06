@@ -2397,6 +2397,8 @@ class Compiler
                     $copyContent->scope = $callingScope;
 
                     $this->setRaw(static::$namespaces['special'] . 'content', $copyContent, $this->env);
+                } else {
+                    $this->setRaw(static::$namespaces['special'] . 'content', null, $this->env);
                 }
 
                 if (isset($mixin->args)) {
@@ -2419,7 +2421,7 @@ class Compiler
                 if (! $content) {
                     $content = new \stdClass();
                     $content->scope = new \stdClass();
-                    $content->children = $this->storeEnv->parent->block->children;
+                    $content->children = $env->parent->block->children;
                     break;
                 }
 
