@@ -29,6 +29,7 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         if (is_null(static::$scss)) {
+            @ini_set('memory_limit', "256M");
             static::$scss = new Compiler();
             static::$scss->setFormatter('ScssPhp\ScssPhp\Formatter\Expanded');
         }
@@ -65,12 +66,30 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
             return;
         }
 
-        list($options, $scss) = $input;
+        list($options, $scss, $includes) = $input;
         list($css, $warning, $error) = $output;
 
         // ignore tests expecting an error for the moment
         if (! strlen($error)) {
+            // this test needs @import of includes files, build a dir with files and set the ImportPaths
+            if ($includes) {
+                $basedir = sys_get_temp_dir() . '/sass-spec/' . preg_replace(",^\d+/\d+\.\s*,", "", $name);
+                foreach ($includes as $f => $c) {
+                    $f = $basedir . '/' . $f;
+                    if (! is_dir(dirname($f))) {
+                        passthru("mkdir -p " . dirname($f));
+                    }
+                    file_put_contents($f, $c);
+                }
+                static::$scss->setImportPaths([$basedir]);
+            }
             $actual = static::$scss->compile($scss);
+
+            // clean after the test
+            if ($includes) {
+                static::$scss->setImportPaths([]);
+                passthru("rm -fR $basedir");
+            }
             $this->assertEquals(rtrim($css), rtrim($actual), $name);
             // TODO : warning?
         }
@@ -112,6 +131,7 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
                 $options = '';
                 $error = '';
                 $warning = '';
+                $includes = [];
                 $hasInput = false;
                 $hasOutput = false;
 
@@ -124,21 +144,33 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
                     if ($subDir == '.') {
                         $subDir = '';
                     }
-                    if (! $subNname && $subDir) {
-                        $subNname = '/' . $subDir;
-                    }
                     $what = basename($first);
                     switch ($what) {
                         case 'options.yml':
+                            if (! $subNname && $subDir) {
+                                $subNname = '/' . $subDir;
+                            }
                             $options = $part;
                             break;
                         case 'input.scss':
+                            if (! $subNname && $subDir) {
+                                $subNname = '/' . $subDir;
+                            }
                             $hasInput = true;
                             $input = $part;
                             break;
                         case 'output.css':
+                            if (! $hasOutput) {
+                                $output = $this->reformatOutput($part);
+                                $hasOutput = true;
+                            }
+                            break;
+                        case 'output-libsass.css':
                             $output = $this->reformatOutput($part);
                             $hasOutput = true;
+                            break;
+                        case 'output-dart-sass.css':
+                            // ignore output-dart-sass
                             break;
                         case 'error':
                             $error = $part;
@@ -146,11 +178,16 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
                         case 'warning':
                             $warning = $part;
                             break;
+                        default:
+                            if ($what && substr($what, -5) === '.scss') {
+                                $includes[$first] = $part;
+                            }
+                            break;
                     }
                 }
 
                 $sizeLimit = 1024 * 1024;
-                $test = [$baseTestName . $subNname, [$options, $input], [$output, $warning, $error]];
+                $test = [$baseTestName . $subNname, [$options, $input, $includes], [$output, $warning, $error]];
                 if (! $hasInput
                     || (!$hasOutput && ! $error)
                     || strpos($options, ':todo:') !== false
