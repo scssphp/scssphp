@@ -1,3 +1,7 @@
+install-test:
+	mkdir -p vendor/sass
+	cd vendor/sass && git clone https://github.com/sass/sass-spec.git && cd ../..
+
 test:
 	vendor/bin/phpunit --colors tests
 
