@@ -4459,6 +4459,14 @@ class Compiler
                 if ($val[0] === Type::T_LIST) {
                     foreach ($val[2] as $name => $item) {
                         if (! is_numeric($name)) {
+                            if (!isset($args[$name])) {
+                                foreach (array_keys($args) as $an) {
+                                    if (str_replace("_", "-", $an) === str_replace("_", "-", $name)) {
+                                        $name = $an;
+                                        break;
+                                    }
+                                }
+                            }
                             $keywordArgs[$name] = $item;
                         } else {
                             $remaining[] = $item;
@@ -4470,6 +4478,14 @@ class Compiler
                         $item = $val[2][$i];
 
                         if (! is_numeric($name)) {
+                            if (!isset($args[$name])) {
+                                foreach (array_keys($args) as $an) {
+                                    if (str_replace("_", "-", $an) === str_replace("_", "-", $name)) {
+                                        $name = $an;
+                                        break;
+                                    }
+                                }
+                            }
                             $keywordArgs[$name] = $item;
                         } else {
                             $remaining[] = $item;
