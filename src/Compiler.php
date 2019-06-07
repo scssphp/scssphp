@@ -4437,7 +4437,7 @@ class Compiler
             return [$posArgs, $keyArgs];
         } else {
             $finalArgs = [];
-            if (!is_array(reset($prototypes))) {
+            if (! is_array(reset($prototypes))) {
                 $prototypes = [$prototypes];
             }
             $keyArgs = [];
@@ -4477,7 +4477,7 @@ class Compiler
                     // ensure all args are populated
                     foreach ($prototype as $i => $p) {
                         $name = explode(':', $p)[0];
-                        if (!isset($finalArgs[$i])) {
+                        if (! isset($finalArgs[$i])) {
                             $finalArgs[$i] = null;
                         }
                     }
@@ -4505,15 +4505,13 @@ class Compiler
                 } catch (CompilerException $e) {
                     $exceptionMessage = $e->getMessage();
                 }
-
             }
-            if ($exceptionMessage && !$prototypeHasMatch) {
+            if ($exceptionMessage && ! $prototypeHasMatch) {
                 $this->throwError($exceptionMessage);
             }
 
             return [$finalArgs, $keyArgs];
         }
-
     }
 
     /**
@@ -5098,15 +5096,13 @@ class Compiler
         foreach ($kwargs['args'][2] as $varname => $arg) {
             if (is_numeric($varname)) {
                 $varname = null;
-            }
-            else {
+            } else {
                 $varname = [ 'var', $varname];
             }
             $callArgs[] = [$varname, $arg, false];
         }
 
         return $this->reduce([Type::T_FUNCTION_CALL, $name, $callArgs]);
-
     }
 
     protected static $libIf = ['condition', 'if-true', 'if-false:'];
