@@ -1,4 +1,5 @@
 @charset "UTF-8";
+/* line 1, inputs/scss_css.scss */
 @import "foo.css";
 @import 'foo.css';
 @import url("foo.css");
@@ -8,7 +9,6 @@
 @import "foo.css" screen, print;
 @import "foo.css" screen, print and (foo: 0);
 @import "foo.css" screen, only print, screen and (foo: 0);
-/* line 1, inputs/scss_css.scss */
 [foo~=bar] {
   a: b; }
 /* line 5, inputs/scss_css.scss */

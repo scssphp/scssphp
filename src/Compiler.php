@@ -2041,6 +2041,51 @@ class Compiler
         return false;
     }
 
+
+    /**
+     * Append a root directive like @import or @charset as near as the possible from the source code
+     * (keeping before comments, @import and @charset coming before in the source code)
+     *
+     * @param string                                        $line
+     * @param @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
+     * @param array                                         $allowed
+     */
+    protected function appendRootDirective($line, $out, $allowed = [Type::T_COMMENT])
+    {
+        $root = $out;
+        while ($root->parent) {
+            $root = $root->parent;
+        }
+
+        $i = 0;
+        while ($i < count($root->children)) {
+            if (! isset($root->children[$i]->type) || ! in_array($root->children[$i]->type, $allowed)) {
+                break;
+            }
+            $i++;
+        }
+
+        // remove incompatible children from the bottom of the list
+        $saveChildren = [];
+        while ($i < count($root->children)) {
+            $saveChildren[] = array_pop($root->children);
+        }
+
+        // insert the directive as a comment
+        $child = $this->makeOutputBlock(Type::T_COMMENT);
+        $child->lines[] = $line;
+        $child->sourceName = $this->sourceNames[$this->sourceIndex];
+        $child->sourceLine = $this->sourceLine;
+        $child->sourceColumn = $this->sourceColumn;
+
+        $root->children[] = $child;
+
+        // repush children
+        while (count($saveChildren)) {
+            $root->children[] = array_pop($saveChildren);
+        }
+    }
+
     /**
      * Compile child; returns a value to halt execution
      *
@@ -2073,7 +2118,7 @@ class Compiler
                 $rawPath = $this->reduce($child[1]);
 
                 if (! $this->compileImport($rawPath, $out, true)) {
-                    $out->lines[] = '@import ' . $this->compileValue($rawPath) . ';';
+                    $this->appendRootDirective('@import ' . $this->compileValue($rawPath) . ';', $out);
                 }
                 break;
 
@@ -2081,7 +2126,7 @@ class Compiler
                 $rawPath = $this->reduce($child[1]);
 
                 if (! $this->compileImport($rawPath, $out)) {
-                    $out->lines[] = '@import ' . $this->compileValue($rawPath) . ';';
+                    $this->appendRootDirective('@import ' . $this->compileValue($rawPath) . ';', $out);
                 }
                 break;
 
@@ -2104,8 +2149,7 @@ class Compiler
             case Type::T_CHARSET:
                 if (! $this->charsetSeen) {
                     $this->charsetSeen = true;
-
-                    $out->lines[] = '@charset ' . $this->compileValue($child[1]) . ';';
+                    $this->appendRootDirective('@charset ' . $this->compileValue($child[1]) . ';', $out);
                 }
                 break;
 
