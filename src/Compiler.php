@@ -4467,7 +4467,11 @@ class Compiler
                                     }
                                 }
                             }
-                            $keywordArgs[$name] = $item;
+                            if ($hasVariable) {
+                                $deferredKeywordArgs[$name] = $item;
+                            } else {
+                                $keywordArgs[$name] = $item;
+                            }
                         } else {
                             $remaining[] = $item;
                         }
@@ -4486,7 +4490,11 @@ class Compiler
                                     }
                                 }
                             }
-                            $keywordArgs[$name] = $item;
+                            if ($hasVariable) {
+                                $deferredKeywordArgs[$name] = $item;
+                            } else {
+                                $keywordArgs[$name] = $item;
+                            }
                         } else {
                             $remaining[] = $item;
                         }
