@@ -706,6 +706,11 @@ class Parser
         // closing a block
         if ($this->matchChar('}')) {
             $block = $this->popBlock();
+            if (!isset($block->type) || $block->type !== Type::T_IF) {
+                if ($this->env->parent) {
+                    $this->append(null); // collect comments before next statement if needed
+                }
+            }
 
             if (isset($block->type) && $block->type === Type::T_INCLUDE) {
                 $include = $block->child;
