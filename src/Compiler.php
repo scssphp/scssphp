@@ -4434,10 +4434,12 @@ class Compiler
         $keywordArgs = [];
         $deferredKeywordArgs = [];
         $remaining = [];
+        $hasKeywordArgument = false;
 
         // assign the keyword args
         foreach ((array) $argValues as $arg) {
             if (! empty($arg[0])) {
+                $hasKeywordArgument = true;
                 if (! isset($args[$arg[0][1]]) || $args[$arg[0][1]][3]) {
                     if ($hasVariable) {
                         $deferredKeywordArgs[$arg[0][1]] = $arg[1];
@@ -4451,7 +4453,7 @@ class Compiler
                 } else {
                     $keywordArgs[$arg[0][1]] = $arg[1];
                 }
-            } elseif (count($keywordArgs)) {
+            } elseif ($hasKeywordArgument) {
                 $this->throwError('Positional arguments must come before keyword arguments.');
                 break;
             } elseif ($arg[2] === true) {
