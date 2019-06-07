@@ -130,6 +130,12 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                     ) {
                         $state = 2; // get css
                         $style = isset($matches[1]) ? $matches[1] : null;
+                        // another subtest in the same def name, insert each separately to avoid border errors on newlines between each subtest
+                        if (count($css) && count($scss)) {
+                            $tests[] = array($name, implode($scss), implode($css), $style);
+                            $scss = array();
+                            $css = array();
+                        }
                         continue 2;
                     }
 
