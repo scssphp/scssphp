@@ -137,6 +137,11 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                         $state = 4; // skip block
                         continue 2;
                     }
+                    // skip test_parsing_many_numbers_doesnt_take_forever that we can't reproduce
+                    if (preg_match('/^\s*values =.*$/', $line)) {
+                        $state = 4; // skip block
+                        continue 2;
+                    }
 
                     if (preg_match('/^\s*assert_raise_message.*render\(<<SCSS\)}\s*$/', $line)
                         || preg_match('/^\s*assert_raise_message.*render <<SCSS}\s*$/', $line)
