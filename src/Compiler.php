@@ -4453,9 +4453,6 @@ class Compiler
                 } else {
                     $keywordArgs[$arg[0][1]] = $arg[1];
                 }
-            } elseif ($hasKeywordArgument) {
-                $this->throwError('Positional arguments must come before keyword arguments.');
-                break;
             } elseif ($arg[2] === true) {
                 $val = $this->reduce($arg[1], true);
 
@@ -4481,6 +4478,9 @@ class Compiler
                 } else {
                     $remaining[] = $val;
                 }
+            } elseif ($hasKeywordArgument) {
+                $this->throwError('Positional arguments must come before keyword arguments.');
+                break;
             } else {
                 $remaining[] = $arg[1];
             }
