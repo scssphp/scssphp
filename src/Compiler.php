@@ -1235,7 +1235,9 @@ class Compiler
 
         $nested = $this->makeOutputBlock($block->type);
         $nested->parent = $out;
-        $nested->depth = $out->depth + 1;
+        if ($block->hasValue) {
+            $nested->depth = $out->depth + 1;
+        }
         $out->children[] = $nested;
 
         foreach ($block->children as $child) {

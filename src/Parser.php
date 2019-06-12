@@ -691,6 +691,7 @@ class Parser
             if ($this->matchChar('{')) {
                 $propBlock = $this->pushSpecialBlock(Type::T_NESTED_PROPERTY, $s);
                 $propBlock->prefix = $name;
+                $propBlock->hasValue = $foundSomething;
                 $foundSomething = true;
             } elseif ($foundSomething) {
                 $foundSomething = $this->end();
