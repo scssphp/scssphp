@@ -2,12 +2,10 @@
 @page :left {
   div {
     color: red; } }
-
 @page test {
   @media yes {
     div {
       color: red; } } }
-
 @media something {
   @page {
     @media else {
@@ -19,11 +17,9 @@ div {
 @page yeah {
   div pre {
     height: 20px; } }
-
 @font-face {
   color: red;
   height: 20px; }
-
 @keyframes 'bounce' {
   from {
     top: 100px;
@@ -39,7 +35,6 @@ div {
     animation-timing-function: ease-in; }
   to {
     top: 100px; } }
-
 @-webkit-keyframes flowouttoleft {
   0% {
     -webkit-transform: translateX(0) scale(1); }
@@ -60,7 +55,6 @@ div {
   to {
     left: 100px;
     top: 100px; } }
-
 @document url(http://www.w3.org/),
           url-prefix(http://www.w3.org/Style/),
           domain(mozilla.org),
@@ -68,7 +62,6 @@ div {
   body {
     color: purple;
     background: yellow; } }
-
 @keyframes anim-rotate {
   0% {
     transform: rotate(0); }
@@ -86,7 +79,6 @@ div {
     transform: scale(0.5); }
   to {
     transform: scale(1); } }
-
 @keyframes zoomer {
   from {
     transform: scale(0.5); }
@@ -101,11 +93,9 @@ div {
   .sticky-top {
     position: sticky;
     top: 0; } }
-
 @supports (position: sticky) {
   .sticky-top2 {
     position: sticky; } }
-
 @media print {
   .table-bordered th, .table-bordered td {
     border: 1px solid #ddd !important; } }

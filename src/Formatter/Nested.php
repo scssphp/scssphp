@@ -98,10 +98,12 @@ class Nested extends Formatter
             $previousHasSelector = false;
         }
 
+        $isMediaOrDirective = in_array($block->type, [Type::T_DIRECTIVE, Type::T_MEDIA]);
         while ($block->depth < end($depths) || ($block->depth == 1 && end($depths) == 1)) {
             array_pop($depths);
             $this->depth--;
-            if (!$this->depth && $block->depth <= 1 && ($block->selectors || $previousHasSelector)) {
+            if (!$this->depth && $block->depth <= 1
+                && (($block->selectors && ! $isMediaOrDirective) || $previousHasSelector)) {
                 $downLevel = $this->break;
             }
             if (empty($block->lines) && empty($block->children)) {
@@ -159,7 +161,7 @@ class Nested extends Formatter
         }
 
         if (! empty($block->children)) {
-            if ($this->depth>0 && (in_array($block->type, [Type::T_DIRECTIVE, Type::T_MEDIA]) || ! $this->hasFlatChild($block))) {
+            if ($this->depth>0 && ($isMediaOrDirective || ! $this->hasFlatChild($block))) {
                 array_pop($depths);
                 $this->depth--;
                 $this->blockChildren($block);
@@ -170,6 +172,10 @@ class Nested extends Formatter
             }
         }
 
+        // reclear to not be spoiled by children if T_DIRECTIVE
+        if ($block->type === Type::T_DIRECTIVE) {
+            $previousHasSelector = false;
+        }
         if (! empty($block->selectors)) {
             $this->indentLevel--;
 
@@ -183,7 +189,9 @@ class Nested extends Formatter
                     $downLevel = $this->break;
                 }
             }
-            $previousHasSelector = true;
+            if (! $isMediaOrDirective) {
+                $previousHasSelector = true;
+            }
         }
 
         if ($block->type === 'root') {

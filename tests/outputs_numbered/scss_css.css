@@ -79,13 +79,10 @@ sel {
 /* line 65, inputs/scss_css.scss */
   rule {
     a: b; } }
-
 @foo {
   a: b; }
-
 @bar {
   a: b; }
-
 @foo "bar"
 
 foo {
@@ -93,7 +90,6 @@ foo {
   b: 12px -moz-calc(100%/3 - 2*1em - 2*1px);
   b: 12px -webkit-calc(100%/3 - 2*1em - 2*1px);
   b: 12px -foobar-calc(100%/3 - 2*1em - 2*1px); }
-
 /* line 84, inputs/scss_css.scss */
 foo {
   bar: baz; }
@@ -192,12 +188,10 @@ foo {
   a: -moz-element(#foo);
   b: -webkit-element(#foo);
   b: -foobar-element(#foo); }
-
 @foo ;
 
 foo {
   bar: baz; }
-
 /* line 179, inputs/scss_css.scss */
 0% {
   a: b; }
@@ -448,11 +442,9 @@ foo {
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
 /* line 440, inputs/scss_css.scss */
   a: b; }
-
 @media only screen, print and (foo: 0px) and (bar: flam(12px solid)) {
 /* line 444, inputs/scss_css.scss */
   a: b; }
-
 /* line 448, inputs/scss_css.scss */
 :-moz-any(h1, h2, h3) {
   a: b; }
@@ -472,7 +464,6 @@ foo {
 /* line 464, inputs/scss_css.scss */
   .foo {
     a: b; } }
-
 /* line 468, inputs/scss_css.scss */
 foo {
   filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1, startColorstr=#c0ff3300, endColorstr=#ff000000);
@@ -486,10 +477,8 @@ foo {
 
 @foo bar {
   a: b; }
-
 @bar baz {
   c: d; }
-
 @foo bar;
 @bar baz;
 
@@ -505,7 +494,6 @@ foo {
    * Bar */
   /* Baz
    * Bang */ }
-
 /* line 503, inputs/scss_css.scss */
 .foo {
   /* Foo Bar */
@@ -519,7 +507,6 @@ foo {
 
 [foo|bar=baz] {
   a: b; }
-
 /* line 517, inputs/scss_css.scss */
 [*|bar=baz] {
   a: b; }
@@ -670,19 +657,15 @@ foo {
 @page {
   prop1: val;
   prop2: val; }
-
 @page flap {
   prop1: val;
   prop2: val; }
-
 @page :first {
   prop1: val;
   prop2: val; }
-
 @page flap:first {
   prop1: val;
   prop2: val; }
-
 /* line 688, inputs/scss_css.scss */
 .foo {
   /* Foo */
@@ -944,12 +927,10 @@ E ~ F {
 /* line 941, inputs/scss_css.scss */
   .foo {
     a: b; } }
-
 @-prefix-supports (a: b) and (c: d) or (not (d: e)) and ((not (f: g)) or (not ((h: i) and (j: k)))) {
 /* line 948, inputs/scss_css.scss */
   .foo {
     a: b; } }
-
 /* line 954, inputs/scss_css.scss */
 foo {
   foo: bar;

@@ -20,7 +20,6 @@
 
 @media (max-width: 940px) {
   color: red; }
-
 @media not hello and (world) {
   color: blue;
     pre {

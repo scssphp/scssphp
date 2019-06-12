@@ -89,7 +89,6 @@ body .second {
 
 @media screen and (max-width: 640px) {
 /* line 104, inputs/at_root.scss */ }
-
 /* line 107, inputs/at_root.scss */
 .foo .bar {
   width: 0; }
@@ -97,7 +96,6 @@ body .second {
 /* line 112, inputs/at_root.scss */
   .baz {
     height: 0; } }
-
 @media screen and (max-width: 640px) {
 /* line 117, inputs/at_root.scss */
   .qux {

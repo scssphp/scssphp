@@ -61,7 +61,6 @@ body .second {
 @supports ( display: flex ) {
   .baz {
     height: 0; } }
-
 @media screen and (max-width: 640px) {
   .qux {
     margin: 0; } }

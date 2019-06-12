@@ -3,20 +3,17 @@
 /* line 3, inputs/directives.scss */
   div {
     color: red; } }
-
 @page test {
   @media yes {
   /* line 12, inputs/directives.scss */
     div {
       color: red; } } }
-
 @media something {
   @page {
     @media else {
     /* line 29, inputs/directives.scss */
       div {
         height: 200px; } } } }
-
 /* line 37, inputs/directives.scss */
 div {
   color: red; }
@@ -24,11 +21,9 @@ div {
 /* line 40, inputs/directives.scss */
   div pre {
     height: 20px; } }
-
 @font-face {
   color: red;
   height: 20px; }
-
 @keyframes 'bounce' {
 /* line 53, inputs/directives.scss */
   from {
@@ -53,7 +48,6 @@ div {
 /* line 73, inputs/directives.scss */
   to {
     top: 100px; } }
-
 @-webkit-keyframes flowouttoleft {
 /* line 79, inputs/directives.scss */
   0% {
@@ -66,7 +60,6 @@ div {
 /* line 81, inputs/directives.scss */
   100% {
     -webkit-transform: translateX(-100%) scale(0.7); } }
-
 /* line 84, inputs/directives.scss */
 div {
   animation-name: 'diagonal-slide';
@@ -83,7 +76,6 @@ div {
   to {
     left: 100px;
     top: 100px; } }
-
 @document url(http://www.w3.org/),
           url-prefix(http://www.w3.org/Style/),
           domain(mozilla.org),
@@ -92,7 +84,6 @@ div {
   body {
     color: purple;
     background: yellow; } }
-
 @keyframes anim-rotate {
 /* line 113, inputs/directives.scss */
   0% {
@@ -101,7 +92,6 @@ div {
 /* line 116, inputs/directives.scss */
   100% {
     transform: rotate(360deg); } }
-
 /* line 121, inputs/directives.scss */
 .bold, .icon-ajax {
   font-weight: 700; }
@@ -120,7 +110,6 @@ div {
 /* line 140, inputs/directives.scss */
   to {
     transform: scale(1); } }
-
 @keyframes zoomer {
 /* line 146, inputs/directives.scss */
   from {
@@ -129,24 +118,20 @@ div {
 /* line 150, inputs/directives.scss */
   to {
     transform: scale(1); } }
-
 /* line 157, inputs/directives.scss */
 @supports (position: sticky) {
 /* line 159, inputs/directives.scss */
   .sticky-top .top2 {
     position: sticky; } }
-
 /* line 164, inputs/directives.scss */
 @supports (position: sticky) {
   .sticky-top {
     position: sticky;
     top: 0; } }
-
 @supports (position: sticky) {
 /* line 172, inputs/directives.scss */
   .sticky-top2 {
     position: sticky; } }
-
 @media print {
 /* line 178, inputs/directives.scss */
 /* line 179, inputs/directives.scss */

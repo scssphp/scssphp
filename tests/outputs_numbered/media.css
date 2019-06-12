@@ -26,7 +26,6 @@
 @media (max-width: 940px) {
 /* line 23, inputs/media.scss */
   color: red; }
-
 @media not hello and (world) {
 /* line 28, inputs/media.scss */
   color: blue;
@@ -44,7 +43,6 @@
 @media c {
 /* line 61, inputs/media.scss */
   color: blue; }
-
 /* line 70, inputs/media.scss */
 div {
   color: blue; }

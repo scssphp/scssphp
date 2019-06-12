@@ -66,13 +66,10 @@ sel {
   a: b;
     rule {
       a: b; } }
-
 @foo {
   a: b; }
-
 @bar {
   a: b; }
-
 @foo "bar"
 
 foo {
@@ -163,12 +160,10 @@ foo {
   a: -moz-element(#foo);
   b: -webkit-element(#foo);
   b: -foobar-element(#foo); }
-
 @foo ;
 
 foo {
   bar: baz; }
-
 0% {
   a: b; }
 
@@ -357,7 +352,6 @@ foo {
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   a: b; }
-
 @media only screen, print and (foo: 0px) and (bar: flam(12px solid)) {
   a: b; }
 
@@ -388,10 +382,8 @@ foo {
 
 @foo bar {
   a: b; }
-
 @bar baz {
   c: d; }
-
 @foo bar;
 @bar baz;
 
@@ -535,15 +527,12 @@ foo {
 @page {
   prop1: val;
   prop2: val; }
-
 @page flap {
   prop1: val;
   prop2: val; }
-
 @page :first {
   prop1: val;
   prop2: val; }
-
 @page flap:first {
   prop1: val;
   prop2: val; }
@@ -746,7 +735,6 @@ E ~ F {
 @supports (a: b) and (c: d) or (not (d: e)) and ((not (f: g)) or (not ((h: i) and (j: k)))) {
   .foo {
     a: b; } }
-
 @-prefix-supports (a: b) and (c: d) or (not (d: e)) and ((not (f: g)) or (not ((h: i) and (j: k)))) {
   .foo {
     a: b; } }
