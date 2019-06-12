@@ -13,6 +13,7 @@ namespace ScssPhp\ScssPhp\Formatter;
 
 use ScssPhp\ScssPhp\Formatter;
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
+use ScssPhp\ScssPhp\Type;
 
 /**
  * Nested formatter
@@ -66,6 +67,15 @@ class Nested extends Formatter
         }
 
         $this->write($inner . implode($glue, $block->lines));
+    }
+
+    protected function hasFlatChild($block) {
+        foreach ($block->children as $child) {
+            if (empty($child->selectors)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -149,7 +159,7 @@ class Nested extends Formatter
         }
 
         if (! empty($block->children)) {
-            if ($this->depth>0) {
+            if ($this->depth>0 && (in_array($block->type, [Type::T_DIRECTIVE, Type::T_MEDIA]) || ! $this->hasFlatChild($block))) {
                 array_pop($depths);
                 $this->depth--;
                 $this->blockChildren($block);
