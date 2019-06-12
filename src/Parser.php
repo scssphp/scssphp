@@ -2029,10 +2029,11 @@ class Parser
      * Parse keyword or interpolation
      *
      * @param array $out
+     * @param bool $restricted
      *
      * @return boolean
      */
-    protected function mixedKeyword(&$out)
+    protected function mixedKeyword(&$out, $restricted = false)
     {
         $parts = [];
 
@@ -2040,7 +2041,7 @@ class Parser
         $this->eatWhiteDefault = false;
 
         for (;;) {
-            if ($this->keyword($key)) {
+            if ($restricted ? $this->restrictedKeyword($key) : $this->keyword($key)) {
                 $parts[] = $key;
                 continue;
             }
@@ -2412,7 +2413,7 @@ class Parser
                     $part = ':';
                 }
 
-                if ($this->mixedKeyword($nameParts)) {
+                if ($this->mixedKeyword($nameParts, true)) {
                     $parts[] = $part;
 
                     foreach ($nameParts as $sub) {
@@ -2495,7 +2496,7 @@ class Parser
                 continue;
             }
 
-            if ($this->keyword($name)) {
+            if ($this->restrictedKeyword($name)) {
                 $parts[] = $name;
                 continue;
             }
@@ -2557,6 +2558,27 @@ class Parser
 
             return true;
         }
+
+        return false;
+    }
+
+    /**
+     * Parse a keyword that should not start with a number
+     *
+     * @param string  $word
+     * @param boolean $eatWhitespace
+     *
+     * @return boolean
+     */
+    protected function restrictedKeyword(&$word, $eatWhitespace = null)
+    {
+        $s = $this->count;
+        if ($this->keyword($word, $eatWhitespace)
+            && (ord($word[0]) > 57 || ord($word[0]) < 48)) {
+            return true;
+        }
+
+        $this->seek($s);
 
         return false;
     }
