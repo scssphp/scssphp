@@ -77,6 +77,7 @@ class Nested extends Formatter
         static $downLevel;
         static $closeBlock;
         static $previousEmpty;
+        static $previousHasSelector;
 
         if ($block->type === 'root') {
             $depths = [ 0 ];
@@ -84,12 +85,13 @@ class Nested extends Formatter
             $closeBlock = '';
             $this->depth = 0;
             $previousEmpty = false;
+            $previousHasSelector = false;
         }
 
         while ($block->depth < end($depths) || ($block->depth == 1 && end($depths) == 1)) {
             array_pop($depths);
             $this->depth--;
-            if (!$this->depth && $block->depth <= 1) {
+            if (!$this->depth && $block->depth <= 1 && ($block->selectors || $previousHasSelector)) {
                 $downLevel = $this->break;
             }
             if (empty($block->lines) && empty($block->children)) {
@@ -117,6 +119,7 @@ class Nested extends Formatter
         }
 
         $previousEmpty = false;
+        $previousHasSelector = false;
 
         if (! empty($block->selectors)) {
             if ($closeBlock) {
@@ -170,6 +173,7 @@ class Nested extends Formatter
                     $downLevel = $this->break;
                 }
             }
+            $previousHasSelector = true;
         }
 
         if ($block->type === 'root') {
