@@ -1224,6 +1224,35 @@ class Compiler
     }
 
     /**
+     * Compile nested properties lines
+     *
+     * @param \ScssPhp\ScssPhp\Block $block
+     * @param OutputBlock            $out
+     */
+    protected function compileNestedPropertiesBlock(Block $block, OutputBlock $out)
+    {
+        $prefix = $this->compileValue($block->prefix) . '-';
+
+        $nested = $this->makeOutputBlock($block->type);
+        $nested->parent = $out;
+        $nested->depth = $out->depth + 1;
+        $out->children[] = $nested;
+
+        foreach ($block->children as $child) {
+            switch ($child[0]) {
+                case Type::T_ASSIGN:
+                    array_unshift($child[1][2], $prefix);
+                    break;
+
+                case Type::T_NESTED_PROPERTY:
+                    array_unshift($child[1]->prefix[2], $prefix);
+                    break;
+            }
+            $this->compileChild($child, $nested);
+        }
+    }
+
+    /**
      * Compile nested block
      *
      * @param \ScssPhp\ScssPhp\Block $block
@@ -2087,6 +2116,34 @@ class Compiler
     }
 
     /**
+     * Append lines to the courrent output block:
+     * directly to the block or through a child if necessary
+     *
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
+     * @param string                                 $type
+     * @param string                                 $line
+     */
+    protected function appendOutputLine(OutputBlock $out, $type, $line)
+    {
+
+        $outWrite = &$out;
+        // check if it's a flat output or not
+        if (count($out->children)) {
+            $lastChild = &$out->children[count($out->children) -1];
+            if ($lastChild->depth === $out->depth && is_null($lastChild->selectors) && ! count($lastChild->children)) {
+                $outWrite = $lastChild;
+            } else {
+                $nextLines = $this->makeOutputBlock($type);
+                $nextLines->parent = $out;
+                $nextLines->depth = $out->depth;
+                $out->children[] = $nextLines;
+                $outWrite = &$nextLines;
+            }
+        }
+        $outWrite->lines[] = $line;
+    }
+
+    /**
      * Compile child; returns a value to halt execution
      *
      * @param array                                  $child
@@ -2217,10 +2274,11 @@ class Compiler
 
                 $compiledValue = $this->compileValue($value);
 
-                $out->lines[] = $this->formatter->property(
+                $line = $this->formatter->property(
                     $compiledName,
                     $compiledValue
                 );
+                $this->appendOutputLine($out, Type::T_ASSIGN, $line);
                 break;
 
             case Type::T_COMMENT:
@@ -2229,7 +2287,7 @@ class Compiler
                     break;
                 }
 
-                $out->lines[] = $child[1];
+                $this->appendOutputLine($out, Type::T_COMMENT, $child[1]);
                 break;
 
             case Type::T_MIXIN:
@@ -2374,26 +2432,7 @@ class Compiler
                 return $this->reduce($child[1], true);
 
             case Type::T_NESTED_PROPERTY:
-                list(, $prop) = $child;
-
-                $prefixed = [];
-                $prefix = $this->compileValue($prop->prefix) . '-';
-
-                foreach ($prop->children as $child) {
-                    switch ($child[0]) {
-                        case Type::T_ASSIGN:
-                            array_unshift($child[1][2], $prefix);
-                            break;
-
-                        case Type::T_NESTED_PROPERTY:
-                            array_unshift($child[1]->prefix[2], $prefix);
-                            break;
-                    }
-
-                    $prefixed[] = $child;
-                }
-
-                $this->compileChildrenNoReturn($prefixed, $out);
+                $this->compileNestedPropertiesBlock($child[1], $out);
                 break;
 
             case Type::T_INCLUDE:
