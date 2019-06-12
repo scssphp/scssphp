@@ -1,28 +1,29 @@
 @charset "hello-world";
 @page :left {
 /* line 3, inputs/directives.scss */
-div {
-  color: red; } }
+  div {
+    color: red; } }
 
 @page test {
   @media yes {
-/* line 12, inputs/directives.scss */
-div {
-  color: red; } } }
+  /* line 12, inputs/directives.scss */
+    div {
+      color: red; } } }
 
 @media something {
   @page {
     @media else {
-/* line 29, inputs/directives.scss */
-div {
-  height: 200px; } } } }
+    /* line 29, inputs/directives.scss */
+      div {
+        height: 200px; } } } }
+
 /* line 37, inputs/directives.scss */
 div {
   color: red; }
-  @page yeah {
+@page yeah {
 /* line 40, inputs/directives.scss */
-div pre {
-height: 20px; } }
+  div pre {
+    height: 20px; } }
 
 @font-face {
   color: red;
@@ -30,35 +31,42 @@ height: 20px; } }
 
 @keyframes 'bounce' {
 /* line 53, inputs/directives.scss */
-from {
-  top: 100px;
-  animation-timing-function: ease-out; }
+  from {
+    top: 100px;
+    animation-timing-function: ease-out; }
+
 /* line 58, inputs/directives.scss */
-25% {
-  top: 50px;
-  animation-timing-function: ease-in; }
+  25% {
+    top: 50px;
+    animation-timing-function: ease-in; }
+
 /* line 63, inputs/directives.scss */
-50% {
-  top: 100px;
-  animation-timing-function: ease-out; }
+  50% {
+    top: 100px;
+    animation-timing-function: ease-out; }
+
 /* line 68, inputs/directives.scss */
-75% {
-  top: 75px;
-  animation-timing-function: ease-in; }
+  75% {
+    top: 75px;
+    animation-timing-function: ease-in; }
+
 /* line 73, inputs/directives.scss */
-to {
-  top: 100px; } }
+  to {
+    top: 100px; } }
 
 @-webkit-keyframes flowouttoleft {
 /* line 79, inputs/directives.scss */
-0% {
-  -webkit-transform: translateX(0) scale(1); }
+  0% {
+    -webkit-transform: translateX(0) scale(1); }
+
 /* line 80, inputs/directives.scss */
-60%, 70% {
-  -webkit-transform: translateX(0) scale(0.7); }
+  60%, 70% {
+    -webkit-transform: translateX(0) scale(0.7); }
+
 /* line 81, inputs/directives.scss */
-100% {
-  -webkit-transform: translateX(-100%) scale(0.7); } }
+  100% {
+    -webkit-transform: translateX(-100%) scale(0.7); } }
+
 /* line 84, inputs/directives.scss */
 div {
   animation-name: 'diagonal-slide';
@@ -67,75 +75,82 @@ div {
 
 @keyframes 'diagonal-slide' {
 /* line 92, inputs/directives.scss */
-from {
-  left: 0;
-  top: 0; }
+  from {
+    left: 0;
+    top: 0; }
+
 /* line 97, inputs/directives.scss */
-to {
-  left: 100px;
-  top: 100px; } }
+  to {
+    left: 100px;
+    top: 100px; } }
 
 @document url(http://www.w3.org/),
           url-prefix(http://www.w3.org/Style/),
           domain(mozilla.org),
           regexp("https:.*") {
 /* line 109, inputs/directives.scss */
-body {
-  color: purple;
-  background: yellow; } }
+  body {
+    color: purple;
+    background: yellow; } }
 
 @keyframes anim-rotate {
 /* line 113, inputs/directives.scss */
-0% {
-  transform: rotate(0); }
+  0% {
+    transform: rotate(0); }
+
 /* line 116, inputs/directives.scss */
-100% {
-  transform: rotate(360deg); } }
+  100% {
+    transform: rotate(360deg); } }
+
 /* line 121, inputs/directives.scss */
 .bold, .icon-ajax {
   font-weight: 700; }
+
 /* line 125, inputs/directives.scss */
 /* line 129, inputs/directives.scss */
-
 /* line 131, inputs/directives.scss */
-  .custom-selector {
-    color: blue; }
+.custom-selector {
+  color: blue; }
 
 @-webkit-keyframes zoomer {
 /* line 136, inputs/directives.scss */
-from {
-  transform: scale(0.5); }
+  from {
+    transform: scale(0.5); }
+
 /* line 140, inputs/directives.scss */
-to {
-  transform: scale(1); } }
+  to {
+    transform: scale(1); } }
 
 @keyframes zoomer {
 /* line 146, inputs/directives.scss */
-from {
-  transform: scale(0.5); }
+  from {
+    transform: scale(0.5); }
+
 /* line 150, inputs/directives.scss */
-to {
-  transform: scale(1); } }
+  to {
+    transform: scale(1); } }
+
 /* line 157, inputs/directives.scss */
 @supports (position: sticky) {
 /* line 159, inputs/directives.scss */
-.sticky-top .top2 {
-  position: sticky; } }
+  .sticky-top .top2 {
+    position: sticky; } }
+
 /* line 164, inputs/directives.scss */
 @supports (position: sticky) {
-    .sticky-top {
-      position: sticky;
-      top: 0; } }
+  .sticky-top {
+    position: sticky;
+    top: 0; } }
 
 @supports (position: sticky) {
 /* line 172, inputs/directives.scss */
-.sticky-top2 {
-  position: sticky; } }
+  .sticky-top2 {
+    position: sticky; } }
 
 @media print {
 /* line 178, inputs/directives.scss */
 /* line 179, inputs/directives.scss */
   .table-bordered th, .table-bordered td {
     border: 1px solid #ddd !important; } }
-  @font-face {
-    font-family: "Glyphicons Halflings"; }
+@font-face {
+  font-family: "Glyphicons Halflings"; }

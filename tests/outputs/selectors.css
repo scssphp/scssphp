@@ -315,23 +315,23 @@ div {
 
 .something.world {
   color: blue; }
-  .something .mold {
-    height: 200px; }
-  .dog .something {
-    color: blue; }
+.something .mold {
+  height: 200px; }
+.dog .something {
+  color: blue; }
 
 .dad .simple .wolf {
   color: blue; }
-  .rad.simple.bad {
-    color: blue; }
+.rad.simple.bad {
+  color: blue; }
 
 .something div .what.world {
   color: blue; }
 
 div.foo div {
   color: blue; }
-  div + div {
-    color: green; }
+div + div {
+  color: green; }
 
 .nice-fonts .main .message div .title, .nice-fonts div .message div .title {
   font-size: 24px; }
@@ -356,17 +356,17 @@ span a, p a, div a {
 
 .parent.self {
   content: "should match .parent.self"; }
-  .parent .child {
-    content: "should match .parent .child"; }
-  .parent.self2 {
-    content: "should match .parent.self2"; }
+.parent .child {
+  content: "should match .parent .child"; }
+.parent.self2 {
+  content: "should match .parent.self2"; }
 
 .parent.self1, .parent.self2 {
   content: "should match .parent.self1, .parent.self2"; }
-  .self1 .parent {
-    content: "should match .self1 .parent"; }
-  .parent + .parent {
-    content: "should match .parent + .parent"; }
+.self1 .parent {
+  content: "should match .self1 .parent"; }
+.parent + .parent {
+  content: "should match .parent + .parent"; }
 
 ul ul, ul ol, ol ul, ol ol {
   display: block; }

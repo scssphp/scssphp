@@ -6,26 +6,31 @@
 div {
   height: 200px;
   color: red; }
+
 /* line 9, inputs/import.scss */
 pre {
   color: red; }
+
 /* line 1, inputs/imports/simple.scss */
 pre div {
   height: 200px;
   color: red; }
+
 /* line 14, inputs/import.scss */
 /* line 1, inputs/imports/simple.scss */
-
 code div {
   height: 200px;
   color: red; }
+
 /* line 1, inputs/imports/simple.scss */
 code div {
   height: 200px;
   color: red; }
+
 /* line 2, inputs/imports/_partial.scss */
 #partial {
   color: blue; }
+
 /* line 20, inputs/import.scss */
 body {
   color: #7c2;

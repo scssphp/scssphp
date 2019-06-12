@@ -30,48 +30,49 @@ body .second {
 @media print {
   .page {
     width: 8in; } }
-  .page {
-    color: red; }
+.page {
+  color: red; }
 
 @media (min-width: 300px) {
-    .my-widget .inside-mq {
-      inside-style: mq; } }
-    .my-widget .outside-mq {
-      outside-style: mq; }
+  .my-widget .inside-mq {
+    inside-style: mq; } }
+.my-widget .outside-mq {
+  outside-style: mq; }
     .outside-class {
       color: blue; }
-  @media (min-width: 300px) {
-      .with-only {
-        color: pink; } }
+@media (min-width: 300px) {
+  .with-only {
+    color: pink; } }
 
 @media screen and (max-width: 320px) {
   .foo {
     margin: 0; } }
 
 @media screen and (max-width: 320px) {
-      .bar {
-        padding: 0; } }
-  .baar {
-    padding: 0; }
-  .foo .barr {
-    padding: 0; }
+  .bar {
+    padding: 0; } }
+.baar {
+  padding: 0; }
+.foo .barr {
+  padding: 0; }
 
-
+@media screen and (max-width: 640px) {
+ }
   .foo .bar {
     width: 0; }
-  @supports ( display: flex ) {
-      .baz {
-        height: 0; } }
+@supports ( display: flex ) {
+  .baz {
+    height: 0; } }
 
 @media screen and (max-width: 640px) {
-        .qux {
-          margin: 0; } }
+  .qux {
+    margin: 0; } }
 
 @media screen and (max-width: 640px) {
-        .foo .quux {
-          padding: 0; } }
-  .foo .quix {
-    padding: 0; }
+  .foo .quux {
+    padding: 0; } }
+.foo .quix {
+  padding: 0; }
 
 .test .test2 {
   padding: 0px; }
@@ -99,7 +100,7 @@ a.badge {
 
 .badge {
   display: inline-block; }
-  @media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) {
   .badge {
     transition: none; } }
   a.badge:hover, a.badge:focus {

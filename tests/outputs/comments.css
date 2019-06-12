@@ -19,6 +19,7 @@ div {
 
 .dummy {
   color: blue; }
+
 /* comment 1 */
 a {
   /* comment 2 */
@@ -28,6 +29,7 @@ a {
   background-color: red;
   /* comment 5 */
   /* comment 6 */ }
+
 /* comment 7 */
 /* коммент */
 /* This is a comment with vars references:

@@ -4,6 +4,7 @@ a {
   color: red;
   /* comment 3 */
   /* comment 4 */ }
+
 /* comment 5 */
 /*! comment 1 */
 b {
@@ -11,6 +12,7 @@ b {
   color: red;
   /*! comment 3 */
   /*! comment 4 */ }
+
 /*! comment 5 */
 /*
  * multi-line comment 1
@@ -26,6 +28,7 @@ c {
   /*
    * multi-line comment 4
    */ }
+
 /*
  * multi-line comment 5
  */
@@ -43,6 +46,7 @@ d {
   /*!
    * multi-line comment 4
    */ }
+
 /*!
  * multi-line comment 5
  */

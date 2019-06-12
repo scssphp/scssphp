@@ -1,7 +1,7 @@
 .foo:after, .bar:after, .bar:before, .baz.bar:before {
   color: red; }
-  .foo:hover:after, .bar:hover:after, .bar:before:hover, .baz.bar:before:hover {
-    color: blue; }
+.foo:hover:after, .bar:hover:after, .bar:before:hover, .baz.bar:before:hover {
+  color: blue; }
 
 a, a:link, a:visited, a:active, a:hover {
   color: #fff; }

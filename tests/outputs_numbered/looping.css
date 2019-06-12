@@ -19,15 +19,19 @@ div {
   background: is is;
   background: this this;
   color: red; }
+
 /* line 32, inputs/looping.scss */
 div h1 {
   font-size: 2em; }
+
 /* line 32, inputs/looping.scss */
 div h2 {
   font-size: 1.5em; }
+
 /* line 32, inputs/looping.scss */
 div h3 {
   font-size: 1.2em; }
+
 /* line 42, inputs/looping.scss */
 span {
   color: 0;
@@ -41,6 +45,7 @@ span {
   color: 8;
   color: 9;
   color: 10; }
+
 /* line 50, inputs/looping.scss */
 pre {
   color: 1;
@@ -60,12 +65,14 @@ pre {
   cool: 5;
   cool: 4;
   cool: 3; }
+
 /* line 85, inputs/looping.scss */
 div {
   a: false;
   b: true;
   c: true;
   c: true; }
+
 /* line 92, inputs/looping.scss */
 body.each {
   color: 1;
@@ -73,6 +80,7 @@ body.each {
   color: 3;
   background-color: 4;
   color: 5; }
+
 /* line 112, inputs/looping.scss */
 body.for {
   color: 1;
@@ -80,6 +88,7 @@ body.for {
   color: 3;
   background-color: 4;
   color: 5; }
+
 /* line 132, inputs/looping.scss */
 body.while {
   color: 1;
@@ -87,15 +96,19 @@ body.while {
   color: 3;
   background-color: 4;
   color: 5; }
+
 /* line 173, inputs/looping.scss */
 .bg-gray-0 {
   background-color: #f8f9fa; }
+
 /* line 173, inputs/looping.scss */
 .bg-gray-1 {
   background-color: #f1f3f5; }
+
 /* line 173, inputs/looping.scss */
 .bg-red-0 {
   background-color: #fff5f5; }
+
 /* line 173, inputs/looping.scss */
 .bg-red-1 {
   background-color: #ffe3e3; }

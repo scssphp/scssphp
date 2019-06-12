@@ -13,45 +13,57 @@ div {
   test: "whatworldwrong";
   test: "what"world"wrong";
   hi: "what is 16 end"; }
+
 /* line 24, inputs/interpolation.scss */
 /* line 27, inputs/interpolation.scss */
-  pre var {
-    color: red; }
+pre var {
+  color: red; }
+
 /* line 31, inputs/interpolation.scss */
 pre var dad {
   color: red; }
+
 /* line 35, inputs/interpolation.scss */
 pre bedvardad {
   color: red; }
+
 /* line 40, inputs/interpolation.scss */
 /* line 42, inputs/interpolation.scss */
-
 cool .thing-1 {
   color: red; }
+
 /* line 42, inputs/interpolation.scss */
 cool .thing-2 {
   color: red; }
+
 /* line 42, inputs/interpolation.scss */
 cool .thing-3 {
   color: red; }
+
 /* line 42, inputs/interpolation.scss */
 cool .thing-4 {
   color: red; }
+
 /* line 42, inputs/interpolation.scss */
 cool .thing-5 {
   color: red; }
+
 /* line 48, inputs/interpolation.scss */
 abcde {
   color: red; }
+
 /* line 52, inputs/interpolation.scss */
 #hello, .world {
   color: red; }
+
 /* line 56, inputs/interpolation.scss */
 #abchelloyeah, .coolworldyes {
   color: red; }
+
 /* line 62, inputs/interpolation.scss */
 div.element:nth-child(2n) {
   display: none; }
+
 /* line 69, inputs/interpolation.scss */
 div {
   hello: world;
@@ -62,42 +74,48 @@ div {
   hello-world: red;
   hello-mold: white;
   hello-hello: blue; }
+
 /* line 86, inputs/interpolation.scss */
 body {
   color: 3; }
+
 /* line 91, inputs/interpolation.scss */
 foo, x, y {
   color: #abc; }
+
 /* line 97, inputs/interpolation.scss */
 div {
   prop: a, b; }
+
 /* line 101, inputs/interpolation.scss */
 /* line 102, inputs/interpolation.scss */
-
 a.badge {
   text-decoration: none; }
+
 /* line 119, inputs/interpolation.scss */
 .btn-primary {
   background: yellow; }
+
 /* line 110, inputs/interpolation.scss */
 .btn-primary:not(.disabled) {
   border-color: red; }
+
 /* line 113, inputs/interpolation.scss */
 .btn-primary:not(.disabled):focus {
   border-width: 3px; }
+
 /* line 133, inputs/interpolation.scss */
 /* line 124, inputs/interpolation.scss */
-
 /* line 125, inputs/interpolation.scss */
-
 /* line 126, inputs/interpolation.scss */
-  .pagination .page-item:first-child .page-link {
-    border-radius: 5px; }
+.pagination .page-item:first-child .page-link {
+  border-radius: 5px; }
+
 /* line 140, inputs/interpolation.scss */
 .element {
   border: 2px solid #000; }
+
 /* line 149, inputs/interpolation.scss */
 /* line 150, inputs/interpolation.scss */
-
 div > p > strong, div > h1 > strong {
   color: red; }

@@ -85,8 +85,9 @@ wassup {
 
 .edit .new .actions {
   padding: 0; }
-  .z, .parent .self.z {
-    color: red; }
+
+.z, .parent .self.z {
+  color: red; }
 
 #content .social-login {
   display: block;
@@ -112,12 +113,14 @@ wassup {
 
 body .to-extend, body .test {
   color: red; }
-  .navbar .navbar-brand, .navbar .navbar-brand:hover {
-    font-weight: bold;
-    text-shadow: none;
-    color: #fff; }
-  .foo__bar#test, input {
-    background: red; }
+
+.navbar .navbar-brand, .navbar .navbar-brand:hover {
+  font-weight: bold;
+  text-shadow: none;
+  color: #fff; }
+
+.foo__bar#test, input {
+  background: red; }
 
 .selector1, .master-class {
   color: blue; }

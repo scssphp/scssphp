@@ -89,6 +89,7 @@ bar {
 
 baz {
   bar: baz; }
+
 /*
  * foo
  */
@@ -103,25 +104,31 @@ E F, G H {
 
 E > F, G > H {
   a: b; }
+
 /* This is a CSS comment. */
 .one {
   color: green; }
+
 /* Another comment */
 /* The following should not be used:
  .two {color: red;} */
 .three {
   color: green;
   /* color: red; */ }
+
 /**
  .four {color: red;} */
 .five {
   color: green; }
+
 /**/
 .six {
   color: green; }
+
 /*********/
 .seven {
   color: green; }
+
 /* a comment **/
 .eight {
   color: green; }
@@ -221,6 +228,7 @@ foo {
 foo {
   a: d;
   /*: b; c */ }
+
 /* Foo
  * Bar */
 .foo {
@@ -338,14 +346,12 @@ foo {
 @media all {
   rule1 {
     prop: val; }
-
   rule2 {
     prop: val; } }
 
 @media screen, print {
   rule1 {
     prop: val; }
-
   rule2 {
     prop: val; } }
 
@@ -550,9 +556,11 @@ foo {
   /* Foo
    * Bar */
   a: b; }
+
 /* Foo */
 .foo {
   a: b; }
+
 /* Foo
  * Bar */
 .foo {

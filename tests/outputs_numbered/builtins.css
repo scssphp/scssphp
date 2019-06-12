@@ -11,6 +11,7 @@
   rgba: rgba(170, 119, 204, 0.4);
   rgba: rgba(170, 119, 204, 0.4);
   green: 139; }
+
 /* line 21, inputs/builtins.scss */
 #hsl {
   color: #79c653;
@@ -18,6 +19,7 @@
   hue: 100deg;
   sat: 50%;
   lig: 55%; }
+
 /* line 30, inputs/builtins.scss */
 #more-color {
   light: #7e3d9e;
@@ -27,6 +29,7 @@
   gray: #545454;
   comp: #48792f;
   inv: #9fd086; }
+
 /* line 44, inputs/builtins.scss */
 #more-more-color {
   op: 0.5;
@@ -35,6 +38,7 @@
   transparentize: rgba(1, 2, 3, 0.4);
   transparentize: rgba(1, 2, 3, 0.4);
   transparentize: rgba(52, 130, 3, 0.9); }
+
 /* line 56, inputs/builtins.scss */
 #more-more-more-color {
   color: rgba(65, 110, 79, 0.4);
@@ -47,6 +51,7 @@
   color: rgba(5, 5, 5, 0);
   color: #000A0A0A;
   color: #FFAABBCC; }
+
 /* line 74, inputs/builtins.scss */
 #string {
   color: hello what is going on;
@@ -75,6 +80,7 @@
   color: st;
   color: string;
   color: strin; }
+
 /* line 106, inputs/builtins.scss */
 #number {
   color: 250%;
@@ -87,6 +93,7 @@
   width: 200%;
   bottom: 10px;
   padding: 3em 1in 96px 72pt; }
+
 /* line 120, inputs/builtins.scss */
 #list {
   len: 3;
@@ -109,6 +116,7 @@
   cool: great job one two three;
   zip: 1px solid, 2px dashed;
   zip: 1px solid red, 2px dashed green; }
+
 /* line 156, inputs/builtins.scss */
 #introspection {
   t: number;
@@ -129,18 +137,21 @@
   c: true;
   c: false;
   c: true; }
+
 /* line 180, inputs/builtins.scss */
 #if {
   color: yes;
   color: no;
   color: yes;
   color: yes; }
+
 /* line 187, inputs/builtins.scss */
 .transparent {
   r: 0;
   g: 0;
   b: 0;
   a: 0; }
+
 /* line 194, inputs/builtins.scss */
 .alpha {
   a: 1;
@@ -148,28 +159,35 @@
   a: 1;
   a: 0.5;
   a: alpha(currentColor); }
+
 /* line 203, inputs/builtins.scss */
 #exists {
   a: true;
   b: true;
   c: false; }
+
 /* line 210, inputs/builtins.scss */
 div.call-tests {
   a: #0a64ff;
   b: #0058ef;
   c: b; }
+
 /* line 217, inputs/builtins.scss */
 div.unquote-test {
   a: [type='text']; }
+
 /* line 221, inputs/builtins.scss */
 .does-compile-1 {
   color: #666; }
+
 /* line 225, inputs/builtins.scss */
 .does-compile-2 {
   color: #666; }
+
 /* line 231, inputs/builtins.scss */
 .does-compile-3 {
   color: #666; }
+
 /* line 236, inputs/builtins.scss */
 .does-compile-4 {
   color: #666; }

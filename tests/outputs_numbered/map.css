@@ -7,19 +7,24 @@ div {
   baz: (color: #fff, color2: red, 'color3': #0f0, length: 40em);
   foo: (length: 40em);
   bar: true; }
+
 /* line 23, inputs/map.scss */
 div {
   foo: color black;
   bar: color; }
+
 /* line 32, inputs/map.scss */
 .black {
   background-color: #000 !important; }
+
 /* line 32, inputs/map.scss */
 .grey {
   background-color: #888 !important; }
+
 /* line 32, inputs/map.scss */
 .white {
   background-color: #fff !important; }
+
 /* line 53, inputs/map.scss */
 div {
   a: 1;

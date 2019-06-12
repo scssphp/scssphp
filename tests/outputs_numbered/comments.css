@@ -17,9 +17,11 @@ div {
   what-ever: 100px;
   background: url();
   /*this is not a comment?*/ }
+
 /* line 31, inputs/comments.scss */
 .dummy {
   color: blue; }
+
 /* comment 1 */
 /* line 36, inputs/comments.scss */
 a {
@@ -30,6 +32,7 @@ a {
   background-color: red;
   /* comment 5 */
   /* comment 6 */ }
+
 /* comment 7 */
 /* коммент */
 /* This is a comment with vars references:
@@ -39,8 +42,8 @@ radius:2px
  */
 /* line 60, inputs/comments.scss */
 /* line 61, inputs/comments.scss */
-  .textimage-background-fullheight .background {
-    /* @noflip */
-    display: block;
-    /* hop */
-    width: 100%; }
+.textimage-background-fullheight .background {
+  /* @noflip */
+  display: block;
+  /* hop */
+  width: 100%; }

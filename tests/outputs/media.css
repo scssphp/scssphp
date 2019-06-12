@@ -32,24 +32,23 @@
         color: red; } } }
 
 @media c {
-    color: blue; }
+  color: blue; }
 
 div {
   color: blue; }
-  @media screen and (-webkit-min-device-pixel-ratio: 1.5) {
+@media screen and (-webkit-min-device-pixel-ratio: 1.5) {
   div .sidebar {
     width: 500px; } }
 
 div {
   position: absolute; }
-  @media screen {
+@media screen {
   div {
     top: 0;
     bottom: 8em;
     color: red; }
     div p {
       margin: 5px; }
-
     div .success {
       color: green; } }
 
@@ -60,72 +59,75 @@ div {
   .button :hover {
     background: #aaa; }
   @media only screen and (max-width: 300px) {
-  .button {
-    width: 100px;
-    height: 100px; } }
+    .button {
+      width: 100px;
+      height: 100px; } }
 
 code {
   position: absolute; }
-  @media screen {
+@media screen {
   code {
     height: 10px; }
     code pre {
       height: 20px; } }
 
 @media screen and (color: blue) {
-      dt {
-        height: 10px; } }
+  dt {
+    height: 10px; } }
 
 @media screen {
   .screen {
     width: 12px; } }
-  @media only screen {
+@media only screen {
   .only-screen {
     height: 11px; } }
 
 @media only screen {
   .only-screen {
     width: 14px; } }
-  @media only screen {
+@media only screen {
   .only-screen {
     height: 16px; } }
 
 @media print {
-    .only-print {
-      height: 12px; } }
+  .only-print {
+    height: 12px; } }
 
 @media screen {
-    .only-print {
-      height: 12px; } }
+  .only-print {
+    height: 12px; } }
 
 @media not screen {
-    .not-screen {
-      height: 15px; } }
+  .not-screen {
+    height: 15px; } }
 
 @media only screen and (color: blue) and (width: 13) {
-      .only-screen {
-        height: 15px; } }
+  .only-screen {
+    height: 15px; } }
 
 @media screen and (max-width: 749px) and (max-width: 600px) and (min-width: 361px) {
-    .item {
-      color: red; } }
+  .item {
+    color: red; } }
 
-
-  @media not all and (max-width: 450px) {
-    @media not all and (max-width: 690px) and (orientation: portrait) {
-  @media (max-width: 1000px) {
+@media not all and (max-width: 450px) {
+ }
+@media not all and (max-width: 450px) {
+  @media not all and (max-width: 690px) and (orientation: portrait) {
+    @media (max-width: 1000px) {
       a {
         color: red; } } } }
 
-
-  @media not all and (max-width: 450px) {
-    @media (max-width: 690px) and (orientation: portrait) and (max-width: 1000px) {
+@media not all and (max-width: 450px) {
+ }
+@media not all and (max-width: 450px) {
+  @media (max-width: 690px) and (orientation: portrait) and (max-width: 1000px) {
     a {
       color: red; } } }
 
-
-  @media (max-width: 450px) {
-    @media not all and (max-width: 690px) and (orientation: portrait) {
-  @media not all and (max-width: 1000px) {
+@media (max-width: 450px) {
+ }
+@media (max-width: 450px) {
+  @media not all and (max-width: 690px) and (orientation: portrait) {
+    @media not all and (max-width: 1000px) {
       a {
         color: red; } } } }
