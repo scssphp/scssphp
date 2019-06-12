@@ -309,7 +309,7 @@ E::selection {
 
 div {
   font: something;
-  font-size: 30em; }
+    font-size: 30em; }
   div font:something {
     size: 30em; }
 

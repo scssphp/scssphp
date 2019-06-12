@@ -1,4 +1,3 @@
-div: blue;
 body {
   color: red; }
 
@@ -8,10 +7,11 @@ div {
   div pre {
     color: blue; }
 
+div: blue;
 div {
   font: 10px hello world;
-  font-size: 10px;
-  font-color: blue;
+    font-size: 10px;
+    font-color: blue;
   border-left: 1px solid blue;
   border-right: 2px dashed green; }
 

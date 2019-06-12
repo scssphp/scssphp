@@ -76,7 +76,6 @@ sel {
 
 @foo {
   a: b;
-
 /* line 65, inputs/scss_css.scss */
   rule {
     a: b; } }

@@ -1,4 +1,3 @@
-cool: 100px;
 /* line 4, inputs/variables.scss */
 div {
   height: red, two, three; }
@@ -15,6 +14,7 @@ div {
 pre {
   color: blue; }
 
+cool: 100px;
 /* line 31, inputs/variables.scss */
 del {
   color: blue; }
