@@ -103,10 +103,14 @@ class Nested extends Formatter
 
         $this->currentBlock = $block;
 
-        if (! $previousEmpty || $this->depth < 1) {
-            if (! empty($block->lines) || (! empty($block->children) && $this->depth < 1)) {
-                if ($block->depth > end($depths)) {
+        if (! empty($block->lines) || (! empty($block->children) && $this->depth < 1)) {
+            if ($block->depth > end($depths)) {
+                if (! $previousEmpty || $this->depth < 1) {
                     $this->depth++;
+                    $depths[] = $block->depth;
+                } else {
+                    // keep the current depth unchanged but take the block depth as a new reference for following blocks
+                    array_pop($depths);
                     $depths[] = $block->depth;
                 }
             }
