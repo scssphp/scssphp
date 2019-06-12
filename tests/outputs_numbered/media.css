@@ -149,8 +149,6 @@ code {
 
 /* line 223, inputs/media.scss */
 @media not all and (max-width: 450px) {
- }
-@media not all and (max-width: 450px) {
   @media not all and (max-width: 690px) and (orientation: portrait) {
     @media (max-width: 1000px) {
     /* line 226, inputs/media.scss */
@@ -159,16 +157,12 @@ code {
 
 /* line 233, inputs/media.scss */
 @media not all and (max-width: 450px) {
- }
-@media not all and (max-width: 450px) {
   @media (max-width: 690px) and (orientation: portrait) and (max-width: 1000px) {
   /* line 236, inputs/media.scss */
     a {
       color: red; } } }
 
 /* line 243, inputs/media.scss */
-@media (max-width: 450px) {
- }
 @media (max-width: 450px) {
   @media not all and (max-width: 690px) and (orientation: portrait) {
     @media not all and (max-width: 1000px) {

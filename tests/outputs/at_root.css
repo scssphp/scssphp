@@ -56,10 +56,8 @@ body .second {
 .foo .barr {
   padding: 0; }
 
-@media screen and (max-width: 640px) {
- }
-  .foo .bar {
-    width: 0; }
+.foo .bar {
+  width: 0; }
 @supports ( display: flex ) {
   .baz {
     height: 0; } }

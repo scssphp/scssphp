@@ -110,22 +110,16 @@ code {
     color: red; } }
 
 @media not all and (max-width: 450px) {
- }
-@media not all and (max-width: 450px) {
   @media not all and (max-width: 690px) and (orientation: portrait) {
     @media (max-width: 1000px) {
       a {
         color: red; } } } }
 
 @media not all and (max-width: 450px) {
- }
-@media not all and (max-width: 450px) {
   @media (max-width: 690px) and (orientation: portrait) and (max-width: 1000px) {
     a {
       color: red; } } }
 
-@media (max-width: 450px) {
- }
 @media (max-width: 450px) {
   @media not all and (max-width: 690px) and (orientation: portrait) {
     @media not all and (max-width: 1000px) {
