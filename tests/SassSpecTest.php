@@ -57,11 +57,7 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
         static $init = false;
 
         if (! getenv('TEST_SASS_SPEC')) {
-            if (! $init) {
-                $init = true;
-
-                $this->markTestSkipped('Define TEST_SASS_SPEC=1 to enable sass-spec compatibility tests');
-            }
+            $this->markTestSkipped('Define TEST_SASS_SPEC=1 to enable sass-spec compatibility tests');
 
             return;
         }

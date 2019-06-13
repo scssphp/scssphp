@@ -41,11 +41,7 @@ class FailingTest extends \PHPUnit_Framework_TestCase
         static $init = false;
 
         if (! getenv('TEST_SCSS_COMPAT')) {
-            if (! $init) {
-                $init = true;
-
-                $this->markTestSkipped('Define TEST_SCSS_COMPAT=1 to enable ruby scss compatibility tests');
-            }
+            $this->markTestSkipped('Define TEST_SCSS_COMPAT=1 to enable ruby scss compatibility tests');
 
             return;
         }

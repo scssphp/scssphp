@@ -30,14 +30,8 @@ class ScssTest extends \PHPUnit_Framework_TestCase
      */
     public function testTests($name, $scss, $css, $style)
     {
-        static $init = false;
-
         if (! getenv('TEST_SCSS_COMPAT')) {
-            if (! $init) {
-                $init = true;
-
-                $this->markTestSkipped('Define TEST_SCSS_COMPAT=1 to enable ruby scss compatibility tests');
-            }
+            $this->markTestSkipped('Define TEST_SCSS_COMPAT=1 to enable ruby scss compatibility tests');
 
             return;
         }
