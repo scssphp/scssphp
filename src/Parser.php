@@ -2156,7 +2156,7 @@ class Parser
                 $out = $value;
             } else {
                 if ($lookWhite) {
-                    $left = preg_match('/\s/', $this->buffer[$s - 1]) ? ' ' : '';
+                    $left = ($s > 0 && preg_match('/\s/', $this->buffer[$s - 1])) ? ' ' : '';
                     $right = preg_match('/\s/', $this->buffer[$this->count]) ? ' ': '';
                 } else {
                     $left = $right = false;
