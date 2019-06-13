@@ -140,6 +140,7 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                     if (preg_match('/^\s*def test_([a-z_]+)/', $line, $matches)) {
                         $state = 1; // enter function
                         $name = $matches[1];
+                        $nameSuffix = "";
                         continue 2;
                     }
 
@@ -182,7 +183,8 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                         // another subtest in the same def name,
                         // insert each separately to avoid border errors on newlines between each subtest
                         if (count($css) && count($scss)) {
-                            $tests[] = array($name, implode($scss), implode($css), $style);
+                            $tests[] = array($name . ($nameSuffix ? "-$nameSuffix" : ""), implode($scss), implode($css), $style);
+                            $nameSuffix = intval($nameSuffix) + 1;
                             $scss = array();
                             $css = array();
                         }
@@ -241,7 +243,7 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                     if (preg_match('/^\s*end\s*$/', $line)) {
                         $state = 0; // exit function
 
-                        $tests[] = array($name, implode($scss), implode($css), $style);
+                        $tests[] = array($name. ($nameSuffix ? "-$nameSuffix" : ""), implode($scss), implode($css), $style);
                         $scss = array();
                         $css = array();
                         $style = null;
