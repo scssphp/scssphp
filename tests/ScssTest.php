@@ -20,6 +20,51 @@ use ScssPhp\ScssPhp\Compiler;
  */
 class ScssTest extends \PHPUnit_Framework_TestCase
 {
+
+    protected $fileExclusionList = __DIR__ . '/lists/scss-test-exclude.txt';
+    protected $exclusionList;
+
+    /**
+     * List of excluded tests if not in TEST_SCSS_COMPAT mode
+     * @return array
+     */
+    protected function getExclusionList()
+    {
+        if (is_null($this->exclusionList)) {
+            if (!file_exists($this->fileExclusionList)) {
+                $this->exclusionList = [];
+            }
+            else {
+                $this->exclusionList = file($this->fileExclusionList);
+                $this->exclusionList = array_map('trim', $this->exclusionList);
+                $this->exclusionList = array_filter($this->exclusionList);
+            }
+        }
+        return $this->exclusionList;
+    }
+
+    /**
+     * RAZ the file that lists excluded tests
+     * @return array
+     */
+    protected function resetExclusionList()
+    {
+        $this->exclusionList = [];
+        file_put_contents($this->fileExclusionList, '');
+        return $this->exclusionList;
+    }
+
+    /**
+     * Append a test name to the list of excluded tests
+     * @return array
+     */
+    protected function appendToExclusionList($testName)
+    {
+        $this->exclusionList[] = $testName;
+        file_put_contents($this->fileExclusionList, implode("\n", $this->exclusionList) . "\n");
+        return $this->exclusionList;
+    }
+
     /**
      * @param string $name
      * @param string $scss
@@ -30,8 +75,8 @@ class ScssTest extends \PHPUnit_Framework_TestCase
      */
     public function testTests($name, $scss, $css, $style)
     {
-        if (! getenv('TEST_SCSS_COMPAT')) {
-            $this->markTestSkipped('Define TEST_SCSS_COMPAT=1 to enable ruby scss compatibility tests');
+        if (! getenv('TEST_SCSS_COMPAT') && in_array($name, $this->getExclusionList())) {
+            $this->markTestSkipped('Define TEST_SCSS_COMPAT=1 to enable all ruby scss compatibility tests');
 
             return;
         }
@@ -41,7 +86,13 @@ class ScssTest extends \PHPUnit_Framework_TestCase
 
         $actual = $compiler->compile($scss);
 
-        $this->assertEquals(rtrim($css), rtrim($actual), $name);
+        if (getenv('BUILD')) {
+            if (rtrim($css) !== rtrim($actual)) {
+                $this->appendToExclusionList($name);
+            }
+        } else {
+            $this->assertEquals(rtrim($css), rtrim($actual), $name);
+        }
 
         // TODO: need to fix this in the formatters
         //$this->assertEquals(trim($css), trim($actual), $name);
@@ -75,6 +126,10 @@ class ScssTest extends \PHPUnit_Framework_TestCase
         $scss = array();
         $css = array();
         $style = false;
+
+        if (getenv('BUILD')) {
+            $this->resetExclusionList();
+        }
 
         for ($i = 0, $s = count($lines); $i < $s; $i++) {
             $line = trim($lines[$i]);
