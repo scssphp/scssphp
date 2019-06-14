@@ -12,8 +12,6 @@ supports_bubbling
 nested_mixin_shadow
 nested_function_shadow
 at_root_in_unknown_directive
-comments_in_at_root
-comments_in_at_root_in_media
 comments_in_at_root_in_unknown_directive
 at_root_without_unknown_directive
 at_root_without_all
