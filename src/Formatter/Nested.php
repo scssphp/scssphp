@@ -102,7 +102,7 @@ class Nested extends Formatter
         while ($block->depth < end($depths) || ($block->depth == 1 && end($depths) == 1)) {
             array_pop($depths);
             $this->depth--;
-            if (!$this->depth && $block->depth <= 1
+            if (!$this->depth && ($block->depth <= 1 || (!$this->indentLevel && $block->type === Type::T_COMMENT))
                 && (($block->selectors && ! $isMediaOrDirective) || $previousHasSelector)) {
                 $downLevel = $this->break;
             }
@@ -130,7 +130,7 @@ class Nested extends Formatter
             }
         }
 
-        $previousEmpty = false;
+        $previousEmpty = ($block->type === Type::T_COMMENT);
         $previousHasSelector = false;
 
         if (! empty($block->selectors)) {
