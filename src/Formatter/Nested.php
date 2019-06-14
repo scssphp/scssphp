@@ -185,9 +185,6 @@ class Nested extends Formatter
             if ($this->depth > 1 && ! empty($block->children)) {
                 array_pop($depths);
                 $this->depth--;
-                if (!$this->depth) {
-                    $downLevel = $this->break;
-                }
             }
             if (! $isMediaOrDirective) {
                 $previousHasSelector = true;
