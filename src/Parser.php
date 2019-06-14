@@ -313,7 +313,7 @@ class Parser
             if ($this->literal('@at-root', 8) &&
                 ($this->selectors($selector) || true) &&
                 ($this->map($with) || true) &&
-                $this->matchChar('{')
+                $this->matchChar('{', false)
             ) {
                 $atRoot = $this->pushSpecialBlock(Type::T_AT_ROOT, $s);
                 $atRoot->selector = $selector;
@@ -324,7 +324,7 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@media', 6) && $this->mediaQueryList($mediaQueryList) && $this->matchChar('{')) {
+            if ($this->literal('@media', 6) && $this->mediaQueryList($mediaQueryList) && $this->matchChar('{', false)) {
                 $media = $this->pushSpecialBlock(Type::T_MEDIA, $s);
                 $media->queryList = $mediaQueryList[2];
 
@@ -336,7 +336,7 @@ class Parser
             if ($this->literal('@mixin', 6) &&
                 $this->keyword($mixinName) &&
                 ($this->argumentDef($args) || true) &&
-                $this->matchChar('{')
+                $this->matchChar('{', false)
             ) {
                 $mixin = $this->pushSpecialBlock(Type::T_MIXIN, $s);
                 $mixin->name = $mixinName;
@@ -418,7 +418,7 @@ class Parser
             if ($this->literal('@function', 9) &&
                 $this->keyword($fnName) &&
                 $this->argumentDef($args) &&
-                $this->matchChar('{')
+                $this->matchChar('{', false)
             ) {
                 $func = $this->pushSpecialBlock(Type::T_FUNCTION, $s);
                 $func->name = $fnName;
@@ -457,7 +457,7 @@ class Parser
                 $this->genericList($varNames, 'variable', ',', false) &&
                 $this->literal('in', 2) &&
                 $this->valueList($list) &&
-                $this->matchChar('{')
+                $this->matchChar('{', false)
             ) {
                 $each = $this->pushSpecialBlock(Type::T_EACH, $s);
 
@@ -474,7 +474,7 @@ class Parser
 
             if ($this->literal('@while', 6) &&
                 $this->expression($cond) &&
-                $this->matchChar('{')
+                $this->matchChar('{', false)
             ) {
                 $while = $this->pushSpecialBlock(Type::T_WHILE, $s);
                 $while->cond = $cond;
@@ -491,7 +491,7 @@ class Parser
                 ($this->literal('through', 7) ||
                     ($forUntil = true && $this->literal('to', 2))) &&
                 $this->expression($end) &&
-                $this->matchChar('{')
+                $this->matchChar('{', false)
             ) {
                 $for = $this->pushSpecialBlock(Type::T_FOR, $s);
                 $for->var = $varName[1];
@@ -504,7 +504,7 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@if', 3) && $this->valueList($cond) && $this->matchChar('{')) {
+            if ($this->literal('@if', 3) && $this->valueList($cond) && $this->matchChar('{', false)) {
                 $if = $this->pushSpecialBlock(Type::T_IF, $s);
                 $if->cond = $cond;
                 $if->cases = [];
@@ -561,9 +561,9 @@ class Parser
                 list(, $if) = $last;
 
                 if ($this->literal('@else', 5)) {
-                    if ($this->matchChar('{')) {
+                    if ($this->matchChar('{', false)) {
                         $else = $this->pushSpecialBlock(Type::T_ELSE, $s);
-                    } elseif ($this->literal('if', 2) && $this->valueList($cond) && $this->matchChar('{')) {
+                    } elseif ($this->literal('if', 2) && $this->valueList($cond) && $this->matchChar('{', false)) {
                         $else = $this->pushSpecialBlock(Type::T_ELSEIF, $s);
                         $else->cond = $cond;
                     }
@@ -605,7 +605,7 @@ class Parser
             if ($this->matchChar('@', false) &&
                 $this->keyword($dirName) &&
                 ($this->variable($dirValue) || $this->openString('{', $dirValue) || true) &&
-                $this->matchChar('{')
+                $this->matchChar('{', false)
             ) {
                 if ($dirName === 'media') {
                     $directive = $this->pushSpecialBlock(Type::T_MEDIA, $s);
@@ -688,7 +688,7 @@ class Parser
                 $foundSomething = true;
             }
 
-            if ($this->matchChar('{')) {
+            if ($this->matchChar('{', false)) {
                 $propBlock = $this->pushSpecialBlock(Type::T_NESTED_PROPERTY, $s);
                 $propBlock->prefix = $name;
                 $propBlock->hasValue = $foundSomething;
@@ -705,7 +705,8 @@ class Parser
         $this->seek($s);
 
         // closing a block
-        if ($this->matchChar('}')) {
+        if ($this->matchChar('}', false)) {
+
             $block = $this->popBlock();
             if (!isset($block->type) || $block->type !== Type::T_IF) {
                 if ($this->env->parent) {
@@ -721,6 +722,14 @@ class Parser
             } elseif (empty($block->dontAppend)) {
                 $type = isset($block->type) ? $block->type : Type::T_BLOCK;
                 $this->append([$type, $block], $s);
+            }
+
+            // collect comments just after the block closing if needed
+            if ($this->eatWhiteDefault) {
+                $this->whitespace();
+                if ($this->env->comments) {
+                    $this->append(null);
+                }
             }
 
             return true;
@@ -770,6 +779,14 @@ class Parser
 
         $this->env = $b;
 
+        // collect comments at the begining of a block if needed
+        if ($this->eatWhiteDefault) {
+            $this->whitespace();
+            if ($this->env->comments) {
+                $this->append(null);
+            }
+        }
+
         return $b;
     }
 
@@ -798,6 +815,13 @@ class Parser
      */
     protected function popBlock()
     {
+
+        // collect comments ending just before of a block closing
+        if ($this->env->comments) {
+            $this->append(null);
+        }
+
+        // pop the block
         $block = $this->env;
 
         if (empty($block->parent)) {
@@ -812,13 +836,6 @@ class Parser
         $this->env = $block->parent;
 
         unset($block->parent);
-
-        $comments = $block->comments;
-
-        if ($comments) {
-            $this->env->comments = $comments;
-            unset($block->comments);
-        }
 
         return $block;
     }
