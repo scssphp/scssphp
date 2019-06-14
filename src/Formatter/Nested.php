@@ -48,6 +48,7 @@ class Nested extends Formatter
     protected function indentStr()
     {
         $n = $this->depth - 1;
+
         return str_repeat($this->indentChar, max($this->indentLevel + $n, 0));
     }
 
@@ -69,12 +70,14 @@ class Nested extends Formatter
         $this->write($inner . implode($glue, $block->lines));
     }
 
-    protected function hasFlatChild($block) {
+    protected function hasFlatChild($block)
+    {
         foreach ($block->children as $child) {
             if (empty($child->selectors)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -99,13 +102,17 @@ class Nested extends Formatter
         }
 
         $isMediaOrDirective = in_array($block->type, [Type::T_DIRECTIVE, Type::T_MEDIA]);
+
         while ($block->depth < end($depths) || ($block->depth == 1 && end($depths) == 1)) {
             array_pop($depths);
             $this->depth--;
-            if (!$this->depth && ($block->depth <= 1 || (!$this->indentLevel && $block->type === Type::T_COMMENT))
-                && (($block->selectors && ! $isMediaOrDirective) || $previousHasSelector)) {
+
+            if (!$this->depth && ($block->depth <= 1 || (!$this->indentLevel && $block->type === Type::T_COMMENT)) &&
+                (($block->selectors && ! $isMediaOrDirective) || $previousHasSelector)
+            ) {
                 $downLevel = $this->break;
             }
+
             if (empty($block->lines) && empty($block->children)) {
                 $previousEmpty = true;
             }
@@ -138,10 +145,12 @@ class Nested extends Formatter
                 $this->write($closeBlock);
                 $closeBlock = '';
             }
+
             if ($downLevel) {
                 $this->write($downLevel);
                 $downLevel = '';
             }
+
             $this->blockSelectors($block);
 
             $this->indentLevel++;
@@ -152,10 +161,12 @@ class Nested extends Formatter
                 $this->write($closeBlock);
                 $closeBlock = '';
             }
+
             if ($downLevel) {
                 $this->write($downLevel);
                 $downLevel = '';
             }
+
             $this->blockLines($block);
             $closeBlock = $this->break;
         }
@@ -176,6 +187,7 @@ class Nested extends Formatter
         if ($block->type === Type::T_DIRECTIVE) {
             $previousHasSelector = false;
         }
+
         if (! empty($block->selectors)) {
             $this->indentLevel--;
 

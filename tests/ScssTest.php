@@ -26,6 +26,7 @@ class ScssTest extends \PHPUnit_Framework_TestCase
 
     /**
      * List of excluded tests if not in TEST_SCSS_COMPAT mode
+     *
      * @return array
      */
     protected function getExclusionList()
@@ -33,35 +34,39 @@ class ScssTest extends \PHPUnit_Framework_TestCase
         if (is_null($this->exclusionList)) {
             if (!file_exists($this->fileExclusionList)) {
                 $this->exclusionList = [];
-            }
-            else {
+            } else {
                 $this->exclusionList = file($this->fileExclusionList);
                 $this->exclusionList = array_map('trim', $this->exclusionList);
                 $this->exclusionList = array_filter($this->exclusionList);
             }
         }
+
         return $this->exclusionList;
     }
 
     /**
      * RAZ the file that lists excluded tests
+     *
      * @return array
      */
     protected function resetExclusionList()
     {
         $this->exclusionList = [];
         file_put_contents($this->fileExclusionList, '');
+
         return $this->exclusionList;
     }
 
     /**
      * Append a test name to the list of excluded tests
+     *
      * @return array
      */
     protected function appendToExclusionList($testName)
     {
         $this->exclusionList[] = $testName;
         file_put_contents($this->fileExclusionList, implode("\n", $this->exclusionList) . "\n");
+
         return $this->exclusionList;
     }
 
@@ -100,7 +105,9 @@ class ScssTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Unescape escaped chars in the ruby file like \# or ||
+     *
      * @param $string
+     *
      * @return mixed
      */
     protected function unEscapeString($string)
@@ -111,6 +118,7 @@ class ScssTest extends \PHPUnit_Framework_TestCase
             $string = str_replace('\\r', "\r", $string);
             $string = str_replace('\\n', "\n", $string);
         }
+
         return $string;
     }
 
@@ -119,13 +127,13 @@ class ScssTest extends \PHPUnit_Framework_TestCase
      */
     public function provideTests()
     {
-        $state = 0;
-        $lines = file(__DIR__ . '/scss_test.rb');
-        $tests = array();
-        $skipped = array();
-        $scss = array();
-        $css = array();
-        $style = false;
+        $state   = 0;
+        $lines   = file(__DIR__ . '/scss_test.rb');
+        $tests   = [];
+        $skipped = [];
+        $scss    = [];
+        $css     = [];
+        $style   = false;
 
         if (getenv('BUILD')) {
             $this->resetExclusionList();
@@ -171,23 +179,31 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                         continue 2;
                     }
 
-                    if (preg_match('/^\s*assert_equal\(<<CSS, render\(<<SCSS\)\)\s*$/', $line, $matches)
-                        || preg_match('/^\s*assert_equal <<CSS, render\(<<SCSS\)\s*$/', $line, $matches)
+                    if (preg_match('/^\s*assert_equal\(<<CSS, render\(<<SCSS\)\)\s*$/', $line, $matches) ||
+                         preg_match('/^\s*assert_equal <<CSS, render\(<<SCSS\)\s*$/', $line, $matches) ||
                         // @codingStandardsIgnoreStart
-                        || preg_match('/^\s*assert_equal\(<<CSS, render\(<<SCSS, :style => :(compressed|nested)\)\)\s*$/', $line, $matches)
-                        || preg_match('/^\s*assert_equal <<CSS, render\(<<SCSS, :style => :(compressed|nested)\)\s*$/', $line, $matches)
+                        preg_match('/^\s*assert_equal\(<<CSS, render\(<<SCSS, :style => :(compressed|nested)\)\)\s*$/', $line, $matches) ||
+                        preg_match('/^\s*assert_equal <<CSS, render\(<<SCSS, :style => :(compressed|nested)\)\s*$/', $line, $matches)
                         // @codingStandardsIgnoreEnd
                     ) {
                         $state = 2; // get css
                         $style = isset($matches[1]) ? $matches[1] : null;
+
                         // another subtest in the same def name,
                         // insert each separately to avoid border errors on newlines between each subtest
                         if (count($css) && count($scss)) {
-                            $tests[] = array($name . ($nameSuffix ? "-$nameSuffix" : ""), implode($scss), implode($css), $style);
+                            $tests[] = [
+                                $name . ($nameSuffix ? "-$nameSuffix" : ""),
+                                implode($scss),
+                                implode($css),
+                                $style
+                            ];
+
                             $nameSuffix = intval($nameSuffix) + 1;
-                            $scss = array();
-                            $css = array();
+                            $scss       = [];
+                            $css        = [];
                         }
+
                         continue 2;
                     }
 
@@ -195,23 +211,24 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                         $state = 4; // skip block
                         continue 2;
                     }
+
                     // skip test_parsing_many_numbers_doesnt_take_forever that we can't reproduce
                     if (preg_match('/^\s*values =.*$/', $line)) {
                         $state = 4; // skip block
                         continue 2;
                     }
 
-                    if (preg_match('/^\s*assert_raise_message.*render\(<<SCSS\)}\s*$/', $line)
-                        || preg_match('/^\s*assert_raise_message.*render <<SCSS}\s*$/', $line)
-                        || preg_match('/^\s*assert_raise_line.*render\(<<SCSS\)}\s*$/', $line)
-                        || preg_match('/^\s*silence_warnings .*render\(<<SCSS\)}\s*$/', $line)
-                        || preg_match('/^\s*assert_warning.*render <<SCSS}\s*$/', $line)
-                        || preg_match('/^\s*assert_warning.*render\(<<SCSS\)}\s*$/', $line)
-                        || preg_match('/^\s*assert_warning.*render\(<<SCSS\)\)}\s*$/', $line)
-                        || preg_match('/^\s*assert_no_warning.*render\(<<SCSS\)\)}\s*$/', $line)
-                        || preg_match('/^\s*assert_no_warning.*render\(<<SCSS\)}\s*$/', $line)
-                        || preg_match('/^\s*render\(<<SCSS\)\s*$/', $line)
-                        || preg_match('/^\s*render <<SCSS\s*$/', $line)
+                    if (preg_match('/^\s*assert_raise_message.*render\(<<SCSS\)}\s*$/', $line) ||
+                        preg_match('/^\s*assert_raise_message.*render <<SCSS}\s*$/', $line) ||
+                        preg_match('/^\s*assert_raise_line.*render\(<<SCSS\)}\s*$/', $line) ||
+                        preg_match('/^\s*silence_warnings .*render\(<<SCSS\)}\s*$/', $line) ||
+                        preg_match('/^\s*assert_warning.*render <<SCSS}\s*$/', $line) ||
+                        preg_match('/^\s*assert_warning.*render\(<<SCSS\)}\s*$/', $line) ||
+                        preg_match('/^\s*assert_warning.*render\(<<SCSS\)\)}\s*$/', $line) ||
+                        preg_match('/^\s*assert_no_warning.*render\(<<SCSS\)\)}\s*$/', $line) ||
+                        preg_match('/^\s*assert_no_warning.*render\(<<SCSS\)}\s*$/', $line) ||
+                        preg_match('/^\s*render\(<<SCSS\)\s*$/', $line) ||
+                        preg_match('/^\s*render <<SCSS\s*$/', $line)
                     ) {
                         $state = 6; // begin parameter list
                         continue 2;
@@ -231,11 +248,11 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                         continue 2;
                     }
 
-                    if (preg_match('/^\s*assert_equal[ (]/', $line)
-                        || preg_match('/^\s*assert_parses/', $line)
-                        || preg_match('/^\s*assert\(/', $line)
-                        || preg_match('/^\s*render[ (]"/', $line)
-                        || $line === 'rescue Sass::SyntaxError => e'
+                    if (preg_match('/^\s*assert_equal[ (]/', $line) ||
+                        preg_match('/^\s*assert_parses/', $line) ||
+                        preg_match('/^\s*assert\(/', $line) ||
+                        preg_match('/^\s*render[ (]"/', $line) ||
+                        $line === 'rescue Sass::SyntaxError => e'
                     ) {
                         continue 2;
                     }
@@ -243,15 +260,14 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                     if (preg_match('/^\s*end\s*$/', $line)) {
                         $state = 0; // exit function
 
-                        $tests[] = array($name. ($nameSuffix ? "-$nameSuffix" : ""), implode($scss), implode($css), $style);
-                        $scss = array();
-                        $css = array();
+                        $tests[] = [$name. ($nameSuffix ? "-$nameSuffix" : ""), implode($scss), implode($css), $style];
+                        $scss = [];
+                        $css = [];
                         $style = null;
                         continue 2;
                     }
 
                     $skipped[] = $line;
-
                     break;
 
                 case 2:
@@ -262,7 +278,6 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                     }
 
                     $css[] = $this->unEscapeString($lines[$i]);
-
                     break;
 
                 case 3:
@@ -273,7 +288,6 @@ class ScssTest extends \PHPUnit_Framework_TestCase
                     }
 
                     $scss[] = $this->unEscapeString($lines[$i]);
-
                     break;
 
                 case 4:

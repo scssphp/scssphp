@@ -97,13 +97,13 @@ class Cache
     {
         $fileCache = self::$cacheDir . self::cacheName($operation, $what, $options);
 
-        if ((! self::$forceRefresh || (self::$forceRefresh === 'once' && isset(self::$refreshed[$fileCache])))
-            && file_exists($fileCache)
+        if ((! self::$forceRefresh || (self::$forceRefresh === 'once' &&
+            isset(self::$refreshed[$fileCache]))) && file_exists($fileCache)
         ) {
             $cacheTime = filemtime($fileCache);
 
-            if ((is_null($lastModified) || $cacheTime > $lastModified)
-                && $cacheTime + self::$gcLifetime > time()
+            if ((is_null($lastModified) || $cacheTime > $lastModified) &&
+                $cacheTime + self::$gcLifetime > time()
             ) {
                 $c = file_get_contents($fileCache);
                 $c = unserialize($c);

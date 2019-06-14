@@ -203,19 +203,14 @@ class Compiler
     public function compile($code, $path = null)
     {
         if ($this->cache) {
-            $cacheKey = ($path ? $path : "(stdin)") . ":" . md5($code);
+            $cacheKey       = ($path ? $path : "(stdin)") . ":" . md5($code);
             $compileOptions = $this->getCompileOptions();
-            $cache = $this->cache->getCache("compile", $cacheKey, $compileOptions);
+            $cache          = $this->cache->getCache("compile", $cacheKey, $compileOptions);
 
-            if (is_array($cache)
-                && isset($cache['dependencies'])
-                && isset($cache['out'])
-            ) {
+            if (is_array($cache) && isset($cache['dependencies']) && isset($cache['out'])) {
                 // check if any dependency file changed before accepting the cache
                 foreach ($cache['dependencies'] as $file => $mtime) {
-                    if (! file_exists($file)
-                        || filemtime($file) !== $mtime
-                    ) {
+                    if (! file_exists($file) || filemtime($file) !== $mtime) {
                         unset($cache);
                         break;
                     }
@@ -242,7 +237,7 @@ class Compiler
         $this->stderr         = fopen('php://stderr', 'w');
 
         $this->parser = $this->parserFactory($path);
-        $tree = $this->parser->parse($code);
+        $tree         = $this->parser->parse($code);
         $this->parser = null;
 
         $this->formatter = new $this->formatter();
@@ -503,8 +498,8 @@ class Compiler
             } else {
                 // a selector part finishing with a ) is the last part of a :not( or :nth-child(
                 // and need to be joined to this
-                if (count($new) && is_string($new[count($new) - 1])
-                    && strlen($part) && substr($part, -1) === ')' && strpos($part, '(') === false
+                if (count($new) && is_string($new[count($new) - 1]) &&
+                    strlen($part) && substr($part, -1) === ')' && strpos($part, '(') === false
                 ) {
                     $new[count($new) - 1] .= $part;
                 } else {
@@ -529,6 +524,7 @@ class Compiler
         static $partsPile = [];
 
         $selector = $this->glueFunctionSelectors($selector);
+
         if (count($selector) == 1 && in_array(reset($selector), $partsPile)) {
             return;
         }
@@ -1235,9 +1231,11 @@ class Compiler
 
         $nested = $this->makeOutputBlock($block->type);
         $nested->parent = $out;
+
         if ($block->hasValue) {
             $nested->depth = $out->depth + 1;
         }
+
         $out->children[] = $nested;
 
         foreach ($block->children as $child) {
@@ -2084,20 +2082,24 @@ class Compiler
     protected function appendRootDirective($line, $out, $allowed = [Type::T_COMMENT])
     {
         $root = $out;
+
         while ($root->parent) {
             $root = $root->parent;
         }
 
         $i = 0;
+
         while ($i < count($root->children)) {
             if (! isset($root->children[$i]->type) || ! in_array($root->children[$i]->type, $allowed)) {
                 break;
             }
+
             $i++;
         }
 
         // remove incompatible children from the bottom of the list
         $saveChildren = [];
+
         while ($i < count($root->children)) {
             $saveChildren[] = array_pop($root->children);
         }
@@ -2127,11 +2129,11 @@ class Compiler
      */
     protected function appendOutputLine(OutputBlock $out, $type, $line)
     {
-
         $outWrite = &$out;
 
         if ($type === Type::T_COMMENT) {
             $parent = $out->parent;
+
             if (end($parent->children) !== $out) {
                 $outWrite = &$parent->children[count($parent->children)-1];
             }
@@ -2140,16 +2142,19 @@ class Compiler
         // check if it's a flat output or not
         if (count($out->children)) {
             $lastChild = &$out->children[count($out->children) -1];
+
             if ($lastChild->depth === $out->depth && is_null($lastChild->selectors) && ! count($lastChild->children)) {
                 $outWrite = $lastChild;
             } else {
                 $nextLines = $this->makeOutputBlock($type);
                 $nextLines->parent = $out;
                 $nextLines->depth = $out->depth;
+
                 $out->children[] = $nextLines;
                 $outWrite = &$nextLines;
             }
         }
+
         $outWrite->lines[] = $line;
     }
 
@@ -2234,8 +2239,8 @@ class Compiler
                     }
 
                     $shouldSet = $isDefault &&
-                        (($result = $this->get($name[1], false)) === null
-                        || $result === static::$null);
+                        (($result = $this->get($name[1], false)) === null ||
+                        $result === static::$null);
 
                     if (! $isDefault || $shouldSet) {
                         $this->set($name[1], $this->reduce($value), true, null, $value);
@@ -2665,9 +2670,9 @@ class Compiler
                 }
 
                 // special case: looks like css shorthand
-                if ($opName == 'div' && ! $inParens && ! $inExp && isset($right[2])
-                    && (($right[0] !== Type::T_NUMBER && $right[2] != '')
-                    || ($right[0] === Type::T_NUMBER && ! $right->unitless()))
+                if ($opName == 'div' && ! $inParens && ! $inExp && isset($right[2]) &&
+                    (($right[0] !== Type::T_NUMBER && $right[2] != '') ||
+                    ($right[0] === Type::T_NUMBER && ! $right->unitless()))
                 ) {
                     return $this->expToString($value);
                 }
@@ -4484,83 +4489,97 @@ class Compiler
             }
 
             return [$posArgs, $keyArgs];
-        } else {
-            $finalArgs = [];
-            if (! is_array(reset($prototypes))) {
-                $prototypes = [$prototypes];
-            }
-            $keyArgs = [];
-            // trying each prototypes
-            $prototypeHasMatch = false;
-            $exceptionMessage = '';
-            foreach ($prototypes as $prototype) {
-                $argDef = [];
-                foreach ($prototype as $i => $p) {
-                    $default = null;
-
-                    $p = explode(':', $p, 2);
-                    $name = array_shift($p);
-                    if (count($p)) {
-                        $p = trim(reset($p));
-                        if ($p === 'null') {
-                            // differentiate this null from the static::$null
-                            $default = [Type::T_KEYWORD, 'null'];
-                        } else {
-                            if (is_null($parser)) {
-                                $parser = $this->parserFactory(__METHOD__);
-                            }
-                            $parser->parseValue($p, $default);
-                        }
-                    }
-
-                    $isVariable = false;
-                    if (substr($name, -3) === '...') {
-                        $isVariable = true;
-                        $name = substr($name, 0, -3);
-                    }
-                    $argDef[] = [$name, $default, $isVariable];
-                }
-
-                try {
-                    $vars = $this->applyArguments($argDef, $args, false);
-                    // ensure all args are populated
-                    foreach ($prototype as $i => $p) {
-                        $name = explode(':', $p)[0];
-                        if (! isset($finalArgs[$i])) {
-                            $finalArgs[$i] = null;
-                        }
-                    }
-
-                    // apply positional args
-                    foreach (array_values($vars) as $i => $val) {
-                        $finalArgs[$i] = $val;
-                    }
-
-                    $keyArgs = array_merge($keyArgs, $vars);
-                    $prototypeHasMatch = true;
-
-                    // overwrite positional args with keyword args
-                    foreach ($prototype as $i => $p) {
-                        $name = explode(':', $p)[0];
-                        if (isset($keyArgs[$name])) {
-                            $finalArgs[$i] = $keyArgs[$name];
-                        }
-                        // special null value as default: translate to real null here
-                        if ($finalArgs[$i] === [Type::T_KEYWORD, 'null']) {
-                            $finalArgs[$i] = null;
-                        }
-                    }
-                    // should we break if this prototype seems fulfilled?
-                } catch (CompilerException $e) {
-                    $exceptionMessage = $e->getMessage();
-                }
-            }
-            if ($exceptionMessage && ! $prototypeHasMatch) {
-                $this->throwError($exceptionMessage);
-            }
-
-            return [$finalArgs, $keyArgs];
         }
+
+        $finalArgs = [];
+
+        if (! is_array(reset($prototypes))) {
+            $prototypes = [$prototypes];
+        }
+
+        $keyArgs = [];
+
+        // trying each prototypes
+        $prototypeHasMatch = false;
+        $exceptionMessage = '';
+
+        foreach ($prototypes as $prototype) {
+            $argDef = [];
+
+            foreach ($prototype as $i => $p) {
+                $default = null;
+                $p       = explode(':', $p, 2);
+                $name    = array_shift($p);
+
+                if (count($p)) {
+                    $p = trim(reset($p));
+
+                    if ($p === 'null') {
+                        // differentiate this null from the static::$null
+                        $default = [Type::T_KEYWORD, 'null'];
+                    } else {
+                        if (is_null($parser)) {
+                            $parser = $this->parserFactory(__METHOD__);
+                        }
+
+                        $parser->parseValue($p, $default);
+                    }
+                }
+
+                $isVariable = false;
+
+                if (substr($name, -3) === '...') {
+                    $isVariable = true;
+                    $name = substr($name, 0, -3);
+                }
+
+                $argDef[] = [$name, $default, $isVariable];
+            }
+
+            try {
+                $vars = $this->applyArguments($argDef, $args, false);
+
+                // ensure all args are populated
+                foreach ($prototype as $i => $p) {
+                    $name = explode(':', $p)[0];
+
+                    if (! isset($finalArgs[$i])) {
+                        $finalArgs[$i] = null;
+                    }
+                }
+
+                // apply positional args
+                foreach (array_values($vars) as $i => $val) {
+                    $finalArgs[$i] = $val;
+                }
+
+                $keyArgs = array_merge($keyArgs, $vars);
+                $prototypeHasMatch = true;
+
+                // overwrite positional args with keyword args
+                foreach ($prototype as $i => $p) {
+                    $name = explode(':', $p)[0];
+
+                    if (isset($keyArgs[$name])) {
+                        $finalArgs[$i] = $keyArgs[$name];
+                    }
+
+                    // special null value as default: translate to real null here
+                    if ($finalArgs[$i] === [Type::T_KEYWORD, 'null']) {
+                        $finalArgs[$i] = null;
+                    }
+                }
+                // should we break if this prototype seems fulfilled?
+            } catch (CompilerException $e) {
+                $exceptionMessage = $e->getMessage();
+            }
+        }
+
+        if ($exceptionMessage && ! $prototypeHasMatch) {
+            $this->throwError($exceptionMessage);
+        }
+
+        return [$finalArgs, $keyArgs];
     }
 
     /**
@@ -4574,6 +4593,7 @@ class Compiler
     protected function applyArguments($argDef, $argValues, $storeInEnv = true)
     {
         $output = [];
+
         if ($storeInEnv) {
             $storeEnv = $this->getStoreEnv();
 
@@ -4591,15 +4611,16 @@ class Compiler
             $hasVariable |= $isVariable;
         }
 
-        $keywordArgs = [];
+        $keywordArgs         = [];
         $deferredKeywordArgs = [];
-        $remaining = [];
-        $hasKeywordArgument = false;
+        $remaining           = [];
+        $hasKeywordArgument  = false;
 
         // assign the keyword args
         foreach ((array) $argValues as $arg) {
             if (! empty($arg[0])) {
                 $hasKeywordArgument = true;
+
                 if (! isset($args[$arg[0][1]]) || $args[$arg[0][1]][3]) {
                     if ($hasVariable) {
                         $deferredKeywordArgs[$arg[0][1]] = $arg[1];
@@ -4627,6 +4648,7 @@ class Compiler
                                     }
                                 }
                             }
+
                             if ($hasVariable) {
                                 $deferredKeywordArgs[$name] = $item;
                             } else {
@@ -4824,6 +4846,7 @@ class Compiler
                     case Type::T_LIST:
                     case Type::T_MAP:
                         break;
+
                     default:
                         $key = [Type::T_KEYWORD, $this->compileStringContent($this->coerceString($key))];
                         break;
@@ -5139,8 +5162,8 @@ class Compiler
     protected function libCall($args, $kwargs)
     {
         $name = $this->compileStringContent($this->coerceString($this->reduce(array_shift($args), true)));
-
         $callArgs = [];
+
         // $kwargs['args'] is [Type::T_LIST, ',', [..]]
         foreach ($kwargs['args'][2] as $varname => $arg) {
             if (is_numeric($varname)) {
@@ -5148,6 +5171,7 @@ class Compiler
             } else {
                 $varname = [ 'var', $varname];
             }
+
             $callArgs[] = [$varname, $arg, false];
         }
 

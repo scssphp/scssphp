@@ -692,6 +692,7 @@ class Parser
                 $propBlock = $this->pushSpecialBlock(Type::T_NESTED_PROPERTY, $s);
                 $propBlock->prefix = $name;
                 $propBlock->hasValue = $foundSomething;
+
                 $foundSomething = true;
             } elseif ($foundSomething) {
                 $foundSomething = $this->end();
@@ -706,8 +707,8 @@ class Parser
 
         // closing a block
         if ($this->matchChar('}', false)) {
-
             $block = $this->popBlock();
+
             if (!isset($block->type) || $block->type !== Type::T_IF) {
                 if ($this->env->parent) {
                     $this->append(null); // collect comments before next statement if needed
@@ -727,6 +728,7 @@ class Parser
             // collect comments just after the block closing if needed
             if ($this->eatWhiteDefault) {
                 $this->whitespace();
+
                 if ($this->env->comments) {
                     $this->append(null);
                 }
@@ -782,6 +784,7 @@ class Parser
         // collect comments at the begining of a block if needed
         if ($this->eatWhiteDefault) {
             $this->whitespace();
+
             if ($this->env->comments) {
                 $this->append(null);
             }
@@ -2001,10 +2004,11 @@ class Parser
                     $content[] = $m[2] . "'";
                 } elseif ($this->literal("\\", 1, false)) {
                     $content[] = $m[2] . "\\";
-                } elseif ($this->literal("\r\n", 2, false)
-                  || $this->matchChar("\r", false)
-                  || $this->matchChar("\n", false)
-                  || $this->matchChar("\f", false)) {
+                } elseif ($this->literal("\r\n", 2, false) ||
+                  $this->matchChar("\r", false) ||
+                  $this->matchChar("\n", false) ||
+                  $this->matchChar("\f", false)
+                ) {
                     // this is a continuation escaping, to be ignored
                 } else {
                     $content[] = $m[2];
@@ -2045,8 +2049,8 @@ class Parser
     /**
      * Parse keyword or interpolation
      *
-     * @param array $out
-     * @param bool $restricted
+     * @param array   $out
+     * @param boolean $restricted
      *
      * @return boolean
      */
@@ -2590,8 +2594,8 @@ class Parser
     protected function restrictedKeyword(&$word, $eatWhitespace = null)
     {
         $s = $this->count;
-        if ($this->keyword($word, $eatWhitespace)
-            && (ord($word[0]) > 57 || ord($word[0]) < 48)) {
+
+        if ($this->keyword($word, $eatWhitespace) && (ord($word[0]) > 57 || ord($word[0]) < 48)) {
             return true;
         }
 
