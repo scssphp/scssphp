@@ -74,7 +74,7 @@ class Cache
         }
 
         if (isset($options['forceRefresh'])) {
-            self::$forceFefresh = $options['force_refresh'];
+            self::$forceRefresh = $options['force_refresh'];
         }
 
         self::checkCacheDir();
