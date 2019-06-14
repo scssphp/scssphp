@@ -46,7 +46,7 @@ class Cache
     // specifies the number of seconds after which data cached will be seen as 'garbage' and potentially cleaned up
     public static $gcLifetime = 604800;
 
-    // array of already refreshed cache if $forceFefresh==='once'
+    // array of already refreshed cache if $forceRefresh==='once'
     protected static $refreshed = [];
 
     /**
