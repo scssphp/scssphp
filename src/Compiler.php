@@ -2129,6 +2129,14 @@ class Compiler
     {
 
         $outWrite = &$out;
+
+        if ($type === Type::T_COMMENT) {
+            $parent = $out->parent;
+            if (end($parent->children) !== $out) {
+                $outWrite = &$parent->children[count($parent->children)-1];
+            }
+        }
+
         // check if it's a flat output or not
         if (count($out->children)) {
             $lastChild = &$out->children[count($out->children) -1];
