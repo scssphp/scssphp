@@ -5,3 +5,4 @@ pscss.phar
 /frameworks/
 /src/
 /vendor/
+Gemfile.lock
