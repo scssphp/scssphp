@@ -1,4 +1,5 @@
 $site_width: 640px;
+$desktop_width: 992px;
 
 $light_teal: #7FC7AF;
 $teal: desaturate(#3FB8AF, 10%);
@@ -30,6 +31,14 @@ $btn_color: desaturate(#FF3D7F, 10%);
     @include grad($color, darken($color, $amount));
 }
 
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
 body {
     background: $pink;
     font-family: Lato, sans-serif;
@@ -37,12 +46,17 @@ body {
 
 .header, .footer, .body {
     .inner {
-        width: $site_width;
-        margin: 0 auto;
+        margin: 0 10px;
+
+        @media (min-width: #{$desktop_width}) {
+            margin: 0 auto;
+            width: $site_width;
+        }
     }
 }
 
 .header {
+    text-align: center;
     text-shadow: 0px -1px 0px darken($teal, 15%);
 
     .color {
@@ -54,9 +68,8 @@ body {
     h1 {
         font-family: 'Quicksand', sans-serif;
         font-size: 40px;
-        line-height: 100px;
         font-weight: normal;
-        margin: 0;
+        margin: 25px 0;
 
         a {
             text-decoration: none;
@@ -72,6 +85,7 @@ body {
     .nav {
         padding: 8px 0;
         font-size: 17px;
+        text-align: center;
         text-shadow: none;
         background: darken($teal, 30%);
         color: $teal;
@@ -79,6 +93,7 @@ body {
 
         a {
             color: lighten($teal, 40%);
+            padding: 0 10px;
             text-decoration: none;
 
             &:hover {
@@ -88,10 +103,10 @@ body {
     }
 
     .download-area {
-        float: right;
-        margin-top: 25px;
         background: rgba(255,255,255, 0.3);
         border-radius: 8px;
+        display: inline-block;
+        margin-bottom: 25px;
         padding: 5px;
 
         a {
@@ -160,9 +175,13 @@ body {
     .inner {
         background: white;
         margin-top: 20px;
-        padding: 30px 50px;
+        padding: 30px 15px;
         border: 1px solid lightGrey;
         box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.19);
+
+        @media (min-width: #{$desktop_width}) {
+            padding: 30px 50px;
+        }
 
         h1, h2, h3 {
             margin: 0 0 20px 0;
@@ -248,10 +267,14 @@ p {
     color: white;
     font-size: 14px;
     padding: 10px;
-    margin-bottom: 15px;
+    margin: 0 0 15px;
     box-shadow: 0px 1px 3px rgba(0,0,0, 0.7), inset 0px 0px 0px 1px rgba(255,255,255,0.3);
     border-radius: 2px;
     border: 1px solid #222;
+
+    @media (min-width: #{$desktop_width}) {
+        margin: 0 2em 15px;
+    }
 
     pre {
         margin-top: 0px;
