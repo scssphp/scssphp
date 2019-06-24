@@ -102,6 +102,8 @@ class Nested extends Formatter
         }
 
         $isMediaOrDirective = in_array($block->type, [Type::T_DIRECTIVE, Type::T_MEDIA]);
+        $isSupport = ($block->type === Type::T_DIRECTIVE
+            && strpos(implode('', $block->selectors), '@supports') !== false);
 
         while ($block->depth < end($depths) || ($block->depth == 1 && end($depths) == 1)) {
             array_pop($depths);
@@ -124,7 +126,7 @@ class Nested extends Formatter
 
         $this->currentBlock = $block;
 
-        if (! empty($block->lines) || (! empty($block->children) && $this->depth < 1)) {
+        if (! empty($block->lines) || (! empty($block->children) && ($this->depth < 1 || $isSupport))) {
             if ($block->depth > end($depths)) {
                 if (! $previousEmpty || $this->depth < 1) {
                     $this->depth++;
