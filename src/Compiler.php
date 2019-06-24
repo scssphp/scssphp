@@ -1773,7 +1773,7 @@ class Compiler
                 if (strpos($queryString, '@media ') === 0) {
                     $queryString = substr($queryString, 7);
                     $queries = [];
-                    if ($parser->parseMediaQueryList($queryString,$queries)) {
+                    if ($parser->parseMediaQueryList($queryString, $queries)) {
                         $queries = $this->evaluateMediaQuery($queries[2]);
                         while (count($queries)) {
                             $outQueryList[] = array_shift($queries);
