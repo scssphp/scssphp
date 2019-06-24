@@ -266,6 +266,34 @@ class Parser
     }
 
     /**
+     * Parse a media Query
+     *
+     * @api
+     *
+     * @param string $buffer
+     * @param string $out
+     *
+     * @return array
+     */
+    public function parseMediaQueryList($buffer, &$out)
+    {
+        $this->count           = 0;
+        $this->env             = null;
+        $this->inParens        = false;
+        $this->eatWhiteDefault = true;
+        $this->buffer          = (string) $buffer;
+
+        $this->saveEncoding();
+
+
+        $isMediaQuery = $this->mediaQueryList($out);
+
+        $this->restoreEncoding();
+
+        return $isMediaQuery;
+    }
+
+    /**
      * Parse a single chunk off the head of the buffer and append it to the
      * current parse environment.
      *

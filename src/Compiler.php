@@ -1742,52 +1742,50 @@ class Compiler
      */
     protected function evaluateMediaQuery($queryList)
     {
+        static $parser = null;
+        $outQueryList = [];
         foreach ($queryList as $kql => $query) {
+            $shouldReparse = false;
             foreach ($query as $kq => $q) {
                 for ($i = 1; $i < count($q); $i++) {
                     $value = $this->compileValue($q[$i]);
 
                     // the parser had no mean to know if media type or expression if it was an interpolation
+                    // so you need to reparse if the T_MEDIA_TYPE looks like anything else a media type
                     if ($q[0] == Type::T_MEDIA_TYPE &&
                         (strpos($value, '(') !== false ||
                         strpos($value, ')') !== false ||
-                        strpos($value, ':') !== false)
+                        strpos($value, ':') !== false ||
+                        strpos($value, ',') !== false)
                     ) {
-                        $queryList[$kql][$kq][0] = Type::T_MEDIA_EXPRESSION;
-
-                        if (strpos($value, 'and') !== false) {
-                            $values = explode('and', $value);
-                            $value = trim(array_pop($values));
-
-                            while ($v = trim(array_pop($values))) {
-                                $type = Type::T_MEDIA_EXPRESSION;
-
-                                if (strpos($v, '(') === false &&
-                                    strpos($v, ')') === false &&
-                                    strpos($v, ':') === false
-                                ) {
-                                    $type = Type::T_MEDIA_TYPE;
-                                }
-
-                                if (substr($v, 0, 1) === '(' && substr($v, -1) === ')') {
-                                    $v = substr($v, 1, -1);
-                                }
-
-                                $queryList[$kql][] = [$type,[Type::T_KEYWORD, $v]];
-                            }
-                        }
-
-                        if (substr($value, 0, 1) === '(' && substr($value, -1) === ')') {
-                            $value = substr($value, 1, -1);
-                        }
+                        $shouldReparse = true;
                     }
 
                     $queryList[$kql][$kq][$i] = [Type::T_KEYWORD, $value];
                 }
             }
+            if ($shouldReparse) {
+                if (is_null($parser)) {
+                    $parser = $this->parserFactory(__METHOD__);
+                }
+                $queryString = $this->compileMediaQuery([$queryList[$kql]]);
+                $queryString = reset($queryString);
+                if (strpos($queryString, '@media ') === 0) {
+                    $queryString = substr($queryString, 7);
+                    $queries = [];
+                    if ($parser->parseMediaQueryList($queryString,$queries)) {
+                        $queries = $this->evaluateMediaQuery($queries[2]);
+                        while (count($queries)) {
+                            $outQueryList[] = array_shift($queries);
+                        }
+                        continue;
+                    }
+                }
+            }
+            $outQueryList[] = $queryList[$kql];
         }
 
-        return $queryList;
+        return $outQueryList;
     }
 
     /**
