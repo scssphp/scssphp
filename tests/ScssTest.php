@@ -91,6 +91,13 @@ class ScssTest extends \PHPUnit_Framework_TestCase
 
         $actual = $compiler->compile($scss);
 
+        // manage unconsistency
+        if (strpos($css, "@fblthp") !== false) {
+            $css = preg_replace(",@fblthp {}\s*,ims", "", $css);
+            $css = preg_replace(",@media screen {\s*}\s*,ims", "", $css);
+        }
+
+
         if (getenv('BUILD')) {
             if (rtrim($css) !== rtrim($actual)) {
                 $this->appendToExclusionList($name);
