@@ -629,6 +629,18 @@ class Parser
 
             $this->seek($s);
 
+            if ($this->literal('@supports', 9) &&
+                ($t1=$this->supportsQuery($supportQuery)) &&
+                ($t2=$this->matchChar('{', false)) ) {
+                $directive = $this->pushSpecialBlock(Type::T_DIRECTIVE, $s);
+                $directive->name = 'supports';
+                $directive->value = $supportQuery;
+
+                return true;
+            }
+
+            $this->seek($s);
+
             // doesn't match built in directive, do generic one
             if ($this->matchChar('@', false) &&
                 $this->keyword($dirName) &&
@@ -1215,6 +1227,118 @@ class Parser
 
         return true;
     }
+
+    /**
+     * Parse supports query
+     *
+     * @param array $out
+     *
+     * @return boolean
+     */
+    protected function supportsQuery(&$out)
+    {
+        $expressions = null;
+        $parts = [];
+
+        $s = $this->count;
+
+        $not = false;
+        if (($this->literal('not', 3) && ($not = true) || true) &&
+            $this->matchChar('(') &&
+            $this->mixedKeyword($property) &&
+            $this->literal(': ', 2) &&
+            $this->valueList($value) &&
+            $this->matchChar(')')) {
+            $support = [Type::T_STRING, '', [[Type::T_KEYWORD, ($not ? 'not ' : '') . '(']]];
+
+            foreach ((array)$property as $p) {
+                if (is_array($p)) {
+                    $support[2][] = $p;
+                } else {
+                    $support[2][] = [Type::T_KEYWORD, $p];
+                }
+            }
+            $support[2][] = [Type::T_KEYWORD, ': '];
+            $support[2][] = $value;
+            $support[2][] = [Type::T_KEYWORD, ')'];
+
+            $parts[] = $support;
+            $s = $this->count;
+        } else {
+            $this->seek($s);
+        }
+
+        if ($this->matchChar('(') &&
+            $this->supportsQuery($subQuery) &&
+            $this->matchChar(')')) {
+            $parts[] = [Type::T_STRING, '', [[Type::T_KEYWORD, '('], $subQuery, [Type::T_KEYWORD, ')']]];
+            $s = $this->count;
+        } else {
+            $this->seek($s);
+        }
+
+        if ($this->literal('not', 3) &&
+            $this->supportsQuery($subQuery)) {
+            $parts[] = [Type::T_STRING, '', [[Type::T_KEYWORD, 'not '], $subQuery]];
+            $s = $this->count;
+        } else {
+            $this->seek($s);
+        }
+
+        if ($this->literal('selector(', 9) &&
+            $this->selector($selector) &&
+            $this->matchChar(')')) {
+            $support = [Type::T_STRING, '', [[Type::T_KEYWORD, 'selector(']]];
+
+            $selectorList = [Type::T_LIST, '', []];
+            foreach ($selector as $sc) {
+                $compound = [Type::T_STRING, '', []];
+                foreach ($sc as $scp) {
+                    if (is_array($scp)) {
+                        $compound[2][] = $scp;
+                    } else {
+                        $compound[2][] = [Type::T_KEYWORD, $scp];
+                    }
+                }
+                $selectorList[2][] = $compound;
+            }
+            $support[2][] = $selectorList;
+            $support[2][] = [Type::T_KEYWORD, ')'];
+            $parts[] = $support;
+            $s = $this->count;
+        } else {
+            $this->seek($s);
+        }
+
+        if ($this->literal('and', 3) &&
+            $this->genericList($expressions, 'supportsQuery', ' and', false)) {
+            array_unshift($expressions[2], [Type::T_STRING, '', $parts]);
+            $parts = [$expressions];
+            $s = $this->count;
+        } else {
+            $this->seek($s);
+        }
+
+        if ($this->literal('or', 2) &&
+            $this->genericList($expressions, 'supportsQuery', ' or', false)) {
+            array_unshift($expressions[2], [Type::T_STRING, '', $parts]);
+            $parts = [$expressions];
+            $s = $this->count;
+        } else {
+            $this->seek($s);
+        }
+
+        if (count($parts)) {
+            if ($this->eatWhiteDefault) {
+                $this->whitespace();
+            }
+            $out = [Type::T_STRING, '', $parts];
+            return true;
+        }
+
+        return false;
+    }
+
 
     /**
      * Parse media expression
