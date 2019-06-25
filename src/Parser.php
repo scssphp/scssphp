@@ -64,6 +64,7 @@ class Parser
     private $env;
     private $inParens;
     private $eatWhiteDefault;
+    private $discardComments;
     private $buffer;
     private $utf8;
     private $encoding;
@@ -88,6 +89,7 @@ class Parser
         $this->utf8             = ! $encoding || strtolower($encoding) === 'utf-8';
         $this->patternModifiers = $this->utf8 ? 'Aisu' : 'Ais';
         $this->commentsSeen     = [];
+        $this->discardComments  = false;
 
         if (empty(static::$operatorPattern)) {
             static::$operatorPattern = '([*\/%+-]|[!=]\=|\>\=?|\<\=\>|\<\=?|and|or)';
@@ -1115,11 +1117,13 @@ class Parser
      */
     protected function appendComment($comment)
     {
-        if ($comment[0] === Type::T_COMMENT && is_string($comment[1])) {
-            $comment[1] = substr(preg_replace(['/^\s+/m', '/^(.)/m'], ['', ' \1'], $comment[1]), 1);
-        }
+        if (! $this->discardComments) {
+            if ($comment[0] === Type::T_COMMENT && is_string($comment[1])) {
+                $comment[1] = substr(preg_replace(['/^\s+/m', '/^(.)/m'], ['', ' \1'], $comment[1]), 1);
+            }
 
-        $this->env->comments[] = $comment;
+            $this->env->comments[] = $comment;
+        }
     }
 
     /**
@@ -1498,9 +1502,12 @@ class Parser
     protected function expression(&$out)
     {
         $s = $this->count;
+        $discard = $this->discardComments;
+        $this->discardComments = true;
 
         if ($this->matchChar('(')) {
             if ($this->parenExpression($out, $s, ")")) {
+                $this->discardComments = $discard;
                 return true;
             }
 
@@ -1513,6 +1520,7 @@ class Parser
                     $out = [Type::T_STRING, '', [ '[', $out, ']' ]];
                 }
 
+                $this->discardComments = $discard;
                 return true;
             }
 
@@ -1522,9 +1530,11 @@ class Parser
         if ($this->value($lhs)) {
             $out = $this->expHelper($lhs, 0);
 
+            $this->discardComments = $discard;
             return true;
         }
 
+        $this->discardComments = $discard;
         return false;
     }
 

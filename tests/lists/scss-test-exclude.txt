@@ -1,4 +1,3 @@
-block_comment_in_script
 newlines_in_selectors
 newlines_in_selectors-1
 newlines_in_selectors-2
@@ -26,6 +25,5 @@ at_root_doesnt_always_break_blocks
 parent_selector_in_function_pseudo_selector
 parent_selector_in_and_out_of_function_pseudo_selector-1
 parent_ref_with_newline
-parsing_decimals_followed_by_comments_doesnt_take_forever
 parsing_many_numbers_doesnt_take_forever
 newline_selector_rendered_multiple_times

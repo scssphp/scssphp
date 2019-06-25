@@ -11,11 +11,9 @@ div {
   string: "hello /* this is not a comment */";
   world: "// neither is this";
   string: 'hello /* this is not a comment */';
-  /*what if this is a comment */
   world: '// neither is this';
   what-ever: 100px;
-  background: url();
-  /*this is not a comment?*/ }
+  background: url(); }
 
 .dummy {
   color: blue; }
