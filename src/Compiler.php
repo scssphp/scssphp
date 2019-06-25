@@ -4609,6 +4609,7 @@ class Compiler
             $hasVariable |= $isVariable;
         }
 
+        $splatSeparator      = null;
         $keywordArgs         = [];
         $deferredKeywordArgs = [];
         $remaining           = [];
@@ -4653,6 +4654,9 @@ class Compiler
                                 $keywordArgs[$name] = $item;
                             }
                         } else {
+                            if (is_null($splatSeparator)) {
+                                $splatSeparator = $val[1];
+                            }
                             $remaining[] = $item;
                         }
                     }
@@ -4676,6 +4680,9 @@ class Compiler
                                 $keywordArgs[$name] = $item;
                             }
                         } else {
+                            if (is_null($splatSeparator)) {
+                                $splatSeparator = $val[1];
+                            }
                             $remaining[] = $item;
                         }
                     }
@@ -4694,7 +4701,7 @@ class Compiler
             list($i, $name, $default, $isVariable) = $arg;
 
             if ($isVariable) {
-                $val = [Type::T_LIST, ',', [], $isVariable];
+                $val = [Type::T_LIST, is_null($splatSeparator) ? ',' : $splatSeparator , [], $isVariable];
 
                 for ($count = count($remaining); $i < $count; $i++) {
                     $val[2][] = $remaining[$i];
