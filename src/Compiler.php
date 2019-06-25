@@ -2307,7 +2307,7 @@ class Compiler
             case Type::T_FUNCTION:
                 list(, $block) = $child;
 
-                $this->set(static::$namespaces[$block->type] . $block->name, $block);
+                $this->set(static::$namespaces[$block->type] . $block->name, $block, true);
                 break;
 
             case Type::T_EXTEND:
