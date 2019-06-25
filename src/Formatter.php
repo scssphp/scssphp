@@ -229,7 +229,7 @@ abstract class Formatter
                 if (! $this->testEmptyChildren($child)) {
                     $isEmpty = false;
                 } else {
-                    if ($child->type === Type::T_MEDIA) {
+                    if ($child->type === Type::T_MEDIA || $child->type === Type::T_DIRECTIVE) {
                         $child->children = [];
                         $child->selectors = null;
                     }
