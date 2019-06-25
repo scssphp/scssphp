@@ -92,7 +92,7 @@ body .second {
 /* line 107, inputs/at_root.scss */
 .foo .bar {
   width: 0; }
-@supports ( display: flex ) {
+@supports (display: flex) {
 /* line 112, inputs/at_root.scss */
   .baz {
     height: 0; } }

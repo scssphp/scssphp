@@ -58,7 +58,7 @@ body .second {
 
 .foo .bar {
   width: 0; }
-@supports ( display: flex ) {
+@supports (display: flex) {
   .baz {
     height: 0; } }
 @media screen and (max-width: 640px) {
