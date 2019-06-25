@@ -1,0 +1,48 @@
+// From https://developer.mozilla.org/en-US/docs/Web/CSS/@supports
+@supports (animation-name: test) { foo {a: b} }
+@supports (transform-origin: 5% 5%) { foo {a: b} }
+@supports selector(A > B) { foo {a: b} }
+@supports not (transform-origin: 10em 10em 10em) { foo {a: b} }
+@supports not (not (transform-origin: 2px)) { foo {a: b} }
+@supports (display: grid) and (display: inline-grid) { foo {a: b} }
+@supports (display: grid) and (not (display: inline-grid)) { foo {a: b} }
+@supports (display: table-cell) and (display: list-item) { foo {a: b} }
+@supports (display: table-cell) and (display: list-item) and (display:run-in) { foo {a: b} }
+@supports (display: table-cell) and ((display: list-item) and (display:run-in)) { foo {a: b} }
+@supports (display: table-cell) and ((display: list-item) or (display:run-in)) { foo {a: b} }
+@supports (transform-style: preserve) or (-moz-transform-style: preserve) { foo {a: b} }
+@supports (transform-style: preserve) or (-moz-transform-style: preserve) or
+          (-o-transform-style: preserve) or (-webkit-transform-style: preserve) { foo {a: b} }
+
+@supports (transform-style: preserve-3d) or ((-moz-transform-style: preserve-3d) or
+          ((-o-transform-style: preserve-3d) or (-webkit-transform-style: preserve-3d))) { foo {a: b} }
+@supports not ((text-align-last: justify) or (-moz-text-align-last: justify)) { foo {a: b} }
+@supports (--foo: green) { foo {a: b} }
+@supports not selector(:is(a, b)) { foo {a: b} }
+@supports selector(:nth-child(1n of a, b)) { foo {a: b} }
+
+
+// From scss_test.rb
+$query: "(feature1: val)";
+$feature: feature2;
+$val: val;
+@supports #{$query} {
+  foo {a: b}
+}
+
+@supports (#{$query}) {
+  foo {a: b}
+}
+@supports ($feature: $val) {
+  foo {a: b}
+}
+@supports (not ($feature + 3: $val + 4)) {
+  foo {a: b}
+}
+@supports (#{$query} and ($feature: $val)) {
+  foo {a: b}
+}
+
+@supports (#{$query} and ($feature: $val)) or (not ($feature + 3: $val + 4)) {
+  foo {a: b}
+}
