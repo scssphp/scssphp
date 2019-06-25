@@ -1245,19 +1245,12 @@ class Parser
         $not = false;
         if (($this->literal('not', 3) && ($not = true) || true) &&
             $this->matchChar('(') &&
-            $this->mixedKeyword($property) &&
+            ($this->expression($property)) &&
             $this->literal(': ', 2) &&
             $this->valueList($value) &&
             $this->matchChar(')')) {
             $support = [Type::T_STRING, '', [[Type::T_KEYWORD, ($not ? 'not ' : '') . '(']]];
-
-            foreach ((array)$property as $p) {
-                if (is_array($p)) {
-                    $support[2][] = $p;
-                } else {
-                    $support[2][] = [Type::T_KEYWORD, $p];
-                }
-            }
+            $support[2][] = $property;
             $support[2][] = [Type::T_KEYWORD, ': '];
             $support[2][] = $value;
             $support[2][] = [Type::T_KEYWORD, ')'];
@@ -1305,6 +1298,13 @@ class Parser
             $support[2][] = $selectorList;
             $support[2][] = [Type::T_KEYWORD, ')'];
             $parts[] = $support;
+            $s = $this->count;
+        } else {
+            $this->seek($s);
+        }
+
+        if ($this->variable($var) or $this->interpolation($var)) {
+            $parts[] = $var;
             $s = $this->count;
         } else {
             $this->seek($s);
