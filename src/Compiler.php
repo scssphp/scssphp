@@ -1169,16 +1169,13 @@ class Compiler
             if ($block->type === Type::T_DIRECTIVE) {
                 if (isset($block->name)) {
                     return $this->testWithWithout($block->name, $with, $without);
-                }
-                elseif (isset($block->selectors) && preg_match(',@(\w+),ims', json_encode($block->selectors), $m)) {
+                } elseif (isset($block->selectors) && preg_match(',@(\w+),ims', json_encode($block->selectors), $m)) {
                     return $this->testWithWithout($m[1], $with, $without);
-                }
-                else {
+                } else {
                     return $this->testWithWithout('???', $with, $without);
                 }
             }
-        }
-        elseif (isset($block->selectors)) {
+        } elseif (isset($block->selectors)) {
             return $this->testWithWithout('rule', $with, $without);
         }
 
@@ -1194,7 +1191,8 @@ class Compiler
      * @return bool
      *   true if the block should be kept, false to reject
      */
-    protected function testWithWithout($what, $with, $without) {
+    protected function testWithWithout($what, $with, $without)
+    {
 
         // if without, reject only if in the list (or 'all' is in the list)
         if (count($without)) {
