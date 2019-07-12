@@ -2150,6 +2150,10 @@ class Compiler
             if (end($parent->children) !== $out) {
                 $outWrite = &$parent->children[count($parent->children)-1];
             }
+
+            if (!is_string($line)) {
+                $line = $this->compileValue($line);
+            }
         }
 
         // check if it's a flat output or not
