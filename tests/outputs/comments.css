@@ -40,3 +40,10 @@ radius:2px
   display: block;
   /* hop */
   width: 100%; }
+
+.class {
+  /* This is a comment with vars references not on root level
+    color:red
+    and a fake #{ doing nothing
+    radius:2px
+    */ }

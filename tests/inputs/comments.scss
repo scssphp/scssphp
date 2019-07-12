@@ -65,3 +65,11 @@ radius:#{$radius}
     width: 100%;
   }
 }
+
+.class {
+  /* This is a comment with vars references not on root level
+  color:#{$color}
+  and a fake #{ doing nothing
+  radius:#{$radius}
+  */
+}
