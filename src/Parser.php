@@ -383,9 +383,12 @@ class Parser
                     ($this->argValues($argValues) || true) &&
                     $this->matchChar(')') || true) &&
                 ($this->end() ||
+                    ($this->literal('using', 5) &&
+                        $this->argumentDef($argUsing) &&
+                        ($this->end() || $this->matchChar('{') && $hasBlock = true)) ||
                     $this->matchChar('{') && $hasBlock = true)
             ) {
-                $child = [Type::T_INCLUDE, $mixinName, isset($argValues) ? $argValues : null, null];
+                $child = [Type::T_INCLUDE, $mixinName, isset($argValues) ? $argValues : null, null, isset($argUsing) ? $argUsing : null];
 
                 if (! empty($hasBlock)) {
                     $include = $this->pushSpecialBlock(Type::T_INCLUDE, $s);
@@ -577,8 +580,15 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@content', 8) && $this->end()) {
-                $this->append([Type::T_MIXIN_CONTENT], $s);
+            #if ($this->literal('@content', 8))
+
+            if ($this->literal('@content', 8) &&
+                ($this->end() ||
+                    $this->matchChar('(') &&
+                        $this->argValues($argContent) &&
+                        $this->matchChar(')') &&
+                    $this->end())) {
+                $this->append([Type::T_MIXIN_CONTENT, isset($argContent) ? $argContent : null], $s);
 
                 return true;
             }

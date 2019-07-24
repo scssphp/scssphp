@@ -144,3 +144,42 @@ div {
 div p {
   content: "p";
   content: "p"; }
+
+/* line 235, inputs/mixins.scss */
+.content-with-using-scope-test-before {
+  border-color: black;
+  color: white;
+  text-align: left; }
+
+/* line 243, inputs/mixins.scss */
+.content-with-using {
+  color: black;
+  text-align: left; }
+
+/* line 250, inputs/mixins.scss */
+.content-with-using-scope-test-after {
+  background-color: black;
+  color: white;
+  text-align: left; }
+
+/* line 257, inputs/mixins.scss */
+.content-with-using-scope-test-outside {
+  color: white; }
+
+/* line 262, inputs/mixins.scss */
+.content-with-using-and-args {
+  background-color: white;
+  color: black;
+  text-align: left; }
+
+/* line 224, inputs/mixins.scss */
+.content-with-using-nested-outside {
+  background-color: white;
+  color: black;
+  text-align: left; }
+
+/* line 270, inputs/mixins.scss */
+.content-with-using-nested-outside .content-with-using-nested-inside {
+  background-color: white;
+  color: red;
+  text-align: right; }

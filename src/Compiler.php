@@ -2467,7 +2467,7 @@ class Compiler
 
             case Type::T_INCLUDE:
                 // including a mixin
-                list(, $name, $argValues, $content) = $child;
+                list(, $name, $argValues, $content, $argUsing) = $child;
 
                 $mixin = $this->get(static::$namespaces['mixin'] . $name, false);
 
@@ -2517,6 +2517,13 @@ class Compiler
                     $this->setRaw(static::$namespaces['special'] . 'content', null, $this->env);
                 }
 
+                // save the "using" argument list for applying it to when "@content" is invoked
+                if (isset($argUsing)) {
+                    $this->setRaw(static::$namespaces['special'] . 'using', $argUsing, $this->env);
+                } else {
+                    $this->setRaw(static::$namespaces['special'] . 'using', null, $this->env);
+                }
+
                 if (isset($mixin->args)) {
                     $this->applyArguments($mixin->args, $argValues);
                 }
@@ -2533,6 +2540,8 @@ class Compiler
             case Type::T_MIXIN_CONTENT:
                 $env = isset($this->storeEnv) ? $this->storeEnv : $this->env;
                 $content = $this->get(static::$namespaces['special'] . 'content', false, $env);
+                $argUsing = $this->get(static::$namespaces['special'] . 'using', false, $env);
+                $argContent = $child[1];
 
                 if (! $content) {
                     $content = new \stdClass();
@@ -2541,9 +2550,42 @@ class Compiler
                     break;
                 }
 
+                $varsUsing = [];
+                if (isset($argUsing) && isset($argContent)) {
+                    // Get the arguments provided for the content with the names provided in the "using" argument list
+                    $this->pushEnv();
+                    $this->env->depth--;
+
+                    $storeEnv = $this->storeEnv;
+                    $this->storeEnv = $this->env;
+
+                    $this->applyArguments($argUsing, $argContent);
+                    $varsUsing = $this->storeEnv->store;
+
+                    $this->storeEnv = $storeEnv;
+                    $this->popEnv();
+                }
+
+
                 $storeEnv = $this->storeEnv;
                 $this->storeEnv = $content->scope;
-                $this->compileChildrenNoReturn($content->children, $out);
+
+                if (!empty($varsUsing)) {
+                    $this->pushEnv();
+                    $this->env->depth--;
+
+                    $storeEnvUsing = $this->storeEnv;
+                    $this->storeEnv = $this->env;
+                    // Apply the arguments provided for the content with the names provided in the "using" argument list
+                    $this->storeEnv->store = array_merge($this->storeEnv->store, $varsUsing);
+
+                    $this->compileChildrenNoReturn($content->children, $out);
+
+                    $this->storeEnv = $storeEnvUsing;
+                    $this->popEnv();
+                } else {
+                    $this->compileChildrenNoReturn($content->children, $out);
+                }
 
                 $this->storeEnv = $storeEnv;
                 break;
