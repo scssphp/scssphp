@@ -2608,7 +2608,7 @@ class Parser
                     if ($nameParts === ['not'] || $nameParts === ['is'] ||
                         $nameParts === ['has'] || $nameParts === ['where']
                     ) {
-                        if ($this->matchChar('(') &&
+                        if ($this->matchChar('(', true) &&
                           ($this->selectors($subs, true) || true) &&
                           $this->matchChar(')')
                         ) {
