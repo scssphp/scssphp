@@ -562,6 +562,10 @@ foo|* {
   a: b; }
 
 
+:not( .blah ) {
+  a: b; }
+
+
 :not([foo]) {
   a: b; }
 
@@ -591,6 +595,10 @@ foo|* {
 
 
 :not(#foo .bar > baz) {
+  a: b; }
+
+
+:not( #foo .bar > baz ) {
   a: b; }
 
 
