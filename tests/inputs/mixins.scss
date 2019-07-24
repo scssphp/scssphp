@@ -88,7 +88,7 @@ div {
 
         .top {
             top: 0;
-            
+
             div {
                 color: red;
             }
@@ -120,7 +120,7 @@ div {
     color: red;
 }
 
-@include content-with-arg($background: purple) { 
+@include content-with-arg($background: purple) {
     @include hello_world;
 }
 
@@ -132,11 +132,11 @@ div {
     @include something(orange);
 }
 
-@include content-with-arg($background: purple) { 
+@include content-with-arg($background: purple) {
     @include cool(10px, 12px, 21px);
 }
 
-@include content-with-arg($background: purple) { 
+@include content-with-arg($background: purple) {
     @include something(orange);
 }
 
@@ -208,3 +208,68 @@ div.parameter-name-scope {
   }
 }
 
+
+@mixin content-with-using() {
+  $some-color: black;
+  @content($some-color, left);
+}
+
+@mixin content-with-using-and-args($other-color) {
+  $some-color: black;
+  @content($some-color, left, $other-color);
+}
+
+@mixin content-with-using-nested($other-color) {
+  $some-color: red;
+  .content-with-using-nested-outside {
+    @include content-with-using-and-args($other-color) using ($color, $align, $background) {
+      background-color: $background;
+      color: $color;
+      text-align: $align;
+    }
+    @content($some-color, right, $other-color);
+  }
+}
+
+@include content-with-using() using ($using-color, $using-align) {
+  .content-with-using-scope-test-before {
+    border-color: $using-color;
+    color: $color;
+    text-align: $using-align;
+  }
+}
+
+@include content-with-using() using ($color, $align) {
+  .content-with-using {
+    color: $color;
+    text-align: $align;
+  }
+}
+
+@include content-with-using() using ($using-color, $using-align) {
+  .content-with-using-scope-test-after {
+    background-color: $using-color;
+    color: $color;
+    text-align: $using-align;
+  }
+}
+
+.content-with-using-scope-test-outside {
+  color: $color;
+}
+
+@include content-with-using-and-args($color) using ($color, $align, $background) {
+  .content-with-using-and-args {
+    background-color: $background;
+    color: $color;
+    text-align: $align;
+  }
+}
+
+@include content-with-using-nested($color) using ($color, $align, $background) {
+  .content-with-using-nested-inside {
+    background-color: $background;
+    color: $color;
+    text-align: $align;
+  }
+}
