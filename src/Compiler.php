@@ -2510,7 +2510,7 @@ class Compiler
                 // i.e., recursive @include of the same mixin
                 if (isset($content)) {
                     $copyContent = clone $content;
-                    $copyContent->scope = $callingScope;
+                    $copyContent->scope = clone $callingScope;
 
                     $this->setRaw(static::$namespaces['special'] . 'content', $copyContent, $this->env);
                 } else {
@@ -2550,42 +2550,26 @@ class Compiler
                     break;
                 }
 
+                $storeEnv = $this->storeEnv;
+
                 $varsUsing = [];
                 if (isset($argUsing) && isset($argContent)) {
                     // Get the arguments provided for the content with the names provided in the "using" argument list
-                    $this->pushEnv();
-                    $this->env->depth--;
-
-                    $storeEnv = $this->storeEnv;
                     $this->storeEnv = $this->env;
-
-                    $this->applyArguments($argUsing, $argContent);
-                    $varsUsing = $this->storeEnv->store;
-
-                    $this->storeEnv = $storeEnv;
-                    $this->popEnv();
+                    $varsUsing = $this->applyArguments($argUsing, $argContent, false);
+                    foreach ($varsUsing as $name => $val) {
+                        $varsUsing[$name] = $this->reduce($val, true);
+                    }
                 }
 
-
-                $storeEnv = $this->storeEnv;
+                // restore the scope from the @content
                 $this->storeEnv = $content->scope;
-
-                if (!empty($varsUsing)) {
-                    $this->pushEnv();
-                    $this->env->depth--;
-
-                    $storeEnvUsing = $this->storeEnv;
-                    $this->storeEnv = $this->env;
-                    // Apply the arguments provided for the content with the names provided in the "using" argument list
-                    $this->storeEnv->store = array_merge($this->storeEnv->store, $varsUsing);
-
-                    $this->compileChildrenNoReturn($content->children, $out);
-
-                    $this->storeEnv = $storeEnvUsing;
-                    $this->popEnv();
-                } else {
-                    $this->compileChildrenNoReturn($content->children, $out);
+                // append the vars from using if any
+                foreach ($varsUsing as $name => $val) {
+                    $this->set($name, $val, true, $this->storeEnv);
                 }
+
+                $this->compileChildrenNoReturn($content->children, $out);
 
                 $this->storeEnv = $storeEnv;
                 break;
