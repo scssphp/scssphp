@@ -2557,9 +2557,6 @@ class Compiler
                     // Get the arguments provided for the content with the names provided in the "using" argument list
                     $this->storeEnv = $this->env;
                     $varsUsing = $this->applyArguments($argUsing, $argContent, false);
-                    foreach ($varsUsing as $name => $val) {
-                        $varsUsing[$name] = $this->reduce($val, true);
-                    }
                 }
 
                 // restore the scope from the @content
@@ -4461,7 +4458,7 @@ class Compiler
             return false;
         }
 
-        @list($sorted, $kwargs) = $this->sortArgs($prototype, $args);
+        @list($sorted, $kwargs) = $this->sortNativeFunctionArgs($prototype, $args);
 
         if ($name !== 'if' && $name !== 'call') {
             foreach ($sorted as &$val) {
@@ -4508,7 +4505,7 @@ class Compiler
      *
      * @return array
      */
-    protected function sortArgs($prototypes, $args)
+    protected function sortNativeFunctionArgs($prototypes, $args)
     {
         static $parser = null;
 
@@ -4578,7 +4575,7 @@ class Compiler
             }
 
             try {
-                $vars = $this->applyArguments($argDef, $args, false);
+                $vars = $this->applyArguments($argDef, $args, false, false);
 
                 // ensure all args are populated
                 foreach ($prototype as $i => $p) {
@@ -4628,10 +4625,12 @@ class Compiler
      *
      * @param array $argDef
      * @param array $argValues
-     *
+     * @param bool $storeInEnv
+     * @param bool $reduce
+     *   only used if $storeInEnv = false
      * @throws \Exception
      */
-    protected function applyArguments($argDef, $argValues, $storeInEnv = true)
+    protected function applyArguments($argDef, $argValues, $storeInEnv = true, $reduce = true)
     {
         $output = [];
 
@@ -4767,7 +4766,7 @@ class Compiler
             if ($storeInEnv) {
                 $this->set($name, $this->reduce($val, true), true, $env);
             } else {
-                $output[$name] = $val;
+                $output[$name] = ($reduce ? $this->reduce($val, true) : $val);
             }
         }
 
@@ -4785,7 +4784,7 @@ class Compiler
             if ($storeInEnv) {
                 $this->set($name, $this->reduce($default, true), true);
             } else {
-                $output[$name] = $default;
+                $output[$name] = ($reduce ? $this->reduce($default, true) : $default);
             }
         }
 
