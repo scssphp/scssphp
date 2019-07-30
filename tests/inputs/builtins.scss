@@ -237,3 +237,18 @@ div.unquote-test {
   $args: (#000, 40%);
   color: call(lighten, $args...);
 }
+
+.join-list-with-or-without-interpolation {
+    $list:();
+    $one: (value1 value2);
+    $two: (value3 value4);
+    $list: join($list, #{$one}, comma);
+    $list: join($list, #{$two}, comma);
+
+    transition: $list;
+    transition: join(#{$one}, #{$two}, comma);
+    transition: join($one, #{$two}, comma);
+    transition: join(#{$one}, $two, comma);
+    transition: join($one, $two, comma);
+    transition: join((value1 value2), (value3 value4), comma);
+}

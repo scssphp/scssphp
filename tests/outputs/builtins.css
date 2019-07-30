@@ -172,3 +172,11 @@ div.unquote-test {
 
 .does-compile-4 {
   color: #666; }
+
+.join-list-with-or-without-interpolation {
+  transition: value1 value2, value3 value4;
+  transition: value1 value2, value3 value4;
+  transition: value1, value2, value3 value4;
+  transition: value1 value2, value3, value4;
+  transition: value1, value2, value3, value4;
+  transition: value1, value2, value3, value4; }

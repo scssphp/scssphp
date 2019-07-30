@@ -3452,11 +3452,19 @@ class Compiler
                 list(, $interpolate, $left, $right) = $value;
                 list(,, $whiteLeft, $whiteRight) = $interpolate;
 
+                $delim = $left[1];
+                if ($delim && $delim !== ' ' && !$whiteLeft) {
+                    $delim .= ' ';
+                }
                 $left = count($left[2]) > 0 ?
-                    $this->compileValue($left) . $whiteLeft : '';
+                    $this->compileValue($left) . $delim . $whiteLeft: '';
 
+                $delim = $right[1];
+                if ($delim && $delim !== ' ') {
+                    $delim .= ' ';
+                }
                 $right = count($right[2]) > 0 ?
-                    $whiteRight . $this->compileValue($right) : '';
+                    $whiteRight . $delim . $this->compileValue($right) : '';
 
                 return $left . $this->compileValue($interpolate) . $right;
 
@@ -4461,8 +4469,12 @@ class Compiler
         @list($sorted, $kwargs) = $this->sortNativeFunctionArgs($prototype, $args);
 
         if ($name !== 'if' && $name !== 'call') {
+            $inExp = true;
+            if ($name === 'join') {
+                $inExp = false;
+            }
             foreach ($sorted as &$val) {
-                $val = $this->reduce($val, true);
+                $val = $this->reduce($val, $inExp);
             }
         }
 
@@ -5975,7 +5987,7 @@ class Compiler
                 return ',';
 
             case 'space':
-                return '';
+                return ' ';
 
             default:
                 return $list1[1];

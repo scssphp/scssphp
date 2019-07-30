@@ -191,3 +191,12 @@ div.unquote-test {
 /* line 236, inputs/builtins.scss */
 .does-compile-4 {
   color: #666; }
+
+/* line 241, inputs/builtins.scss */
+.join-list-with-or-without-interpolation {
+  transition: value1 value2, value3 value4;
+  transition: value1 value2, value3 value4;
+  transition: value1, value2, value3 value4;
+  transition: value1 value2, value3, value4;
+  transition: value1, value2, value3, value4;
+  transition: value1, value2, value3, value4; }
