@@ -343,6 +343,9 @@ class Parser
             if ($this->literal('@at-root', 8) &&
                 ($this->selectors($selector) || true) &&
                 ($this->map($with) || true) &&
+                (($this->matchChar('(')
+                    && $this->interpolation($with)
+                    && $this->matchChar(')')) || true) &&
                 $this->matchChar('{', false)
             ) {
                 $atRoot = $this->pushSpecialBlock(Type::T_AT_ROOT, $s);
