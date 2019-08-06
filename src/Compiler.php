@@ -5400,12 +5400,16 @@ class Compiler
         ['red', 'green', 'blue', 'alpha:1'] ];
     protected function libRgba($args)
     {
-        if ($color = $this->coerceColor($args[0])) {
-            $num = isset($args[3]) ? $args[3] : $args[1];
-            $alpha = $this->assertNumber($num);
-            $color[4] = $alpha;
+        if (count($args) == 2) {
+            if ($color = $this->coerceColor($args[0])) {
+                $num = isset($args[3]) ? $args[3] : $args[1];
+                $alpha = $this->assertNumber($num);
+                $color[4] = $alpha;
 
-            return $color;
+                return $color;
+            }
+
+            return [Type::T_STRING, '', ['rgba(', $args[0], ')']];
         }
 
         list($r, $g, $b, $a) = $args;
