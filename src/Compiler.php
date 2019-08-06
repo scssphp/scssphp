@@ -2071,6 +2071,8 @@ class Compiler
                 return true;
             }
 
+            $this->appendRootDirective('@import ' . $this->compileValue($rawPath). ';', $out);
+
             return false;
         }
 
@@ -2082,16 +2084,19 @@ class Compiler
 
             foreach ($rawPath[2] as $path) {
                 if ($path[0] !== Type::T_STRING) {
+                    $this->appendRootDirective('@import ' . $this->compileValue($rawPath) . ';', $out);
                     return false;
                 }
             }
 
             foreach ($rawPath[2] as $path) {
-                $this->compileImport($path, $out);
+                $this->compileImport($path, $out, $once);
             }
 
             return true;
         }
+
+        $this->appendRootDirective('@import ' . $this->compileValue($rawPath) . ';', $out);
 
         return false;
     }
@@ -2219,17 +2224,13 @@ class Compiler
             case Type::T_SCSSPHP_IMPORT_ONCE:
                 $rawPath = $this->reduce($child[1]);
 
-                if (! $this->compileImport($rawPath, $out, true)) {
-                    $this->appendRootDirective('@import ' . $this->compileValue($rawPath) . ';', $out);
-                }
+                $this->compileImport($rawPath, $out, true);
                 break;
 
             case Type::T_IMPORT:
                 $rawPath = $this->reduce($child[1]);
 
-                if (! $this->compileImport($rawPath, $out)) {
-                    $this->appendRootDirective('@import ' . $this->compileValue($rawPath) . ';', $out);
-                }
+                $this->compileImport($rawPath, $out);
                 break;
 
             case Type::T_DIRECTIVE:

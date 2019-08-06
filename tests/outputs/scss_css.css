@@ -8,6 +8,9 @@
 @import "foo.css" screen, print;
 @import "foo.css" screen, print and (foo: 0);
 @import "foo.css" screen, only print, screen and (foo: 0);
+@import "foo2.css";
+@import "bar2.css";
+@import "baz2.css";
 [foo~=bar] {
   a: b; }
 

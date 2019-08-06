@@ -251,6 +251,8 @@ foo {
 
 @import "foo.css" screen, only print, screen and (foo: 0);
 
+@import "foo2.css", "bar2.css", "baz2.css";
+
 foo {
   a: foo !important;
   b: foo bar !important;
