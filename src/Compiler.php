@@ -5387,12 +5387,42 @@ class Compiler
         return false === $key ? static::$null : $key + 1;
     }
 
-    protected static $libRgb = ['red', 'green', 'blue'];
+    protected static $libRgb = [
+        ['color'],
+        ['color', 'alpha'],
+        ['red', 'green', 'blue'],
+        ['red', 'green', 'blue', 'alpha'] ];
     protected function libRgb($args)
     {
-        list($r, $g, $b) = $args;
-
-        return [Type::T_COLOR, $r[1], $g[1], $b[1]];
+        switch (count($args)) {
+            case 1:
+                $color = $this->coerceColor($args[0]);
+                break;
+            case 3:
+                list($r, $g, $b) = $args;
+                $color = [Type::T_COLOR, $r[1], $g[1], $b[1]];
+                break;
+            case 2:
+                if ($color = $this->coerceColor($args[0])) {
+                    $num = $args[1];
+                    if ($num[0] == Type::T_NUMBER) {
+                        $alpha = $num[1];
+                        $color[4] = $alpha;
+                    }
+                    else {
+                        $color = [Type::T_STRING, '', ['rgb(', $color[1], ', ', $color[2], ', ', $color[3], ', ', $num, ')']];
+                    }
+                }
+                else {
+                    $color = [Type::T_STRING, '', ['rgb(', $args[0], ')']];
+                }
+                break;
+            case 4:
+            default:
+                $color = Compiler::libRgba($args);
+                break;
+        }
+        return $color;
     }
 
     protected static $libRgba = [
