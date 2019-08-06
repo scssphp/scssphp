@@ -142,9 +142,10 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
                 $hasInput  = false;
                 $hasOutput = false;
 
-                $parts = explode('<===> ', $subTest);
+                $parts = explode('<===>', $subTest);
 
                 foreach ($parts as $part) {
+                    $part   = ltrim($part, ' ');
                     $part   = explode("\n", $part);
                     $first  = array_shift($part);
                     $part   = implode("\n", $part);
