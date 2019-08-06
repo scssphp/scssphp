@@ -1742,7 +1742,7 @@ class Compiler
                 $stm[1]->selfParent = $selfParent;
                 $ret = $this->compileChild($stm, $out);
                 $stm[1]->selfParent = null;
-            } elseif ($selfParent && $stm[0] === TYPE::T_INCLUDE) {
+            } elseif ($selfParent && in_array($stm[0], [TYPE::T_INCLUDE, TYPE::T_EXTEND])) {
                 $stm['selfParent'] = $selfParent;
                 $ret = $this->compileChild($stm, $out);
                 unset($stm['selfParent']);
@@ -2349,8 +2349,11 @@ class Compiler
                     foreach ($results as $result) {
                         // only use the first one
                         $result = current($result);
-
-                        $this->pushExtends($result, $out->selectors, $child);
+                        $selectors = $out->selectors;
+                        if (!$selectors && isset($child['selfParent'])) {
+                            $selectors = $this->multiplySelectors($this->env, $child['selfParent']);
+                        }
+                        $this->pushExtends($result, $selectors, $child);
                     }
                 }
                 break;

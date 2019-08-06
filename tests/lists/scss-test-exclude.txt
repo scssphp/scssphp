@@ -4,7 +4,6 @@ newlines_in_selectors-2
 newlines_in_selectors-3
 trailing_comma_in_selector
 selector_script_through_media
-at_root_doesnt_always_break_blocks
 parent_selector_in_function_pseudo_selector
 parent_selector_in_and_out_of_function_pseudo_selector-1
 parent_ref_with_newline
