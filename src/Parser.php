@@ -1449,7 +1449,11 @@ class Parser
      */
     protected function valueList(&$out)
     {
-        return $this->genericList($out, 'spaceList', ',');
+        $discardComments = $this->discardComments;
+        $this->discardComments = true;
+        $res = $this->genericList($out, 'spaceList', ',');
+        $this->discardComments = $discardComments;
+        return $res;
     }
 
     /**

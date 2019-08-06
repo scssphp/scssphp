@@ -251,7 +251,9 @@ foo {
 
 @import "foo.css" screen, only print, screen and (foo: 0);
 
-@import "foo2.css", "bar2.css", "baz2.css";
+@import "foo2.css", // this is a comment
+        "bar2.css", /* this is another comment */
+        "baz2.css"; // this is a third comment
 
 foo {
   a: foo !important;
