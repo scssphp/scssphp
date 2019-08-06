@@ -978,6 +978,7 @@ class Compiler
     protected function filterScopeWithWithout($scope, $with, $without)
     {
         $filteredScopes = [];
+        $childStash = [];
 
         if ($scope->type === TYPE::T_ROOT) {
             return $scope;
@@ -985,6 +986,7 @@ class Compiler
 
         // start from the root
         while ($scope->parent && $scope->parent->type !== TYPE::T_ROOT) {
+            array_unshift($childStash, $scope);
             $scope = $scope->parent;
         }
 
@@ -1006,7 +1008,9 @@ class Compiler
                 $filteredScopes[] = $s;
             }
 
-            if ($scope->children) {
+            if (count($childStash)) {
+                $scope = array_shift($childStash);
+            } elseif ($scope->children) {
                 $scope = end($scope->children);
             } else {
                 $scope = null;
@@ -1027,8 +1031,9 @@ class Compiler
         while (count($filteredScopes)) {
             $s = array_shift($filteredScopes);
             $s->parent = $p;
-            $p->children[] = &$s;
-            $p = $s;
+            $p->children[] = $s;
+            $newScope = &$p->children[0];
+            $p = &$p->children[0];
         }
 
         return $newScope;
