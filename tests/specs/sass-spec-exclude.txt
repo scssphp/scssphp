@@ -794,10 +794,7 @@
 1320/1980. libsass/color-functions/other/scale-color/l
 1321/1980. libsass/color-functions/other/scale-color/r
 1322/1980. libsass/color-functions/other/scale-color/s
-1323/1980. libsass/color-functions/rgb/blue
-1324/1980. libsass/color-functions/rgb/green
 1325/1980. libsass/color-functions/rgb/mix
-1326/1980. libsass/color-functions/rgb/red
 1327/1980. libsass/color-functions/rgb/rgb/b
 1328/1980. libsass/color-functions/rgb/rgb/g
 1329/1980. libsass/color-functions/rgb/rgb/r

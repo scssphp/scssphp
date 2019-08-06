@@ -3434,9 +3434,9 @@ class Compiler
                 // [4] - optional alpha component
                 list(, $r, $g, $b) = $value;
 
-                $r = $this->compileRGBValue($r);
-                $g = $this->compileRGBValue($g);
-                $b = $this->compileRGBValue($b);
+                $r = $this->compileRGBAValue($r);
+                $g = $this->compileRGBAValue($g);
+                $b = $this->compileRGBAValue($b);
 
                 if (count($value) === 5 && $value[4] !== 1) { // rgba
                     if (is_numeric($value[4])) {
@@ -5032,6 +5032,25 @@ class Compiler
     {
         switch ($value[0]) {
             case Type::T_COLOR:
+                for ($i=1;$i<=3;$i++) {
+                    if (!is_numeric($value[$i])) {
+                        $cv = $this->compileRGBAValue($value[$i]);
+                        if (!is_numeric($cv)) {
+                            return null;
+                        }
+                        $value[$i] = $cv;
+                    }
+                    if (isset($value[4])) {
+                        if (!is_numeric($value[4])) {
+                            $cv = $this->compileRGBAValue($value[$i], true);
+                            if (!is_numeric($cv)) {
+                                return null;
+                            }
+                            $value[4] = $cv;
+                        }
+                    }
+                }
+
                 return $value;
 
             case Type::T_LIST:
@@ -5113,9 +5132,10 @@ class Compiler
 
     /**
      * @param int|Node\Number $value
+     * @param bool $isAlpha
      * @return int|mixed
      */
-    protected function compileRGBValue($value) {
+    protected function compileRGBAValue($value, $isAlpha = false) {
         if (!is_numeric($value)) {
 
             if (is_array($value)) {
@@ -5128,7 +5148,7 @@ class Compiler
                 $num = $value->dimension;
                 switch ($value->units) {
                     case '%':
-                        $num *= 255;
+                        $num *= ($isAlpha ? 1.0 : 255) / 100;
                         break;
                     default:
                         break;
@@ -5141,6 +5161,9 @@ class Compiler
         }
 
         if (is_numeric($value)) {
+            if ($isAlpha) {
+                return min(1,max(0,$value));
+            }
             return min(255,max(0,round($value)));
         }
 
@@ -5468,11 +5491,16 @@ class Compiler
     {
         switch (count($args)) {
             case 1:
-                $color = $this->coerceColor($args[0], true);
+                if (!$color = $this->coerceColor($args[0], true)) {
+                    $color = [Type::T_STRING, '', ['rgb(', $args[0], ')']];
+                }
                 break;
             case 3:
-                list($r, $g, $b) = $args;
-                $color = [Type::T_COLOR, $r[1], $g[1], $b[1]];
+                $color = [Type::T_COLOR, $args[0], $args[1], $args[2]];
+                if (!$color = $this->coerceColor($color)) {
+                    $color = [Type::T_STRING, '', ['rgb(', $args[0], ', ', $args[1], ', ', $args[2], ')']];
+                }
+                return $color;
                 break;
             case 2:
                 if ($color = $this->coerceColor($args[0], true)) {
