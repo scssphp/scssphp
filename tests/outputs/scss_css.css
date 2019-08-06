@@ -521,7 +521,7 @@ foo {
 :nth-child(-2n+ 3) {
   a: b; }
 
-:nth-child( 2n + 3) {
+:nth-child(2n + 3) {
   a: b; }
 
 foo {

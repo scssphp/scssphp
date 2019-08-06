@@ -2485,9 +2485,16 @@ class Parser
         $selector = [];
 
         for (;;) {
+            $s = $this->count;
             if ($this->match('[>+~]+', $m, true)) {
-                $selector[] = [$m[0]];
-                continue;
+                if ($subSelector && is_string($subSelector) && strpos($subSelector, 'nth-') === 0
+                 && $m[0] === '+' && $this->match("(\d+|n\b)", $counter)) {
+                    $this->seek($s);
+                }
+                else {
+                    $selector[] = [$m[0]];
+                    continue;
+                }
             }
 
             if ($this->selectorSingle($part, $subSelector)) {
@@ -2619,10 +2626,12 @@ class Parser
                     $ss = $this->count;
 
                     if ($nameParts === ['not'] || $nameParts === ['is'] ||
-                        $nameParts === ['has'] || $nameParts === ['where']
+                        $nameParts === ['has'] || $nameParts === ['where'] ||
+                        $nameParts === ['nth-child'] || $nameParts == ['nth-last-child'] ||
+                        $nameParts === ['nth-of-type'] || $nameParts == ['nth-last-of-type']
                     ) {
                         if ($this->matchChar('(', true) &&
-                          ($this->selectors($subs, true) || true) &&
+                          ($this->selectors($subs, reset($nameParts)) || true) &&
                           $this->matchChar(')')
                         ) {
                             $parts[] = '(';
@@ -2662,6 +2671,17 @@ class Parser
                         }
                     }
 
+                    continue;
+                }
+            }
+
+            $this->seek($s);
+
+            // 2n+1
+            if ($subSelector && is_string($subSelector) && strpos($subSelector, 'nth-') === 0) {
+                if ($this->match("(\s*(\+\s*|\-\s*)?(\d+|n|\d+n))+", $counter)) {
+                    $parts[] = $counter[0];
+                    //$parts[] = str_replace(' ', '', $counter[0]);
                     continue;
                 }
             }

@@ -652,7 +652,7 @@ foo {
   a: b; }
 
 /* line 665, inputs/scss_css.scss */
-:nth-child( 2n + 3) {
+:nth-child(2n + 3) {
   a: b; }
 
 /* line 669, inputs/scss_css.scss */
