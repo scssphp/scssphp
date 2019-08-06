@@ -1181,6 +1181,16 @@ class Compiler
                 }
             }
         } elseif (isset($block->selectors)) {
+            // a selector starting with number is a keyframe rule
+            if (count($block->selectors)) {
+                $s = reset($block->selectors);
+                while (is_array($s)) {
+                    $s = reset($s);
+                }
+                if (is_object($s) && get_class($s) === 'ScssPhp\ScssPhp\Node\Number') {
+                    return $this->testWithWithout('keyframes', $with, $without);
+                }
+            }
             return $this->testWithWithout('rule', $with, $without);
         }
 
