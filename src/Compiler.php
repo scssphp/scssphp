@@ -3434,14 +3434,22 @@ class Compiler
                 // [4] - optional alpha component
                 list(, $r, $g, $b) = $value;
 
-                $r = round($r);
-                $g = round($g);
-                $b = round($b);
+                $r = $this->compileRGBValue($r);
+                $g = $this->compileRGBValue($g);
+                $b = $this->compileRGBValue($b);
 
                 if (count($value) === 5 && $value[4] !== 1) { // rgba
-                    $a = new Node\Number($value[4], '');
+                    if (is_numeric($value[4])) {
+                        $a = new Node\Number($value[4], '');
+                    }
+                    else {
+                        $a = $value[4];
+                    }
 
                     return 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ')';
+                }
+                elseif(!is_numeric($r) || !is_numeric($g) || !is_numeric($b)) {
+                    return 'rgb(' . $r . ', ' . $g . ', ' . $b . ')';
                 }
 
                 $h = sprintf('#%02x%02x%02x', $r, $g, $b);
@@ -4534,7 +4542,7 @@ class Compiler
             return false;
         }
 
-        @list($sorted, $kwargs) = $this->sortNativeFunctionArgs($prototype, $args);
+        @list($sorted, $kwargs) = $this->sortNativeFunctionArgs($libName, $prototype, $args);
 
         if ($name !== 'if' && $name !== 'call') {
             $inExp = true;
@@ -4582,12 +4590,13 @@ class Compiler
     /**
      * Sorts keyword arguments
      *
+     * @param string $functionName
      * @param array $prototype
      * @param array $args
      *
      * @return array
      */
-    protected function sortNativeFunctionArgs($prototypes, $args)
+    protected function sortNativeFunctionArgs($functionName, $prototypes, $args)
     {
         static $parser = null;
 
@@ -4609,6 +4618,22 @@ class Compiler
             }
 
             return [$posArgs, $keyArgs];
+        }
+
+        // specific cases ?
+        if ($functionName === 'libRgb') {
+            // notation 100 127 255 / 0 is in fact a simple list of 4 values
+            foreach ($args as $k => $arg) {
+                if ($arg[1][0] === Type::T_LIST && count($arg[1][2]) === 3) {
+                    $last = end($arg[1][2]);
+                    if ($last[0] === Type::T_EXPRESSION && $last[1] === '/') {
+                        array_pop($arg[1][2]);
+                        $arg[1][2][] = $last[2];
+                        $arg[1][2][] = $last[3];
+                        $args[$k] = $arg;
+                    }
+                }
+            }
         }
 
         $finalArgs = [];
@@ -5003,11 +5028,21 @@ class Compiler
      *
      * @return array|null
      */
-    protected function coerceColor($value)
+    protected function coerceColor($value, $inRGBFunction = false)
     {
         switch ($value[0]) {
             case Type::T_COLOR:
                 return $value;
+
+            case Type::T_LIST:
+                if ($inRGBFunction) {
+                    if (count($value[2]) == 3 || count($value[2]) == 4) {
+                        $color = $value[2];
+                        array_unshift($color, Type::T_COLOR);
+                        return $color;
+                    }
+                }
+                return null;
 
             case Type::T_KEYWORD:
                 if (!is_string($value[1])) {
@@ -5074,6 +5109,42 @@ class Compiler
         }
 
         return null;
+    }
+
+    /**
+     * @param int|Node\Number $value
+     * @return int|mixed
+     */
+    protected function compileRGBValue($value) {
+        if (!is_numeric($value)) {
+
+            if (is_array($value)) {
+                $reduced = $this->reduce($value);
+                if (is_object($reduced) && $value->type === Type::T_NUMBER) {
+                    $value = $reduced;
+                }
+            }
+            if (is_object($value) && $value->type === Type::T_NUMBER) {
+                $num = $value->dimension;
+                switch ($value->units) {
+                    case '%':
+                        $num *= 255;
+                        break;
+                    default:
+                        break;
+                }
+                $value = $num;
+            }
+            else {
+                $value = $this->compileValue($value);
+            }
+        }
+
+        if (is_numeric($value)) {
+            return min(255,max(0,round($value)));
+        }
+
+        return $value;
     }
 
     /**
@@ -5390,20 +5461,21 @@ class Compiler
     protected static $libRgb = [
         ['color'],
         ['color', 'alpha'],
+        ['channels'],
         ['red', 'green', 'blue'],
         ['red', 'green', 'blue', 'alpha'] ];
     protected function libRgb($args)
     {
         switch (count($args)) {
             case 1:
-                $color = $this->coerceColor($args[0]);
+                $color = $this->coerceColor($args[0], true);
                 break;
             case 3:
                 list($r, $g, $b) = $args;
                 $color = [Type::T_COLOR, $r[1], $g[1], $b[1]];
                 break;
             case 2:
-                if ($color = $this->coerceColor($args[0])) {
+                if ($color = $this->coerceColor($args[0], true)) {
                     $num = $args[1];
                     if ($num[0] == Type::T_NUMBER) {
                         $alpha = $num[1];
@@ -5431,7 +5503,7 @@ class Compiler
     protected function libRgba($args)
     {
         if (count($args) == 2) {
-            if ($color = $this->coerceColor($args[0])) {
+            if ($color = $this->coerceColor($args[0], true)) {
                 $num = isset($args[3]) ? $args[3] : $args[1];
                 $alpha = $this->assertNumber($num);
                 $color[4] = $alpha;
