@@ -95,6 +95,7 @@ class ScssTest extends \PHPUnit_Framework_TestCase
         if (strpos($css, "@fblthp") !== false) {
             $css = preg_replace(",@fblthp {}\s*,ims", "", $css);
             $css = preg_replace(",@media screen {\s*}\s*,ims", "", $css);
+            $css = preg_replace(",@supports \([^)]*\) {\s*}\s*,ims", "", $css);
         }
 
 
