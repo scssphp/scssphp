@@ -5583,21 +5583,23 @@ class Compiler
     {
         $color = $this->assertColor($args[0]);
 
-        foreach ([1, 2, 3, 7] as $i) {
-            if (isset($args[$i])) {
-                $val = $this->assertNumber($args[$i]);
-                $ii = $i === 7 ? 4 : $i; // alpha
-                $color[$ii] = call_user_func($fn, isset($color[$ii]) ? $color[$ii] : 0, $val, $i);
+        foreach ([1=>1, 2=>2, 3=>3, 7=>4] as $iarg => $irgba) {
+            if (isset($args[$iarg])) {
+                $val = $this->assertNumber($args[$iarg]);
+                if (!isset($color[$irgba])) {
+                    $color[$irgba] = (($irgba < 4) ? 0 : 1);
+                }
+                $color[$irgba] = call_user_func($fn, $color[$irgba], $val, $iarg);
             }
         }
 
         if (! empty($args[4]) || ! empty($args[5]) || ! empty($args[6])) {
             $hsl = $this->toHSL($color[1], $color[2], $color[3]);
 
-            foreach ([4, 5, 6] as $i) {
-                if (! empty($args[$i])) {
-                    $val = $this->assertNumber($args[$i]);
-                    $hsl[$i - 3] = call_user_func($fn, $hsl[$i - 3], $val, $i);
+            foreach ([4=>1, 5=>2, 6=>3] as $iarg => $ihsl) {
+                if (! empty($args[$iarg])) {
+                    $val = $this->assertNumber($args[$iarg]);
+                    $hsl[$ihsl] = call_user_func($fn, $hsl[$ihsl], $val, $iarg);
                 }
             }
 

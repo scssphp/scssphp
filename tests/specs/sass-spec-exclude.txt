@@ -16,13 +16,11 @@
 46/1980. basic/52_interchangeable_hyphens_underscores
 47/1980. basic/54_adjacent_identifiers_with_hyphens
 53/1980. basic/60_call
-54/1980. colors/adjust-color
 55/1980. colors/adjust-hue
 58/1980. colors/complement
 59/1980. colors/desaturate
 60/1980. colors/fade-in
 62/1980. colors/saturate
-64/1980. colors/scale-color
 65/1980. core_functions/color/hsl/error/five_args
 66/1980. core_functions/color/hsl/error/four_args/alpha/unit
 67/1980. core_functions/color/hsl/error/four_args/hue/type
@@ -748,7 +746,6 @@
 1292/1980. libsass/color-functions/hsl/desaturate
 1293/1980. libsass/color-functions/hsl/hue
 1294/1980. libsass/color-functions/hsl/lighten
-1303/1980. libsass/color-functions/other/adjust-color/a
 1304/1980. libsass/color-functions/other/adjust-color/b
 1305/1980. libsass/color-functions/other/adjust-color/g
 1306/1980. libsass/color-functions/other/adjust-color/h
@@ -761,7 +758,6 @@
 1314/1980. libsass/color-functions/other/change-color/l
 1315/1980. libsass/color-functions/other/change-color/r
 1316/1980. libsass/color-functions/other/change-color/s
-1317/1980. libsass/color-functions/other/scale-color/a
 1318/1980. libsass/color-functions/other/scale-color/b
 1319/1980. libsass/color-functions/other/scale-color/g
 1320/1980. libsass/color-functions/other/scale-color/l
@@ -802,7 +798,6 @@
 1375/1980. libsass/precision/lower
 1376/1980. libsass/properties-in-media
 1377/1980. libsass/rel
-1378/1980. libsass/scale
 1379/1980. libsass/selector-functions/is_superselector/has_isnt_superselector_of_contained_selector
 1380/1980. libsass/selector-functions/is_superselector/host_context_isnt_superselector_of_contained_selector
 1381/1980. libsass/selector-functions/is_superselector/host_isnt_superselector_of_contained_selector
