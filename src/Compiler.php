@@ -6604,11 +6604,12 @@ class Compiler
     protected static $libInspect = ['value'];
     protected function libInspect($args)
     {
-        if ($args[0] === static::$null) {
-            return [Type::T_KEYWORD, 'null'];
+        $value = $args[0];
+        if ($value === static::$null) {
+            $value = [Type::T_KEYWORD, 'null'];
         }
 
-        return $args[0];
+        return [Type::T_STRING, '', [$value]];
     }
 
     /**
