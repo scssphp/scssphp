@@ -5746,23 +5746,26 @@ class Compiler
         return $this->fixColor($new);
     }
 
-    protected static $libHsl = ['hue', 'saturation', 'lightness'];
+    protected static $libHsl =[
+        ['hue', 'saturation', 'lightness'],
+        ['hue', 'saturation', 'lightness', 'alpha']
+    ];
     protected function libHsl($args)
     {
         list($h, $s, $l) = $args;
 
-        return $this->toRGB($h[1], $s[1], $l[1]);
+        $color = $this->toRGB($h[1], $s[1], $l[1]);
+        if (count($args) == 4) {
+            $color[4] = $args[3][1];
+        }
+
+        return $color;
     }
 
     protected static $libHsla = ['hue', 'saturation', 'lightness', 'alpha'];
     protected function libHsla($args)
     {
-        list($h, $s, $l, $a) = $args;
-
-        $color = $this->toRGB($h[1], $s[1], $l[1]);
-        $color[4] = $a[1];
-
-        return $color;
+        return $this->libHsl($args);
     }
 
     protected static $libHue = ['color'];

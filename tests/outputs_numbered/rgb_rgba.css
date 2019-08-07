@@ -33,3 +33,10 @@ a {
 /* line 27, inputs/rgb_rgba.scss */
 a {
   b: rgb(calc(1), 2, 3, 0.4); }
+
+/* line 30, inputs/rgb_rgba.scss */
+basic {
+  transparent: rgba(51, 204, 204, 0);
+  opaque: #3cc;
+  partial: rgba(51, 204, 204, 0.5);
+  named: rgba(51, 204, 204, 0.4); }
