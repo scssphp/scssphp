@@ -33,3 +33,14 @@ basic {
   partial: hsl(180, 60%, 50%, 0.5);
   named: hsl($hue: 180, $saturation: 60%, $lightness: 50%, $alpha: 0.4);
 }
+
+// core_functions/color/hsl/one_arg/alpha
+basic {
+  transparent: hsl(180 60% 50% / 0);
+  opaque: hsl(180 60% 50% / 1);
+  partial: hsl(180 60% 50% / 0.5);
+  named: hsl($channels: 180 60% 50% / 0.4);
+
+  // Extra parens shouldn't cause the slash to be forced into division.
+  parenthesized: (hsl(180 60% 50% / 0.4));
+}

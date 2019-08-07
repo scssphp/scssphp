@@ -4631,7 +4631,7 @@ class Compiler
         }
 
         // specific cases ?
-        if ($functionName === 'libRgb') {
+        if (in_array($functionName, ['libRgb', 'libRgba', 'libHsl', 'libHsla'])) {
             // notation 100 127 255 / 0 is in fact a simple list of 4 values
             foreach ($args as $k => $arg) {
                 if ($arg[1][0] === Type::T_LIST && count($arg[1][2]) === 3) {
@@ -5144,7 +5144,24 @@ class Compiler
      */
     protected function compileRGBAValue($value, $isAlpha = false)
     {
-        if (! is_numeric($value)) {
+        if ($isAlpha) {
+            return $this->compileColorPartValue($value, 0, 1, false);
+        }
+        return $this->compileColorPartValue($value, 0, 255, true);
+    }
+
+    /**
+     * @param mixed $value
+     * @param int|float $min
+     * @param int|float $max
+     * @param bool $isInt
+     * @param bool $clamp
+     * @param bool $modulo
+     * @return int|mixed
+     */
+    protected function compileColorPartValue($value, $min, $max, $isInt = true, $clamp = true, $modulo = false)
+    {
+        if (!is_numeric($value)) {
             if (is_array($value)) {
                 $reduced = $this->reduce($value);
                 if (is_object($reduced) && $value->type === Type::T_NUMBER) {
@@ -5155,7 +5172,7 @@ class Compiler
                 $num = $value->dimension;
                 switch ($value->units) {
                     case '%':
-                        $num *= ($isAlpha ? 1.0 : 255) / 100;
+                        $num *= $max / 100;
                         break;
                     default:
                         break;
@@ -5167,10 +5184,20 @@ class Compiler
         }
 
         if (is_numeric($value)) {
-            if ($isAlpha) {
-                return min(1, max(0, $value));
+            if ($isInt) {
+                $value = round($value);
             }
-            return min(255, max(0, round($value)));
+            if ($clamp) {
+                $value = min($max, max($min, $value));
+            }
+            if ($modulo) {
+                $value = $value % $max;
+                // still negative?
+                while ($value < $min) {
+                    $value += $max;
+                }
+            }
+            return $value;
         }
 
         return $value;
@@ -5747,22 +5774,44 @@ class Compiler
     }
 
     protected static $libHsl =[
+        ['channels'],
         ['hue', 'saturation', 'lightness'],
-        ['hue', 'saturation', 'lightness', 'alpha']
-    ];
+        ['hue', 'saturation', 'lightness', 'alpha'] ];
     protected function libHsl($args)
     {
-        list($h, $s, $l) = $args;
+        if (count($args) == 1) {
+            if ($args[0][0] !== Type::T_LIST || count($args[0][2])<3 || count($args[0][2])>4) {
+                return [Type::T_STRING, '', ['hsl(', $args[0], ')']];
+            }
+            $args = $args[0][2];
+        }
 
-        $color = $this->toRGB($h[1], $s[1], $l[1]);
-        if (count($args) == 4) {
-            $color[4] = $args[3][1];
+        $hue = $this->compileColorPartValue($args[0], 0, 360, false, false, true);
+        $saturation = $this->compileColorPartValue($args[1], 0, 100, false);
+        $lightness = $this->compileColorPartValue($args[2], 0, 100, false);
+
+        $alpha = null;
+        if (count($args) === 4) {
+            $alpha = $this->compileColorPartValue($args[3], 0, 100, false);
+            if (!is_numeric($hue) || !is_numeric($saturation) || !is_numeric($lightness) || !is_numeric($alpha)) {
+                return [Type::T_STRING, '', ['hsl(', $args[0], ', ', $args[1], ', ', $args[2], ', ', $args[3], ')']];
+            }
+        } else {
+            if (!is_numeric($hue) || !is_numeric($saturation) || !is_numeric($lightness)) {
+                return [Type::T_STRING, '', ['hsl(', $args[0], ', ', $args[1], ', ', $args[2], ')']];
+            }
+        }
+        $color = $this->toRGB($hue, $saturation, $lightness);
+        if (!is_null($alpha)) {
+            $color[4] = $alpha;
         }
 
         return $color;
     }
 
-    protected static $libHsla = ['hue', 'saturation', 'lightness', 'alpha'];
+    protected static $libHsla = [
+            ['channels'],
+            ['hue', 'saturation', 'lightness', 'alpha:1'] ];
     protected function libHsla($args)
     {
         return $this->libHsl($args);

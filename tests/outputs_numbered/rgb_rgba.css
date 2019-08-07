@@ -40,3 +40,11 @@ basic {
   opaque: #3cc;
   partial: rgba(51, 204, 204, 0.5);
   named: rgba(51, 204, 204, 0.4); }
+
+/* line 38, inputs/rgb_rgba.scss */
+basic {
+  transparent: rgba(51, 204, 204, 0);
+  opaque: #3cc;
+  partial: rgba(51, 204, 204, 0.5);
+  named: rgba(51, 204, 204, 0.4);
+  parenthesized: rgba(51, 204, 204, 0.4); }
