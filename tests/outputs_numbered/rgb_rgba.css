@@ -24,7 +24,7 @@ a {
 
 /* line 21, inputs/rgb_rgba.scss */
 a {
-  b: rgb(calc(1), 2, 3); }
+  b: rgb(calc(1) 2 3); }
 
 /* line 24, inputs/rgb_rgba.scss */
 a {
@@ -48,3 +48,12 @@ basic {
   partial: rgba(51, 204, 204, 0.5);
   named: rgba(51, 204, 204, 0.4);
   parenthesized: rgba(51, 204, 204, 0.4); }
+
+/* line 49, inputs/rgb_rgba.scss */
+basic {
+  transparent: rgba(0, 255, 127, 0);
+  opaque: #beaded;
+  partial: rgba(18, 52, 86, 0.5);
+  percent: rgba(18, 52, 86, 0.5);
+  named: rgba(0, 255, 127, 0.3);
+  parenthesized: rgba(0, 255, 127, 0.3); }

@@ -17,7 +17,7 @@ a {
   b: springgreen; }
 
 a {
-  b: rgb(calc(1), 2, 3); }
+  b: rgb(calc(1) 2 3); }
 
 a {
   b: rgba(var(--foo) / 0.4); }
@@ -37,3 +37,11 @@ basic {
   partial: rgba(51, 204, 204, 0.5);
   named: rgba(51, 204, 204, 0.4);
   parenthesized: rgba(51, 204, 204, 0.4); }
+
+basic {
+  transparent: rgba(0, 255, 127, 0);
+  opaque: #beaded;
+  partial: rgba(18, 52, 86, 0.5);
+  percent: rgba(18, 52, 86, 0.5);
+  named: rgba(0, 255, 127, 0.3);
+  parenthesized: rgba(0, 255, 127, 0.3); }

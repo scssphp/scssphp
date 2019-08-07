@@ -18,7 +18,6 @@
 53/1980. basic/60_call
 54/1980. colors/adjust-color
 55/1980. colors/adjust-hue
-56/1980. colors/basic
 58/1980. colors/complement
 59/1980. colors/desaturate
 60/1980. colors/fade-in
@@ -64,7 +63,6 @@
 102/1980. core_functions/color/hsla/error/three_args/lightness/type
 103/1980. core_functions/color/hsla/error/three_args/saturation/type
 104/1980. core_functions/color/hsla/error/two_args
-105/1980. core_functions/color/hsla/four_args/alpha_unitless
 106/1980. core_functions/color/hsla/four_args/basic
 107/1980. core_functions/color/hsla/two_args
 108/1980. core_functions/color/rgb/error/five_args
@@ -88,7 +86,6 @@
 126/1980. core_functions/color/rgb/error/two_args/alpha/type
 127/1980. core_functions/color/rgb/error/two_args/alpha/unit
 128/1980. core_functions/color/rgb/error/two_args/color/type
-129/1980. core_functions/color/rgb/three_args/basic
 130/1980. core_functions/color/rgba/error/five_args
 131/1980. core_functions/color/rgba/error/four_args/blue/type
 132/1980. core_functions/color/rgba/error/four_args/green/type
@@ -108,8 +105,6 @@
 146/1980. core_functions/color/rgba/error/three_args/red/type
 147/1980. core_functions/color/rgba/error/two_args/alpha/type
 148/1980. core_functions/color/rgba/error/two_args/color/type
-149/1980. core_functions/color/rgba/four_args/alpha_unitless
-150/1980. core_functions/color/rgba/four_args/basic
 151/1980. core_functions/color/rgba/two_args
 152/1980. core_functions/content-exists/basic
 153/1980. core_functions/content-exists/error/inside_function
@@ -768,8 +763,6 @@
 1292/1980. libsass/color-functions/hsl/desaturate
 1293/1980. libsass/color-functions/hsl/hue
 1294/1980. libsass/color-functions/hsl/lighten
-1299/1980. libsass/color-functions/opacity/fade-out
-1302/1980. libsass/color-functions/opacity/transparentize
 1303/1980. libsass/color-functions/other/adjust-color/a
 1304/1980. libsass/color-functions/other/adjust-color/b
 1305/1980. libsass/color-functions/other/adjust-color/g
@@ -777,7 +770,6 @@
 1307/1980. libsass/color-functions/other/adjust-color/l
 1308/1980. libsass/color-functions/other/adjust-color/r
 1309/1980. libsass/color-functions/other/adjust-color/s
-1310/1980. libsass/color-functions/other/change-color/a
 1311/1980. libsass/color-functions/other/change-color/b
 1312/1980. libsass/color-functions/other/change-color/g
 1313/1980. libsass/color-functions/other/change-color/h
@@ -794,7 +786,6 @@
 1327/1980. libsass/color-functions/rgb/rgb/b
 1328/1980. libsass/color-functions/rgb/rgb/g
 1329/1980. libsass/color-functions/rgb/rgb/r
-1330/1980. libsass/color-functions/rgb/rgba/a
 1331/1980. libsass/color-functions/rgb/rgba/b
 1332/1980. libsass/color-functions/rgb/rgba/g
 1333/1980. libsass/color-functions/rgb/rgba/r

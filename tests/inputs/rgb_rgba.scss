@@ -44,3 +44,15 @@ basic {
   // Extra parens shouldn't cause the slash to be forced into division.
   parenthesized: (hsl(180 60% 50% / 0.4));
 }
+
+// core_functions/color/rgba/one_arg/alpha
+basic {
+  transparent: rgba(0 255 127 / 0);
+  opaque: rgba(190 173 237 / 1);
+  partial: rgba(18 52 86 / 0.5);
+  percent: rgba(18 52 86 / 50%);
+  named: rgba($channels: 0 255 127 / 0.3);
+
+  // Extra parens shouldn't cause the slash to be forced into division.
+  parenthesized: (rgba(0 255 127 / 0.3));
+}

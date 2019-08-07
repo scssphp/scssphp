@@ -3440,7 +3440,8 @@ class Compiler
                 if (count($value) === 5) {
                     $alpha = $this->compileRGBAValue($value[4], true);
                     if (!is_numeric($alpha) || $alpha < 1) {
-                        if ($colorName = Colors::RGBaToColorName($r, $g, $b, $alpha)) {
+                        $colorName = Colors::RGBaToColorName($r, $g, $b, $alpha);
+                        if (!is_null($colorName)) {
                             return $colorName;
                         }
 
@@ -3458,7 +3459,8 @@ class Compiler
                     return 'rgb(' . $r . ', ' . $g . ', ' . $b . ')';
                 }
 
-                if ($colorName = Colors::RGBaToColorName($r, $g, $b)) {
+                $colorName = Colors::RGBaToColorName($r, $g, $b);
+                if (!is_null($colorName)) {
                     return $colorName;
                 }
 
@@ -5052,7 +5054,7 @@ class Compiler
                     }
                     if (isset($value[4])) {
                         if (!is_numeric($value[4])) {
-                            $cv = $this->compileRGBAValue($value[$i], true);
+                            $cv = $this->compileRGBAValue($value[4], true);
                             if (!is_numeric($cv)) {
                                 return null;
                             }
@@ -5068,7 +5070,7 @@ class Compiler
                     if (count($value[2]) == 3 || count($value[2]) == 4) {
                         $color = $value[2];
                         array_unshift($color, Type::T_COLOR);
-                        return $color;
+                        return $this->coerceColor($color);
                     }
                 }
                 return null;
@@ -5170,12 +5172,16 @@ class Compiler
             }
             if (is_object($value) && $value->type === Type::T_NUMBER) {
                 $num = $value->dimension;
-                switch ($value->units) {
-                    case '%':
-                        $num *= $max / 100;
-                        break;
-                    default:
-                        break;
+                if (count($value->units)) {
+                    $unit = array_keys($value->units);
+                    $unit = reset($unit);
+                    switch ($unit) {
+                        case '%':
+                            $num *= $max / 100;
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 $value = $num;
             } elseif (is_array($value)) {
@@ -5520,33 +5526,33 @@ class Compiler
         ['channels'],
         ['red', 'green', 'blue'],
         ['red', 'green', 'blue', 'alpha'] ];
-    protected function libRgb($args)
+    protected function libRgb($args, $kwargs, $funcName='rgb')
     {
         switch (count($args)) {
             case 1:
                 if (!$color = $this->coerceColor($args[0], true)) {
-                    $color = [Type::T_STRING, '', ['rgb(', $args[0], ')']];
+                    $color = [Type::T_STRING, '', [$funcName . '(', $args[0], ')']];
                 }
                 break;
             case 3:
                 $color = [Type::T_COLOR, $args[0], $args[1], $args[2]];
                 if (!$color = $this->coerceColor($color)) {
-                    $color = [Type::T_STRING, '', ['rgb(', $args[0], ', ', $args[1], ', ', $args[2], ')']];
+                    $color = [Type::T_STRING, '', [$funcName .'(', $args[0], ', ', $args[1], ', ', $args[2], ')']];
                 }
                 return $color;
                 break;
             case 2:
                 if ($color = $this->coerceColor($args[0], true)) {
-                    $num = $args[1];
-                    if ($num[0] == Type::T_NUMBER) {
-                        $alpha = $num[1];
+                    $alpha = $this->compileRGBAValue($args[1], true);
+                    if (is_numeric($alpha)) {
                         $color[4] = $alpha;
                     } else {
                         $color = [Type::T_STRING, '',
-                            ['rgb(', $color[1], ', ', $color[2], ', ', $color[3], ', ', $num, ')']];
+                            [$funcName . '(', $color[1], ', ', $color[2], ', ', $color[3], ', ', $alpha, ')']];
                     }
-                } else {
-                    $color = [Type::T_STRING, '', ['rgb(', $args[0], ')']];
+                }
+                else {
+                    $color = [Type::T_STRING, '', [$funcName . '(', $args[0], ')']];
                 }
                 break;
             case 4:
@@ -5554,34 +5560,22 @@ class Compiler
                 $color = [Type::T_COLOR, $args[0], $args[1], $args[2], $args[3]];
                 if (!$color = $this->coerceColor($color)) {
                     $color = [Type::T_STRING, '',
-                        ['rgb(', $args[0], ', ', $args[1], ', ', $args[2], ', ', $args[3], ')']];
+                        [$funcName . '(', $args[0], ', ', $args[1], ', ', $args[2], ', ', $args[3], ')']];
                 }
-                return $color;
                 break;
         }
         return $color;
     }
 
     protected static $libRgba = [
-        ['color', 'alpha:1'],
-        ['red', 'green', 'blue', 'alpha:1'] ];
-    protected function libRgba($args)
+        ['color'],
+        ['color', 'alpha'],
+        ['channels'],
+        ['red', 'green', 'blue'],
+        ['red', 'green', 'blue', 'alpha'] ];
+    protected function libRgba($args, $kwargs)
     {
-        if (count($args) == 2) {
-            if ($color = $this->coerceColor($args[0], true)) {
-                $num = isset($args[3]) ? $args[3] : $args[1];
-                $alpha = $this->assertNumber($num);
-                $color[4] = $alpha;
-
-                return $color;
-            }
-
-            return [Type::T_STRING, '', ['rgba(', $args[0], ')']];
-        }
-
-        list($r, $g, $b, $a) = $args;
-
-        return [Type::T_COLOR, $r[1], $g[1], $b[1], $a[1]];
+        return $this->libRgb($args, $kwargs, 'rgba');
     }
 
     // helper function for adjust_color, change_color, and scale_color
@@ -5777,11 +5771,11 @@ class Compiler
         ['channels'],
         ['hue', 'saturation', 'lightness'],
         ['hue', 'saturation', 'lightness', 'alpha'] ];
-    protected function libHsl($args)
+    protected function libHsl($args, $kwargs, $funcName='hsl')
     {
         if (count($args) == 1) {
             if ($args[0][0] !== Type::T_LIST || count($args[0][2])<3 || count($args[0][2])>4) {
-                return [Type::T_STRING, '', ['hsl(', $args[0], ')']];
+                return [Type::T_STRING, '', [$funcName . '(', $args[0], ')']];
             }
             $args = $args[0][2];
         }
@@ -5794,11 +5788,11 @@ class Compiler
         if (count($args) === 4) {
             $alpha = $this->compileColorPartValue($args[3], 0, 100, false);
             if (!is_numeric($hue) || !is_numeric($saturation) || !is_numeric($lightness) || !is_numeric($alpha)) {
-                return [Type::T_STRING, '', ['hsl(', $args[0], ', ', $args[1], ', ', $args[2], ', ', $args[3], ')']];
+                return [Type::T_STRING, '', [$funcName . '(', $args[0], ', ', $args[1], ', ', $args[2], ', ', $args[3], ')']];
             }
         } else {
             if (!is_numeric($hue) || !is_numeric($saturation) || !is_numeric($lightness)) {
-                return [Type::T_STRING, '', ['hsl(', $args[0], ', ', $args[1], ', ', $args[2], ')']];
+                return [Type::T_STRING, '', [$funcName . '(', $args[0], ', ', $args[1], ', ', $args[2], ')']];
             }
         }
         $color = $this->toRGB($hue, $saturation, $lightness);
@@ -5812,9 +5806,9 @@ class Compiler
     protected static $libHsla = [
             ['channels'],
             ['hue', 'saturation', 'lightness', 'alpha:1'] ];
-    protected function libHsla($args)
+    protected function libHsla($args, $kwargs)
     {
-        return $this->libHsl($args);
+        return $this->libHsl($args, $kwargs, 'hsla');
     }
 
     protected static $libHue = ['color'];
