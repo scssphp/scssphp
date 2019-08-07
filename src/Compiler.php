@@ -3437,18 +3437,21 @@ class Compiler
                 $r = $this->compileRGBAValue($r);
                 $g = $this->compileRGBAValue($g);
                 $b = $this->compileRGBAValue($b);
+                if (count($value) === 5) {
+                    $alpha = $this->compileRGBAValue($value[4], true);
+                    if (!is_numeric($alpha) || $alpha < 1) {
+                        if (is_numeric($alpha)) {
+                            $a = new Node\Number($alpha, '');
+                        }
+                        else {
+                            $a = $alpha;
+                        }
 
-                if (count($value) === 5 && $value[4] !== 1) { // rgba
-                    if (is_numeric($value[4])) {
-                        $a = new Node\Number($value[4], '');
+                        return 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ')';
                     }
-                    else {
-                        $a = $value[4];
-                    }
-
-                    return 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $a . ')';
                 }
-                elseif(!is_numeric($r) || !is_numeric($g) || !is_numeric($b)) {
+
+                if(!is_numeric($r) || !is_numeric($g) || !is_numeric($b)) {
                     return 'rgb(' . $r . ', ' . $g . ', ' . $b . ')';
                 }
 
@@ -5115,13 +5118,10 @@ class Compiler
                     }
                 }
 
-                // named color?
-                if (isset(Colors::$cssColors[$name])) {
-                    $rgba = explode(',', Colors::$cssColors[$name]);
-
+                if ($rgba = Colors::colorNameToRGBa($name)) {
                     return isset($rgba[3])
-                        ? [Type::T_COLOR, (int) $rgba[0], (int) $rgba[1], (int) $rgba[2], (int) $rgba[3]]
-                        : [Type::T_COLOR, (int) $rgba[0], (int) $rgba[1], (int) $rgba[2]];
+                        ? [Type::T_COLOR, $rgba[0], $rgba[1], $rgba[2], $rgba[3]]
+                        : [Type::T_COLOR, $rgba[0], $rgba[1], $rgba[2]];
                 }
 
                 return null;
