@@ -22,3 +22,6 @@ a {b: rgb(calc(1) 2 3)}
 
 // core_functions/color/rgba/one_arg/special_functions/alpha/multi_argument_var/1_of_1
 a {b: rgba(var(--foo) / 0.4)}
+
+// core_functions/color/rgb/four_args/special_functions/calc/arg_1
+a {b: rgb(calc(1), 2, 3, 0.4)}

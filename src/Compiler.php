@@ -5161,7 +5161,7 @@ class Compiler
                         break;
                 }
                 $value = $num;
-            } else {
+            } elseif (is_array($value)) {
                 $value = $this->compileValue($value);
             }
         }
@@ -5524,7 +5524,12 @@ class Compiler
                 break;
             case 4:
             default:
-                $color = Compiler::libRgba($args);
+                $color = [Type::T_COLOR, $args[0], $args[1], $args[2], $args[3]];
+                if (!$color = $this->coerceColor($color)) {
+                    $color = [Type::T_STRING, '',
+                        ['rgb(', $args[0], ', ', $args[1], ', ', $args[2], ', ', $args[3], ')']];
+                }
+                return $color;
                 break;
         }
         return $color;

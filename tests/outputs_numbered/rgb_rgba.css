@@ -29,3 +29,7 @@ a {
 /* line 24, inputs/rgb_rgba.scss */
 a {
   b: rgba(var(--foo) / 0.4); }
+
+/* line 27, inputs/rgb_rgba.scss */
+a {
+  b: rgb(calc(1), 2, 3, 0.4); }

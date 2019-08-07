@@ -21,3 +21,6 @@ a {
 
 a {
   b: rgba(var(--foo) / 0.4); }
+
+a {
+  b: rgb(calc(1), 2, 3, 0.4); }
