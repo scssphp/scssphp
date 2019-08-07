@@ -1,0 +1,31 @@
+/* line 3, inputs/rgb_rgba.scss */
+a {
+  b: rgb(var(--foo), 3, 0.4); }
+
+/* line 6, inputs/rgb_rgba.scss */
+a {
+  b: rgba(17, 34, 51, 0.5); }
+
+/* line 9, inputs/rgb_rgba.scss */
+a {
+  b: rgb(0, 0, 255, calc(0.4)); }
+
+/* line 12, inputs/rgb_rgba.scss */
+a {
+  b: rgb(0, 0, 255, var(--foo)); }
+
+/* line 15, inputs/rgb_rgba.scss */
+a {
+  b: rgba(0, 255, 127, 0); }
+
+/* line 18, inputs/rgb_rgba.scss */
+a {
+  b: #00ff7f; }
+
+/* line 21, inputs/rgb_rgba.scss */
+a {
+  b: rgb(calc(1), 2, 3); }
+
+/* line 24, inputs/rgb_rgba.scss */
+a {
+  b: rgba(var(--foo) / 0.4); }

@@ -1,0 +1,23 @@
+a {
+  b: rgb(var(--foo), 3, 0.4); }
+
+a {
+  b: rgba(17, 34, 51, 0.5); }
+
+a {
+  b: rgb(0, 0, 255, calc(0.4)); }
+
+a {
+  b: rgb(0, 0, 255, var(--foo)); }
+
+a {
+  b: rgba(0, 255, 127, 0); }
+
+a {
+  b: #00ff7f; }
+
+a {
+  b: rgb(calc(1), 2, 3); }
+
+a {
+  b: rgba(var(--foo) / 0.4); }

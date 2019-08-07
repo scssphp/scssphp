@@ -1,0 +1,24 @@
+// core_functions/color/rgb/multi_argument_var/1_of_3
+// var() is substituted before parsing, so it may contain multiple arguments.
+a {b: rgb(var(--foo), 3, 0.4)}
+
+// core_functions/color/rgb/two_args/opaque_to/partial
+a {b: rgb(#123, 0.5)}
+
+// core_functions/color/rgb/four_args/special_functions/calc/arg_2/args
+a {b: rgb(blue, calc(0.4))}
+
+// core_functions/color/rgb/four_args/special_functions/var/arg_2/args/alpha
+a {b: rgb(blue, var(--foo))}
+
+// core_functions/color/rgb/one_arg/alpha/in_gamut/transparent
+a {b: rgb(0 255 127 / 0)}
+
+// core_functions/color/rgb/one_arg/no_alpha/unitless/named
+a {b: rgb($channels: 0 255 127)}
+
+// core_functions/color/rgb/one_arg/special_functions/no_alpha/calc/arg_1
+a {b: rgb(calc(1) 2 3)}
+
+// core_functions/color/rgba/one_arg/special_functions/alpha/multi_argument_var/1_of_1
+a {b: rgba(var(--foo) / 0.4)}
