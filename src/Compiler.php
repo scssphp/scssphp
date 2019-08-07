@@ -362,12 +362,12 @@ class Compiler
     protected function makeOutputBlock($type, $selectors = null)
     {
         $out = new OutputBlock;
-        $out->type         = $type;
-        $out->lines        = [];
-        $out->children     = [];
-        $out->parent       = $this->scope;
-        $out->selectors    = $selectors;
-        $out->depth        = $this->env->depth;
+        $out->type      = $type;
+        $out->lines     = [];
+        $out->children  = [];
+        $out->parent    = $this->scope;
+        $out->selectors = $selectors;
+        $out->depth     = $this->env->depth;
 
         if ($this->env->block instanceof Block) {
             $out->sourceName   = $this->env->block->sourceName;
@@ -738,12 +738,13 @@ class Compiler
     {
         $parents = [];
         $children = [];
+
         $j = $i = count($fragment);
 
         for (;;) {
             $children = $j != $i ? array_slice($fragment, $j, $i - $j) : [];
-            $parents = array_slice($fragment, 0, $j);
-            $slice = end($parents);
+            $parents  = array_slice($fragment, 0, $j);
+            $slice    = end($parents);
 
             if (empty($slice) || ! $this->isImmediateRelationshipCombinator($slice[0])) {
                 break;
@@ -765,8 +766,8 @@ class Compiler
      */
     protected function combineSelectorSingle($base, $other)
     {
-        $tag = [];
-        $out = [];
+        $tag    = [];
+        $out    = [];
         $wasTag = true;
 
         foreach ([$base, $other] as $single) {
@@ -832,14 +833,14 @@ class Compiler
 
             if ($needsWrap) {
                 $wrapped = new Block;
-                $wrapped->sourceName = $media->sourceName;
-                $wrapped->sourceIndex = $media->sourceIndex;
-                $wrapped->sourceLine = $media->sourceLine;
+                $wrapped->sourceName   = $media->sourceName;
+                $wrapped->sourceIndex  = $media->sourceIndex;
+                $wrapped->sourceLine   = $media->sourceLine;
                 $wrapped->sourceColumn = $media->sourceColumn;
-                $wrapped->selectors = [];
-                $wrapped->comments = [];
-                $wrapped->parent = $media;
-                $wrapped->children = $media->children;
+                $wrapped->selectors    = [];
+                $wrapped->comments     = [];
+                $wrapped->parent       = $media;
+                $wrapped->children     = $media->children;
 
                 $media->children = [[Type::T_BLOCK, $wrapped]];
                 if (isset($this->lineNumberStyle)) {
@@ -998,8 +999,8 @@ class Compiler
             if ($this->isWith($scope, $with, $without)) {
                 $s = clone $scope;
                 $s->children = [];
-                $s->lines = [];
-                $s->parent = null;
+                $s->lines    = [];
+                $s->parent   = null;
 
                 if ($s->type !== Type::T_MEDIA && $s->type !== Type::T_DIRECTIVE) {
                     $s->selectors = [];
@@ -1144,8 +1145,9 @@ class Compiler
         foreach ($envs as $e) {
             if ($e->block && ! $this->isWith($e->block, $with, $without)) {
                 $ec = clone $e;
-                $ec->block = null;
+                $ec->block     = null;
                 $ec->selectors = [];
+
                 $filtered[] = $ec;
             } else {
                 $filtered[] = $e;
@@ -1184,13 +1186,16 @@ class Compiler
             // a selector starting with number is a keyframe rule
             if (count($block->selectors)) {
                 $s = reset($block->selectors);
+
                 while (is_array($s)) {
                     $s = reset($s);
                 }
+
                 if (is_object($s) && get_class($s) === 'ScssPhp\ScssPhp\Node\Number') {
                     return $this->testWithWithout('keyframes', $with, $without);
                 }
             }
+
             return $this->testWithWithout('rule', $with, $without);
         }
 
@@ -1203,7 +1208,8 @@ class Compiler
      * @param string $what
      * @param array  $with
      * @param array  $without
-     * @return bool
+     *
+     * @return boolean
      *   true if the block should be kept, false to reject
      */
     protected function testWithWithout($what, $with, $without)
@@ -1276,6 +1282,7 @@ class Compiler
                     array_unshift($child[1]->prefix[2], $prefix);
                     break;
             }
+
             $this->compileChild($child, $nested);
         }
     }
@@ -1308,15 +1315,15 @@ class Compiler
 
             if ($needWrapping) {
                 $wrapped = new Block;
-                $wrapped->sourceName = $block->sourceName;
-                $wrapped->sourceIndex = $block->sourceIndex;
-                $wrapped->sourceLine = $block->sourceLine;
+                $wrapped->sourceName   = $block->sourceName;
+                $wrapped->sourceIndex  = $block->sourceIndex;
+                $wrapped->sourceLine   = $block->sourceLine;
                 $wrapped->sourceColumn = $block->sourceColumn;
-                $wrapped->selectors = [];
-                $wrapped->comments = [];
-                $wrapped->parent = $block;
-                $wrapped->children = $block->children;
-                $wrapped->selfParent = $block->selfParent;
+                $wrapped->selectors    = [];
+                $wrapped->comments     = [];
+                $wrapped->parent       = $block;
+                $wrapped->children     = $block->children;
+                $wrapped->selfParent   = $block->selfParent;
 
                 $block->children = [[Type::T_BLOCK, $wrapped]];
             }
@@ -1433,8 +1440,8 @@ class Compiler
         // after evaluating interpolates, we might need a second pass
         if ($this->shouldEvaluate) {
             $selectors = $this->revertSelfSelector($selectors);
-            $buffer = $this->collapseSelectors($selectors);
-            $parser = $this->parserFactory(__METHOD__);
+            $buffer    = $this->collapseSelectors($selectors);
+            $parser    = $this->parserFactory(__METHOD__);
 
             if ($parser->parseSelector($buffer, $newSelectors)) {
                 $selectors = array_map([$this, 'evalSelector'], $newSelectors);
@@ -1518,6 +1525,7 @@ class Compiler
                     } else {
                         $output[] = $compound;
                     }
+
                     $glueNext = true;
                 } elseif ($glueNext) {
                     $output[count($output) - 1] .= ' ' . $compound;
@@ -1531,6 +1539,7 @@ class Compiler
                 foreach ($output as &$o) {
                     $o = [Type::T_STRING, '', [$o]];
                 }
+
                 $output = [Type::T_LIST, ' ', $output];
             } else {
                 $output = implode(' ', $output);
@@ -1688,6 +1697,7 @@ class Compiler
             // not displayed but you can var_dump it to deep debug
             $msg = $this->callStackMessage(true, 100);
             $msg = "Infinite calling loop";
+
             $this->throwError($msg);
         }
     }
@@ -1771,9 +1781,12 @@ class Compiler
     protected function evaluateMediaQuery($queryList)
     {
         static $parser = null;
+
         $outQueryList = [];
+
         foreach ($queryList as $kql => $query) {
             $shouldReparse = false;
+
             foreach ($query as $kq => $q) {
                 for ($i = 1; $i < count($q); $i++) {
                     $value = $this->compileValue($q[$i]);
@@ -1792,24 +1805,31 @@ class Compiler
                     $queryList[$kql][$kq][$i] = [Type::T_KEYWORD, $value];
                 }
             }
+
             if ($shouldReparse) {
                 if (is_null($parser)) {
                     $parser = $this->parserFactory(__METHOD__);
                 }
+
                 $queryString = $this->compileMediaQuery([$queryList[$kql]]);
                 $queryString = reset($queryString);
+
                 if (strpos($queryString, '@media ') === 0) {
                     $queryString = substr($queryString, 7);
                     $queries = [];
+
                     if ($parser->parseMediaQueryList($queryString, $queries)) {
                         $queries = $this->evaluateMediaQuery($queries[2]);
+
                         while (count($queries)) {
                             $outQueryList[] = array_shift($queries);
                         }
+
                         continue;
                     }
                 }
             }
+
             $outQueryList[] = $queryList[$kql];
         }
 
@@ -1825,9 +1845,9 @@ class Compiler
      */
     protected function compileMediaQuery($queryList)
     {
-        $start = '@media ';
+        $start   = '@media ';
         $default = trim($start);
-        $out = [];
+        $out     = [];
         $current = "";
 
         foreach ($queryList as $query) {
@@ -1847,6 +1867,7 @@ class Compiler
                 switch ($q[0]) {
                     case Type::T_MEDIA_TYPE:
                         $newType = array_map([$this, 'compileValue'], array_slice($q, 1));
+
                         // combining not and anything else than media type is too risky and should be avoided
                         if (! $mediaTypeOnly) {
                             if (in_array(Type::T_NOT, $newType) || ($type && in_array(Type::T_NOT, $type) )) {
@@ -1867,8 +1888,8 @@ class Compiler
                                 }
 
                                 $current = "";
-                                $type = null;
-                                $parts = [];
+                                $type    = null;
+                                $parts   = [];
                             }
                         }
 
@@ -2004,8 +2025,8 @@ class Compiler
         $t1 = '';
 
         if (count($type1) > 1) {
-            $m1= strtolower($type1[0]);
-            $t1= strtolower($type1[1]);
+            $m1 = strtolower($type1[0]);
+            $t1 = strtolower($type1[1]);
         } else {
             $t1 = strtolower($type1[0]);
         }
@@ -2137,9 +2158,9 @@ class Compiler
 
         // insert the directive as a comment
         $child = $this->makeOutputBlock(Type::T_COMMENT);
-        $child->lines[] = $line;
-        $child->sourceName = $this->sourceNames[$this->sourceIndex];
-        $child->sourceLine = $this->sourceLine;
+        $child->lines[]      = $line;
+        $child->sourceName   = $this->sourceNames[$this->sourceIndex];
+        $child->sourceLine   = $this->sourceLine;
         $child->sourceColumn = $this->sourceColumn;
 
         $root->children[] = $child;
@@ -2183,7 +2204,7 @@ class Compiler
             } else {
                 $nextLines = $this->makeOutputBlock($type);
                 $nextLines->parent = $out;
-                $nextLines->depth = $out->depth;
+                $nextLines->depth  = $out->depth;
 
                 $out->children[] = $nextLines;
                 $outWrite = &$nextLines;
@@ -2204,16 +2225,17 @@ class Compiler
     protected function compileChild($child, OutputBlock $out)
     {
         if (isset($child[Parser::SOURCE_LINE])) {
-            $this->sourceIndex = isset($child[Parser::SOURCE_INDEX]) ? $child[Parser::SOURCE_INDEX] : null;
-            $this->sourceLine = isset($child[Parser::SOURCE_LINE]) ? $child[Parser::SOURCE_LINE] : -1;
+            $this->sourceIndex  = isset($child[Parser::SOURCE_INDEX]) ? $child[Parser::SOURCE_INDEX] : null;
+            $this->sourceLine   = isset($child[Parser::SOURCE_LINE]) ? $child[Parser::SOURCE_LINE] : -1;
             $this->sourceColumn = isset($child[Parser::SOURCE_COLUMN]) ? $child[Parser::SOURCE_COLUMN] : -1;
         } elseif (is_array($child) && isset($child[1]->sourceLine)) {
-            $this->sourceIndex = $child[1]->sourceIndex;
-            $this->sourceLine = $child[1]->sourceLine;
+            $this->sourceIndex  = $child[1]->sourceIndex;
+            $this->sourceLine   = $child[1]->sourceLine;
             $this->sourceColumn = $child[1]->sourceColumn;
         } elseif (! empty($out->sourceLine) && ! empty($out->sourceName)) {
-            $this->sourceLine = $out->sourceLine;
-            $this->sourceIndex = array_search($out->sourceName, $this->sourceNames);
+            $this->sourceLine   = $out->sourceLine;
+            $this->sourceIndex  = array_search($out->sourceName, $this->sourceNames);
+            $this->sourceColumn = $out->sourceColumn;
 
             if ($this->sourceIndex === false) {
                 $this->sourceIndex = null;
@@ -2260,9 +2282,9 @@ class Compiler
                 list(, $name, $value) = $child;
 
                 if ($name[0] === Type::T_VARIABLE) {
-                    $flags = isset($child[3]) ? $child[3] : [];
+                    $flags     = isset($child[3]) ? $child[3] : [];
                     $isDefault = in_array('!default', $flags);
-                    $isGlobal = in_array('!global', $flags);
+                    $isGlobal  = in_array('!global', $flags);
 
                     if ($isGlobal) {
                         $this->set($name[1], $this->reduce($value), false, $this->rootEnv, $value);
@@ -2351,9 +2373,11 @@ class Compiler
                         // only use the first one
                         $result = current($result);
                         $selectors = $out->selectors;
+
                         if (!$selectors && isset($child['selfParent'])) {
                             $selectors = $this->multiplySelectors($this->env, $child['selfParent']);
                         }
+
                         $this->pushExtends($result, $selectors, $child);
                     }
                 }
@@ -2557,14 +2581,14 @@ class Compiler
                 break;
 
             case Type::T_MIXIN_CONTENT:
-                $env = isset($this->storeEnv) ? $this->storeEnv : $this->env;
-                $content = $this->get(static::$namespaces['special'] . 'content', false, $env);
-                $argUsing = $this->get(static::$namespaces['special'] . 'using', false, $env);
+                $env        = isset($this->storeEnv) ? $this->storeEnv : $this->env;
+                $content    = $this->get(static::$namespaces['special'] . 'content', false, $env);
+                $argUsing   = $this->get(static::$namespaces['special'] . 'using', false, $env);
                 $argContent = $child[1];
 
                 if (! $content) {
                     $content = new \stdClass();
-                    $content->scope = new \stdClass();
+                    $content->scope    = new \stdClass();
                     $content->children = $env->parent->block->children;
                     break;
                 }
@@ -2580,6 +2604,7 @@ class Compiler
 
                 // restore the scope from the @content
                 $this->storeEnv = $content->scope;
+
                 // append the vars from using if any
                 foreach ($varsUsing as $name => $val) {
                     $this->set($name, $val, true, $this->storeEnv);
@@ -2594,8 +2619,9 @@ class Compiler
                 list(, $value) = $child;
 
                 $fname = $this->sourceNames[$this->sourceIndex];
-                $line = $this->sourceLine;
+                $line  = $this->sourceLine;
                 $value = $this->compileValue($this->reduce($value, true));
+
                 fwrite($this->stderr, "File $fname on line $line DEBUG: $value\n");
                 break;
 
@@ -2603,8 +2629,9 @@ class Compiler
                 list(, $value) = $child;
 
                 $fname = $this->sourceNames[$this->sourceIndex];
-                $line = $this->sourceLine;
+                $line  = $this->sourceLine;
                 $value = $this->compileValue($this->reduce($value, true));
+
                 fwrite($this->stderr, "File $fname on line $line WARN: $value\n");
                 break;
 
@@ -2612,8 +2639,9 @@ class Compiler
                 list(, $value) = $child;
 
                 $fname = $this->sourceNames[$this->sourceIndex];
-                $line = $this->sourceLine;
+                $line  = $this->sourceLine;
                 $value = $this->compileValue($this->reduce($value, true));
+
                 $this->throwError("File $fname on line $line ERROR: $value\n");
                 break;
 
@@ -2734,9 +2762,8 @@ class Compiler
                     return $this->expToString($value);
                 }
 
-                $left = $this->coerceForExpression($left);
+                $left  = $this->coerceForExpression($left);
                 $right = $this->coerceForExpression($right);
-
                 $ltype = $left[0];
                 $rtype = $right[0];
 
@@ -2877,6 +2904,7 @@ class Compiler
 
             case Type::T_INTERPOLATE:
                 $value[1] = $this->reduce($value[1]);
+
                 if ($inExp) {
                     return $value[1];
                 }
@@ -2889,6 +2917,7 @@ class Compiler
             case Type::T_SELF:
                 $selfSelector = $this->multiplySelectors($this->env);
                 $selfSelector = $this->collapseSelectors($selfSelector, true);
+
                 return $selfSelector;
 
             default:
@@ -3452,8 +3481,8 @@ class Compiler
                 return implode("$delim", $filtered);
 
             case Type::T_MAP:
-                $keys = $value[1];
-                $values = $value[2];
+                $keys     = $value[1];
+                $values   = $value[2];
                 $filtered = [];
 
                 for ($i = 0, $s = count($keys); $i < $s; $i++) {
@@ -3472,16 +3501,20 @@ class Compiler
                 list(,, $whiteLeft, $whiteRight) = $interpolate;
 
                 $delim = $left[1];
+
                 if ($delim && $delim !== ' ' && !$whiteLeft) {
                     $delim .= ' ';
                 }
+
                 $left = count($left[2]) > 0 ?
                     $this->compileValue($left) . $delim . $whiteLeft: '';
 
                 $delim = $right[1];
+
                 if ($delim && $delim !== ' ') {
                     $delim .= ' ';
                 }
+
                 $right = count($right[2]) > 0 ?
                     $whiteRight . $delim . $this->compileValue($right) : '';
 
@@ -3513,6 +3546,7 @@ class Compiler
                             }
 
                             $temp = $this->compileValue([Type::T_KEYWORD, $item]);
+
                             if ($temp[0] === Type::T_STRING) {
                                 $filtered[] = $this->compileStringContent($temp);
                             } elseif ($temp[0] === Type::T_KEYWORD) {
@@ -3628,9 +3662,9 @@ class Compiler
             $selectors = $env->selectors;
 
             do {
-                $stillHasSelf = false;
+                $stillHasSelf  = false;
                 $prevSelectors = $selectors;
-                $selectors = [];
+                $selectors     = [];
 
                 foreach ($prevSelectors as $selector) {
                     foreach ($parentSelectors as $parent) {
@@ -3696,9 +3730,11 @@ class Compiler
                         foreach ($parentPart as $pp) {
                             if (is_array($pp)) {
                                 $flatten = [];
+
                                 array_walk_recursive($pp, function ($a) use (&$flatten) {
                                     $flatten[] = $a;
                                 });
+
                                 $pp = implode($flatten);
                             }
 
@@ -3742,9 +3778,11 @@ class Compiler
             : [[[Type::T_MEDIA_VALUE, $env->block->value]]];
 
         $store = [$this->env, $this->storeEnv];
-        $this->env = $env;
+
+        $this->env      = $env;
         $this->storeEnv = null;
-        $parentQueries = $this->evaluateMediaQuery($parentQueries);
+        $parentQueries  = $this->evaluateMediaQuery($parentQueries);
+
         list($this->env, $this->storeEnv) = $store;
 
         if ($childQueries === null) {
@@ -4231,6 +4269,7 @@ class Compiler
         }
 
         $pi = pathinfo($path);
+
         array_unshift($this->importPaths, $pi['dirname']);
         $this->compileChildrenNoReturn($tree->children, $out);
         array_shift($this->importPaths);
@@ -4373,6 +4412,7 @@ class Compiler
                           ? $this->sourceNames[$call[Parser::SOURCE_INDEX]]
                           : '(unknown file)');
                     $msg .= " on line " . $call[Parser::SOURCE_LINE];
+
                     $callStackMsg[] = $msg;
 
                     if (! is_null($limit) && $ncall>$limit) {
@@ -4489,9 +4529,11 @@ class Compiler
 
         if ($name !== 'if' && $name !== 'call') {
             $inExp = true;
+
             if ($name === 'join') {
                 $inExp = false;
             }
+
             foreach ($sorted as &$val) {
                 $val = $this->reduce($val, $inExp);
             }
@@ -4730,6 +4772,7 @@ class Compiler
                             if (is_null($splatSeparator)) {
                                 $splatSeparator = $val[1];
                             }
+
                             $remaining[] = $item;
                         }
                     }
@@ -4747,6 +4790,7 @@ class Compiler
                                     }
                                 }
                             }
+
                             if ($hasVariable) {
                                 $deferredKeywordArgs[$name] = $item;
                             } else {
@@ -4756,6 +4800,7 @@ class Compiler
                             if (is_null($splatSeparator)) {
                                 $splatSeparator = $val[1];
                             }
+
                             $remaining[] = $item;
                         }
                     }
@@ -5797,9 +5842,9 @@ class Compiler
      */
     protected function getNormalizedNumbers($args)
     {
-        $unit = null;
+        $unit         = null;
         $originalUnit = null;
-        $numbers = [];
+        $numbers      = [];
 
         foreach ($args as $key => $item) {
             if ($item[0] !== Type::T_NUMBER) {
@@ -6020,7 +6065,7 @@ class Compiler
 
         $list1 = $this->coerceList($list1, ' ');
         $list2 = $this->coerceList($list2, ' ');
-        $sep = $this->listSeparatorForJoin($list1, $sep);
+        $sep   = $this->listSeparatorForJoin($list1, $sep);
 
         return [Type::T_LIST, $sep, array_merge($list1[2], $list2[2])];
     }
@@ -6485,6 +6530,7 @@ class Compiler
         // get the selector... list
         $args = reset($args);
         $args = $args[2];
+
         if (count($args) < 1) {
             $this->throwError("selector-append() needs at least 1 argument");
         }
@@ -6551,8 +6597,8 @@ class Compiler
         list($selectors, $extendee, $extender) = $args;
 
         $selectors = $this->getSelectorArg($selectors);
-        $extendee = $this->getSelectorArg($extendee);
-        $extender = $this->getSelectorArg($extender);
+        $extendee  = $this->getSelectorArg($extendee);
+        $extender  = $this->getSelectorArg($extender);
 
         if (! $selectors || ! $extendee || ! $extender) {
             $this->throwError("selector-extend() invalid arguments");
@@ -6568,8 +6614,8 @@ class Compiler
     {
         list($selectors, $original, $replacement) = $args;
 
-        $selectors = $this->getSelectorArg($selectors);
-        $original = $this->getSelectorArg($original);
+        $selectors   = $this->getSelectorArg($selectors);
+        $original    = $this->getSelectorArg($original);
         $replacement = $this->getSelectorArg($replacement);
 
         if (! $selectors || ! $original || ! $replacement) {
@@ -6634,13 +6680,14 @@ class Compiler
         // get the selector... list
         $args = reset($args);
         $args = $args[2];
+
         if (count($args) < 1) {
             $this->throwError("selector-nest() needs at least 1 argument");
         }
 
         $selectorsMap = array_map([$this, 'getSelectorArg'], $args);
-
         $envs = [];
+
         foreach ($selectorsMap as $selectors) {
             $env = new Environment();
             $env->selectors = $selectors;
@@ -6648,8 +6695,8 @@ class Compiler
             $envs[] = $env;
         }
 
-        $envs = array_reverse($envs);
-        $env = $this->extractEnv($envs);
+        $envs            = array_reverse($envs);
+        $env             = $this->extractEnv($envs);
         $outputSelectors = $this->multiplySelectors($env);
 
         return $this->formatOutputSelector($outputSelectors);
@@ -6692,6 +6739,7 @@ class Compiler
      *
      * @param array $compound1
      * @param array $compound2
+     *
      * @return array|mixed
      */
     protected function unifyCompoundSelectors($compound1, $compound2)
@@ -6707,7 +6755,7 @@ class Compiler
         // check that last part are compatible
         $lastPart1 = array_pop($compound1);
         $lastPart2 = array_pop($compound2);
-        $last = $this->mergeParts($lastPart1, $lastPart2);
+        $last      = $this->mergeParts($lastPart1, $lastPart2);
 
         if (! $last) {
             return [[]];
@@ -6730,6 +6778,7 @@ class Compiler
 
                 $c = $this->mergeParts($part1, $part2);
                 $unifiedSelectors = $this->prependSelectors($unifiedSelectors, [$c]);
+
                 $part1 = $part2 = null;
 
                 array_pop($compound1);
@@ -6744,6 +6793,7 @@ class Compiler
 
                 $c = $this->mergeParts($part2, $part1);
                 $unifiedSelectors = $this->prependSelectors($unifiedSelectors, [$c]);
+
                 $part1 = $part2 = null;
 
                 array_pop($compound2);
@@ -6755,9 +6805,9 @@ class Compiler
                 array_pop($compound1);
                 array_pop($compound2);
 
-                $s = $this->prependSelectors($unifiedSelectors, [$part2]);
+                $s   = $this->prependSelectors($unifiedSelectors, [$part2]);
                 $new = array_merge($new, $this->prependSelectors($s, [$part1]));
-                $s = $this->prependSelectors($unifiedSelectors, [$part1]);
+                $s   = $this->prependSelectors($unifiedSelectors, [$part1]);
                 $new = array_merge($new, $this->prependSelectors($s, [$part2]));
             } elseif ($part1) {
                 array_pop($compound1);
@@ -6811,8 +6861,8 @@ class Compiler
     protected function matchPartInCompound($part, $compound)
     {
         $partTag = $this->findTagName($part);
-        $before = $compound;
-        $after = [];
+        $before  = $compound;
+        $after   = [];
 
         // try to find a match by tag name first
         while (count($before)) {
@@ -6858,7 +6908,7 @@ class Compiler
     {
         $tag1 = $this->findTagName($parts1);
         $tag2 = $this->findTagName($parts2);
-        $tag = $this->checkCompatibleTags($tag1, $tag2);
+        $tag  = $this->checkCompatibleTags($tag1, $tag2);
 
         // not compatible tags
         if ($tag === false) {

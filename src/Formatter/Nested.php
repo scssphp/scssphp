@@ -70,17 +70,6 @@ class Nested extends Formatter
         $this->write($inner . implode($glue, $block->lines));
     }
 
-    protected function hasFlatChild($block)
-    {
-        foreach ($block->children as $child) {
-            if (empty($child->selectors)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -170,15 +159,18 @@ class Nested extends Formatter
             }
 
             $this->blockLines($block);
+
             $closeBlock = $this->break;
         }
 
         if (! empty($block->children)) {
             if ($this->depth>0 && ($isMediaOrDirective || ! $this->hasFlatChild($block))) {
                 array_pop($depths);
+
                 $this->depth--;
                 $this->blockChildren($block);
                 $this->depth++;
+
                 $depths[] = $block->depth;
             } else {
                 $this->blockChildren($block);
@@ -194,12 +186,14 @@ class Nested extends Formatter
             $this->indentLevel--;
 
             $this->write($this->close);
+
             $closeBlock = $this->break;
 
             if ($this->depth > 1 && ! empty($block->children)) {
                 array_pop($depths);
                 $this->depth--;
             }
+
             if (! $isMediaOrDirective) {
                 $previousHasSelector = true;
             }
@@ -208,5 +202,23 @@ class Nested extends Formatter
         if ($block->type === 'root') {
             $this->write($this->break);
         }
+    }
+
+    /**
+     * Block has flat child
+     *
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     *
+     * @return boolean
+     */
+    private function hasFlatChild($block)
+    {
+        foreach ($block->children as $child) {
+            if (empty($child->selectors)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

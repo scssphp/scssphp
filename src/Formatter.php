@@ -217,8 +217,10 @@ abstract class Formatter
 
     /**
      * Test and clean safely empty children
+     *
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
-     * @return bool
+     *
+     * @return boolean
      */
     protected function testEmptyChildren($block)
     {
@@ -254,8 +256,8 @@ abstract class Formatter
         $this->sourceMapGenerator = null;
 
         if ($sourceMapGenerator) {
-            $this->currentLine = 1;
-            $this->currentColumn = 0;
+            $this->currentLine        = 1;
+            $this->currentColumn      = 0;
             $this->sourceMapGenerator = $sourceMapGenerator;
         }
 
@@ -271,6 +273,8 @@ abstract class Formatter
     }
 
     /**
+     * Output content
+     *
      * @param string $str
      */
     protected function write($str)
