@@ -7,8 +7,6 @@
 16/1980. basic/15_arithmetic_and_lists
 17/1980. basic/17_basic_mixins
 19/1980. basic/19_full_mixin_craziness
-21/1980. basic/21_one_builtin_function
-22/1980. basic/22_colors_with_alpha
 24/1980. basic/25_basic_string_interpolation
 25/1980. basic/26_selector_interpolation
 36/1980. basic/38_expressions_in_at_directives
@@ -469,6 +467,7 @@
 649/1980. extend-tests/not-into-not-not
 653/1980. libsass-closed-issues/issue_1007
 657/1980. libsass-closed-issues/issue_1029
+660/1980. libsass-closed-issues/issue_1036
 661/1980. libsass-closed-issues/issue_1043
 666/1980. libsass-closed-issues/issue_1075
 667/1980. libsass-closed-issues/issue_1079
@@ -507,7 +506,6 @@
 735/1980. libsass-closed-issues/issue_1243/warning
 736/1980. libsass-closed-issues/issue_1248
 738/1980. libsass-closed-issues/issue_1253
-740/1980. libsass-closed-issues/issue_1257
 741/1980. libsass-closed-issues/issue_1258
 742/1980. libsass-closed-issues/issue_1259
 744/1980. libsass-closed-issues/issue_1266/max
@@ -766,14 +764,12 @@
 1283/1980. libsass/base-level-parent/root/basic-prefix
 1285/1980. libsass/basic/44_not_number_expression
 1287/1980. libsass/bourbon
-1289/1980. libsass/color-functions/hsl/adjust-hue
-1290/1980. libsass/color-functions/hsl/complement
 1291/1980. libsass/color-functions/hsl/darken
 1292/1980. libsass/color-functions/hsl/desaturate
 1293/1980. libsass/color-functions/hsl/hue
 1294/1980. libsass/color-functions/hsl/lighten
-1298/1980. libsass/color-functions/opacity/fade-in
-1301/1980. libsass/color-functions/opacity/opacity
+1299/1980. libsass/color-functions/opacity/fade-out
+1302/1980. libsass/color-functions/opacity/transparentize
 1303/1980. libsass/color-functions/other/adjust-color/a
 1304/1980. libsass/color-functions/other/adjust-color/b
 1305/1980. libsass/color-functions/other/adjust-color/g
@@ -1024,10 +1020,6 @@
 1763/1980. scss-tests/130_test_random_directive_interpolation
 1771/1980. scss-tests/174_test_import_comments_in_imports
 1782/1980. scss-tests/186_test_newlines_removed_from_selectors_when_compressed
-1786/1980. scss-tests/190_test_options_passed_to_script
-1787/1980. scss-tests/191_test_color_translation_functions
-1790/1980. scss/alpha
-1803/1980. scss/color_output
 1807/1980. scss/concat
 1808/1980. scss/cons-up
 1812/1980. scss/css_crazy_comments
@@ -1041,7 +1033,6 @@
 1862/1980. scss/media/interpolated
 1863/1980. scss/media/nesting/merged_and_retained
 1864/1980. scss/media/nesting/removed
-1866/1980. scss/mix
 1884/1980. scss/newlines_in_selectors
 1886/1980. scss/null
 1911/1980. scss/strings

@@ -97,6 +97,10 @@ class ScssTest extends \PHPUnit_Framework_TestCase
             $css = preg_replace(",@media screen {\s*}\s*,ims", "", $css);
             $css = preg_replace(",@supports \([^)]*\) {\s*}\s*,ims", "", $css);
         }
+        // named colors instead of hexa
+        if (strpos($css, "#000") !== false) {
+            $css = str_replace("#000", "black", $css);
+        }
 
 
         if (getenv('BUILD')) {

@@ -108,7 +108,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
                 ),
             ),
             array(
-                ".logo {\n  color: #808080; }",
+                ".logo {\n  color: grey; }",
                 '.logo { color: desaturate($primary, 100%); }',
                 array(
                     'primary' => '#ff0000',

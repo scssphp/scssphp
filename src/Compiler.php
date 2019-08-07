@@ -3440,6 +3440,10 @@ class Compiler
                 if (count($value) === 5) {
                     $alpha = $this->compileRGBAValue($value[4], true);
                     if (!is_numeric($alpha) || $alpha < 1) {
+                        if ($colorName = Colors::RGBaToColorName($r, $g, $b, $alpha)) {
+                            return $colorName;
+                        }
+
                         if (is_numeric($alpha)) {
                             $a = new Node\Number($alpha, '');
                         } else {
@@ -3452,6 +3456,10 @@ class Compiler
 
                 if (! is_numeric($r) || ! is_numeric($g) || ! is_numeric($b)) {
                     return 'rgb(' . $r . ', ' . $g . ', ' . $b . ')';
+                }
+
+                if ($colorName = Colors::RGBaToColorName($r, $g, $b)) {
+                    return $colorName;
                 }
 
                 $h = sprintf('#%02x%02x%02x', $r, $g, $b);
