@@ -6,6 +6,7 @@
   color: "hello world";
   height: url("http://google.com");
   background-image: url(//host/image.png);
+  background-image: url(//host/image.png);
   dads: url(http://leafo.net);
   padding: 10px 10px 10px 10px, 3px 3px 3px;
   textblock: "This is a multiline block #not { color: #eee;}";

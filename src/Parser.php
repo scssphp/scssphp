@@ -1672,7 +1672,7 @@ class Parser
 
         $this->seek($s);
 
-        if ($this->literal('url(', 4, false) && $this->match('\s*(\/\/\S+)\s*', $m)) {
+        if ($this->literal('url(', 4, false) && $this->match('\s*(\/\/[^\s\)]+)\s*', $m)) {
             $content = 'url(' . $m[1];
 
             if ($this->matchChar(')')) {
