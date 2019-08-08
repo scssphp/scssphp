@@ -4896,30 +4896,13 @@ class Compiler
             return static::$emptyString;
         }
 
-        if (preg_match('/^(#([0-9a-f]{6})|#([0-9a-f]{3}))$/i', $value, $m)) {
-            $color = [Type::T_COLOR];
-
-            if (isset($m[3])) {
-                $num = hexdec($m[3]);
-
-                foreach ([3, 2, 1] as $i) {
-                    $t = $num & 0xf;
-                    $color[$i] = $t << 4 | $t;
-                    $num >>= 4;
-                }
-            } else {
-                $num = hexdec($m[2]);
-
-                foreach ([3, 2, 1] as $i) {
-                    $color[$i] = $num & 0xff;
-                    $num >>= 8;
-                }
-            }
-
+        $value = [Type::T_KEYWORD, $value];
+        $color = $this->coerceColor($value);
+        if ($color) {
             return $color;
         }
 
-        return [Type::T_KEYWORD, $value];
+        return $value;
     }
 
     /**
@@ -5018,8 +5001,58 @@ class Compiler
                 return $value;
 
             case Type::T_KEYWORD:
-                $name = strtolower($value[1]);
+                if (!is_string($value[1])) {
+                    return null;
+                }
 
+                $name = strtolower($value[1]);
+                // hexa color?
+                if (preg_match('/^#([0-9a-f]+)$/i', $name, $m)) {
+                    $nofValues = strlen($m[1]);
+                    if (in_array($nofValues, [3,4,6,8])) {
+                        $nbChannels = 3;
+                        $color = [];
+                        $num = hexdec($m[1]);
+
+                        switch ($nofValues) {
+                            case 4:
+                                $nbChannels = 4;
+                                // then continuing with the case 3:
+                            case 3:
+                                for ($i=0; $i<$nbChannels; $i++) {
+                                    $t = $num & 0xf;
+                                    array_unshift($color, $t << 4 | $t);
+                                    $num >>= 4;
+                                }
+
+                                break;
+
+                            case 8:
+                                $nbChannels = 4;
+                                // then continuing with the case 6:
+                            case 6:
+                                for ($i=0; $i<$nbChannels; $i++) {
+                                    array_unshift($color, $num & 0xff);
+                                    $num >>= 8;
+                                }
+
+                                break;
+                        }
+
+                        if ($nbChannels === 4) {
+                            if ($color[3] === 255) {
+                                $color[3] = 1; // fully opaque
+                            } else {
+                                $color[3] = round($color[3] / 255, 3);
+                            }
+                        }
+
+                        array_unshift($color, Type::T_COLOR);
+                        return $color;
+                    }
+                }
+
+                // named color?
                 if (isset(Colors::$cssColors[$name])) {
                     $rgba = explode(',', Colors::$cssColors[$name]);
 
@@ -5473,7 +5506,7 @@ class Compiler
         $color = $this->coerceColor($args[0]);
         $color[4] = isset($color[4]) ? round(255 * $color[4]) : 255;
 
-        return sprintf('#%02X%02X%02X%02X', $color[4], $color[1], $color[2], $color[3]);
+        return [Type::T_STRING, '', [sprintf('#%02X%02X%02X%02X', $color[4], $color[1], $color[2], $color[3])]];
     }
 
     protected static $libRed = ['color'];

@@ -39,7 +39,7 @@ foo {
   d: "fraz bran";
   e: flanny-blanny-blan;
   f: url(http://sass-lang.com);
-  h: #abc; }
+  h: #aabbcc; }
 
 /* line 32, inputs/scss_css.scss */
 selector {
@@ -661,7 +661,7 @@ foo {
 /* line 673, inputs/scss_css.scss */
 foo {
   a: foo bar baz;
-  b: foo, #abc, -12;
+  b: foo, #aabbcc, -12;
   c: 1px/2px/-3px;
   d: foo bar, baz/bang; }
 
@@ -974,8 +974,8 @@ foo {
 
 /* line 997, inputs/scss_css.scss */
 .alpha {
-  color: rgba(31, 37, 38, 0.749);
-  background-color: #1f2526; }
+  color: #1f2526bf;
+  background-color: #1f2526ff; }
 
 /* line 1003, inputs/scss_css.scss */
 .shortcode-4c29f540779d8549daf934275faea11 {

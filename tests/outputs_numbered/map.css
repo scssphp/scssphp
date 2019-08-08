@@ -2,9 +2,9 @@
 div {
   color: black;
   color: red;
-  foo: black, red, #0f0;
+  foo: black, red, #00FF00;
   bar: color, length;
-  baz: (color: #fff, color2: red, 'color3': #0f0, length: 40em);
+  baz: (color: #fff, color2: red, 'color3': #00FF00, length: 40em);
   foo: (length: 40em);
   bar: true; }
 
@@ -15,15 +15,15 @@ div {
 
 /* line 32, inputs/map.scss */
 .black {
-  background-color: #000 !important; }
+  background-color: #000000 !important; }
 
 /* line 32, inputs/map.scss */
 .grey {
-  background-color: #888 !important; }
+  background-color: #888888 !important; }
 
 /* line 32, inputs/map.scss */
 .white {
-  background-color: #fff !important; }
+  background-color: #ffffff !important; }
 
 /* line 53, inputs/map.scss */
 div {
