@@ -124,12 +124,19 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
 
         foreach ($specs as $fileName) {
             $spec         = file_get_contents($fileName);
+            $fileDir      = dirname($fileName);
             $fileName     = substr($fileName, strlen($dir) +1);
             $baseTestName = substr($fileName, 0, -4);
             $subTests     = explode(
                 '================================================================================',
                 $spec
             );
+
+            $generalOptions = '';
+            if (file_exists($f = $fileDir . '/options.yml') || file_exists($f = dirname($fileDir) . '/options.yml')) {
+                $generalOptions = file_get_contents($f);
+            }
+
 
             foreach ($subTests as $subTest) {
                 $subNname  = '';
@@ -145,9 +152,9 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
                 $parts = explode('<===>', $subTest);
 
                 foreach ($parts as $part) {
-                    $part   = ltrim($part, ' ');
                     $part   = explode("\n", $part);
                     $first  = array_shift($part);
+                    $first   = ltrim($first, ' ');
                     $part   = implode("\n", $part);
                     $subDir = dirname($first);
 
@@ -207,6 +214,10 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
                     }
                 }
 
+                if (!$options && $generalOptions) {
+                    $options = $generalOptions;
+                }
+
                 $sizeLimit = 1024 * 1024;
                 $test = [$baseTestName . $subNname, [$options, $input, $includes], [$output, $warning, $error]];
                 if (! $hasInput ||
@@ -217,12 +228,14 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
                 ) {
                     $skippedTests[] = $test;
                 } else {
-                    $tests[] = $test;
+                    $tests[$baseTestName . $subNname] = $test;
                 }
             }
         }
 
         $nb_tests = count($tests);
+        ksort($tests);
+        $tests = array_values($tests);
 
         foreach ($tests as $k => $test) {
             $rang = ($k+1) . "/" . $nb_tests . '. ';
