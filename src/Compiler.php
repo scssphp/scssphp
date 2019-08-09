@@ -173,6 +173,7 @@ class Compiler
         if ($cacheOptions) {
             $this->cache = new Cache($cacheOptions);
         }
+        $this->stderr         = fopen('php://stderr', 'w');
     }
 
     public function getCompileOptions()
@@ -188,6 +189,15 @@ class Compiler
         ];
 
         return $options;
+    }
+
+    /**
+     * Set an alternartive error output stream, for testing purpose only
+     * @param $handle
+     */
+    public function setErrorOuput($handle)
+    {
+        $this->stderr = $handle;
     }
 
     /**
@@ -234,7 +244,6 @@ class Compiler
         $this->storeEnv       = null;
         $this->charsetSeen    = null;
         $this->shouldEvaluate = null;
-        $this->stderr         = fopen('php://stderr', 'w');
 
         $this->parser = $this->parserFactory($path);
         $tree         = $this->parser->parse($code);
