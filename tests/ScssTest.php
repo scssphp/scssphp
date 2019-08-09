@@ -21,7 +21,7 @@ use ScssPhp\ScssPhp\Compiler;
 class ScssTest extends \PHPUnit_Framework_TestCase
 {
 
-    protected $fileExclusionList = __DIR__ . '/lists/scss-test-exclude.txt';
+    protected $fileExclusionList = __DIR__ . '/specs/scss_test-exclude.txt';
     protected $exclusionList;
 
     /**
