@@ -136,7 +136,7 @@ class ScssTest extends \PHPUnit_Framework_TestCase
     public function provideTests()
     {
         $state   = 0;
-        $lines   = file(__DIR__ . '/scss_test.rb');
+        $lines   = file(__DIR__ . '/specs/scss_test.rb');
         $tests   = [];
         $skipped = [];
         $scss    = [];
