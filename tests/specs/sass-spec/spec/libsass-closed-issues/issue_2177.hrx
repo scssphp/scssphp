@@ -1,0 +1,9 @@
+<===> input.sass
+.a
+  +
+    .c, .b
+      margin: 10px
+<===> output.css
+.a + .c, .a + .b {
+  margin: 10px;
+}

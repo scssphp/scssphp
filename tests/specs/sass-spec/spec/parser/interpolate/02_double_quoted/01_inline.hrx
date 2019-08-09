@@ -1,0 +1,19 @@
+<===> input.scss
+.result {
+  output: "dquoted";
+  output: #{"dquoted"};
+  output: "[#{"dquoted"}]";
+  output: "#{"dquoted"}";
+  output: '#{"dquoted"}';
+  output: "['#{"dquoted"}']";
+}
+
+<===> output.css
+.result {
+  output: "dquoted";
+  output: dquoted;
+  output: "[dquoted]";
+  output: "dquoted";
+  output: "dquoted";
+  output: "['dquoted']";
+}

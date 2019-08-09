@@ -1,0 +1,11 @@
+<===> input.scss
+div {
+  foo: index(hello goodbye futz, goodbye);
+  bar: index(hello goodbye futz, badbye);
+  baz: index((hello world) (my name) (is aaron), is aaron);
+}
+<===> output.css
+div {
+  foo: 2;
+  baz: 3;
+}

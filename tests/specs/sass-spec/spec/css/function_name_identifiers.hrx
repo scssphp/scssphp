@@ -1,0 +1,17 @@
+<===> input.scss
+a {
+  b: url;
+  c: calc;
+  d: element;
+  e: expression;
+  f: progid;
+}
+
+<===> output.css
+a {
+  b: url;
+  c: calc;
+  d: element;
+  e: expression;
+  f: progid;
+}

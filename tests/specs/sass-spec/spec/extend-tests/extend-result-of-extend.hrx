@@ -1,0 +1,15 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+// The result of :not(.c) being extended should itself be extenable.
+.a {@extend :not(.b)}
+.b {@extend .c}
+:not(.c) {x: y}
+
+<===> output.css
+:not(.c):not(.b), .a:not(.c) {
+  x: y;
+}

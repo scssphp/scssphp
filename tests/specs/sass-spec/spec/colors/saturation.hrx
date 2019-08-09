@@ -1,0 +1,31 @@
+<===> input.scss
+p {
+  test-01: saturation(red);
+  test-01: saturation(#333);
+  test-02: saturation(hsl(60, 30, 20));
+  test-03: saturation(saturate(#f00, 10%));
+  test-04: saturation(saturate(#900, 10%));
+  // this is probably a ruby sass bug
+  // test-05: saturation(saturate(#000, 10%));
+  // test-06: saturation(saturate(#fff, 10%));
+  test-07: saturation(saturate(#999, 10%));
+  test-08: saturation(desaturate(#fff, 10%));
+  test-09: saturation(desaturate(#999, 10%));
+  test-10: saturation(desaturate(#000, 10%));
+  test-11: saturation(desaturate(#f00, 10%));
+  test-12: saturation(desaturate(#900, 10%));
+}
+<===> output.css
+p {
+  test-01: 100%;
+  test-01: 0%;
+  test-02: 30%;
+  test-03: 100%;
+  test-04: 100%;
+  test-07: 10%;
+  test-08: 0%;
+  test-09: 0%;
+  test-10: 0%;
+  test-11: 90%;
+  test-12: 90%;
+}

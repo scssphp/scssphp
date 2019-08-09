@@ -1,0 +1,8 @@
+<===> input.scss
+:not(.asd, .qwe) {
+  content: test;
+}
+<===> output.css
+:not(.asd, .qwe) {
+  content: test;
+}

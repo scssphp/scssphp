@@ -1,0 +1,8 @@
+<===> input.scss
+%a:first-letter {x: y}
+b:c {@extend %a}
+
+<===> output.css
+b:c:first-letter {
+  x: y;
+}

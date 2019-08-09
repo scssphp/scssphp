@@ -1,0 +1,14 @@
+<===> input.scss
+input {
+    outline: 5px auto -webkit-focus-ring-color;
+    foo: random -hello-this-is-dog;
+    bar: rando -two-or-more -things-that-start -with-hyphens;
+    baz: foo - bar;
+}
+<===> output.css
+input {
+  outline: 5px auto -webkit-focus-ring-color;
+  foo: random -hello-this-is-dog;
+  bar: rando -two-or-more -things-that-start -with-hyphens;
+  baz: foo-bar;
+}

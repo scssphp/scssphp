@@ -1,0 +1,11 @@
+<===> input.scss
+div {
+    --a: 2px;
+    top: var(--a);
+}
+
+<===> output.css
+div {
+  --a: 2px;
+  top: var(--a);
+}

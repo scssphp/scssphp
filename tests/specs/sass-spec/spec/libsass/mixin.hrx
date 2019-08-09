@@ -1,0 +1,91 @@
+<===> input.scss
+// @charset "UTF-8";
+
+@mixin background-image-retina($file, $type, $width, $height) {
+  background-image: unquote(image-url("#{$file}.#{$type}", true));
+  hey: length(a b c d);
+  ho: unquote("hello");
+  hee: unquote(unit(10fudge));
+
+  @media (-webkit-min-device-pixel-ratio: 2), (-moz-min-device-pixel-ratio: 2) {
+    & {
+      background-image: image-url("#{$file}@2x.#{$type}");
+      -webkit-background-size: $width $height;
+    }
+  }
+}
+
+$x: foo;
+$y: bar;
+
+div {
+  @include background-image-retina(test, png, 100px, 300px);
+  fudge: walnut;
+}
+
+span {
+  blah: "#{$x} #{$y}";
+  bleh: image-url("#{$x} #{$y}");
+}
+
+
+@mixin foo($x, $y) {
+  foo-x: $x;
+  foo-y: $y;
+}
+
+div {
+  @include foo(1, 2);
+  @include foo($y: 2, $x: 1);
+}
+
+@mixin bar($x, $y: default) {
+  bar-x: $x;
+  bar-y: $y;
+}
+
+div {
+  @include bar(1, 2);
+  @include bar(1);
+  @include bar($x: n1, $y: n2);
+  @include bar($x: n1);
+  blah: unquote("hello");
+}
+<===> output.css
+div {
+  background-image: image-url("test.png", true);
+  hey: 4;
+  ho: hello;
+  hee: fudge;
+  fudge: walnut;
+}
+@media (-webkit-min-device-pixel-ratio: 2), (-moz-min-device-pixel-ratio: 2) {
+  div {
+    background-image: image-url("test@2x.png");
+    -webkit-background-size: 100px 300px;
+  }
+}
+
+span {
+  blah: "foo bar";
+  bleh: image-url("foo bar");
+}
+
+div {
+  foo-x: 1;
+  foo-y: 2;
+  foo-x: 1;
+  foo-y: 2;
+}
+
+div {
+  bar-x: 1;
+  bar-y: 2;
+  bar-x: 1;
+  bar-y: default;
+  bar-x: n1;
+  bar-y: n2;
+  bar-x: n1;
+  bar-y: default;
+  blah: hello;
+}

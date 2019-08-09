@@ -1,0 +1,89 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+div {
+    foo: 'A'#{B};
+    foo: #{A}'B';
+    foo: 'A'#{B}'C';
+    foo: #{A}'B'#{C};
+    foo: A#{B}'C';
+    foo: 'A'#{B}C;
+    foo: #{A}B'C';
+    foo: 'A'#{B}C'D';
+    foo: 'A'B#{C}D'E';
+    foo: A'B'#{C}D'E';
+    foo: #{A}'B'C'D''E';
+}
+
+div {
+    foo: type-of('A'#{B});
+    foo: type-of(#{A}'B');
+    foo: type-of('A'#{B}'C');
+    foo: type-of(#{A}'B'#{C});
+    foo: type-of(A#{B}'C');
+    foo: type-of('A'#{B}C);
+    foo: type-of(#{A}B'C');
+    foo: type-of('A'#{B}C'D');
+    foo: type-of('A'B#{C}D'E');
+    foo: type-of(A'B'#{C}D'E');
+    foo: type-of(#{A}'B'C'D''E');
+}
+
+div {
+    foo: length('A'#{B});
+    foo: length(#{A}'B');
+    foo: length('A'#{B}'C');
+    foo: length(#{A}'B'#{C});
+    foo: length(A#{B}'C');
+    foo: length('A'#{B}C);
+    foo: length(#{A}B'C');
+    foo: length('A'#{B}C'D');
+    foo: length('A'B#{C}D'E');
+    foo: length(A'B'#{C}D'E');
+    foo: length(#{A}'B'C'D''E');
+}
+<===> output.css
+div {
+  foo: "A" B;
+  foo: A "B";
+  foo: "A" B "C";
+  foo: A "B" C;
+  foo: AB "C";
+  foo: "A" BC;
+  foo: AB "C";
+  foo: "A" BC "D";
+  foo: "A" BCD "E";
+  foo: A "B" CD "E";
+  foo: A "B" C "D" "E";
+}
+
+div {
+  foo: list;
+  foo: list;
+  foo: list;
+  foo: list;
+  foo: list;
+  foo: list;
+  foo: list;
+  foo: list;
+  foo: list;
+  foo: list;
+  foo: list;
+}
+
+div {
+  foo: 2;
+  foo: 2;
+  foo: 3;
+  foo: 3;
+  foo: 2;
+  foo: 2;
+  foo: 2;
+  foo: 3;
+  foo: 3;
+  foo: 4;
+  foo: 5;
+}

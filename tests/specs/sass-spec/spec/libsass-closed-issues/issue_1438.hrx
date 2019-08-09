@@ -1,0 +1,37 @@
+<===> input.scss
+@function foo() {
+  @return 20150812;
+}
+
+foo {
+  background-image: url(../test.png);
+}
+
+bar {
+  background-image: url(../test.png?v=20150812);
+}
+
+baz {
+  background-image: url(../test.png?v=#{test()});
+}
+
+bam {
+  background-image: url("../test.png?v=#{test()}");
+}
+
+<===> output.css
+foo {
+  background-image: url(../test.png);
+}
+
+bar {
+  background-image: url(../test.png?v=20150812);
+}
+
+baz {
+  background-image: url(../test.png?v=test());
+}
+
+bam {
+  background-image: url("../test.png?v=test()");
+}

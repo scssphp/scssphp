@@ -1,0 +1,100 @@
+<===> input.scss
+$map: (
+  1: 1,
+  1px: 1px
+);
+
+foo {
+  a: map-get($map, 1);
+  b: map-get($map, 1px);
+}
+
+$type-scale: (
+	-15:0.066667rem,
+	-10:0.186rem,
+	-9:0.211rem,
+	-8:0.26rem,
+	-7:0.295rem,
+	-6:0.364rem,
+	-5:0.413rem,
+	-4:0.51rem,
+	-3:0.578rem,
+	-2:0.714rem,
+	-1:0.809rem,
+	0:1rem,
+	1:1.133rem,
+	2:1.4rem,
+	3:1.586rem,
+	4:1.96rem,
+	5:2.221rem,
+	6:2.744rem,
+	7:3.109rem,
+	8:3.842rem,
+	9:4.353rem,
+	10:5.378rem,
+	11:6.094rem,
+	12:7.53rem,
+	13:8.531rem,
+	14:10.541rem,
+	15:11.943rem,
+	16:14.758rem
+);
+
+@function get-size($size) {
+	@if map-has-key($type-scale, $size) {
+		@return map-get($type-scale, $size);
+	}
+
+	@warn "Not a valid size.";
+	@return null;
+}
+
+@function scale-size($rem-size, $steps) {
+	$size-key: get-key-for-value($type-scale, $rem-size);
+
+	@if $size-key {
+		$new-size: $size-key + $steps;
+		@return get-size($new-size);
+	}
+
+	@warn "Not able to find size for " + $rem-size;
+	@return null;
+}
+
+@function get-key-for-value($map, $value) {
+	@each $map-key, $map-value in $map {
+		@if $map-value == $value {
+			@return $map-key
+		}
+	}
+
+	@warn $value + " not found in " + $map;
+	@return null;
+}
+
+$h1-font-size: get-size(5);
+
+
+h1 {
+  font-size: $h1-font-size;
+
+  small {
+    font-size: scale-size($h1-font-size, -2);
+    color: red;
+  }
+}
+
+
+<===> output.css
+foo {
+  a: 1;
+  b: 1px;
+}
+
+h1 {
+  font-size: 2.221rem;
+}
+h1 small {
+  font-size: 1.586rem;
+  color: red;
+}

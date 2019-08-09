@@ -1,0 +1,13 @@
+<===> input.scss
+.foo .bar {a: b}
+.baz {@extend .foo; @extend .bar}
+
+<===> output.css
+.foo .bar, .baz .bar, .foo .baz, .baz .baz {
+  a: b;
+}
+
+<===> output-dart-sass.css
+.foo .bar, .foo .baz, .baz .bar, .baz .baz {
+  a: b;
+}

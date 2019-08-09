@@ -1,0 +1,430 @@
+<===> input.scss
+$colors: (
+    yellow: #ffeb3b
+);
+@each $name, $color in $colors {
+    $amount: 40;
+    @for $i from 0 through 9 {
+        .#{$name}-#{($i*100)} { background-color: lighten($color, $amount) };
+        $amount: $amount - 2;
+    }
+}
+
+$colors: (
+    yellow: yellow,
+    red: red,
+    blue: blue,
+    
+);
+@each $name, $color in $colors {
+    @for $i from 0 through 2 {
+        .#{$name}-#{($i*100)} { 
+          background-color: lighten($color, 10) 
+        };
+    }
+}
+
+
+<===> output.css
+.yellow-0 {
+  background-color: white;
+}
+
+.yellow-100 {
+  background-color: #fffffd;
+}
+
+.yellow-200 {
+  background-color: #fffef3;
+}
+
+.yellow-300 {
+  background-color: #fffde8;
+}
+
+.yellow-400 {
+  background-color: #fffcde;
+}
+
+.yellow-500 {
+  background-color: #fffbd4;
+}
+
+.yellow-600 {
+  background-color: #fffaca;
+}
+
+.yellow-700 {
+  background-color: #fff9c0;
+}
+
+.yellow-800 {
+  background-color: #fff7b5;
+}
+
+.yellow-900 {
+  background-color: #fff6ab;
+}
+
+.yellow-0 {
+  background-color: #ffff33;
+}
+
+.yellow-100 {
+  background-color: #ffff33;
+}
+
+.yellow-200 {
+  background-color: #ffff33;
+}
+
+.red-0 {
+  background-color: #ff3333;
+}
+
+.red-100 {
+  background-color: #ff3333;
+}
+
+.red-200 {
+  background-color: #ff3333;
+}
+
+.blue-0 {
+  background-color: #3333ff;
+}
+
+.blue-100 {
+  background-color: #3333ff;
+}
+
+.blue-200 {
+  background-color: #3333ff;
+}
+
+<===> warning
+WARNING on line 7, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 7, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 7, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 7, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 7, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 7, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 7, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 7, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 7, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 7, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 20, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 20, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 20, column 10 of input.scss:
+You probably don't mean to use the color value `yellow' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "yellow").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 20, column 10 of input.scss:
+You probably don't mean to use the color value `red' in interpolation here.
+It may end up represented as #ff0000, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "red").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 20, column 10 of input.scss:
+You probably don't mean to use the color value `red' in interpolation here.
+It may end up represented as #ff0000, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "red").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 20, column 10 of input.scss:
+You probably don't mean to use the color value `red' in interpolation here.
+It may end up represented as #ff0000, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "red").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 20, column 10 of input.scss:
+You probably don't mean to use the color value `blue' in interpolation here.
+It may end up represented as #0000ff, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "blue").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 20, column 10 of input.scss:
+You probably don't mean to use the color value `blue' in interpolation here.
+It may end up represented as #0000ff, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "blue").
+If you really want to use the color value here, use `"" + $name'.
+
+WARNING on line 20, column 10 of input.scss:
+You probably don't mean to use the color value `blue' in interpolation here.
+It may end up represented as #0000ff, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "blue").
+If you really want to use the color value here, use `"" + $name'.
+
+<===> warning-dart-sass
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+  ,
+7 |         .#{$name}-#{($i*100)} { background-color: lighten($color, $amount) };
+  |            ^^^^^
+  '
+    input.scss 7:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+  ,
+7 |         .#{$name}-#{($i*100)} { background-color: lighten($color, $amount) };
+  |            ^^^^^
+  '
+    input.scss 7:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+  ,
+7 |         .#{$name}-#{($i*100)} { background-color: lighten($color, $amount) };
+  |            ^^^^^
+  '
+    input.scss 7:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+  ,
+7 |         .#{$name}-#{($i*100)} { background-color: lighten($color, $amount) };
+  |            ^^^^^
+  '
+    input.scss 7:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+  ,
+7 |         .#{$name}-#{($i*100)} { background-color: lighten($color, $amount) };
+  |            ^^^^^
+  '
+    input.scss 7:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+  ,
+7 |         .#{$name}-#{($i*100)} { background-color: lighten($color, $amount) };
+  |            ^^^^^
+  '
+    input.scss 7:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+  ,
+7 |         .#{$name}-#{($i*100)} { background-color: lighten($color, $amount) };
+  |            ^^^^^
+  '
+    input.scss 7:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+  ,
+7 |         .#{$name}-#{($i*100)} { background-color: lighten($color, $amount) };
+  |            ^^^^^
+  '
+    input.scss 7:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+  ,
+7 |         .#{$name}-#{($i*100)} { background-color: lighten($color, $amount) };
+  |            ^^^^^
+  '
+    input.scss 7:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+  ,
+7 |         .#{$name}-#{($i*100)} { background-color: lighten($color, $amount) };
+  |            ^^^^^
+  '
+    input.scss 7:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+   ,
+20 |         .#{$name}-#{($i*100)} { 
+   |            ^^^^^
+   '
+    input.scss 20:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+   ,
+20 |         .#{$name}-#{($i*100)} { 
+   |            ^^^^^
+   '
+    input.scss 20:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as yellow, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + $name'.
+
+   ,
+20 |         .#{$name}-#{($i*100)} { 
+   |            ^^^^^
+   '
+    input.scss 20:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value red in interpolation here.
+It may end up represented as red, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "red").
+If you really want to use the color value here, use '"" + $name'.
+
+   ,
+20 |         .#{$name}-#{($i*100)} { 
+   |            ^^^^^
+   '
+    input.scss 20:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value red in interpolation here.
+It may end up represented as red, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "red").
+If you really want to use the color value here, use '"" + $name'.
+
+   ,
+20 |         .#{$name}-#{($i*100)} { 
+   |            ^^^^^
+   '
+    input.scss 20:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value red in interpolation here.
+It may end up represented as red, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "red").
+If you really want to use the color value here, use '"" + $name'.
+
+   ,
+20 |         .#{$name}-#{($i*100)} { 
+   |            ^^^^^
+   '
+    input.scss 20:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value blue in interpolation here.
+It may end up represented as blue, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "blue").
+If you really want to use the color value here, use '"" + $name'.
+
+   ,
+20 |         .#{$name}-#{($i*100)} { 
+   |            ^^^^^
+   '
+    input.scss 20:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value blue in interpolation here.
+It may end up represented as blue, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "blue").
+If you really want to use the color value here, use '"" + $name'.
+
+   ,
+20 |         .#{$name}-#{($i*100)} { 
+   |            ^^^^^
+   '
+    input.scss 20:12  root stylesheet
+
+WARNING: You probably don't mean to use the color value blue in interpolation here.
+It may end up represented as blue, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "blue").
+If you really want to use the color value here, use '"" + $name'.
+
+   ,
+20 |         .#{$name}-#{($i*100)} { 
+   |            ^^^^^
+   '
+    input.scss 20:12  root stylesheet
+
+<===> warning-libsass

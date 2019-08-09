@@ -1,0 +1,36 @@
+<===> input.scss
+$foo: true;
+
+div {
+  blah: $foo;
+}
+
+div {
+  blah: not $foo;
+}
+
+div {
+  blah: not ($foo);
+}
+
+div {
+  blah: not (true);
+}
+
+
+<===> output.css
+div {
+  blah: true;
+}
+
+div {
+  blah: false;
+}
+
+div {
+  blah: false;
+}
+
+div {
+  blah: false;
+}

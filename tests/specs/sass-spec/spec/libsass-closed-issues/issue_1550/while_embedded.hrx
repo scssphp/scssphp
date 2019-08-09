@@ -1,0 +1,21 @@
+<===> input.scss
+$i: 1;
+@while $i == 1 {
+  @function foo() {
+    @return 'foo';
+  }
+  $i: $i + 1;
+}
+
+<===> error
+Error: Functions may not be defined within control directives or other mixins.
+        on line 3 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Functions may not be declared in control directives.
+  ,
+3 |   @function foo() {
+  |   ^^^^^^^^^^^^^^^
+  '
+  input.scss 3:3  root stylesheet

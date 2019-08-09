@@ -1,0 +1,23 @@
+<===> input.scss
+foo {
+  a: [footer-right] / 120px;
+  b: [footer-right]/ 120px;
+  c: [footer-right] /120px;
+  d: [footer-right]/120px;
+  e: [footer-right] / 120px 1fr;
+  f: [footer-right]/ 120px 1fr;
+  g: [footer-right] /120px 1fr;
+  h: [footer-right]/120px 1fr;
+}
+
+<===> output.css
+foo {
+  a: [footer-right]/120px;
+  b: [footer-right]/120px;
+  c: [footer-right]/120px;
+  d: [footer-right]/120px;
+  e: [footer-right]/120px 1fr;
+  f: [footer-right]/120px 1fr;
+  g: [footer-right]/120px 1fr;
+  h: [footer-right]/120px 1fr;
+}

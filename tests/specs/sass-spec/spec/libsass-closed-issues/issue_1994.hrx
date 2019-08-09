@@ -1,0 +1,34 @@
+<===> input.scss
+%hoverbrighter {
+    &:hover,
+    &:focus {
+        opacity: .8;
+
+        @supports (filter: brightness(120%)) {
+            filter: brightness(120%);
+        }
+    }
+}
+
+.productportal-link {
+    @extend %hoverbrighter;
+}
+<===> output.css
+.productportal-link:hover, .productportal-link:focus {
+  opacity: .8;
+}
+@supports (filter: brightness(120%)) {
+  .productportal-link:hover, .productportal-link:focus {
+    filter: brightness(120%);
+  }
+}
+
+<===> output-dart-sass.css
+.productportal-link:hover, .productportal-link:focus {
+  opacity: 0.8;
+}
+@supports (filter: brightness(120%)) {
+  .productportal-link:hover, .productportal-link:focus {
+    filter: brightness(120%);
+  }
+}

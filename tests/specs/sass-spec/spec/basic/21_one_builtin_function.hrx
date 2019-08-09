@@ -1,0 +1,11 @@
+<===> input.scss
+div {
+  color: rgb(255, $blue: 0, $green: 255);
+  background: rgb(123, 45, 6);
+}
+
+<===> output.css
+div {
+  color: yellow;
+  background: #7b2d06;
+}

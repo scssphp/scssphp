@@ -1,0 +1,29 @@
+<===> input.scss
+foo {
+  c0: fade-in(rgba(0,0,0,0.0), 0.1);
+  c1: fade-in(rgba(0,0,0,0.1), 0.1);
+  c2: fade-in(rgba(0,0,0,0.2), 0.1);
+  c3: fade-in(rgba(0,0,0,0.3), 0.1);
+  c4: fade-in(rgba(0,0,0,0.4), 0.1);
+  c5: fade-in(rgba(0,0,0,0.5), 0.1);
+  c6: fade-in(rgba(0,0,0,0.6), 0.1);
+  c7: fade-in(rgba(0,0,0,0.7), 0.1);
+  c8: fade-in(rgba(0,0,0,0.8), 0.1);
+  c9: fade-in(rgba(0,0,0,0.9), 0.1);
+  c10: fade-in(rgba(0,0,0,1), 0.1);
+}
+
+<===> output.css
+foo {
+  c0: rgba(0, 0, 0, 0.1);
+  c1: rgba(0, 0, 0, 0.2);
+  c2: rgba(0, 0, 0, 0.3);
+  c3: rgba(0, 0, 0, 0.4);
+  c4: rgba(0, 0, 0, 0.5);
+  c5: rgba(0, 0, 0, 0.6);
+  c6: rgba(0, 0, 0, 0.7);
+  c7: rgba(0, 0, 0, 0.8);
+  c8: rgba(0, 0, 0, 0.9);
+  c9: black;
+  c10: black;
+}

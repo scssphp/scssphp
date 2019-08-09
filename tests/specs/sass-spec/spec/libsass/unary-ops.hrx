@@ -1,0 +1,42 @@
+<===> input.scss
+$x: 20%;
+
+div {
+  a: -10;
+  b: -10px + 10px;
+  c: +10;
+  d: +10px + -10px;
+  e: -$x;
+  f: +$x;
+  g: -hello;
+  h: +hello;
+  i: + hello;
+  j: type-of(+ hello);
+}
+<===> output.css
+div {
+  a: -10;
+  b: 0px;
+  c: +10;
+  d: 0px;
+  e: -20%;
+  f: 20%;
+  g: -hello;
+  h: +hello;
+  i: +hello;
+  j: string;
+}
+
+<===> output-dart-sass.css
+div {
+  a: -10;
+  b: 0px;
+  c: 10;
+  d: 0px;
+  e: -20%;
+  f: 20%;
+  g: -hello;
+  h: +hello;
+  i: +hello;
+  j: string;
+}

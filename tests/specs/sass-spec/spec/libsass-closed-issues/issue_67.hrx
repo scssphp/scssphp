@@ -1,0 +1,6 @@
+<===> input.scss
+foo {bar: 70% - 40%}
+<===> output.css
+foo {
+  bar: 30%;
+}

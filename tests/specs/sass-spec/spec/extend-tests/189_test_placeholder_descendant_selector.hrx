@@ -1,0 +1,8 @@
+<===> input.scss
+#context %foo a {a: b}
+.bar {@extend %foo}
+
+<===> output.css
+#context .bar a {
+  a: b;
+}

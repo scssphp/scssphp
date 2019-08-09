@@ -1,0 +1,63 @@
+<===> input.scss
+// works fine with plain @each directive
+$i: 1;
+$prop1: width;
+$prop2: background-position;
+$values: 132px,
+    100px "-100px -25px",
+    200px "-500px -100px";
+
+@each $value1, $value2 in $values{
+  .okay#{$i} {
+    #{$prop1}: #{$value1};
+    #{$prop2}: #{$value2};
+  }
+  $i: ($i + 1);
+}
+
+// when using @each inside @mixin with variable arguments($values...),
+// $value2 is missing and no errors while compiling
+@mixin eachProp($prop1, $prop2, $values...){
+  $i: 1;
+  @each $value1, $value2 in $values{
+    .error#{$i} {
+      #{$prop1}: #{$value1};
+      #{$prop2}: #{$value2};
+    }
+    $i: ($i + 1);
+  }
+}
+
+@include eachProp($prop1, $prop2,
+  132px,
+    100px "-100px -25px",
+    200px "-500px -100px"
+);
+<===> output.css
+.okay1 {
+  width: 132px;
+}
+
+.okay2 {
+  width: 100px;
+  background-position: -100px -25px;
+}
+
+.okay3 {
+  width: 200px;
+  background-position: -500px -100px;
+}
+
+.error1 {
+  width: 132px;
+}
+
+.error2 {
+  width: 100px;
+  background-position: -100px -25px;
+}
+
+.error3 {
+  width: 200px;
+  background-position: -500px -100px;
+}

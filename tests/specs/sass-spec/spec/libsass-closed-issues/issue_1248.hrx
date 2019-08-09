@@ -1,0 +1,20 @@
+<===> input.scss
+.a.b .c {
+  top: 0;
+}
+.a {
+  @extend .b;
+}
+.a .d {
+  @extend .c;
+}
+
+<===> output.css
+.a.b .c, .a .c, .a.b .d, .a .d {
+  top: 0;
+}
+
+<===> output-dart-sass.css
+.a.b .c, .a .c, .a .d {
+  top: 0;
+}

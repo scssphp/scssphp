@@ -1,0 +1,30 @@
+<===> input.scss
+$input: '\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z';
+.result {
+  output: $input;
+  output: #{$input};
+  output: "[#{$input}]";
+  output: "#{$input}";
+  output: '#{$input}';
+  output: "['#{$input}']";
+}
+
+<===> output.css
+.result {
+  output: "GHIJKLMNOPQRSTUVWXYZ";
+  output: GHIJKLMNOPQRSTUVWXYZ;
+  output: "[GHIJKLMNOPQRSTUVWXYZ]";
+  output: "GHIJKLMNOPQRSTUVWXYZ";
+  output: "GHIJKLMNOPQRSTUVWXYZ";
+  output: "['GHIJKLMNOPQRSTUVWXYZ']";
+}
+
+<===> output-dart-sass.css
+.result {
+  output: "\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ";
+  output: GHIJKLMNOPQRSTUVWXYZ;
+  output: "[\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ]";
+  output: "\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ";
+  output: "\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ";
+  output: "['\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ']";
+}

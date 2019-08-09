@@ -1,0 +1,12 @@
+<===> input.scss
+@import "../assert_helpers";
+
+test {
+  a: assert_strict_superselector(':matches(.foo, .bar, .baz)', '#x:matches(.foo.bip, .baz.bang)');
+  b: assert_strict_superselector(':-moz-any(.foo, .bar, .baz)', '#x:-moz-any(.foo.bip, .baz.bang)');
+}
+<===> output.css
+test {
+  a: true;
+  b: true;
+}

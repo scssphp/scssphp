@@ -1,0 +1,23 @@
+@charset "UTF-8";
+foo {
+  test-01: "aöc";
+  test-02: "aöc";
+  test-03: "öc";
+  test-04: "c";
+  test-05: "";
+  test-06: "aö";
+  test-07: "aö";
+  test-08: "ö";
+  test-09: "";
+  test-10: "";
+  test-11: "a";
+  test-12: "a";
+  test-13: "";
+  test-14: "";
+  test-15: "";
+  test-16: "";
+  test-17: "";
+  test-18: "";
+  test-19: "";
+  test-20: "";
+}

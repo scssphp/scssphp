@@ -1,0 +1,14 @@
+<===> input.scss
+@import "../assert_helpers";
+
+// This actually is a superselector, but it's a very narrow edge case and
+// detecting it is very difficult and may be exponential in the worst case.
+test {
+  a: refute_superselector('.foo ~ .baz', '.foo ~ .bar ~ .baz');
+  b: refute_superselector('.foo ~ .baz', '.foo ~ .bar .baz');
+}
+<===> output.css
+test {
+  a: true;
+  b: true;
+}

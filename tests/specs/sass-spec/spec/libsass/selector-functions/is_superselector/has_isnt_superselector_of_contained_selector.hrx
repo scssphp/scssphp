@@ -1,0 +1,10 @@
+<===> input.scss
+@import "../assert_helpers";
+
+test {
+  a: assert_strict_superselector(':has(.foo, .bar, .baz)', '.foo');
+}
+<===> output.css
+test {
+  a: false;
+}

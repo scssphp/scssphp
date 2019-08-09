@@ -1,0 +1,13 @@
+<===> input.scss
+.one, /* 1 */
+.two /* 2 */ { /* 3 */
+	color: #F00; /* 4 */
+}
+
+<===> output.css
+.one,
+.two {
+  /* 3 */
+  color: #F00;
+  /* 4 */
+}

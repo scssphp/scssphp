@@ -1,0 +1,14 @@
+<===> input.scss
+$mylist: (alpha, beta, gamma, );
+$my-single-item-list: (alpha,);
+.test { 
+  out1: length($mylist);
+  blah: type-of(nth($mylist,3));
+  out: length($my-single-item-list); 
+}
+<===> output.css
+.test {
+  out1: 3;
+  blah: string;
+  out: 1;
+}

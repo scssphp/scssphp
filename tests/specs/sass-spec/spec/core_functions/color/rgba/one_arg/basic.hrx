@@ -1,0 +1,56 @@
+<===> input.scss
+// Channels may be specified as unitless numbers between 0 and 255.
+unitless {
+  numbers: rgba(18 52 86);
+  beaded: rgba(190 173 237);
+  springgreen: rgba(0 255 127);
+  named: rgba($channels: 0 255 127);
+
+  // Channels that are out of bounds are clamped within bounds.
+  clamped {
+    red: rgba(256 0 0);
+    green: rgba(0 -1 0);
+    blue: rgba(0 0 9999);
+  }
+}
+
+// Channels may also be specified as percents between 0% and 100%, which may be
+// mixed with unitless numbers.
+percents {
+  all-percent: rgba(7.1% 20.4% 33.9%);
+  unitless-green: rgba(74.7% 173 93%);
+  percent-green: rgba(190 68% 237);
+  boundaries: rgba(0% 100% 50%);
+
+  // Channels that are out of bounds are clamped within bounds.
+  clamped {
+    red: rgba(100.1% 0 0);
+    green: rgba(0 -0.1% 0);
+    blue: rgba(0 0 200%);
+  }
+}
+
+<===> output.css
+unitless {
+  numbers: #123456;
+  beaded: #beaded;
+  springgreen: springgreen;
+  named: springgreen;
+}
+unitless clamped {
+  red: red;
+  green: black;
+  blue: blue;
+}
+
+percents {
+  all-percent: #123456;
+  unitless-green: #beaded;
+  percent-green: #beaded;
+  boundaries: #00ff80;
+}
+percents clamped {
+  red: red;
+  green: black;
+  blue: blue;
+}

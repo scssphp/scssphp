@@ -1,0 +1,30 @@
+<===> input.scss
+a {
+  four-digit: #0123;
+  eight-digit: #98765432;
+
+  // Verify that the color channels are set correctly.
+  four-digit-red: red(#0123);
+  four-digit-green: green(#0123);
+  four-digit-blue: blue(#0123);
+  four-digit-alpha: alpha(#0123);
+
+  eight-digit-red: red(#98765432);
+  eight-digit-green: green(#98765432);
+  eight-digit-blue: blue(#98765432);
+  eight-digit-alpha: alpha(#98765432);
+}
+
+<===> output.css
+a {
+  four-digit: #0123;
+  eight-digit: #98765432;
+  four-digit-red: 0;
+  four-digit-green: 17;
+  four-digit-blue: 34;
+  four-digit-alpha: 0.2;
+  eight-digit-red: 152;
+  eight-digit-green: 118;
+  eight-digit-blue: 84;
+  eight-digit-alpha: 0.1960784314;
+}

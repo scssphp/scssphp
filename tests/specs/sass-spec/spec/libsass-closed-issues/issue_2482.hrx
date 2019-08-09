@@ -1,0 +1,20 @@
+<===> options.yml
+---
+:todo:
+- dart-sass
+
+<===> input.scss
+@mixin mixin()
+{
+	& .class
+	{
+		color: black;
+	}
+}
+
+@include mixin();
+<===> error
+Error: Base-level rules cannot contain the parent-selector-referencing character '&'.
+        on line 3 of input.scss, in `mixin'
+        from line 9 of input.scss
+  Use --trace for backtrace.

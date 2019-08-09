@@ -1,0 +1,74 @@
+<===> input.scss
+universal-selector {
+  test-01: selector-unify("*", "*");
+  test-02: selector-unify("|*", "*");
+  test-03: selector-unify("*|*", "*");
+  test-04: selector-unify("*", "|*");
+  test-05: selector-unify("|*", "|*");
+  test-06: selector-unify("*|*", "|*");
+  test-07: selector-unify("*", "*|*");
+  test-08: selector-unify("|*", "*|*");
+  test-09: selector-unify("*|*", "*|*");
+}
+
+tag-selector {
+  test-1: selector-unify("tag", "*");
+  test-2: selector-unify("tag", "|*");
+  test-3: selector-unify("tag", "*|*");
+  test-4: selector-unify("*", "tag");
+  test-5: selector-unify("|*", "tag");
+  test-6: selector-unify("*|*", "tag");
+}
+
+class-selector {
+  test-1: selector-unify(".class", "*");
+  test-2: selector-unify(".class", "|*");
+  test-3: selector-unify(".class", "*|*");
+  test-4: selector-unify("*", ".class");
+  test-5: selector-unify("|*", ".class");
+  test-6: selector-unify("*|*", ".class");
+}
+
+id-selector {
+  test-1: selector-unify("#id", "*");
+  test-2: selector-unify("#id", "|*");
+  test-3: selector-unify("#id", "*|*");
+  test-4: selector-unify("*", "#id");
+  test-5: selector-unify("|*", "#id");
+  test-6: selector-unify("*|*", "#id");
+}
+<===> output.css
+universal-selector {
+  test-01: *;
+  test-03: *;
+  test-05: |*;
+  test-06: |*;
+  test-07: *;
+  test-08: |*;
+  test-09: *|*;
+}
+
+tag-selector {
+  test-1: tag;
+  test-3: tag;
+  test-4: tag;
+  test-6: tag;
+}
+
+class-selector {
+  test-1: .class;
+  test-2: |*.class;
+  test-3: .class;
+  test-4: .class;
+  test-5: |*.class;
+  test-6: .class;
+}
+
+id-selector {
+  test-1: #id;
+  test-2: |*#id;
+  test-3: #id;
+  test-4: #id;
+  test-5: |*#id;
+  test-6: #id;
+}

@@ -1,0 +1,20 @@
+<===> input.scss
+@function test() {
+  @return;
+}
+
+div {
+  x: type-of(test());
+}
+<===> error
+Error: Invalid CSS after "  @return": expected expression (e.g. 1px, bold), was ";"
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Expected expression.
+  ,
+2 |   @return;
+  |          ^
+  '
+  input.scss 2:10  root stylesheet

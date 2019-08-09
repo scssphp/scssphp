@@ -1,0 +1,8 @@
+<===> input.scss
+.foo:not(.bar) {a: b}
+.baz {@extend .foo}
+
+<===> output.css
+.foo:not(.bar), .baz:not(.bar) {
+  a: b;
+}

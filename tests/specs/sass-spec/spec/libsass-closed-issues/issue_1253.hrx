@@ -1,0 +1,15 @@
+<===> input.scss
+$foo: bar;
+@keyframes $foo {
+  from { a: b }
+  to { a: c }
+}
+<===> output.css
+@keyframes $foo {
+  from {
+    a: b;
+  }
+  to {
+    a: c;
+  }
+}

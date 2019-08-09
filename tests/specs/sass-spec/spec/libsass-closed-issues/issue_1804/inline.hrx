@@ -1,0 +1,17 @@
+<===> input.scss
+foo {
+  bar: #{(2px*5in)};
+}
+
+<===> error
+Error: 10in*px isn't a valid CSS value.
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: 10px*in isn't a valid CSS value.
+  ,
+2 |   bar: #{(2px*5in)};
+  |          ^^^^^^^^^
+  '
+  input.scss 2:10  root stylesheet

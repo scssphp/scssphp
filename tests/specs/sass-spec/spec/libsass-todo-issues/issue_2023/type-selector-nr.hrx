@@ -1,0 +1,15 @@
+<===> input.scss
+1 {
+    color: red;
+}
+
+<===> error
+Error: Invalid CSS after "": expected selector, was "1"
+
+<===> error-dart-sass
+Error: expected selector.
+  ,
+1 | 1{
+  | ^
+  '
+  input.scss 1:1  root stylesheet

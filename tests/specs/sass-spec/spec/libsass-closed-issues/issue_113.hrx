@@ -1,0 +1,10 @@
+<===> input.scss
+// Input
+section {
+    $w: null, 10px;
+    width: $w;
+}
+<===> output.css
+section {
+  width: 10px;
+}

@@ -1,0 +1,50 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+div {
+  baz: #{1/2}/#{1/2};
+  baz: #{1/  2}/  #{1/  2};
+  baz: #{1  /2}  /#{1  /2};
+  baz: #{1  /  2}  /  #{1  /  2};
+}
+
+add {
+  baz: #{1+2}+#{1+2};
+  baz: #{1+  2}+  #{1+  2};
+  baz: #{1  +2}  +#{1  +2};
+  baz: #{1  +  2}  +  #{1  +  2};
+}
+
+sub {
+  baz: #{1-2}-#{1-2};
+  baz: #{1-  2}-  #{1-  2};
+  baz: #{1  -2}  -#{1  -2};
+  baz: #{1  -  2}  -  #{1  -  2};
+}
+
+mul {
+  baz: #{1*2}*#{1*2};
+  baz: #{1*  2}*  #{1*  2};
+  baz: #{1  *2}  *#{1  *2};
+  baz: #{1  *  2}  *  #{1  *  2};
+}
+
+mod {
+  baz: #{1%2}%#{1%2};
+  baz: #{1%  2}%  #{1%  2};
+  baz: #{1  %2}  %#{1  %2};
+  baz: #{1  %  2}  %  #{1  %  2};
+}
+<===> error
+Error: Undefined operation: "2 times 2".
+
+<===> error-dart-sass
+Error: Undefined operation "2 * 2".
+   ,
+23 |   baz: #{1*2}*#{1*2};
+   |        ^^^^^^^^^^^^^
+   '
+  input.scss 23:8  root stylesheet

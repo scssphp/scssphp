@@ -1,0 +1,41 @@
+<===> input.scss
+a {
+  @if [foo bar]==[foo bar] {
+    t1: t;
+  } @else {
+    f1: f;
+  }
+
+  @if [foo bar]==[foo, bar] {
+    t2: t;
+  } @else {
+    f2: f;
+  }
+
+  @if [foo bar]==(foo bar) {
+    t3: t;
+  } @else {
+    f3: f;
+  }
+
+  @if [] == [] {
+    t4: t;
+  } @else {
+    f4: f;
+  }
+
+  @if [] == () {
+    t5: t;
+  } @else {
+    f5: f;
+  }
+}
+
+<===> output.css
+a {
+  t1: t;
+  f2: f;
+  f3: f;
+  t4: t;
+  f5: f;
+}

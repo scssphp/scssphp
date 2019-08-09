@@ -1,0 +1,10 @@
+<===> input.scss
+foo {
+  $nothing: null;
+  foo: "#{$nothing}' %' '#{$nothing}";
+}
+
+<===> output.css
+foo {
+  foo: "' %' '";
+}

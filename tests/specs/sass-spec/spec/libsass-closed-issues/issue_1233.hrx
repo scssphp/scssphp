@@ -1,0 +1,15 @@
+<===> input.scss
+@-moz-keyframes animatetoptop /* Firefox */ line 429
+{
+from {width:0%}
+to {width:100%}
+}
+<===> output.css
+@-moz-keyframes animatetoptop /* Firefox */ line 429 {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}

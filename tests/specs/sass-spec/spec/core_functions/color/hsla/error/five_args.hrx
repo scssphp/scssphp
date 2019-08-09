@@ -1,0 +1,19 @@
+<===> input.scss
+five-arg {
+  x: hsla(0, 100%, 50%, 0.5, 0);
+}
+
+<===> error
+Error: Only 1 argument allowed, but 5 were passed.
+  ,
+2 |   x: hsla(0, 100%, 50%, 0.5, 0);
+  |      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===> error-libsass
+Error: wrong number of arguments (5 for 4) for `hsla'
+        on line 2 of input.scss
+>>   x: hsla(0, 100%, 50%, 0.5, 0);
+
+   -----^

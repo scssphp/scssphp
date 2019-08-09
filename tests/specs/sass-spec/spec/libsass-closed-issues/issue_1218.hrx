@@ -1,0 +1,36 @@
+<===> input.scss
+$foo: 20px;
+@media screen and ("min-width:#{$foo}") {
+    .bar {
+        width: 12px;
+    }
+}
+@media screen and ("min-width:0") {
+    .bar {
+        width: 12px;
+    }
+}
+
+<===> output.css
+@media screen and (min-width: 20px) {
+  .bar {
+    width: 12px;
+  }
+}
+@media screen and (min-width: 0) {
+  .bar {
+    width: 12px;
+  }
+}
+
+<===> output-dart-sass.css
+@media screen and (min-width:20px) {
+  .bar {
+    width: 12px;
+  }
+}
+@media screen and (min-width:0) {
+  .bar {
+    width: 12px;
+  }
+}

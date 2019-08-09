@@ -1,0 +1,11 @@
+<===> input.scss
+@debug(());
+@debug(foo, (), bar);
+@debug(foo () bar);
+@debug((foo: (), bar: baz));
+<===> output.css
+<===> warning
+input.scss:1 DEBUG: ()
+input.scss:2 DEBUG: foo, (), bar
+input.scss:3 DEBUG: foo () bar
+input.scss:4 DEBUG: (foo: (), bar: baz)

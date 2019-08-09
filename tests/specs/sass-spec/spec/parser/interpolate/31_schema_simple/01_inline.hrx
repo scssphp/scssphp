@@ -1,0 +1,19 @@
+<===> input.scss
+.result {
+  output: "["'foo'"]";
+  output: #{"["'foo'"]"};
+  output: "[#{"["'foo'"]"}]";
+  output: "#{"["'foo'"]"}";
+  output: '#{"["'foo'"]"}';
+  output: "['#{"["'foo'"]"}']";
+}
+
+<===> output.css
+.result {
+  output: "[" "foo" "]";
+  output: [ foo ];
+  output: "[[ foo ]]";
+  output: "[ foo ]";
+  output: "[ foo ]";
+  output: "['[ foo ]']";
+}

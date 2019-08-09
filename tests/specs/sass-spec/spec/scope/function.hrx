@@ -1,0 +1,26 @@
+<===> input.scss
+$foo: 42;
+
+.foo {
+  content: $foo;
+}
+
+@function foo() {
+  $foo: 1337 !global;
+  @return $foo;
+}
+
+@if foo() {}
+
+.bar {
+  content: $foo;
+}
+
+<===> output.css
+.foo {
+  content: 42;
+}
+
+.bar {
+  content: 1337;
+}

@@ -1,0 +1,635 @@
+<===> input.scss
+// These test cases come from two official W3C test suites:
+//
+// * https://www.w3.org/Style/CSS/Test/CSS3/Color/20070927/html4/t040204-hsl-h-rotating-b.htm
+// * https://www.w3.org/Style/CSS/Test/CSS3/Color/current/html4/t040204-hsl-values-b.htm
+
+hue {
+  @mixin test-hues($name, $hues...) {
+    #{$name} {
+      @each $hue in $hues {
+        hue-#{$hue}: hsla($hue, 100%, 50%);
+      }
+    }
+  }
+
+  @include test-hues("red", 0, -360, 260, 6120);
+  @include test-hues("yellow", 60, -300, 420, -9660);
+  @include test-hues("green", 120, -240, 480, 99840);
+  @include test-hues("cyan", 180, -180, 540, -900);
+  @include test-hues("blue", 240, -120, 600, -104880);
+  @include test-hues("purple", 300, -60, 660, 2820);
+}
+
+red-to-green {
+  step-1: hsla(0, 100%, 50%);
+  step-2: hsla(12, 100%, 50%);
+  step-3: hsla(24, 100%, 50%);
+  step-4: hsla(36, 100%, 50%);
+  step-5: hsla(48, 100%, 50%);
+  step-6: hsla(60, 100%, 50%);
+  step-7: hsla(72, 100%, 50%);
+  step-8: hsla(84, 100%, 50%);
+  step-9: hsla(96, 100%, 50%);
+  step-10: hsla(108, 100%, 50%);
+  step-11: hsla(120, 100%, 50%);
+}
+
+green-to-blue {
+  step-1: hsla(120, 100%, 50%);
+  step-2: hsla(132, 100%, 50%);
+  step-3: hsla(144, 100%, 50%);
+  step-4: hsla(156, 100%, 50%);
+  step-5: hsla(168, 100%, 50%);
+  step-6: hsla(180, 100%, 50%);
+  step-7: hsla(192, 100%, 50%);
+  step-8: hsla(204, 100%, 50%);
+  step-9: hsla(216, 100%, 50%);
+  step-10: hsla(228, 100%, 50%);
+  step-11: hsla(240, 100%, 50%);
+}
+
+blue-to-red {
+  step-1: hsla(240, 100%, 50%);
+  step-2: hsla(252, 100%, 50%);
+  step-3: hsla(264, 100%, 50%);
+  step-4: hsla(276, 100%, 50%);
+  step-5: hsla(288, 100%, 50%);
+  step-6: hsla(300, 100%, 50%);
+  step-7: hsla(312, 100%, 50%);
+  step-8: hsla(324, 100%, 50%);
+  step-9: hsla(336, 100%, 50%);
+  step-10: hsla(348, 100%, 50%);
+  step-11: hsla(360, 100%, 50%);
+}
+
+gray-to {
+  red {
+    step-1: hsla(0, 20%, 50%);
+    step-2: hsla(0, 60%, 50%);
+    step-3: hsla(0, 100%, 50%);
+  }
+
+  yellow {
+    step-1: hsla(60, 20%, 50%);
+    step-2: hsla(60, 60%, 50%);
+    step-3: hsla(60, 100%, 50%);
+  }
+
+  green {
+    step-1: hsla(120, 20%, 50%);
+    step-2: hsla(120, 60%, 50%);
+    step-3: hsla(120, 100%, 50%);
+  }
+
+  cyan {
+    step-1: hsla(180, 20%, 50%);
+    step-2: hsla(180, 60%, 50%);
+    step-3: hsla(180, 100%, 50%);
+  }
+
+  blue {
+    step-1: hsla(240, 20%, 50%);
+    step-2: hsla(240, 60%, 50%);
+    step-3: hsla(240, 100%, 50%);
+  }
+
+  purple {
+    step-1: hsla(300, 20%, 50%);
+    step-2: hsla(300, 60%, 50%);
+    step-3: hsla(300, 100%, 50%);
+  }
+}
+
+black-to-white-through {
+  red {
+    step-1: hsla(0, 100%, 0%);
+    step-2: hsla(0, 100%, 10%);
+    step-3: hsla(0, 100%, 20%);
+    step-4: hsla(0, 100%, 30%);
+    step-5: hsla(0, 100%, 40%);
+    step-6: hsla(0, 100%, 50%);
+    step-7: hsla(0, 100%, 60%);
+    step-8: hsla(0, 100%, 70%);
+    step-9: hsla(0, 100%, 80%);
+    step-10: hsla(0, 100%, 90%);
+    step-11: hsla(0, 100%, 100%);
+  }
+
+  yellow {
+    step-1: hsla(60, 100%, 0%);
+    step-2: hsla(60, 100%, 10%);
+    step-3: hsla(60, 100%, 20%);
+    step-4: hsla(60, 100%, 30%);
+    step-5: hsla(60, 100%, 40%);
+    step-6: hsla(60, 100%, 50%);
+    step-7: hsla(60, 100%, 60%);
+    step-8: hsla(60, 100%, 70%);
+    step-9: hsla(60, 100%, 80%);
+    step-10: hsla(60, 100%, 90%);
+    step-11: hsla(60, 100%, 100%);
+  }
+
+  green {
+    step-1: hsla(120, 100%, 0%);
+    step-2: hsla(120, 100%, 10%);
+    step-3: hsla(120, 100%, 20%);
+    step-4: hsla(120, 100%, 30%);
+    step-5: hsla(120, 100%, 40%);
+    step-6: hsla(120, 100%, 50%);
+    step-7: hsla(120, 100%, 60%);
+    step-8: hsla(120, 100%, 70%);
+    step-9: hsla(120, 100%, 80%);
+    step-10: hsla(120, 100%, 90%);
+    step-11: hsla(120, 100%, 100%);
+  }
+
+  cyan {
+    step-1: hsla(180, 100%, 0%);
+    step-2: hsla(180, 100%, 10%);
+    step-3: hsla(180, 100%, 20%);
+    step-4: hsla(180, 100%, 30%);
+    step-5: hsla(180, 100%, 40%);
+    step-6: hsla(180, 100%, 50%);
+    step-7: hsla(180, 100%, 60%);
+    step-8: hsla(180, 100%, 70%);
+    step-9: hsla(180, 100%, 80%);
+    step-10: hsla(180, 100%, 90%);
+    step-11: hsla(180, 100%, 100%);
+  }
+
+  blue {
+    step-1: hsla(240, 100%, 0%);
+    step-2: hsla(240, 100%, 10%);
+    step-3: hsla(240, 100%, 20%);
+    step-4: hsla(240, 100%, 30%);
+    step-5: hsla(240, 100%, 40%);
+    step-6: hsla(240, 100%, 50%);
+    step-7: hsla(240, 100%, 60%);
+    step-8: hsla(240, 100%, 70%);
+    step-9: hsla(240, 100%, 80%);
+    step-10: hsla(240, 100%, 90%);
+    step-11: hsla(240, 100%, 100%);
+  }
+
+  purple {
+    step-1: hsla(300, 100%, 0%);
+    step-2: hsla(300, 100%, 10%);
+    step-3: hsla(300, 100%, 20%);
+    step-4: hsla(300, 100%, 30%);
+    step-5: hsla(300, 100%, 40%);
+    step-6: hsla(300, 100%, 50%);
+    step-7: hsla(300, 100%, 60%);
+    step-8: hsla(300, 100%, 70%);
+    step-9: hsla(300, 100%, 80%);
+    step-10: hsla(300, 100%, 90%);
+    step-11: hsla(300, 100%, 100%);
+  }
+}
+
+// The W3C tests cover clamped hue, but not clamped saturation or lightness.
+clamped {
+  saturation-above: hsla(0, 500%, 50%);
+  saturation-below: hsla(0, -100%, 50%);
+  lightness-above: hsla(0, 100%, 500%);
+  lightness-below: hsla(0, 100%, -100%);
+}
+
+units {
+  hue-deg: hsla(0deg, 100%, 50%);
+  saturation-unitless: hsla(0, 50, 50%);
+  lightness-unitless: hsla(0, 100%, 50);
+}
+
+named {
+  x: hsla($hue: 0, $saturation: 100%, $lightness: 50%);
+}
+
+<===> output.css
+hue red {
+  hue-0: red;
+  hue--360: red;
+  hue-260: #5500ff;
+  hue-6120: red;
+}
+hue yellow {
+  hue-60: yellow;
+  hue--300: yellow;
+  hue-420: yellow;
+  hue--9660: yellow;
+}
+hue green {
+  hue-120: lime;
+  hue--240: lime;
+  hue-480: lime;
+  hue-99840: lime;
+}
+hue cyan {
+  hue-180: aqua;
+  hue--180: aqua;
+  hue-540: aqua;
+  hue--900: aqua;
+}
+hue blue {
+  hue-240: blue;
+  hue--120: blue;
+  hue-600: blue;
+  hue--104880: blue;
+}
+hue purple {
+  hue-300: fuchsia;
+  hue--60: fuchsia;
+  hue-660: fuchsia;
+  hue-2820: fuchsia;
+}
+
+red-to-green {
+  step-1: red;
+  step-2: #ff3300;
+  step-3: #ff6600;
+  step-4: #ff9900;
+  step-5: #ffcc00;
+  step-6: yellow;
+  step-7: #ccff00;
+  step-8: #99ff00;
+  step-9: #66ff00;
+  step-10: #33ff00;
+  step-11: lime;
+}
+
+green-to-blue {
+  step-1: lime;
+  step-2: #00ff33;
+  step-3: #00ff66;
+  step-4: #00ff99;
+  step-5: #00ffcc;
+  step-6: aqua;
+  step-7: #00ccff;
+  step-8: #0099ff;
+  step-9: #0066ff;
+  step-10: #0033ff;
+  step-11: blue;
+}
+
+blue-to-red {
+  step-1: blue;
+  step-2: #3300ff;
+  step-3: #6600ff;
+  step-4: #9900ff;
+  step-5: #cc00ff;
+  step-6: fuchsia;
+  step-7: #ff00cc;
+  step-8: #ff0099;
+  step-9: #ff0066;
+  step-10: #ff0033;
+  step-11: red;
+}
+
+gray-to red {
+  step-1: #996666;
+  step-2: #cc3333;
+  step-3: red;
+}
+gray-to yellow {
+  step-1: #999966;
+  step-2: #cccc33;
+  step-3: yellow;
+}
+gray-to green {
+  step-1: #669966;
+  step-2: #33cc33;
+  step-3: lime;
+}
+gray-to cyan {
+  step-1: #669999;
+  step-2: #33cccc;
+  step-3: aqua;
+}
+gray-to blue {
+  step-1: #666699;
+  step-2: #3333cc;
+  step-3: blue;
+}
+gray-to purple {
+  step-1: #996699;
+  step-2: #cc33cc;
+  step-3: fuchsia;
+}
+
+black-to-white-through red {
+  step-1: black;
+  step-2: #330000;
+  step-3: #660000;
+  step-4: #990000;
+  step-5: #cc0000;
+  step-6: red;
+  step-7: #ff3333;
+  step-8: #ff6666;
+  step-9: #ff9999;
+  step-10: #ffcccc;
+  step-11: white;
+}
+black-to-white-through yellow {
+  step-1: black;
+  step-2: #333300;
+  step-3: #666600;
+  step-4: #999900;
+  step-5: #cccc00;
+  step-6: yellow;
+  step-7: #ffff33;
+  step-8: #ffff66;
+  step-9: #ffff99;
+  step-10: #ffffcc;
+  step-11: white;
+}
+black-to-white-through green {
+  step-1: black;
+  step-2: #003300;
+  step-3: #006600;
+  step-4: #009900;
+  step-5: #00cc00;
+  step-6: lime;
+  step-7: #33ff33;
+  step-8: #66ff66;
+  step-9: #99ff99;
+  step-10: #ccffcc;
+  step-11: white;
+}
+black-to-white-through cyan {
+  step-1: black;
+  step-2: #003333;
+  step-3: #006666;
+  step-4: #009999;
+  step-5: #00cccc;
+  step-6: aqua;
+  step-7: #33ffff;
+  step-8: #66ffff;
+  step-9: #99ffff;
+  step-10: #ccffff;
+  step-11: white;
+}
+black-to-white-through blue {
+  step-1: black;
+  step-2: #000033;
+  step-3: #000066;
+  step-4: #000099;
+  step-5: #0000cc;
+  step-6: blue;
+  step-7: #3333ff;
+  step-8: #6666ff;
+  step-9: #9999ff;
+  step-10: #ccccff;
+  step-11: white;
+}
+black-to-white-through purple {
+  step-1: black;
+  step-2: #330033;
+  step-3: #660066;
+  step-4: #990099;
+  step-5: #cc00cc;
+  step-6: fuchsia;
+  step-7: #ff33ff;
+  step-8: #ff66ff;
+  step-9: #ff99ff;
+  step-10: #ffccff;
+  step-11: white;
+}
+
+clamped {
+  saturation-above: red;
+  saturation-below: gray;
+  lightness-above: white;
+  lightness-below: black;
+}
+
+units {
+  hue-deg: red;
+  saturation-unitless: #bf4040;
+  lightness-unitless: red;
+}
+
+named {
+  x: red;
+}
+
+<===> output-libsass.css
+hue red {
+  hue-0: red;
+  hue--360: red;
+  hue-260: #5500ff;
+  hue-6120: red;
+}
+
+hue yellow {
+  hue-60: yellow;
+  hue--300: yellow;
+  hue-420: yellow;
+  hue--9660: yellow;
+}
+
+hue green {
+  hue-120: lime;
+  hue--240: lime;
+  hue-480: lime;
+  hue-99840: lime;
+}
+
+hue cyan {
+  hue-180: cyan;
+  hue--180: cyan;
+  hue-540: cyan;
+  hue--900: cyan;
+}
+
+hue blue {
+  hue-240: blue;
+  hue--120: blue;
+  hue-600: blue;
+  hue--104880: blue;
+}
+
+hue purple {
+  hue-300: magenta;
+  hue--60: magenta;
+  hue-660: magenta;
+  hue-2820: magenta;
+}
+
+red-to-green {
+  step-1: red;
+  step-2: #ff3300;
+  step-3: #ff6600;
+  step-4: #ff9900;
+  step-5: #ffcc00;
+  step-6: yellow;
+  step-7: #ccff00;
+  step-8: #99ff00;
+  step-9: #66ff00;
+  step-10: #33ff00;
+  step-11: lime;
+}
+
+green-to-blue {
+  step-1: lime;
+  step-2: #00ff33;
+  step-3: #00ff66;
+  step-4: #00ff99;
+  step-5: #00ffcc;
+  step-6: cyan;
+  step-7: #00ccff;
+  step-8: #0099ff;
+  step-9: #0066ff;
+  step-10: #0033ff;
+  step-11: blue;
+}
+
+blue-to-red {
+  step-1: blue;
+  step-2: #3300ff;
+  step-3: #6600ff;
+  step-4: #9900ff;
+  step-5: #cc00ff;
+  step-6: magenta;
+  step-7: #ff00cc;
+  step-8: #ff0099;
+  step-9: #ff0066;
+  step-10: #ff0033;
+  step-11: red;
+}
+
+gray-to red {
+  step-1: #996666;
+  step-2: #cc3333;
+  step-3: red;
+}
+
+gray-to yellow {
+  step-1: #999966;
+  step-2: #cccc33;
+  step-3: yellow;
+}
+
+gray-to green {
+  step-1: #669966;
+  step-2: #33cc33;
+  step-3: lime;
+}
+
+gray-to cyan {
+  step-1: #669999;
+  step-2: #33cccc;
+  step-3: cyan;
+}
+
+gray-to blue {
+  step-1: #666699;
+  step-2: #3333cc;
+  step-3: blue;
+}
+
+gray-to purple {
+  step-1: #996699;
+  step-2: #cc33cc;
+  step-3: magenta;
+}
+
+black-to-white-through red {
+  step-1: black;
+  step-2: #330000;
+  step-3: #660000;
+  step-4: #990000;
+  step-5: #cc0000;
+  step-6: red;
+  step-7: #ff3333;
+  step-8: #ff6666;
+  step-9: #ff9999;
+  step-10: #ffcccc;
+  step-11: white;
+}
+
+black-to-white-through yellow {
+  step-1: black;
+  step-2: #333300;
+  step-3: #666600;
+  step-4: #999900;
+  step-5: #cccc00;
+  step-6: yellow;
+  step-7: #ffff33;
+  step-8: #ffff66;
+  step-9: #ffff99;
+  step-10: #ffffcc;
+  step-11: white;
+}
+
+black-to-white-through green {
+  step-1: black;
+  step-2: #003300;
+  step-3: #006600;
+  step-4: #009900;
+  step-5: #00cc00;
+  step-6: lime;
+  step-7: #33ff33;
+  step-8: #66ff66;
+  step-9: #99ff99;
+  step-10: #ccffcc;
+  step-11: white;
+}
+
+black-to-white-through cyan {
+  step-1: black;
+  step-2: #003333;
+  step-3: #006666;
+  step-4: #009999;
+  step-5: #00cccc;
+  step-6: cyan;
+  step-7: #33ffff;
+  step-8: #66ffff;
+  step-9: #99ffff;
+  step-10: #ccffff;
+  step-11: white;
+}
+
+black-to-white-through blue {
+  step-1: black;
+  step-2: #000033;
+  step-3: #000066;
+  step-4: #000099;
+  step-5: #0000cc;
+  step-6: blue;
+  step-7: #3333ff;
+  step-8: #6666ff;
+  step-9: #9999ff;
+  step-10: #ccccff;
+  step-11: white;
+}
+
+black-to-white-through purple {
+  step-1: black;
+  step-2: #330033;
+  step-3: #660066;
+  step-4: #990099;
+  step-5: #cc00cc;
+  step-6: magenta;
+  step-7: #ff33ff;
+  step-8: #ff66ff;
+  step-9: #ff99ff;
+  step-10: #ffccff;
+  step-11: white;
+}
+
+clamped {
+  saturation-above: red;
+  saturation-below: gray;
+  lightness-above: white;
+  lightness-below: black;
+}
+
+units {
+  hue-deg: red;
+  saturation-unitless: #bf4040;
+  lightness-unitless: red;
+}
+
+named {
+  x: red;
+}

@@ -1,0 +1,15 @@
+<===> input.scss
+.asdf {
+  $bwidth: 52px;
+  left: -$bwidth/3;
+  right: (1/3);
+  center: (10000/3);
+  blah: (20/8);
+}
+<===> output.css
+.asdf {
+  left: -17.3333333333px;
+  right: 0.3333333333;
+  center: 3333.3333333333;
+  blah: 2.5;
+}

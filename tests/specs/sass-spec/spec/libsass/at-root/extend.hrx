@@ -1,0 +1,32 @@
+<===> input.scss
+foo {
+  @at-root {
+    %placeholder {
+      color: red;
+    }
+  }
+
+  baz {
+    @at-root {
+      %other-placeholder {
+        color: blue;
+      }
+    }
+  }
+}
+
+bar {
+  @extend %placeholder;
+}
+
+baz {
+  @extend %other-placeholder;
+}
+
+<===> output.css
+bar {
+  color: red;
+}
+baz {
+  color: blue;
+}

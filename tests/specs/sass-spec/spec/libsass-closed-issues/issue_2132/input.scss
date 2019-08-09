@@ -1,0 +1,25 @@
+foo {
+  test-01: str-slice('aöc', 0, -1);
+  test-02: str-slice('aöc', 1, -1);
+  test-03: str-slice('aöc', 2, -1);
+  test-04: str-slice('aöc', 3, -1);
+  test-05: str-slice('aöc', 4, -1);
+
+  test-06: str-slice('aöc', 0, -2);
+  test-07: str-slice('aöc', 1, -2);
+  test-08: str-slice('aöc', 2, -2);
+  test-09: str-slice('aöc', 3, -2);
+  test-10: str-slice('aöc', 4, -2);
+
+  test-11: str-slice('aöc', 0, -3);
+  test-12: str-slice('aöc', 1, -3);
+  test-13: str-slice('aöc', 2, -3);
+  test-14: str-slice('aöc', 3, -3);
+  test-15: str-slice('aöc', 4, -3);
+
+  test-16: str-slice('aöc', 0, -4);
+  test-17: str-slice('aöc', 1, -4);
+  test-18: str-slice('aöc', 2, -4);
+  test-19: str-slice('aöc', 3, -4);
+  test-20: str-slice('aöc', 4, -4);
+}

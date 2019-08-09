@@ -1,0 +1,33 @@
+.normalize {
+  // TODO: remove unnecessary parentheses when we're no longer testing against
+  // Ruby Sass.
+  name-start-char: (ax \61x \61 x \061x \0061x \00061x);
+  name-start-char-non-hex: (\xx);
+  name-start-char-non-ascii: (☃x \☃x \2603x);
+  name-char-in-middle: (a\2dx a\-x);
+  name-char-at-start: (\2dx \-x);
+  digit-in-middle: (a\31x a\31 x);
+  digit-at-start: (\31x \31 x);
+  non-printable: (\0x \1x \2x \3x \4x \5x \6x \7x \8x \Bx \Ex \Fx \10x \11x \12x
+    \13x \14x \15x \16x \17x \18x \19x \1Ax \1Bx \1Cx \1Dx \1Ex \1Fx \7Fx);
+  newline: (\ax \cx \dx);
+  tab: (\	x \9x);
+
+  // The beginning of an interpolated identifier should escape name-start chars,
+  // but inner sections should not.
+  name-char-interpolation-beginning: \-#{foo};
+  name-char-interpolation-middle: #{foo}\-#{bar};
+  name-char-interpolation-end: #{foo}\-;
+
+  // Regression test for sass/ruby-sass#94
+  raw-escaped-tab: \	;
+}
+
+// Regression test for sass/ruby-sass#96
+@media screen\9 {
+  x {y: z}
+}
+
+selector\9 {
+  x: y;
+}

@@ -1,0 +1,33 @@
+<===> input.scss
+@mixin foo($option: 'foo') {
+     // Create a unique, random placeholder to store styles
+    $placeholder : $option + random(9999);
+
+    // Store the styles in the placeholder
+    @at-root %#{$placeholder} {
+        content: 'foo';
+    }
+
+    @at-root {
+        .bar {
+            @extend %#{$placeholder};
+        }
+    }
+}
+
+@mixin bar($option) {
+    @include foo($option);
+}
+
+.foo {
+    @include bar('baz');
+}
+<===> output.css
+.bar {
+  content: 'foo';
+}
+
+<===> output-dart-sass.css
+.bar {
+  content: "foo";
+}

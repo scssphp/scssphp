@@ -1,0 +1,55 @@
+<===> input.scss
+
+$base-path:'../images/';
+$base-attr:'data-';
+
+@function url($src, $path:''){
+  @return unquote('url('+$base-path + $path+ $src +')');
+}
+@function url2($src, $path:''){
+  @return unquote('url('+ $base-path + $path+ $src +')');
+}
+@function attr($arg1, $arg2:''){
+  @return unquote('attr('+$base-attr + $arg1 + $arg2 +')');
+}
+
+div {
+    background: url('image.png');
+    background: url('image.png','img/');
+    background: url2('image.png','img/');
+
+  &:after {
+    content: attr(value);
+    content: attr(value, -extra);
+    content: url('icon.png');
+    content: url('icon.png','gfx/');
+    content: url2('icon.png','gfx/');
+  }
+}
+
+<===> error-dart-sass
+Error: Invalid function name.
+  ,
+5 | @function url($src, $path:''){
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 5:1  root stylesheet
+
+<===> output.css
+div {
+  background: url(../images/image.png);
+  background: url(../images/img/image.png);
+  background: url(../images/img/image.png);
+}
+div:after {
+  content: attr(data-value);
+  content: attr(data-value-extra);
+  content: url(../images/icon.png);
+  content: url(../images/gfx/icon.png);
+  content: url(../images/gfx/icon.png);
+}
+
+<===> warning
+DEPRECATION WARNING on line 5 of /sass/spec/libsass-issues/issue_674/input.scss:
+Naming a function "url" is disallowed and will be an error in future versions of Sass.
+This name conflicts with an existing CSS function with special parse rules.

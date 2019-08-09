@@ -1,0 +1,30 @@
+<===> input.scss
+foo {
+  ump: nump;
+  grump: clump;
+  bar {
+    blat: bang;
+    habit: rabbit;
+    baz {a: b}
+    bip {c: d}}
+  bibble {
+    bap {e: f}}}
+
+<===> output.css
+foo {
+  ump: nump;
+  grump: clump;
+}
+foo bar {
+  blat: bang;
+  habit: rabbit;
+}
+foo bar baz {
+  a: b;
+}
+foo bar bip {
+  c: d;
+}
+foo bibble bap {
+  e: f;
+}

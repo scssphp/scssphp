@@ -1,0 +1,15 @@
+<===> input.scss
+@mixin do_import() {
+  @if (false) {
+  } @else {
+    @import url("http://www.libsass.org");
+  }
+}
+
+foo {
+  @include do_import();
+}
+<===> output.css
+foo {
+  @import url("http://www.libsass.org");
+}

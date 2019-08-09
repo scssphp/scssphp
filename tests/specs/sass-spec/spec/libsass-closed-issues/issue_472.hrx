@@ -1,0 +1,19 @@
+<===> input.scss
+div {
+  display: block;
+  @keyframes {
+    from {
+      foo: bar;
+    }
+  }
+}
+
+<===> output.css
+div {
+  display: block;
+}
+@keyframes {
+  from {
+    foo: bar;
+  }
+}

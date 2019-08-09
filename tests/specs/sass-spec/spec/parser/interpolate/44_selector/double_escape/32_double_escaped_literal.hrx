@@ -1,0 +1,12 @@
+<===> input.scss
+.test32#{'\\@baz'} { content: '3.2'; }
+
+<===> output.css
+.test32\@baz {
+  content: '3.2';
+}
+
+<===> output-dart-sass.css
+.test32\@baz {
+  content: "3.2";
+}

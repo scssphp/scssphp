@@ -1,0 +1,31 @@
+<===> input.scss
+.result {
+  output: (0Hz + 1Hz);
+  output: (4.2Hz / 1Hz);
+  output: (4.2Hz * 1Hz / 1Hz);
+  output: (0Hz + 1kHz);
+  output: (4.2Hz / 1kHz);
+  output: (4.2Hz * 1kHz / 1Hz);
+  output: (0kHz + 1Hz);
+  output: (4.2kHz / 1Hz);
+  output: (4.2kHz * 1Hz / 1kHz);
+  output: (0kHz + 1kHz);
+  output: (4.2kHz / 1kHz);
+  output: (4.2kHz * 1kHz / 1kHz);
+}
+
+<===> output.css
+.result {
+  output: 1Hz;
+  output: 4.2;
+  output: 4.2Hz;
+  output: 1000Hz;
+  output: 0.0042;
+  output: 4.2kHz;
+  output: 0.001kHz;
+  output: 4200;
+  output: 4.2Hz;
+  output: 1kHz;
+  output: 4.2;
+  output: 4.2kHz;
+}

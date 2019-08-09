@@ -1,0 +1,17 @@
+<===> input.scss
+foo {
+  foo: abs(-5);
+  foo: abs(-5px);
+  foo: abs(5);
+  foo: abs(5px);
+  foo: abs($number: 5px);
+}
+
+<===> output.css
+foo {
+  foo: 5;
+  foo: 5px;
+  foo: 5;
+  foo: 5px;
+  foo: 5px;
+}

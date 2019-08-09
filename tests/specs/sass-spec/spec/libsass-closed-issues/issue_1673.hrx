@@ -1,0 +1,21 @@
+<===> input.scss
+%foo {
+  test: outer;
+
+  &-inner {
+    test: inner;
+  }
+}
+
+.foo {
+  @extend %foo;
+
+  &.inner { @extend %foo-inner; }
+}
+<===> output.css
+.foo {
+  test: outer;
+}
+.foo.inner {
+  test: inner;
+}

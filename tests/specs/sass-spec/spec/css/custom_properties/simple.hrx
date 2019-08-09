@@ -1,0 +1,35 @@
+<===> input.scss
+.simple {
+  --single: value;
+  --multiple: value1 value2;
+  --function: foo(bar);
+  --url: url(http://foo.com/bar);
+  --color: #foo;
+  --exponent: 12.6e7;
+  --close-comment: */;
+
+  // The whitespace here DOES count as a token and needs to be preserved.
+  --empty: ;
+
+  // Single-line comments are not supported in variables.
+  --single-line: // (
+    );
+
+  // Extra whitespace isn't added.
+  --no-extra-whitespace:value;
+}
+
+<===> output.css
+.simple {
+  --single: value;
+  --multiple: value1 value2;
+  --function: foo(bar);
+  --url: url(http://foo.com/bar);
+  --color: #foo;
+  --exponent: 12.6e7;
+  --close-comment: */;
+  --empty: ;
+  --single-line: // (
+    );
+  --no-extra-whitespace:value;
+}

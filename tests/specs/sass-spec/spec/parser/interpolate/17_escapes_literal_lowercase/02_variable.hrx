@@ -1,0 +1,25 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2700
+
+<===> input.scss
+$input: \b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z;
+.result {
+  output: $input;
+  output: #{$input};
+  output: "[#{$input}]";
+  output: "#{$input}";
+  output: '#{$input}';
+  output: "['#{$input}']";
+}
+
+<===> output.css
+.result {
+  output: \b \c \d \e \f ghijklmnopqrstuvwxyz;
+  output: \b \c \d \e \f ghijklmnopqrstuvwxyz;
+  output: "[\\b \\c \\d \\e \\f ghijklmnopqrstuvwxyz]";
+  output: "\\b \\c \\d \\e \\f ghijklmnopqrstuvwxyz";
+  output: "\\b \\c \\d \\e \\f ghijklmnopqrstuvwxyz";
+  output: "['\\b \\c \\d \\e \\f ghijklmnopqrstuvwxyz']";
+}

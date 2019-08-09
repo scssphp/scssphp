@@ -1,0 +1,11 @@
+<===> input.scss
+.adjacent {
+    & + & {
+        foo: bar;
+    }
+}
+
+<===> output.css
+.adjacent + .adjacent {
+  foo: bar;
+}

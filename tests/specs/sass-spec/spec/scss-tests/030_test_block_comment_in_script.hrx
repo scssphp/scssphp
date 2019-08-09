@@ -1,0 +1,7 @@
+<===> input.scss
+foo {a: 1 + /* flang */ bar}
+
+<===> output.css
+foo {
+  a: 1bar;
+}

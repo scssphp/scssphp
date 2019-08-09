@@ -1,0 +1,42 @@
+<===> input.scss
+$input: '\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z';
+.result {
+  dquoted: "#{#{$input}}";
+  dquoted: "#{"[#{$input}]"}";
+  dquoted: "#{"#{$input}"}";
+  dquoted: "#{'#{$input}'}";
+  dquoted: "#{"['#{$input}']"}";
+  squoted: '#{#{$input}}';
+  squoted: '#{"[#{$input}]"}';
+  squoted: '#{"#{$input}"}';
+  squoted: '#{'#{$input}'}';
+  squoted: '#{"['#{$input}']"}';
+}
+
+<===> output.css
+.result {
+  dquoted: "GHIJKLMNOPQRSTUVWXYZ";
+  dquoted: "[GHIJKLMNOPQRSTUVWXYZ]";
+  dquoted: "GHIJKLMNOPQRSTUVWXYZ";
+  dquoted: "GHIJKLMNOPQRSTUVWXYZ";
+  dquoted: "['GHIJKLMNOPQRSTUVWXYZ']";
+  squoted: "GHIJKLMNOPQRSTUVWXYZ";
+  squoted: "[GHIJKLMNOPQRSTUVWXYZ]";
+  squoted: "GHIJKLMNOPQRSTUVWXYZ";
+  squoted: "GHIJKLMNOPQRSTUVWXYZ";
+  squoted: "['GHIJKLMNOPQRSTUVWXYZ']";
+}
+
+<===> output-dart-sass.css
+.result {
+  dquoted: "\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ";
+  dquoted: "[\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ]";
+  dquoted: "\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ";
+  dquoted: "\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ";
+  dquoted: "['\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ']";
+  squoted: "\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ";
+  squoted: "[\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ]";
+  squoted: "\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ";
+  squoted: "\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ";
+  squoted: "['\b\c\d\e\fGHIJKLMNOPQRSTUVWXYZ']";
+}

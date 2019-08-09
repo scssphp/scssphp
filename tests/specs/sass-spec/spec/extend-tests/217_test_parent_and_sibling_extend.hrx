@@ -1,0 +1,17 @@
+<===> input.scss
+%foo %bar%baz {c: d}
+
+.parent1 {
+@extend %foo;
+.child1 {@extend %bar}
+}
+
+.parent2 {
+@extend %foo;
+.child2 {@extend %baz}
+}
+
+<===> output.css
+.parent1 .parent2 .child1.child2, .parent2 .parent1 .child1.child2 {
+  c: d;
+}

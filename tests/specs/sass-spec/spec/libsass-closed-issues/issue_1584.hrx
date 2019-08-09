@@ -1,0 +1,49 @@
+<===> input.scss
+@mixin foo($out: false) {
+  @if $out {
+    @at-root { @content; }
+  }
+}
+
+@mixin bar() {
+  @at-root { @content; }
+}
+
+@mixin baz($string) {
+  @at-root .#{$string} { @content; }
+}
+
+.test {
+  @include foo(true) {
+    .nest1 {
+      color: red;
+    }
+  }
+  @include bar() {
+    .nest2 {
+      color: green;
+    }
+  }
+  @include baz('nest3') {
+    color: blue;
+  }
+  @at-root {
+    .nest4 {
+      color: yellow;
+    }
+  }
+}
+
+<===> output.css
+.nest1 {
+  color: red;
+}
+.nest2 {
+  color: green;
+}
+.nest3 {
+  color: blue;
+}
+.nest4 {
+  color: yellow;
+}

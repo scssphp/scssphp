@@ -1,0 +1,23 @@
+<===> input.scss
+%baz2 {
+    display: flex;
+}
+%baz3 {
+    display: flex;
+}
+
+custom2, [custom2], .custom2 {
+    @extend %baz2
+}
+
+[custom3], custom3, .custom3 {
+    @extend %baz3
+}
+<===> output.css
+custom2, [custom2], .custom2 {
+  display: flex;
+}
+
+[custom3], custom3, .custom3 {
+  display: flex;
+}

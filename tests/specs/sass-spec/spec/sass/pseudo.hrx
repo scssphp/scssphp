@@ -1,0 +1,45 @@
+<===> input.sass
+::selection
+  color: rebeccapurple
+::-webkit-selection
+  color: rebeccapurple
+::-webkit-selection, ::selection
+  color: rebeccapurple
+\:-webkit-selection
+  color: rebeccapurple
+
+\:hover TD
+  color: red
+\:color red
+  foo: bar
+\:nth-child(2n+1) SPAN
+  foo: bar
+
+<===> output.css
+::selection {
+  color: rebeccapurple;
+}
+
+::-webkit-selection {
+  color: rebeccapurple;
+}
+
+::-webkit-selection, ::selection {
+  color: rebeccapurple;
+}
+
+:-webkit-selection {
+  color: rebeccapurple;
+}
+
+:hover TD {
+  color: red;
+}
+
+:color red {
+  foo: bar;
+}
+
+:nth-child(2n+1) SPAN {
+  foo: bar;
+}

@@ -1,0 +1,18 @@
+<===> input.scss
+$input: "["',foo,   '"]";
+.result {
+  output: #{#{$input}};
+  output: #{"[#{$input}]"};
+  output: #{"#{$input}"};
+  output: #{'#{$input}'};
+  output: #{"['#{$input}']"};
+}
+
+<===> output.css
+.result {
+  output: [ ,foo,    ];
+  output: [[ ,foo,    ]];
+  output: [ ,foo,    ];
+  output: [ ,foo,    ];
+  output: ['[ ,foo,    ]'];
+}

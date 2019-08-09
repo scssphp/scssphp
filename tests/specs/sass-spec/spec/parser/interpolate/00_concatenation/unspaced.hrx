@@ -1,0 +1,88 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+$input: literal;
+.result {
+  output: literal$input;
+  output: literal#{$input};
+  output: literal#{literal};
+  output: literal#{"literal"};
+  output: $input$input;
+  output: $input#{$input};
+  output: $input#{literal};
+  output: $input#{"literal"};
+  output: #{$input}literal;
+  output: #{$input}$input;
+  output: #{$input}#{$input};
+  output: #{$input}#{literal};
+  output: #{$input}#{"literal"};
+  output: #{literal}literal;
+  output: #{literal}$input;
+  output: #{literal}#{$input};
+  output: #{literal}#{literal};
+  output: #{literal}#{"literal"};
+  output: #{"literal"}literal;
+  output: #{"literal"}$input;
+  output: #{"literal"}#{$input};
+  output: #{"literal"}#{literal};
+  output: #{"literal"}#{"literal"};
+  output: "literal#{$input}";
+  output: "literal#{literal}";
+  output: "literal#{"literal"}";
+  output: "#{$input}literal";
+  output: "#{$input}#{$input}";
+  output: "#{$input}#{literal}";
+  output: "#{$input}#{"literal"}";
+  output: "#{literal}literal";
+  output: "#{literal}#{$input}";
+  output: "#{literal}#{literal}";
+  output: "#{literal}#{"literal"}";
+  output: "#{"literal"}literal";
+  output: "#{"literal"}#{$input}";
+  output: "#{"literal"}#{literal}";
+  output: "#{"literal"}#{"literal"}";
+}
+<===> output.css
+.result {
+  output: literal literal;
+  output: literalliteral;
+  output: literalliteral;
+  output: literalliteral;
+  output: literal literal;
+  output: literal literal;
+  output: literal literal;
+  output: literal literal;
+  output: literalliteral;
+  output: literal literal;
+  output: literalliteral;
+  output: literalliteral;
+  output: literalliteral;
+  output: literalliteral;
+  output: literal literal;
+  output: literalliteral;
+  output: literalliteral;
+  output: literalliteral;
+  output: literalliteral;
+  output: literal literal;
+  output: literalliteral;
+  output: literalliteral;
+  output: literalliteral;
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+  output: "literalliteral";
+}

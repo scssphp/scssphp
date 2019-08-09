@@ -1,0 +1,8 @@
+<===> input.scss
+$zzz: zzz;
+[foo=#{$zzz}] { a: b; }
+
+<===> output.css
+[foo=zzz] {
+  a: b;
+}

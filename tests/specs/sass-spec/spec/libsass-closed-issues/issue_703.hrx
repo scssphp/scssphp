@@ -1,0 +1,47 @@
+<===> input.scss
+.test-1 {
+  @for $i from 1 through 3 {
+    content: $i;
+  }
+}
+
+.test-2 {
+  @for $i from 3 through 1 {
+    content: $i;
+  }
+}
+
+.test-3 {
+  @for $i from 1 to 3 {
+    content: $i;
+  }
+}
+
+.test-4 {
+  @for $i from 3 to 1 {
+    content: $i;
+  }
+}
+
+<===> output.css
+.test-1 {
+  content: 1;
+  content: 2;
+  content: 3;
+}
+
+.test-2 {
+  content: 3;
+  content: 2;
+  content: 1;
+}
+
+.test-3 {
+  content: 1;
+  content: 2;
+}
+
+.test-4 {
+  content: 3;
+  content: 2;
+}

@@ -1,0 +1,51 @@
+<===> outside_mixin/input.scss
+$error: content-exists();
+
+<===> outside_mixin/error
+Error: Cannot call content-exists() except within a mixin.
+        on line 1 of /sass/spec/core_functions/content-exists/errors/outside-of-mixin/input.scss
+  Use --trace for backtrace.
+
+<===> outside_mixin/error-dart-sass
+Error: content-exists() may only be called within a mixin.
+  ,
+1 | $error: content-exists();
+  |         ^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:9  root stylesheet
+
+<===>
+================================================================================
+<===> inside_function/input.scss
+@function my-content-exists() {
+  @return content-exists(); // must be called within a mixin
+}
+
+@mixin uses-content-exists-indirectly {
+  .test {
+    error: my-content-exists();
+  }
+  @if false {
+    @content;
+  }
+}
+
+@include uses-content-exists-indirectly {
+  .content { exists: yep; }
+}
+
+<===> inside_function/error
+Error: Cannot call content-exists() except within a mixin.
+        on line 2 of /sass/spec/core_functions/content-exists/errors/inside-function/input.scss, in `uses-content-exists-indirectly'
+        from line 14 of /sass/spec/core_functions/content-exists/errors/inside-function/input.scss
+  Use --trace for backtrace.
+
+<===> inside_function/error-dart-sass
+Error: content-exists() may only be called within a mixin.
+  ,
+2 |   @return content-exists(); // must be called within a mixin
+  |           ^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:11  my-content-exists()
+  input.scss 7:12  uses-content-exists-indirectly()
+  input.scss 14:1  root stylesheet

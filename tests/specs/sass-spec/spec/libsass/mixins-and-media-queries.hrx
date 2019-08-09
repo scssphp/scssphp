@@ -1,0 +1,41 @@
+<===> input.scss
+@media screen and (orientation:landscape) {
+  span {
+    background: blue;
+  }
+  /* fudge */
+  // @include foo;
+  /* budge */
+  div {
+    color: red;
+  }
+}
+
+@mixin testComments {
+  /* crash */
+  p {
+    width: 100px;
+  }
+}
+
+@media screen and (orientation:landscape) {
+  @include testComments;
+}
+<===> output.css
+@media screen and (orientation: landscape) {
+  span {
+    background: blue;
+  }
+
+  /* fudge */
+  /* budge */
+  div {
+    color: red;
+  }
+}
+@media screen and (orientation: landscape) {
+  /* crash */
+  p {
+    width: 100px;
+  }
+}

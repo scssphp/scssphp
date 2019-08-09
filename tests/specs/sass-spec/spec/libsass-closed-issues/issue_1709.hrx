@@ -1,0 +1,43 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+@mixin transition( $prefix_properties, $transitions... ) {
+
+    @if not str-index( inspect( $transitions ), ',') {
+        $transitions: ( $transitions );
+    }
+
+    @each $prefix in -webkit-, -moz-, -ms-, -o-, '' {
+
+        $prefixed: '';
+
+        @each $transition in $transitions {
+
+            @if $prefix_properties and '' != $prefix {
+                $prefixed: #{$prefix}$transition,$transition;
+            } @else {
+                $prefixed: $transition;
+            }
+
+
+        }
+
+        #{$prefix}transition: $prefixed;
+    }
+}
+
+.my-element {
+    @include transition( true, transform 0.25s linear );
+}
+
+<===> output.css
+.my-element {
+  -webkit-transition: -webkit- transform 0.25s linear, transform 0.25s linear;
+  -moz-transition: -moz- transform 0.25s linear, transform 0.25s linear;
+  -ms-transition: -ms- transform 0.25s linear, transform 0.25s linear;
+  -o-transition: -o- transform 0.25s linear, transform 0.25s linear;
+  transition: transform 0.25s linear;
+}

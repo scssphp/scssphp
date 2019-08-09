@@ -1,0 +1,19 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2721
+
+<===> input.scss
+foo {
+  @ap#{pl}y;
+  @apply(--bar);
+  @apply  (  --bar  );
+  @ap#{pl}y   (   --bar , --foo  )  ;
+}
+<===> output.css
+foo {
+  @apply;
+  @apply (--bar);
+  @apply (  --bar  );
+  @apply (   --bar , --foo  );
+}

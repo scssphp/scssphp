@@ -1,0 +1,13 @@
+<===> input.scss
+foo {
+  @if true {a: b}
+  @else {x: y}
+  /* This is a comment */
+  c: d }
+
+<===> output.css
+foo {
+  a: b;
+  /* This is a comment */
+  c: d;
+}

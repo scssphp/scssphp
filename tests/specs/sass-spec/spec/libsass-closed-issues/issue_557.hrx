@@ -1,0 +1,10 @@
+<===> input.scss
+
+a {
+  foo: map-get((foo: 1, bar: 2), "bar");
+}
+
+<===> output.css
+a {
+  foo: 2;
+}

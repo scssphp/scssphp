@@ -1,0 +1,10 @@
+<===> multiple_parent_selectors_with_trailing_ident/input.scss
+// Regression test for sass/libsass#2630
+.a, .b {
+  :not(&-c) {d: e}
+}
+
+<===> multiple_parent_selectors_with_trailing_ident/output.css
+:not(.a-c, .b-c) {
+  d: e;
+}

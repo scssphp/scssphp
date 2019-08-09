@@ -1,0 +1,78 @@
+<===> input.scss
+test {
+  test-01: #{if(&, 'true', 'false')};
+  test-01: #{if(0, 'true', 'false')};
+  test-01: #{if('', 'true', 'false')};
+  test-01: #{if('0', 'true', 'false')};
+  test-01: #{if(null, 'true', 'false')};
+  test-01: #{if(false, 'true', 'false')};
+}
+
+#{if(&, 'has-parent', 'parentless')} {
+  test: parent;
+}
+
+@mixin with-js() {
+  .js:root #{if(&, '&', '')} {
+    @content;
+  }
+}
+
+@include with-js() {
+  .bou {
+    content: 'bar';
+  }
+}
+
+.bou {
+  @include with-js() {
+    .bar {
+      content: 'baz';
+    }
+  }
+}
+
+
+<===> output.css
+test {
+  test-01: true;
+  test-01: true;
+  test-01: true;
+  test-01: true;
+  test-01: false;
+  test-01: false;
+}
+
+parentless {
+  test: parent;
+}
+
+.js:root .bou {
+  content: 'bar';
+}
+
+.js:root .bou .bar {
+  content: 'baz';
+}
+
+<===> output-dart-sass.css
+test {
+  test-01: true;
+  test-01: true;
+  test-01: true;
+  test-01: true;
+  test-01: false;
+  test-01: false;
+}
+
+parentless {
+  test: parent;
+}
+
+.js:root .bou {
+  content: "bar";
+}
+
+.js:root .bou .bar {
+  content: "baz";
+}

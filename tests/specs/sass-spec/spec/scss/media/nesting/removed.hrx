@@ -1,0 +1,122 @@
+<===> input.scss
+// The intersection of two different media types is empty, so they're eliminated.
+@media screen {
+  a {b: c}
+  @media print {x {y: z}}
+}
+
+// The intersection of `not screen` and `screen` is empty.
+@media not screen {
+  a {b: c}
+  @media screen {x {y: z}}
+}
+@media screen {
+  a {b: c}
+  @media not screen {x {y: z}}
+}
+
+// That's true even if `screen` has features.
+@media screen and (color) {
+  a {b: c}
+  @media not screen {x {y: z}}
+}
+@media not screen {
+  a {b: c}
+  @media screen and (color) {x {y: z}}
+}
+
+// In fact, the intersection of `not X` and `X` is empty for all `X`.
+@media not screen and (color) {
+  a {b: c}
+  @media screen and (color) {x {y: z}}
+}
+@media screen and (color) {
+  a {b: c}
+  @media not screen and (color) {x {y: z}}
+}
+
+// This intersection is empty even though the queries aren't identical, because
+// `not screen` matches a superset of the contexts `screen and (color)` matches.
+@media screen and (color) {
+  a {b: c}
+  @media not screen {x {y: z}}
+}
+@media not screen {
+  a {b: c}
+  @media screen and (color) {x {y: z}}
+}
+
+// If a rule has multiple queries and some have empty intersections, remove them
+// and merge the rest.
+@media screen, print {
+  a {b: c}
+  @media speech, (grid) {
+    x {y: z};
+  }
+}
+
+<===> output.css
+@media screen {
+  a {
+    b: c;
+  }
+}
+
+@media not screen {
+  a {
+    b: c;
+  }
+}
+
+@media screen {
+  a {
+    b: c;
+  }
+}
+
+@media screen and (color) {
+  a {
+    b: c;
+  }
+}
+
+@media not screen {
+  a {
+    b: c;
+  }
+}
+
+@media not screen and (color) {
+  a {
+    b: c;
+  }
+}
+
+@media screen and (color) {
+  a {
+    b: c;
+  }
+}
+
+@media screen and (color) {
+  a {
+    b: c;
+  }
+}
+
+@media not screen {
+  a {
+    b: c;
+  }
+}
+
+@media screen, print {
+  a {
+    b: c;
+  }
+}
+@media screen and (grid), print and (grid) {
+  x {
+    y: z;
+  }
+}

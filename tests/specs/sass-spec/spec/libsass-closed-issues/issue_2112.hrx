@@ -1,0 +1,14 @@
+<===> input.scss
+$color: #1caf9a;
+
+body {
+  test-01: change-color($color, $hue: -240);
+  test-03: change-color($color, $hue: 120);
+  test-02: change-color($color, $hue: 480);
+}
+<===> output.css
+body {
+  test-01: #1caf1c;
+  test-03: #1caf1c;
+  test-02: #1caf1c;
+}

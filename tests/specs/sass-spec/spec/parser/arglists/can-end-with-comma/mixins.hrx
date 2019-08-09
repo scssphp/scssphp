@@ -1,0 +1,38 @@
+<===> input.scss
+@mixin one-positional-arg($a,) {
+  one-positional-arg: positional 1 $a;
+}
+
+@mixin two-positional-args($a, $b,) {
+  two-positional-args: positional 2 $a $b;
+}
+
+@mixin one-keyword-arg($a: a,) {
+  one-keyword-arg: keyword 1 $a;
+}
+
+@mixin two-keyword-args($a: a, $b: b,) {
+  two-keyword-args: keyword 2 $a $b;
+}
+
+@mixin mixed-args($a, $b: b,) {
+  mixed-args: keyword 2 $a $b;
+}
+
+.includes {
+  @include one-positional-arg(a,);
+  @include two-positional-args(a,b,);
+  @include one-keyword-arg($a: z,);
+  @include two-keyword-args($a: y,$b: z,);
+  @include mixed-args(y, $b: z,);
+}
+
+
+<===> output.css
+.includes {
+  one-positional-arg: positional 1 a;
+  two-positional-args: positional 2 a b;
+  one-keyword-arg: keyword 1 z;
+  two-keyword-args: keyword 2 y z;
+  mixed-args: keyword 2 y z;
+}

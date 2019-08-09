@@ -1,0 +1,19 @@
+<===> input.scss
+:not(.foo) {
+  content: test;
+}
+.bar, .baz {
+  @extend .foo;
+}
+
+test {
+  content: selector-extend(":not(.foo)", ".foo", ".bar");
+}
+<===> output.css
+:not(.foo):not(.bar):not(.baz) {
+  content: test;
+}
+
+test {
+  content: :not(.foo):not(.bar);
+}

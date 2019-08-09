@@ -1,0 +1,16 @@
+<===> input.scss
+$items: 3;
+li {
+  &:nth-child(#{$items}n - #{$items}) {
+    color: red;
+  }
+}
+<===> output.css
+li:nth-child(3n - 3) {
+  color: red;
+}
+
+<===> output-dart-sass.css
+li:nth-child(3n-3) {
+  color: red;
+}

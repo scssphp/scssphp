@@ -1,0 +1,24 @@
+<===> input.scss
+@function test() {
+  @if (false) {
+    @return 0;
+  } @else {
+    opacity: 1;
+  }
+}
+
+.my-module {
+  opacity: test();
+}
+<===> error
+Error: Functions can only contain variable declarations and control directives.
+        on line 5 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: @function rules may not contain declarations.
+  ,
+5 |     opacity: 1;
+  |     ^^^^^^^^^^
+  '
+  input.scss 5:5  root stylesheet

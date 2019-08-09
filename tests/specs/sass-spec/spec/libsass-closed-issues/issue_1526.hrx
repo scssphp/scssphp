@@ -1,0 +1,11 @@
+<===> input.scss
+foo {
+  bar: (1--em-2--em);
+  baz: (1--em - 2--em);
+}
+
+<===> output.css
+foo {
+  bar: 1 --em-2--em;
+  baz: 1 --em-2 --em;
+}

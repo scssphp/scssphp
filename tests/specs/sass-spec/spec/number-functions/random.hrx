@@ -1,0 +1,21 @@
+<===> input.scss
+foo {
+  $number: random();
+  foo: $number >= 0 and $number <= 1;
+  $number: random(1.0);
+  foo: $number >= 0 and $number <= 1;
+  foo: random(1) == 1;
+  foo: type-of(random()) == number;
+  foo: type-of(random(1)) == number;
+  foo: type-of(random(1.0)) == number;
+}
+
+<===> output.css
+foo {
+  foo: true;
+  foo: true;
+  foo: true;
+  foo: true;
+  foo: true;
+  foo: true;
+}

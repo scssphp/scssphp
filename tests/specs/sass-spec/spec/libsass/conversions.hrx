@@ -1,0 +1,12 @@
+<===> input.scss
+div {
+  width: 3cm * 2in * 2in / 1cm / 1cm;
+  width: 3cm * 2in / 1cm;
+  width: 4cm * (12in / 3in);
+}
+<===> output.css
+div {
+  width: 30.48in;
+  width: 6in;
+  width: 16cm;
+}

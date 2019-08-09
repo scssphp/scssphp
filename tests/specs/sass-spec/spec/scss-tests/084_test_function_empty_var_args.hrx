@@ -1,0 +1,11 @@
+<===> input.scss
+@function foo($a, $b...) {
+  @return "a: #{$a}, b: #{length($b)}";
+}
+
+.foo {val: foo(1)}
+
+<===> output.css
+.foo {
+  val: "a: 1, b: 0";
+}

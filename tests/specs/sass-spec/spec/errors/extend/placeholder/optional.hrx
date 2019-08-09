@@ -1,0 +1,10 @@
+<===> input.scss
+.baz {
+  @extend %foo !optional;
+  color: green;
+}
+
+<===> output.css
+.baz {
+  color: green;
+}

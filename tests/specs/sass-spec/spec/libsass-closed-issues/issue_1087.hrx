@@ -1,0 +1,12 @@
+<===> input.scss
+$foo: bar;
+a {
+  foo: url($foo);
+  foo: url(#{$foo});
+}
+
+<===> output.css
+a {
+  foo: url(bar);
+  foo: url(bar);
+}

@@ -1,0 +1,63 @@
+<===> input.sass
+.test
+  foo: bar
+  ~
+    tilde: true
+  +
+    adjancent: true
+  >
+    child: true
+  *
+    universal: true
+  [foo]
+    attribute: true
+
+@mixin selector-2()
+  foo: bar
+
+.selector-0
+  + .selector-1
+    color: rebeccapurple
+  = selector-2
+    color: yellow
+
+multiple, lines,
+separated by,
+commas
+  and,
+  indented
+    x: y
+
+<===> output.css
+.test {
+  foo: bar;
+}
+.test ~ {
+  tilde: true;
+}
+.test + {
+  adjancent: true;
+}
+.test > {
+  child: true;
+}
+.test * {
+  universal: true;
+}
+.test [foo] {
+  attribute: true;
+}
+
+.selector-0 + .selector-1 {
+  color: rebeccapurple;
+}
+
+multiple and,
+multiple indented, lines and,
+lines indented,
+separated by and,
+separated by indented,
+commas and,
+commas indented {
+  x: y;
+}

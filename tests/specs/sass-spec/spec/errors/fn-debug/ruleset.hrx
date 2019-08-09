@@ -1,0 +1,12 @@
+<===> input.scss
+a {
+  @debug "debug";
+  foo: bar;
+}
+<===> output.css
+a {
+  foo: bar;
+}
+
+<===> warning
+input.scss:2 DEBUG: debug

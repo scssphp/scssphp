@@ -1,0 +1,14 @@
+<===> input.scss
+$EQ-Selectors: ();
+
+.el {
+    $EQ-Selectors: append($EQ-Selectors, &, 'comma') !global;
+}
+
+html:before {
+  content: "#{$EQ-Selectors}";
+}
+<===> output.css
+html:before {
+  content: ".el";
+}

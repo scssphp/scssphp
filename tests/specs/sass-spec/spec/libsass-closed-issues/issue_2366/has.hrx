@@ -1,0 +1,32 @@
+<===> input.scss
+.item {
+    display: inline-block;
+
+    :has(> .ext-link) {
+        background: #000;
+    }
+}
+
+.link {
+    color: red;
+}
+
+.textLink {
+    @extend .link;
+    padding: 0 10px;
+}
+<===> output.css
+.item {
+  display: inline-block;
+}
+.item :has(> .ext-link) {
+  background: #000;
+}
+
+.link, .textLink {
+  color: red;
+}
+
+.textLink {
+  padding: 0 10px;
+}

@@ -1,0 +1,31 @@
+<===> input.scss
+p {
+  color: complement(#f00);
+  color: complement(#900);
+  color: complement(#000);
+  color: complement(#fff);
+  color: complement(#999);
+  color: complement(#000);
+  color: complement(#333);
+}
+<===> output.css
+p {
+  color: cyan;
+  color: #009999;
+  color: black;
+  color: white;
+  color: #999999;
+  color: black;
+  color: #333333;
+}
+
+<===> output-dart-sass.css
+p {
+  color: aqua;
+  color: #009999;
+  color: black;
+  color: white;
+  color: #999999;
+  color: black;
+  color: #333333;
+}

@@ -1,0 +1,25 @@
+<===> input.scss
+@function c() {
+  @error test;
+  @return d;
+}
+
+a {
+  b: {
+    c: c();
+  }
+}
+
+<===> error
+Error: test
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: test
+  ,
+2 |   @error test;
+  |   ^^^^^^^^^^^
+  '
+  input.scss 2:3  c()
+  input.scss 8:8  root stylesheet

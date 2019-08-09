@@ -1,0 +1,21 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+foo {
+  test-02: selector-append(".foo", "*");
+}
+<===> error
+Error: Can't append "*" to ".foo" for `selector-append'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Can't append * to .foo.
+  ,
+2 |   test-02: selector-append(".foo", "*");
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:12  root stylesheet

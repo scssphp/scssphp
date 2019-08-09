@@ -1,0 +1,26 @@
+<===> input.scss
+@function foo($initial, $args...) {
+  $args: append($args, 3);
+
+  @return bar($initial, $args...);
+}
+
+@function bar($args...) {
+  @return length($args);
+}
+
+@function baz($initial, $args...) {
+  $args: append($args, 3);
+
+  @return nth($args, 1);
+}
+
+.test {
+  foo: foo(1, 2);
+  baz: baz(1, 2);
+}
+<===> output.css
+.test {
+  foo: 3;
+  baz: 2;
+}

@@ -1,0 +1,14 @@
+<===> input.scss
+p {
+  color: adjust-color(#102030, $blue: 5);
+  color: adjust-color(#102030, $alpha: .325);
+  color: adjust-color(#102030, $red: -5, $blue: 5);
+  color: adjust-color(hsl(25, 100%, 80%), $lightness: -30%, $alpha: -0.4);
+}
+<===> output.css
+p {
+  color: #102035;
+  color: #102030;
+  color: #0b2035;
+  color: rgba(255, 106, 0, 0.6);
+}

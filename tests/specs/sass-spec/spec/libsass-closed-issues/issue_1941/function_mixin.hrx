@@ -1,0 +1,26 @@
+<===> input.scss
+@function parent() {
+  @mixin nested {
+    foo: bar;
+  }
+
+  @include nested;
+}
+
+
+test {
+  foo: parent();
+}
+
+<===> error
+Error: Functions can only contain variable declarations and control directives.
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: This at-rule is not allowed here.
+  ,
+2 |   @mixin nested {
+  |   ^^^^^^^^^^^^^^
+  '
+  input.scss 2:3  root stylesheet

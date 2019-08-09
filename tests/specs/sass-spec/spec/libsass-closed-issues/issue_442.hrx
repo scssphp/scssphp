@@ -1,0 +1,21 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+$lhs: (100/10)#{rem};
+$rhs: 10rem;
+
+foo {
+  a: $lhs;
+  a: $rhs;
+  a: $lhs == $rhs;
+}
+
+<===> output.css
+foo {
+  a: 10 rem;
+  a: 10rem;
+  a: false;
+}

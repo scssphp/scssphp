@@ -1,0 +1,47 @@
+<===> options.yml
+---
+:ignore_for:
+- dart-sass
+
+<===> input.scss
+@mixin spec1($decimal) {
+  $decimal: unquote($decimal) * -1;
+  value: $decimal;
+}
+
+@mixin spec2($decimal) {
+  $decimal: -1 * unquote($decimal);
+  value: $decimal;
+}
+
+@mixin spec3($decimal) {
+  value: #{$decimal * -1};
+}
+
+.my-element {
+  @include spec1(3);
+  @include spec1(-3);
+  @include spec2(5);
+  @include spec2(-5);
+  @include spec3(7);
+  @include spec3(-7);
+}
+<===> output.css
+.my-element {
+  value: -3;
+  value: 3;
+  value: -5;
+  value: 5;
+  value: -7;
+  value: 7;
+}
+
+<===> warning
+DEPRECATION WARNING: Passing 3, a non-string value, to unquote()
+will be an error in future versions of Sass.
+        on line 2 of input.scss, in `spec1'
+        from line 16 of input.scss
+DEPRECATION WARNING: Passing 5, a non-string value, to unquote()
+will be an error in future versions of Sass.
+        on line 7 of input.scss, in `spec2'
+        from line 18 of input.scss

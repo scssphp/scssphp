@@ -1,0 +1,11 @@
+<===> input.scss
+a {
+  b: if(true, b, c...);
+  c: if(false, b, c...);
+}
+
+<===> output.css
+a {
+  b: b;
+  c: c;
+}

@@ -1,0 +1,31 @@
+<===> input.scss
+@font-face {
+  font-family: 'My Font';
+  font-style: normal;
+  font-weight: 300;
+  src: local('My Font'), local('My-Font'),
+    /* from http://.... original source of .eot */
+    url('my-font.eot?#iefix') format('embedded-opentype'),
+    /* from http://.... original source of .woff */
+    url('my-font.woff') format('woff'),
+    /* from http://.... original source of .ttf */
+    url('my-font.ttf') format('truetype'),
+    /* from http://.... original source of .svg */
+    url('my-font.svg#MyFont') format('svg');
+}
+
+<===> output.css
+@font-face {
+  font-family: 'My Font';
+  font-style: normal;
+  font-weight: 300;
+  src: local("My Font"), local("My-Font"), url("my-font.eot?#iefix") format("embedded-opentype"), url("my-font.woff") format("woff"), url("my-font.ttf") format("truetype"), url("my-font.svg#MyFont") format("svg");
+}
+
+<===> output-dart-sass.css
+@font-face {
+  font-family: "My Font";
+  font-style: normal;
+  font-weight: 300;
+  src: local("My Font"), local("My-Font"), url("my-font.eot?#iefix") format("embedded-opentype"), url("my-font.woff") format("woff"), url("my-font.ttf") format("truetype"), url("my-font.svg#MyFont") format("svg");
+}

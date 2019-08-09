@@ -1,0 +1,20 @@
+<===> input.scss
+$input: "l\\ite\ral";
+.result {
+  output: $input;
+  output: #{$input};
+  output: "[#{$input}]";
+  output: "#{$input}";
+  output: '#{$input}';
+  output: "['#{$input}']";
+}
+
+<===> output.css
+.result {
+  output: "l\\iteral";
+  output: l\iteral;
+  output: "[l\\iteral]";
+  output: "l\\iteral";
+  output: "l\\iteral";
+  output: "['l\\iteral']";
+}

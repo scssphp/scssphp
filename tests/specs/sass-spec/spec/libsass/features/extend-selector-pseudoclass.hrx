@@ -1,0 +1,9 @@
+<===> input.scss
+foo {
+  foo: feature-exists('extend-selector-pseudoclass');
+}
+
+<===> output.css
+foo {
+  foo: true;
+}

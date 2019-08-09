@@ -1,0 +1,83 @@
+<===> input.scss
+@function test($from, $to) {
+    @warn 'Starting loop';
+    @for $i from $from through $to {
+      @warn 'Step #{$i}' ;
+    }
+    @warn 'Finished loop';
+    @return 100%;
+}
+body {
+    width: test(0, 1);
+    height: test(-1, 1);
+}
+<===> output.css
+body {
+  width: 100%;
+  height: 100%;
+}
+
+<===> warning
+WARNING: Starting loop
+         on line 2 of input.scss
+
+WARNING: Step 0
+         on line 4 of input.scss
+
+WARNING: Step 1
+         on line 4 of input.scss
+
+WARNING: Finished loop
+         on line 6 of input.scss
+
+WARNING: Starting loop
+         on line 2 of input.scss
+
+WARNING: Step -1
+         on line 4 of input.scss
+
+WARNING: Step 0
+         on line 4 of input.scss
+
+WARNING: Step 1
+         on line 4 of input.scss
+
+WARNING: Finished loop
+         on line 6 of input.scss
+
+<===> warning-dart-sass
+WARNING: Starting loop
+    input.scss 2:5    test()
+    input.scss 10:12  root stylesheet
+
+WARNING: Step 0
+    input.scss 4:7    test()
+    input.scss 10:12  root stylesheet
+
+WARNING: Step 1
+    input.scss 4:7    test()
+    input.scss 10:12  root stylesheet
+
+WARNING: Finished loop
+    input.scss 6:5    test()
+    input.scss 10:12  root stylesheet
+
+WARNING: Starting loop
+    input.scss 2:5    test()
+    input.scss 11:13  root stylesheet
+
+WARNING: Step -1
+    input.scss 4:7    test()
+    input.scss 11:13  root stylesheet
+
+WARNING: Step 0
+    input.scss 4:7    test()
+    input.scss 11:13  root stylesheet
+
+WARNING: Step 1
+    input.scss 4:7    test()
+    input.scss 11:13  root stylesheet
+
+WARNING: Finished loop
+    input.scss 6:5    test()
+    input.scss 11:13  root stylesheet

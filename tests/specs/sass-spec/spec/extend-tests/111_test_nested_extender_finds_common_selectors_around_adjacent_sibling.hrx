@@ -1,0 +1,8 @@
+<===> input.scss
+a + b c .c1 {a: b}
+b c .c2 {@extend .c1}
+
+<===> output.css
+a + b c .c1, a + b c .c2 {
+  a: b;
+}

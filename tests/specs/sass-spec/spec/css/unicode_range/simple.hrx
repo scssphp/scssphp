@@ -1,0 +1,17 @@
+<===> input.scss
+.simple {
+  one-digit: U+1;
+  four-digit: U+1234;
+  six-digit: U+123456;
+  hex-digit: U+1A2B;
+  lowercase: u+1a2b;
+}
+
+<===> output.css
+.simple {
+  one-digit: U+1;
+  four-digit: U+1234;
+  six-digit: U+123456;
+  hex-digit: U+1A2B;
+  lowercase: u+1a2b;
+}

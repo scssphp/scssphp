@@ -1,0 +1,12 @@
+<===> input.scss
+@mixin foo($a, $b) {
+  a: $a;
+  b: $b; }
+
+.foo {@include foo(bar, 12px)}
+
+<===> output.css
+.foo {
+  a: bar;
+  b: 12px;
+}

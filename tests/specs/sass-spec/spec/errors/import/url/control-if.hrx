@@ -1,0 +1,7 @@
+<===> input.scss
+@if (true) {
+  @import url("http://www.libsass.org");
+}
+
+<===> output.css
+@import url("http://www.libsass.org");

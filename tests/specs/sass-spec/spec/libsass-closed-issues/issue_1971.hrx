@@ -1,0 +1,30 @@
+<===> input.scss
+%foo1 {
+  @supports (flex-wrap: wrap) {
+    flex: auto;
+  }
+}
+
+@supports (flex-wrap: wrap) {
+  %foo2 {
+    flex: auto;
+  }
+}
+
+.bar {
+  @extend %foo1;
+  @extend %foo2;
+}
+
+<===> output.css
+@supports (flex-wrap: wrap) {
+  .bar {
+    flex: auto;
+  }
+}
+
+@supports (flex-wrap: wrap) {
+  .bar {
+    flex: auto;
+  }
+}

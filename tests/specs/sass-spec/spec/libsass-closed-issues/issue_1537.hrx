@@ -1,0 +1,25 @@
+<===> input.scss
+$map: (
+  a: 1, two, 3,
+  foo: 'bar'
+);
+
+test {
+  a: map-get($map, a);
+  type: type-of(map-get($map, a));
+  keys: map-keys($map);
+  try: map-get($map, two);
+}
+
+<===> error
+Error: Invalid CSS after "  a: 1, two": expected ":", was ", 3,"
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected ":".
+  ,
+2 |   a: 1, two, 3,
+  |            ^
+  '
+  input.scss 2:12  root stylesheet

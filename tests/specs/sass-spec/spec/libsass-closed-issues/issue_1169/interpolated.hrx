@@ -1,0 +1,32 @@
+<===> input.scss
+$map1: ( red: 'literal', transparent: 'literal' );
+$map2: ( 'red': 'quoted', transparent: 'quoted' );
+$map3: ( #{re}#{d}: 'interpolated', #{trans}#{parent}: 'quoted' );
+
+foo {
+  content: inspect($map1);
+  content: inspect($map2);
+  content: inspect($map3);
+}
+
+$merge1: map-merge($map1, $map2);
+$merge2: map-merge($map1, $map3);
+$merge3: map-merge($map2, $map3);
+
+bar {
+  content: inspect($merge1);
+  content: inspect($merge2);
+  content: inspect($merge3);
+}
+<===> output.css
+foo {
+  content: (red: "literal", transparent: "literal");
+  content: ("red": "quoted", transparent: "quoted");
+  content: (red: "interpolated", transparent: "quoted");
+}
+
+bar {
+  content: (red: "literal", transparent: "quoted", "red": "quoted");
+  content: (red: "literal", transparent: "literal", red: "interpolated", transparent: "quoted");
+  content: ("red": "interpolated", transparent: "quoted", transparent: "quoted");
+}

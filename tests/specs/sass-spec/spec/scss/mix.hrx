@@ -1,0 +1,10 @@
+<===> input.scss
+div {
+  roo: mix(#f00, #00f);
+  doo: mix(#f00, #00f, 25%); 
+}
+<===> output.css
+div {
+  roo: purple;
+  doo: #4000bf;
+}

@@ -1,0 +1,13 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2700
+
+<===> input.scss
+div {
+  background-color: darken(red, 10%) \9;
+}
+<===> output.css
+div {
+  background-color: #cc0000 \9 ;
+}

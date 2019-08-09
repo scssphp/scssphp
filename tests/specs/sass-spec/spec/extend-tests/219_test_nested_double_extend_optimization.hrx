@@ -1,0 +1,21 @@
+<===> input.scss
+%foo %bar {
+a: b;
+}
+
+.parent1 {
+@extend %foo;
+
+.child {
+  @extend %bar;
+}
+}
+
+.parent2 {
+@extend %foo;
+}
+
+<===> output.css
+.parent1 .child {
+  a: b;
+}

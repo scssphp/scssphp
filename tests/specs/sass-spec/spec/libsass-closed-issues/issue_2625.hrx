@@ -1,0 +1,7 @@
+<===> input.scss
+something\:{ padding: 2px; }
+
+<===> output.css
+something\: {
+  padding: 2px;
+}

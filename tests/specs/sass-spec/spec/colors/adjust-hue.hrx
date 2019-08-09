@@ -1,0 +1,20 @@
+<===> input.scss
+p {
+  color: adjust-hue(#f00, 10);
+  color: adjust-hue(#900, 90);
+  color: adjust-hue(#000, 30);
+  color: adjust-hue(#fff, -30);
+  color: adjust-hue(#999, -530);
+  color: adjust-hue(#000, +720);
+  // error in libsass
+  // color: adjust-hue(#333, + 720);
+}
+<===> output.css
+p {
+  color: #ff2b00;
+  color: #4d9900;
+  color: black;
+  color: white;
+  color: #999999;
+  color: black;
+}

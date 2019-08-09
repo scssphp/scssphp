@@ -1,0 +1,26 @@
+<===> input.scss
+.component{
+    color: red;
+    @at-root{
+        #{&}--foo#{&}--bar {
+            color: blue;
+        }
+    }
+}
+
+.test{
+        .selector#{&} {
+            color: blue;
+        }
+}
+<===> output.css
+.component {
+  color: red;
+}
+.component--foo.component--bar {
+  color: blue;
+}
+
+.test .selector.test {
+  color: blue;
+}

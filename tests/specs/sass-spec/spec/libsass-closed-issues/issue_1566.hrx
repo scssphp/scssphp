@@ -1,0 +1,32 @@
+<===> input.scss
+@function foo($predicate) {
+  @return call('bar', $predicate);
+}
+
+@function bar($predicate) {
+  @return type-of($predicate);
+}
+
+test {
+  test: foo(1 2 3);
+}
+
+<===> output.css
+test {
+  test: list;
+}
+
+<===> warning
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(bar)) instead.
+
+<===> warning-dart-sass
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("bar")) instead.
+
+  ,
+2 |   @return call('bar', $predicate);
+  |           ^^^^^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 2:11  foo()
+    input.scss 10:9  root stylesheet

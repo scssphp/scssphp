@@ -1,0 +1,12 @@
+<===> input.scss
+@import "../assert_helpers";
+
+test {
+  a: assert_strict_superselector('.foo ~ .bar', '.foo + .bar.baz');
+  b: assert_strict_superselector('.foo ~ .bar', '.foo.baz + .bar');
+}
+<===> output.css
+test {
+  a: true;
+  b: true;
+}

@@ -1,0 +1,38 @@
+<===> input.scss
+@function foo($a, $should-be-empty...) {
+  @return length($should-be-empty);
+}
+
+@function bar($args...) {
+  @return call(foo, $args...);
+}
+
+@function args($args...) {
+  @return $args;
+}
+
+$a: args(1, 2, 3);
+
+test {
+  test: bar($a);
+}
+
+<===> output.css
+test {
+  test: 0;
+}
+
+<===> warning
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(foo)) instead.
+
+<===> warning-dart-sass
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function(foo)) instead.
+
+  ,
+6 |   @return call(foo, $args...);
+  |           ^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 6:11  bar()
+    input.scss 16:9  root stylesheet

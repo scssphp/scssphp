@@ -1,0 +1,93 @@
+<===> input.scss
+$red: red;
+$foo: red;
+
+:root {
+  --red: #f00;
+  // --red: $red;
+  // --red: $foo;
+}
+
+a { content: var(--red) }
+a { content: var(--$red) }
+a { content: var(--$foo) }
+
+b { content: (- red) }
+b { content: (- $red) }
+b { content: (- $foo) }
+
+c { content: (+- red) }
+c { content: (+- $red) }
+c { content: (+- $foo) }
+
+d { content: (-red) }
+d { content: (-$red) }
+d { content: (-$foo) }
+
+e { content: (+ red) }
+e { content: (+ $red) }
+e { content: (+ $foo) }
+<===> output.css
+:root {
+  --red: #f00;
+}
+
+a {
+  content: var(--red);
+}
+
+a {
+  content: var(--red);
+}
+
+a {
+  content: var(--red);
+}
+
+b {
+  content: -red;
+}
+
+b {
+  content: -red;
+}
+
+b {
+  content: -red;
+}
+
+c {
+  content: +-red;
+}
+
+c {
+  content: +-red;
+}
+
+c {
+  content: +-red;
+}
+
+d {
+  content: -red;
+}
+
+d {
+  content: -red;
+}
+
+d {
+  content: -red;
+}
+
+e {
+  content: +red;
+}
+
+e {
+  content: +red;
+}
+
+e {
+  content: +red;
+}

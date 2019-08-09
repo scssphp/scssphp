@@ -1,0 +1,10 @@
+<===> input.scss
+$v: #abc - 1;
+
+<===> error
+Error: Undefined operation "#abc - 1".
+  ,
+1 | $v: #abc - 1;
+  |     ^^^^^^^^
+  '
+  input.scss 1:5  root stylesheet

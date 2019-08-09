@@ -1,0 +1,47 @@
+<===> input.scss
+foo {
+  color: blue;
+
+  baz {
+    color: purple;
+
+    @at-root {
+      bar {
+        color: red;
+      }
+    }
+  }
+}
+
+foo {
+  color: blue;
+
+  baz {
+    color: purple;
+
+    @at-root bar {
+      color: red;
+    }
+  }
+}
+
+<===> output.css
+foo {
+  color: blue;
+}
+foo baz {
+  color: purple;
+}
+bar {
+  color: red;
+}
+
+foo {
+  color: blue;
+}
+foo baz {
+  color: purple;
+}
+bar {
+  color: red;
+}

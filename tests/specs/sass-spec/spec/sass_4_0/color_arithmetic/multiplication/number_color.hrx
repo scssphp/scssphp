@@ -1,0 +1,10 @@
+<===> input.scss
+$v: 1 * #123;
+
+<===> error
+Error: Undefined operation "1 * #123".
+  ,
+1 | $v: 1 * #123;
+  |     ^^^^^^^^
+  '
+  input.scss 1:5  root stylesheet

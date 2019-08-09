@@ -1,0 +1,8 @@
+<===> regression/trailing_dot/input.scss
+// See https://github.com/sass/dart-sass/issues/598
+[a="b."] {x: y}
+
+<===> regression/trailing_dot/output.css
+[a="b."] {
+  x: y;
+}

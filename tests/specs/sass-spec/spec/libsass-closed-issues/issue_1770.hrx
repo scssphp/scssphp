@@ -1,0 +1,36 @@
+<===> input.scss
+@function returns-string() {
+  @return "selector";
+}
+
+#{"selector"} {
+  color: red;
+}
+
+#{returns-string()} {
+  color: red;
+}
+
+#{"selector"} selector2 {
+  color: red;
+}
+
+#{returns-string()} selector2 {
+  color: red;
+}
+<===> output.css
+selector {
+  color: red;
+}
+
+selector {
+  color: red;
+}
+
+selector selector2 {
+  color: red;
+}
+
+selector selector2 {
+  color: red;
+}

@@ -1,0 +1,138 @@
+<===> partial/input.scss
+// This import can't be resolved because it could refer to either the partial or
+// the non-partial file.
+@import "other";
+
+<===> partial/_other.scss
+a {partial: true}
+
+<===> partial/other.scss
+a {partial: false}
+
+<===> partial/error
+Error: It's not clear which file to import for '@import "other"'.
+       Candidates:
+         _other.scss
+         other.scss
+       Please delete or rename all but one of these files.
+        on line 1 of /sass/spec/scss/import/partial_conflict/input.scss
+  Use --trace for backtrace.
+
+<===> partial/error-dart-sass
+Error: It's not clear which file to import. Found:
+  _other.scss
+  other.scss
+  ,
+3 | @import "other";
+  |         ^^^^^^^
+  '
+  input.scss 3:9  root stylesheet
+
+<===>
+================================================================================
+<===> extension/input.scss
+// This import can't be resolved because it could refer to either the ".sass" or
+// ".scss" file.
+@import "other";
+
+<===> extension/other.sass
+a
+  syntax: sass
+
+<===> extension/other.scss
+a {syntax: scss}
+
+<===> extension/error
+Error: It's not clear which file to import for '@import "other"'.
+       Candidates:
+         other.sass
+         other.scss
+       Please delete or rename all but one of these files.
+        on line 1 of /sass/spec/scss/import/extension_conflict/input.scss
+  Use --trace for backtrace.
+
+<===> extension/error-dart-sass
+Error: It's not clear which file to import. Found:
+  other.sass
+  other.scss
+  ,
+3 | @import "other";
+  |         ^^^^^^^
+  '
+  input.scss 3:9  root stylesheet
+
+<===>
+================================================================================
+<===> all/input.scss
+// This import can't be resolved because it has conflicting partials *and*
+// conflicting extensions.
+@import "other";
+
+<===> all/other.sass
+a
+  syntax: sass
+  partial: false
+
+<===> all/other.scss
+a {syntax: scss; partial: false}
+
+<===> all/_other.sass
+a
+  syntax: sass
+  partial: true
+
+<===> all/_other.scss
+a {syntax: scss; partial: true}
+
+<===> all/error
+Error: It's not clear which file to import for '@import "other"'.
+       Candidates:
+         _other.sass
+         other.sass
+         _other.scss
+         other.scss
+       Please delete or rename all but one of these files.
+        on line 1 of /sass/spec/scss/import/all_conflict/input.scss
+  Use --trace for backtrace.
+
+<===> all/error-dart-sass
+Error: It's not clear which file to import. Found:
+  _other.sass
+  other.sass
+  _other.scss
+  other.scss
+  ,
+3 | @import "other";
+  |         ^^^^^^^
+  '
+  input.scss 3:9  root stylesheet
+
+<===> index/input.scss
+// This import can't be resolved because it could refer to either the partial or
+// the non-partial index file.
+@import "other";
+
+<===> index/other/_index.scss
+a {partial: true}
+
+<===> index/other/index.scss
+a {partial: false}
+
+<===> index/error
+Error: It's not clear which file to import for '@import "other"'.
+       Candidates:
+         _index.scss
+         index.scss
+       Please delete or rename all but one of these files.
+        on line 1 of spec/directives/import/conflict/index/input.scss
+  Use --trace for backtrace.
+
+<===> index/error-dart-sass
+Error: It's not clear which file to import. Found:
+  other/_index.scss
+  other/index.scss
+  ,
+3 | @import "other";
+  |         ^^^^^^^
+  '
+  input.scss 3:9  root stylesheet

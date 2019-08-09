@@ -1,0 +1,33 @@
+<===> options.yml
+---
+:todo:
+- dart-sass
+<===> input.scss
+.foo[disabled] {
+    @extend .foo;
+    background: blue;
+  }
+.bar[disabled] {
+  foo {
+    @extend .bar;
+    background: blue;
+  }
+}
+foo {
+  .baz[disabled] {
+    @extend .baz;
+    background: blue;
+  }
+}
+<===> output.css
+.foo[disabled] {
+  background: blue;
+}
+
+.bar[disabled] foo {
+  background: blue;
+}
+
+foo [disabled].baz {
+  background: blue;
+}

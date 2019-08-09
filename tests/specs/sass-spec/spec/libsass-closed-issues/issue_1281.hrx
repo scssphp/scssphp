@@ -1,0 +1,18 @@
+<===> input.scss
+$quoted: "green";
+$unquoted: green;
+
+.test {
+  string: type-of($quoted);
+  color: type-of($unquoted);
+  string: type-of("green");
+  color: type-of(green);
+}
+
+<===> output.css
+.test {
+  string: string;
+  color: color;
+  string: string;
+  color: color;
+}

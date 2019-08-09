@@ -1,0 +1,15 @@
+<===> input.scss
+$map: 1 + (a:b,c:d);
+
+<===> error
+Error: (a: b, c: d) isn't a valid CSS value.
+        on line 1 of /sass/spec/libsass-issues/issue_2147/input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: (a: b, c: d) isn't a valid CSS value.
+  ,
+1 | $map: 1 + (a:b,c:d);
+  |       ^^^^^^^^^^^^^
+  '
+  input.scss 1:7  root stylesheet

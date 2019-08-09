@@ -1,0 +1,20 @@
+<===> input.scss
+@media screen and (hux: 3/4) {
+  foo {
+    bar: baz;
+  }
+}
+
+<===> output.css
+@media screen and (hux: 3 / 4) {
+  foo {
+    bar: baz;
+  }
+}
+
+<===> output-dart-sass.css
+@media screen and (hux: 3/4) {
+  foo {
+    bar: baz;
+  }
+}

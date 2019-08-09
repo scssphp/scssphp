@@ -1,0 +1,17 @@
+<===> input.scss
+@debug(selector-extend(".a .b", ".b", null));
+
+<===> error
+Error: $extender: null is not a valid selector: it must be a string,
+       a list of strings, or a list of lists of strings for `selector-extend'
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: $extender: null is not a valid selector: it must be a string,
+a list of strings, or a list of lists of strings.
+  ,
+1 | @debug(selector-extend(".a .b", ".b", null));
+  |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:8  root stylesheet

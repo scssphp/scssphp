@@ -1,0 +1,134 @@
+<===> options.yml
+---
+:todo:
+- libsass
+:todo:
+- libsass
+
+<===> input.scss
+foo {
+  test-1: 10!=10;
+  test-2: 10 !=10;
+  test-3: 10!= 10;
+  test-4: 10 != 10;
+  test-5: 10!=10%;
+  test-6: 10 !=10%;
+  test-7: 10!= 10%;
+  test-8: 10 != 10%;
+  test-9: 10!=10px;
+  test-10: 10 !=10px;
+  test-11: 10!= 10px;
+  test-12: 10 != 10px;
+  test-13: 10!=#AAA;
+  test-14: 10 !=#AAA;
+  test-15: 10!= #AAA;
+  test-16: 10 != #AAA;
+  test-17: 10!=#{itpl};
+  test-18: 10 !=#{itpl};
+  test-19: 10!= #{itpl};
+  test-20: 10 != #{itpl};
+  test-21: 10%!=10%;
+  test-22: 10% !=10%;
+  test-23: 10%!= 10%;
+  test-24: 10% != 10%;
+  test-25: 10%!=10px;
+  test-26: 10% !=10px;
+  test-27: 10%!= 10px;
+  test-28: 10% != 10px;
+  test-29: 10%!=#AAA;
+  test-30: 10% !=#AAA;
+  test-31: 10%!= #AAA;
+  test-32: 10% != #AAA;
+  test-33: 10%!=#{itpl};
+  test-34: 10% !=#{itpl};
+  test-35: 10%!= #{itpl};
+  test-36: 10% != #{itpl};
+  test-37: 10px!=10px;
+  test-38: 10px !=10px;
+  test-39: 10px!= 10px;
+  test-40: 10px != 10px;
+  test-41: 10px!=#AAA;
+  test-42: 10px !=#AAA;
+  test-43: 10px!= #AAA;
+  test-44: 10px != #AAA;
+  test-45: 10px!=#{itpl};
+  test-46: 10px !=#{itpl};
+  test-47: 10px!= #{itpl};
+  test-48: 10px != #{itpl};
+  test-49: #AAA!=#AAA;
+  test-50: #AAA !=#AAA;
+  test-51: #AAA!= #AAA;
+  test-52: #AAA != #AAA;
+  test-53: #AAA!=#{itpl};
+  test-54: #AAA !=#{itpl};
+  test-55: #AAA!= #{itpl};
+  test-56: #AAA != #{itpl};
+  test-57: #{itpl}!=#{itpl};
+  test-58: #{itpl} !=#{itpl};
+  test-59: #{itpl}!= #{itpl};
+  test-60: #{itpl} != #{itpl};
+}
+
+<===> output.css
+foo {
+  test-1: false;
+  test-2: false;
+  test-3: false;
+  test-4: false;
+  test-5: true;
+  test-6: true;
+  test-7: true;
+  test-8: true;
+  test-9: true;
+  test-10: true;
+  test-11: true;
+  test-12: true;
+  test-13: true;
+  test-14: true;
+  test-15: true;
+  test-16: true;
+  test-17: true;
+  test-18: true;
+  test-19: true;
+  test-20: true;
+  test-21: false;
+  test-22: false;
+  test-23: false;
+  test-24: false;
+  test-25: true;
+  test-26: true;
+  test-27: true;
+  test-28: true;
+  test-29: true;
+  test-30: true;
+  test-31: true;
+  test-32: true;
+  test-33: true;
+  test-34: true;
+  test-35: true;
+  test-36: true;
+  test-37: false;
+  test-38: false;
+  test-39: false;
+  test-40: false;
+  test-41: true;
+  test-42: true;
+  test-43: true;
+  test-44: true;
+  test-45: true;
+  test-46: true;
+  test-47: true;
+  test-48: true;
+  test-49: false;
+  test-50: false;
+  test-51: false;
+  test-52: false;
+  test-53: true;
+  test-54: true;
+  test-55: true;
+  test-56: true;
+  test-57: false;
+  test-58: false;
+  test-59: false;
+  test-60: false;
+}

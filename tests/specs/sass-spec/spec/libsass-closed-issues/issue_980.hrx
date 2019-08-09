@@ -1,0 +1,21 @@
+<===> input.scss
+@function foo($value, $default: 13, $args...) {
+  $res: $value + $default;
+  @if length($args) != 0 {
+    $res: $res + nth($args, 1);
+  }
+  @return $res;
+}
+
+.test {
+  value: foo(3); // expected: 16
+  value: foo(3, 4); // expected: 7
+  value: foo(3, 4, 5, 6); // expected: 12
+}
+
+<===> output.css
+.test {
+  value: 16;
+  value: 7;
+  value: 12;
+}

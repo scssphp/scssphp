@@ -1,0 +1,10 @@
+<===> input.scss
+$breakpoint: 'tablet';
+
+.-#{$breakpoint} {
+  color: #FFF;
+}
+<===> output.css
+.-tablet {
+  color: #FFF;
+}

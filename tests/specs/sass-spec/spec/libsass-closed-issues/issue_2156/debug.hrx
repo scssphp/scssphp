@@ -1,0 +1,14 @@
+<===> input.scss
+@debug "\"foo\"" + "";
+@debug "" + "\"foo\"";
+@debug "" + "\"foo";
+@debug "\"foo\"" + "bar";
+@debug unquote("\"foo\" and \"bar\"");
+
+<===> output.css
+<===> warning
+/sass/spec/libsass-issues/issue_2156/input.scss:1 DEBUG: "foo"
+/sass/spec/libsass-issues/issue_2156/input.scss:2 DEBUG: "foo"
+/sass/spec/libsass-issues/issue_2156/input.scss:3 DEBUG: "foo
+/sass/spec/libsass-issues/issue_2156/input.scss:4 DEBUG: "foo"bar
+/sass/spec/libsass-issues/issue_2156/input.scss:5 DEBUG: "foo" and "bar"

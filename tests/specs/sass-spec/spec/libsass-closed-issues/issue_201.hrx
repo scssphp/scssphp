@@ -1,0 +1,6 @@
+<===> input.scss
+a, b, { color: red; }
+<===> output.css
+a, b {
+  color: red;
+}

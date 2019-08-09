@@ -1,0 +1,17 @@
+<===> input.scss
+div {
+  :-moz-any(a , b) {
+    foo: foo;
+  }
+  :foo(a , b) {
+    bar: bar;
+  }
+}
+
+<===> output.css
+div :-moz-any(a, b) {
+  foo: foo;
+}
+div :foo(a , b) {
+  bar: bar;
+}

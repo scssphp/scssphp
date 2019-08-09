@@ -1,0 +1,12 @@
+<===> input.scss
+form {
+  $selector: nth(&, 1);
+  sel: inspect($selector);
+  $selector: nth($selector, 1);
+  sel: inspect($selector);
+} 
+<===> output.css
+form {
+  sel: form;
+  sel: form;
+}

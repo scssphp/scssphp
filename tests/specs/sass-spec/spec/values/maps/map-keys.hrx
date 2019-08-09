@@ -1,0 +1,9 @@
+<===> input.scss
+div {
+  foo: map-keys((foo: 1, bar: 2));
+}
+
+<===> output.css
+div {
+  foo: foo, bar;
+}

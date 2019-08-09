@@ -1,0 +1,19 @@
+<===> input.scss
+$foo: (
+    1: foo1 bar1,
+    10: foo2 bar2,
+    100: foo3 bar3,
+);
+
+div {
+    foo: map-get($foo, 1);
+    foo: map-get($foo, 10);
+    foo: map-get($foo, 100);
+}
+
+<===> output.css
+div {
+  foo: foo1 bar1;
+  foo: foo2 bar2;
+  foo: foo3 bar3;
+}

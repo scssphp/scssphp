@@ -1,0 +1,33 @@
+<===> input.scss
+.foo {
+  &.bar {
+    color: #F00;
+  }
+}
+
+$class: 'baz';
+.foo {
+  &.#{$class} {
+    color: #F00;
+  }
+}
+
+$n: 1;
+.foo {
+  &:nth-child(#{$n}) {
+    color: #F00;
+  }
+}
+
+<===> output.css
+.foo.bar {
+  color: #F00;
+}
+
+.foo.baz {
+  color: #F00;
+}
+
+.foo:nth-child(1) {
+  color: #F00;
+}

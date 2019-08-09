@@ -1,0 +1,4 @@
+<===> input.scss
+@import "./fonts.sass" all;
+<===> output.css
+@import "./fonts.sass" all;

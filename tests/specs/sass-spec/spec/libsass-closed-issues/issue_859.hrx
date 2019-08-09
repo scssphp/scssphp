@@ -1,0 +1,21 @@
+<===> input.scss
+@media screen {
+  .two {
+    @at-root .one {
+      background: blue;
+      .three {
+        color: red;
+      }
+    }
+  }
+}
+
+<===> output.css
+@media screen {
+  .one {
+    background: blue;
+  }
+  .one .three {
+    color: red;
+  }
+}

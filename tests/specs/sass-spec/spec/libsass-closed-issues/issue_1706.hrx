@@ -1,0 +1,33 @@
+<===> input.scss
+@function calc($e) { @return custom; }
+@function -foo-calc($e) { @return custom; }
+
+.test {
+    a: calc(1px * 1%);
+    b: -foo-calc(2px * 2%);
+    c: call(calc, 3px * 3%);
+}
+
+<===> error-dart-sass
+Error: Invalid function name.
+  ,
+1 | @function calc($e) { @return custom; }
+  | ^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:1  root stylesheet
+
+<===> output.css
+.test {
+  a: calc(1px * 1%);
+  b: -foo-calc(2px * 2%);
+  c: custom;
+}
+
+<===> warning
+DEPRECATION WARNING on line 1 of /sass/spec/libsass-issues/issue_1706/input.scss:
+Naming a function "calc" is disallowed and will be an error in future versions of Sass.
+This name conflicts with an existing CSS function with special parse rules.
+
+DEPRECATION WARNING on line 2 of /sass/spec/libsass-issues/issue_1706/input.scss:
+Naming a function "-foo-calc" is disallowed and will be an error in future versions of Sass.
+This name conflicts with an existing CSS function with special parse rules.

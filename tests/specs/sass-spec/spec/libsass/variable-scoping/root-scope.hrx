@@ -1,0 +1,46 @@
+<===> input.scss
+$x: -42;
+$y: -84;
+div {
+  x: $x;
+  y: $y;
+  for {
+    x: $x;
+    y: $y;
+    @for $x from 1 through 5 {
+      $y: $y + 5;
+      x: $x;
+      y: $y;
+      $x: 999;
+      $y: -9 !global;
+      $x: -9 !global;
+    }
+    x: $x;
+    y: $y;
+  }
+  x: $x;
+  y: $y;
+}
+<===> output.css
+div {
+  x: -42;
+  y: -84;
+  x: -9;
+  y: -9;
+}
+div for {
+  x: -42;
+  y: -84;
+  x: 1;
+  y: -79;
+  x: 2;
+  y: -74;
+  x: 3;
+  y: -69;
+  x: 4;
+  y: -64;
+  x: 5;
+  y: -59;
+  x: -9;
+  y: -9;
+}

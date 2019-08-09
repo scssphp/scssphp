@@ -1,0 +1,28 @@
+<===> _alpha.scss
+@import 'beta';
+
+<===> _beta.scss
+@import 'alpha';
+
+<===> input.scss
+@import 'alpha';
+
+<===> error
+Error: An @import loop has been found:
+           input.scss imports _alpha.scss
+           _alpha.scss imports _beta.scss
+           _beta.scss imports _alpha.scss
+        on line 1 of _beta.scss
+        from line 1 of _alpha.scss
+        from line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: This file is already being loaded.
+  ,
+1 | @import 'alpha';
+  |         ^^^^^^^
+  '
+  _beta.scss 1:9   @import
+  _alpha.scss 1:9  @import
+  input.scss 1:9   root stylesheet

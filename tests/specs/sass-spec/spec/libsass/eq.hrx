@@ -1,0 +1,13 @@
+<===> input.scss
+div {
+  foo: center == "center";
+  foo: (a b c) == (a b c);
+  foo: a b c == a b c;
+}
+
+<===> output.css
+div {
+  foo: true;
+  foo: true;
+  foo: a b false b c;
+}

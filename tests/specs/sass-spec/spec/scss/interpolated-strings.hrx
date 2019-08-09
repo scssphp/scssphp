@@ -1,0 +1,17 @@
+<===> input.scss
+$x: ecks;
+$y: why;
+
+div {
+  blah: "hey #{$x} ho";
+  blee: hey#{$y}ho;
+  bluh: "foo #{$x}";
+  bleg: foo#{"hey"}bar;
+}
+<===> output.css
+div {
+  blah: "hey ecks ho";
+  blee: heywhyho;
+  bluh: "foo ecks";
+  bleg: fooheybar;
+}

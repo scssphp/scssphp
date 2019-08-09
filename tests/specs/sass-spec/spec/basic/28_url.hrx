@@ -1,0 +1,46 @@
+<===> input.scss
+$x: pop;
+$y: 123;
+
+
+
+div {
+  foo: url(bloo/blah.css);
+  bar: url(http://foo/bar/hux.css);
+  foo: url(fudge#{$x}.css);
+  bar: url("http://fudge#{$x}/styles.css");
+  hux: url(http://box_#{$y}////fudge#{$x}.css);
+  @each $i in (1 2 3 4 5) {
+    hux: url(http://box_#{$y}////fudge#{$x}.css);
+    foo: url(http://blah.com/bar-#{$i}.css);
+    bar: url(http://fonts.googleapis.com/css?family=Karla:400,700,400italic|Anonymous+Pro:400,700,400italic);
+  }
+  gloo: url("hey#{1+2}.css");
+  floo: url(hadoop-#{$y+321}.css);
+}
+
+<===> output.css
+div {
+  foo: url(bloo/blah.css);
+  bar: url(http://foo/bar/hux.css);
+  foo: url(fudgepop.css);
+  bar: url("http://fudgepop/styles.css");
+  hux: url(http://box_123////fudgepop.css);
+  hux: url(http://box_123////fudgepop.css);
+  foo: url(http://blah.com/bar-1.css);
+  bar: url(http://fonts.googleapis.com/css?family=Karla:400,700,400italic|Anonymous+Pro:400,700,400italic);
+  hux: url(http://box_123////fudgepop.css);
+  foo: url(http://blah.com/bar-2.css);
+  bar: url(http://fonts.googleapis.com/css?family=Karla:400,700,400italic|Anonymous+Pro:400,700,400italic);
+  hux: url(http://box_123////fudgepop.css);
+  foo: url(http://blah.com/bar-3.css);
+  bar: url(http://fonts.googleapis.com/css?family=Karla:400,700,400italic|Anonymous+Pro:400,700,400italic);
+  hux: url(http://box_123////fudgepop.css);
+  foo: url(http://blah.com/bar-4.css);
+  bar: url(http://fonts.googleapis.com/css?family=Karla:400,700,400italic|Anonymous+Pro:400,700,400italic);
+  hux: url(http://box_123////fudgepop.css);
+  foo: url(http://blah.com/bar-5.css);
+  bar: url(http://fonts.googleapis.com/css?family=Karla:400,700,400italic|Anonymous+Pro:400,700,400italic);
+  gloo: url("hey3.css");
+  floo: url(hadoop-444.css);
+}

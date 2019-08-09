@@ -1,0 +1,16 @@
+<===> imported.sass
+div
+	a
+		color: red
+	li
+		color: green
+<===> input.scss
+@import "imported.sass";
+
+<===> output.css
+div a {
+  color: red;
+}
+div li {
+  color: green;
+}

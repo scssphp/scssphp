@@ -1,0 +1,34 @@
+<===> input.scss
+@function foo() {
+  @return "hello";
+}
+
+@mixin foo() {
+  content: "hello";
+}
+
+div {
+  span {
+    @function length($a, $b, $c, $d) {
+      @return $a + $b + $c + $d;
+    }
+
+    div {
+      content: foo();
+      @include foo();
+      width: length(1,2,2,3);
+    }
+  }
+
+  height: length(a b c d e);
+
+}
+<===> output.css
+div {
+  height: 5;
+}
+div span div {
+  content: "hello";
+  content: "hello";
+  width: 8;
+}

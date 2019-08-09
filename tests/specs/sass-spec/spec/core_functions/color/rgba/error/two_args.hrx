@@ -1,0 +1,63 @@
+<===> color/type/input.scss
+color-type {
+  x: rgba("foo", 0.5);
+}
+
+<===> color/type/error
+Error: $color: "foo" is not a color.
+  ,
+2 |   x: rgba("foo", 0.5);
+  |      ^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===> color/type/error-libsass
+Error: argument `$color` of `rgba($color, $alpha)` must be a color
+        on line 2 of /sass/spec/core_functions/color/rgba/error/two_args/color_type/input.scss, in function `rgba`
+        from line 2 of /sass/spec/core_functions/color/rgba/error/two_args/color_type/input.scss
+>>   x: rgba("foo", 0.5);
+
+   -----^
+
+<===>
+================================================================================
+<===> alpha/type/input.scss
+alpha-type {
+  x: rgba(#123, "foo");
+}
+
+<===> alpha/type/error
+Error: $alpha: "foo" is not a number.
+  ,
+2 |   x: rgba(#123, "foo");
+  |      ^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===> alpha/type/error-libsass
+Error: argument `$alpha` of `rgba($color, $alpha)` must be a number
+        on line 2 of /sass/spec/core_functions/color/rgba/error/two_args/alpha_type/input.scss, in function `rgba`
+        from line 2 of /sass/spec/core_functions/color/rgba/error/two_args/alpha_type/input.scss
+>>   x: rgba(#123, "foo");
+
+   -----^
+
+<===>
+================================================================================
+<===> alpha/unit/options.yml
+---
+:todo:
+- libsass
+
+<===> alpha/unit/input.scss
+.alpha-unit {
+  a: rgba(#123, 0.5px);
+}
+
+<===> alpha/unit/error
+Error: $alpha: Expected 0.5px to have no units or "%".
+  ,
+2 |   a: rgba(#123, 0.5px);
+  |      ^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet

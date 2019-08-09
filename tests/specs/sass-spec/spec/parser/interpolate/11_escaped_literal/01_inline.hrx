@@ -1,0 +1,24 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+.result {
+  output: l\\ite\ral;
+  output: #{l\\ite\ral};
+  output: "[#{l\\ite\ral}]";
+  output: "#{l\\ite\ral}";
+  output: '#{l\\ite\ral}';
+  output: "['#{l\\ite\ral}']";
+}
+
+<===> output.css
+.result {
+  output: l\\iteral;
+  output: l\\iteral;
+  output: "[l\\\\iteral]";
+  output: "l\\\\iteral";
+  output: "l\\\\iteral";
+  output: "['l\\\\iteral']";
+}

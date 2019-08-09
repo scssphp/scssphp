@@ -1,0 +1,22 @@
+<===> input.scss
+@at-root {
+  pre& {
+    foo {
+      bar: baz;
+    }
+  }
+}
+<===> error
+Error: Invalid CSS after "pre": expected "{", was "&"
+       
+       "&" may only be used at the beginning of a compound selector.
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: "&" may only used at the beginning of a compound selector.
+  ,
+2 |   pre&{
+  |      ^
+  '
+  input.scss 2:6  root stylesheet

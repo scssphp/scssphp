@@ -1,0 +1,4 @@
+<===> input.scss
+@import url("foo.css");
+<===> output.css
+@import url("foo.css");

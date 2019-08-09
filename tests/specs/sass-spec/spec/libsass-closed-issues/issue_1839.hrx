@@ -1,0 +1,4 @@
+<===> input.scss
+@custom-media --large-viewport (min-width: 1001px);
+<===> output.css
+@custom-media --large-viewport (min-width: 1001px);

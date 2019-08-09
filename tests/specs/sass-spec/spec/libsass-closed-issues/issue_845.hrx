@@ -1,0 +1,10 @@
+<===> input.sass
+@charset 'UTF-8'
+
+*
+  color: red
+
+<===> output.css
+* {
+  color: red;
+}

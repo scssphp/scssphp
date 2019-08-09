@@ -1,0 +1,10 @@
+<===> input.scss
+.header {
+  .nav-text-link:not(&.popover-link) {
+    margin: 10px;
+  }
+}
+<===> output.css
+.nav-text-link:not(.header.popover-link) {
+  margin: 10px;
+}

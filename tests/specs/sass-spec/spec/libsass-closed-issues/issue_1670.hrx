@@ -1,0 +1,20 @@
+<===> input.scss
+.this-should-error {
+  @extend %an-undefined-placeholder;
+}
+
+<===> error
+Error: ".this-should-error" failed to @extend "%an-undefined-placeholder".
+       The selector "%an-undefined-placeholder" was not found.
+       Use "@extend %an-undefined-placeholder !optional" if the extend should be able to fail.
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: The target selector was not found.
+Use "@extend %an-undefined-placeholder !optional" to avoid this error.
+  ,
+2 |   @extend %an-undefined-placeholder;
+  |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:3  root stylesheet

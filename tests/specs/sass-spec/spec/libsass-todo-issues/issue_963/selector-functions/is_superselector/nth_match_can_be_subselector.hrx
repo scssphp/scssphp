@@ -1,0 +1,27 @@
+<===> input.scss
+@import "../assert_helpers";
+
+
+@function check_matches($a, $b) {
+  $prefixes: nth-child nth-last-child;
+  $result: true;
+  @each $name in $prefixes{
+    @if (not assert_strict_superselector("#{$a}", ":#{$name}(#{$b})") and $result == true) {
+      $result: false;
+    }
+  }
+
+  @return $result;
+}
+
+test {
+  a: check_matches('.foo', '2n of .foo.bar');
+  b: check_matches('.foo.bar', '2n of .foo.bar.baz');
+  c: check_matches(".foo, .baz", '2n of .foo.bar, .foo.baz');
+}
+<===> output.css
+test {
+  a: true;
+  b: true;
+  c: true;
+}

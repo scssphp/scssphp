@@ -1,0 +1,26 @@
+<===> input.scss
+// line-endings in this file must be CRLF
+@import url("foo\
+bar");
+@import url("foo
+bar");
+@import url(foo
+bar);
+
+<===> error-dart-sass
+Error: Expected ".
+  ,
+4 | @import url("foo
+  |                 ^
+  '
+  input.scss 4:17  root stylesheet
+
+<===> output.css
+@import url("foobar");
+@import url("foo\a bar");
+@import url(foo bar);
+
+<===> warning
+DEPRECATION WARNING on line 4, column 13 of input.scss:
+Unescaped multiline strings are deprecated and will be removed in a future version of Sass.
+To include a newline in a string, use "\a" or "\a " as in CSS.

@@ -1,0 +1,27 @@
+<===> input.scss
+@import "../assert_helpers";
+
+
+@function check_matches($a, $b) {
+  $prefixes: matches -moz-any;
+  $result: true;
+  @each $name in $prefixes{
+    @if (not assert_strict_superselector(":#{$name}(#{$a})", #{$b}) and $result == true) {
+      $result: false;
+    }
+  }
+
+  @return $result;
+}
+
+test {
+  a: check_matches('.foo', '.foo.bar');
+  b: check_matches('.foo, .bar', '.foo.bar.baz');
+  c: check_matches('.foo', '.foo.bar, .foo.baz');
+}
+<===> output.css
+test {
+  a: true;
+  b: true;
+  c: true;
+}

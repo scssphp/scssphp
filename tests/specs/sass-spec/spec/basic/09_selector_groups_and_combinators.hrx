@@ -1,0 +1,18 @@
+<===> input.scss
+a + b, c {
+  blah: blah;
+  bleh: bleh;
+  d e, f ~ g + h, > i {
+    bloo: bloo;
+    blee: blee;
+  }
+}
+<===> output.css
+a + b, c {
+  blah: blah;
+  bleh: bleh;
+}
+a + b d e, a + b f ~ g + h, a + b > i, c d e, c f ~ g + h, c > i {
+  bloo: bloo;
+  blee: blee;
+}

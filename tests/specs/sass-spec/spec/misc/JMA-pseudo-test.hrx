@@ -1,0 +1,26 @@
+<===> input.scss
+.foo {
+        h1 {
+                color:red;
+        }
+}
+
+.bar {
+        &:hover h3,
+        h3 {
+                @extend h1;
+        }
+}
+
+<===> output.css
+.foo h1,
+.foo .bar h3,
+.bar .foo h3 {
+  color: red;
+}
+
+<===> output-libsass.css
+.foo h1,
+.foo .bar h3, .bar .foo h3 {
+  color: red;
+}

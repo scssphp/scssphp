@@ -1,0 +1,8 @@
+$input: '\0_\a_\A';
+.result {
+  output: #{#{$input}};
+  output: #{"[#{$input}]"};
+  output: #{"#{$input}"};
+  output: #{'#{$input}'};
+  output: #{"['#{$input}']"};
+}

@@ -1,0 +1,41 @@
+<===> input.scss
+foo {
+  -quotes: 'this-string' == 'this-string';
+  -quotes: this-string == 'this-string';
+  -quotes: 'this-string' == "this-string";
+  -quotes: 'this-string' == '"this-string"';
+  -quotes: '"this-string"' == "'this-string'";
+  foo: this-string;
+  foo: 'this-string';
+  foo: "this-string";
+  foo: '"this-string"';
+  foo: "'this-string'";
+}
+
+<===> output.css
+foo {
+  -quotes: true;
+  -quotes: true;
+  -quotes: true;
+  -quotes: false;
+  -quotes: false;
+  foo: this-string;
+  foo: 'this-string';
+  foo: "this-string";
+  foo: '"this-string"';
+  foo: "'this-string'";
+}
+
+<===> output-dart-sass.css
+foo {
+  -quotes: true;
+  -quotes: true;
+  -quotes: true;
+  -quotes: false;
+  -quotes: false;
+  foo: this-string;
+  foo: "this-string";
+  foo: "this-string";
+  foo: '"this-string"';
+  foo: "'this-string'";
+}

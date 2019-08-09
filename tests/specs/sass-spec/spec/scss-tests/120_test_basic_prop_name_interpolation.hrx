@@ -1,0 +1,7 @@
+<===> input.scss
+foo {bar#{1 + 2}: blip}
+
+<===> output.css
+foo {
+  bar3: blip;
+}

@@ -1,0 +1,15 @@
+<===> input.scss
+.3c {
+    color: red;
+}
+
+<===> error
+Error: Invalid CSS after ".": expected class name, was "3c"
+
+<===> error-dart-sass
+Error: Expected identifier.
+  ,
+1 | .3c{
+  |  ^
+  '
+  input.scss 1:2  root stylesheet

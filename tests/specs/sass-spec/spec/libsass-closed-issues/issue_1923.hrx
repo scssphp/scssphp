@@ -1,0 +1,35 @@
+<===> input.scss
+%btnBase {
+  display: none;
+}
+
+@mixin mobile {
+  @media only screen and (min-width:300px) {
+    @content;
+  }
+}
+
+@include mobile {
+  a {
+    @extend %btnBase;
+  }
+}
+<===> error
+Error: You may not @extend an outer selector from within @media.
+       You may only @extend selectors within the same directive.
+input.scss.
+input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: From line 1, column 1 of input.scss: 
+  ,
+1 | %btnBase {
+  | ^^^^^^^^^
+  '
+You may not @extend selectors across media queries.
+   ,
+13 |     @extend %btnBase;
+   |     ^^^^^^^^^^^^^^^^
+   '
+  input.scss 13:5  root stylesheet

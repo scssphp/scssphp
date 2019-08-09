@@ -1,0 +1,42 @@
+<===> input.scss
+.test-1 {
+  content: null;
+  content: inspect(null);
+  content: inspect(false);
+  content: inspect(true);
+  content: inspect(42);
+  content: inspect(42.3);
+  content: inspect(42px);
+  content: inspect("string");
+  $list: 1, 2, 3;
+  content: inspect($list);
+  $map: ( a: 1, b: 2, c: 3 );
+  content: inspect($map);
+}
+
+<===> output.css
+.test-1 {
+  content: null;
+  content: null;
+  content: false;
+  content: true;
+  content: 42;
+  content: 42.3;
+  content: 42px;
+  content: "string";
+  content: 1, 2, 3;
+  content: (a: 1, b: 2, c: 3);
+}
+
+<===> output-dart-sass.css
+.test-1 {
+  content: null;
+  content: false;
+  content: true;
+  content: 42;
+  content: 42.3;
+  content: 42px;
+  content: "string";
+  content: 1, 2, 3;
+  content: (a: 1, b: 2, c: 3);
+}

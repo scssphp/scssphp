@@ -1,0 +1,14 @@
+<===> input.scss
+foo {
+  a: 1 + 2;
+  b: 1 - 2;
+  c: foo + bar;
+  d: floor(12.3px); }
+
+<===> output.css
+foo {
+  a: 3;
+  b: -1;
+  c: foobar;
+  d: 12px;
+}

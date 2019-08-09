@@ -1,0 +1,39 @@
+<===> input.scss
+%x {
+  color: red;
+}
+
+foo {
+  width: 10px;
+  @extend %x;
+}
+
+hux {
+  height: 12px;
+  @extend %x;
+}
+<===> output.css
+foo, hux {
+  color: red;
+}
+
+foo {
+  width: 10px;
+}
+
+hux {
+  height: 12px;
+}
+
+<===> output-dart-sass.css
+hux, foo {
+  color: red;
+}
+
+foo {
+  width: 10px;
+}
+
+hux {
+  height: 12px;
+}

@@ -1,0 +1,106 @@
+<===> different/spaces/input.sass
+a
+ b: c
+    d: e
+
+x
+  y: z
+
+<===> different/spaces/output.css
+a {
+  b: c;
+  b-d: e;
+}
+
+x {
+  y: z;
+}
+
+<===>
+================================================================================
+<===> different/tabs/input.sass
+a
+	b: c
+				d: e
+
+x
+		y: z
+
+<===> different/tabs/output.css
+a {
+  b: c;
+  b-d: e;
+}
+
+x {
+  y: z;
+}
+
+<===>
+================================================================================
+<===> unusual_newlines/README.md
+Everything CSS considers a newline (including `\r\n`, `\r`, and `\f`) should be
+usable as the end of an indented syntax line.
+
+<===>
+================================================================================
+<===> unusual_newlines/cr_lf/input.sass
+a
+  b: c
+  d: e
+
+<===> unusual_newlines/cr_lf/output.css
+a {
+  b: c;
+  d: e;
+}
+
+<===>
+================================================================================
+<===> unusual_newlines/cr/input.sass
+a  b: c  d: e
+<===> unusual_newlines/cr/output.css
+a {
+  b: c;
+  d: e;
+}
+
+<===>
+================================================================================
+<===> unusual_newlines/ff/options.yml
+---
+:todo:
+- libsass # sass/libsass#2843
+
+<===> unusual_newlines/ff/input.sass
+a  b: c  d: e
+<===> unusual_newlines/ff/output.css
+a {
+  b: c;
+  d: e;
+}
+
+<===>
+================================================================================
+<===> error/inconsistent/options.yml
+---
+:todo:
+- libsass
+
+<===> error/inconsistent/input.sass
+a
+    b: c
+ d: e
+
+<===> error/inconsistent/error
+Error: Inconsistent indentation: 1 space was used for indentation, but the rest of the document was indented using 4 spaces.
+        on line 3 of /sass/spec/sass/inconsistent_indentation/input.sass
+  Use --trace for backtrace.
+
+<===> error/inconsistent/error-dart-sass
+Error: Inconsistent indentation, expected 4 spaces.
+  ,
+3 |  d: e
+  | ^
+  '
+  input.sass 3:1  root stylesheet

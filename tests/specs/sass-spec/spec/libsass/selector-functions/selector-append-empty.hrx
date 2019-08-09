@@ -1,0 +1,16 @@
+<===> input.scss
+foo {
+  test-02: selector-append();
+}
+<===> error
+Error: $selectors: At least one selector must be passed for `selector-append'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: $selectors: At least one selector must be passed.
+  ,
+2 |   test-02: selector-append();
+  |            ^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:12  root stylesheet

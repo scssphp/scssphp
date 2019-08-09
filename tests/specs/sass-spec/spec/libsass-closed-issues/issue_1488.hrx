@@ -1,0 +1,158 @@
+<===> input.scss
+@function foo($arg2) {
+  @return type-of($arg2);
+}
+
+@function foo_($arg2...) {
+  @return type-of($arg2);
+}
+
+@function bar($arg1, $arg2) {
+  @return type-of($arg1) + "::" + type-of($arg2);
+}
+
+@function bar_($arg1, $arg2...) {
+  @return type-of($arg1) + "::" + type-of($arg2);
+}
+
+foo {
+  foo: foo(one);
+  foo: foo(one...);
+  bar: bar(one, two);
+  bar: bar(one, two...);
+  foo: call('foo', one);
+  foo: call('foo', one...);
+  bar: call('bar', one, two);
+  bar: call('bar', one, two...);
+}
+
+bar {
+  foo: foo_(one);
+  foo: foo_(one...);
+  bar: bar_(one, two);
+  bar: bar_(one, two...);
+  foo: call('foo_', one);
+  foo: call('foo_', one...);
+  bar: call('bar_', one, two);
+  bar: call('bar_', one, two...);
+}
+<===> output.css
+foo {
+  foo: string;
+  foo: string;
+  bar: string::string;
+  bar: string::string;
+  foo: string;
+  foo: string;
+  bar: string::string;
+  bar: string::string;
+}
+
+bar {
+  foo: arglist;
+  foo: arglist;
+  bar: string::arglist;
+  bar: string::arglist;
+  foo: arglist;
+  foo: arglist;
+  bar: string::arglist;
+  bar: string::arglist;
+}
+
+<===> warning
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(foo)) instead.
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(foo)) instead.
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(bar)) instead.
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(bar)) instead.
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(foo_)) instead.
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(foo_)) instead.
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(bar_)) instead.
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(bar_)) instead.
+
+<===> warning-dart-sass
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("foo")) instead.
+
+   ,
+22 |   foo: call('foo', one);
+   |        ^^^^^^^^^^^^^^^^
+   '
+    input.scss 22:8  root stylesheet
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("foo")) instead.
+
+   ,
+23 |   foo: call('foo', one...);
+   |        ^^^^^^^^^^^^^^^^^^^
+   '
+    input.scss 23:8  root stylesheet
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("bar")) instead.
+
+   ,
+24 |   bar: call('bar', one, two);
+   |        ^^^^^^^^^^^^^^^^^^^^^
+   '
+    input.scss 24:8  root stylesheet
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("bar")) instead.
+
+   ,
+25 |   bar: call('bar', one, two...);
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^
+   '
+    input.scss 25:8  root stylesheet
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("foo_")) instead.
+
+   ,
+33 |   foo: call('foo_', one);
+   |        ^^^^^^^^^^^^^^^^^
+   '
+    input.scss 33:8  root stylesheet
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("foo_")) instead.
+
+   ,
+34 |   foo: call('foo_', one...);
+   |        ^^^^^^^^^^^^^^^^^^^^
+   '
+    input.scss 34:8  root stylesheet
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("bar_")) instead.
+
+   ,
+35 |   bar: call('bar_', one, two);
+   |        ^^^^^^^^^^^^^^^^^^^^^^
+   '
+    input.scss 35:8  root stylesheet
+
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("bar_")) instead.
+
+   ,
+36 |   bar: call('bar_', one, two...);
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^
+   '
+    input.scss 36:8  root stylesheet

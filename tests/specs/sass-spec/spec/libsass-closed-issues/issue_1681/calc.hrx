@@ -1,0 +1,18 @@
+<===> input.scss
+@function calc() {
+  @return null;
+}
+
+<===> error-dart-sass
+Error: Invalid function name.
+  ,
+1 | @function calc() {
+  | ^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:1  root stylesheet
+
+<===> output.css
+<===> warning
+DEPRECATION WARNING on line 1 of /sass/spec/libsass-issues/issue_1681/calc/input.scss:
+Naming a function "calc" is disallowed and will be an error in future versions of Sass.
+This name conflicts with an existing CSS function with special parse rules.

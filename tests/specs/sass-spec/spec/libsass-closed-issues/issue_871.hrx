@@ -1,0 +1,20 @@
+<===> input.scss
+.bar {
+  @extend .foo;
+  color: green;
+}
+<===> error
+Error: ".bar" failed to @extend ".foo".
+       The selector ".foo" was not found.
+       Use "@extend .foo !optional" if the extend should be able to fail.
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: The target selector was not found.
+Use "@extend .foo !optional" to avoid this error.
+  ,
+2 |   @extend .foo;
+  |   ^^^^^^^^^^^^
+  '
+  input.scss 2:3  root stylesheet

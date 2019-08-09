@@ -1,0 +1,80 @@
+<===> input.scss
+@mixin selector-info($selector) {
+  type: type-of($selector);
+  length: length($selector);
+  content: $selector;
+  @for $i from 1 through length($selector) {
+    index: $i;
+    length: length(nth($selector, $i));
+    type: type-of(nth($selector, $i));
+    content: nth($selector, $i);
+  }
+}
+
+.foo {
+  @include selector-info(&);
+}
+
+.bar a {
+  @include selector-info(&);
+}
+
+.bar,
+.baz {
+  @include selector-info(&);
+}
+
+.qux {
+  &.waldo {
+    .where & {
+      .final {
+        @include selector-info(&);
+      }
+    }
+  }
+}
+<===> output.css
+.foo {
+  type: list;
+  length: 1;
+  content: .foo;
+  index: 1;
+  length: 1;
+  type: list;
+  content: .foo;
+}
+
+.bar a {
+  type: list;
+  length: 1;
+  content: .bar a;
+  index: 1;
+  length: 2;
+  type: list;
+  content: .bar a;
+}
+
+.bar,
+.baz {
+  type: list;
+  length: 2;
+  content: .bar, .baz;
+  index: 1;
+  length: 1;
+  type: list;
+  content: .bar;
+  index: 2;
+  length: 1;
+  type: list;
+  content: .baz;
+}
+
+.where .qux.waldo .final {
+  type: list;
+  length: 1;
+  content: .where .qux.waldo .final;
+  index: 1;
+  length: 3;
+  type: list;
+  content: .where .qux.waldo .final;
+}

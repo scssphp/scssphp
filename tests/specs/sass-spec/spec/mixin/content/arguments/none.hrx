@@ -1,0 +1,67 @@
+<===> input.scss
+// `@content()` and `@content` should behave identically, as should
+// `@include foo` and `@include foo using ()`.
+
+no-parens {
+  @mixin mixin {
+    @content;
+  }
+
+  empty-using {
+    @include mixin using () {
+      x: y;
+    }
+  }
+
+  defaults {
+    @include mixin using ($arg1: value1, $arg2: value2) {
+      arg1: $arg1;
+      arg2: $arg2;
+    }
+  }
+}
+
+parens {
+  @mixin mixin {
+    @content();
+  }
+
+  no-using {
+    @include mixin {
+      x: y;
+    }
+  }
+
+  empty-using {
+    @include mixin using () {
+      x: y;
+    }
+  }
+
+  defaults {
+    @include mixin using ($arg1: value1, $arg2: value2) {
+      arg1: $arg1;
+      arg2: $arg2;
+    }
+  }
+}
+
+<===> output.css
+no-parens empty-using {
+  x: y;
+}
+no-parens defaults {
+  arg1: value1;
+  arg2: value2;
+}
+
+parens no-using {
+  x: y;
+}
+parens empty-using {
+  x: y;
+}
+parens defaults {
+  arg1: value1;
+  arg2: value2;
+}

@@ -1,0 +1,15 @@
+<===> input.scss
+foo {
+  a: "\"foo\"" + "";
+  b: "" + "\"foo\"";
+  c: "" + "\"foo";
+  d: "\"foo\"" + "bar";
+}
+
+<===> output.css
+foo {
+  a: '"foo"';
+  b: '"foo"';
+  c: '"foo';
+  d: '"foo"bar';
+}

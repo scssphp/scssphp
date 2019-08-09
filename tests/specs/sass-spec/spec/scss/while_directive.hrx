@@ -1,0 +1,17 @@
+<===> input.scss
+$i: 1;
+
+.foo {
+  @while $i != 5 {
+    a: $i;
+    $i: $i + 1;
+  }
+}
+
+<===> output.css
+.foo {
+  a: 1;
+  a: 2;
+  a: 3;
+  a: 4;
+}

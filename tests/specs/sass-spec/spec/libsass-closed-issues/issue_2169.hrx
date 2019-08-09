@@ -1,0 +1,12 @@
+<===> input.scss
+@function test($a, $b) {
+  @return "#{$a}" + "#{$b}" + "" + "";
+}
+
+foo {
+  content: test('bim', 'baz');
+}
+<===> output.css
+foo {
+  content: "bimbaz";
+}

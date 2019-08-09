@@ -1,0 +1,46 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2726
+
+<===> input.scss
+a {
+  calc-1: rgb(calc(1), 2, 3);
+  calc-2: rgb(1, calc(2), 3);
+  calc-3: rgb(1, 2, calc(3));
+
+  var-1: rgb(var(--foo), 2, 3);
+  var-2: rgb(1, var(--foo), 3);
+  var-3: rgb(1, 2, var(--foo));
+
+  env-1: rgb(env(--foo), 2, 3);
+  env-2: rgb(1, env(--foo), 3);
+  env-3: rgb(1, 2, env(--foo));
+
+  min-1: rgb(min(1), 2, 3);
+  min-2: rgb(1, min(2), 3);
+  min-3: rgb(1, 2, min(3));
+
+  max-1: rgb(max(1), 2, 3);
+  max-2: rgb(1, max(2), 3);
+  max-3: rgb(1, 2, max(3));
+}
+
+<===> output.css
+a {
+  calc-1: rgb(calc(1), 2, 3);
+  calc-2: rgb(1, calc(2), 3);
+  calc-3: rgb(1, 2, calc(3));
+  var-1: rgb(var(--foo), 2, 3);
+  var-2: rgb(1, var(--foo), 3);
+  var-3: rgb(1, 2, var(--foo));
+  env-1: rgb(env(--foo), 2, 3);
+  env-2: rgb(1, env(--foo), 3);
+  env-3: rgb(1, 2, env(--foo));
+  min-1: rgb(min(1), 2, 3);
+  min-2: rgb(1, min(2), 3);
+  min-3: rgb(1, 2, min(3));
+  max-1: rgb(max(1), 2, 3);
+  max-2: rgb(1, max(2), 3);
+  max-3: rgb(1, 2, max(3));
+}

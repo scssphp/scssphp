@@ -1,0 +1,15 @@
+<===> input.scss
+.test31#{'\@baz'} { content: '3.1'; }
+
+<===> error
+Error: Invalid CSS after ".test31": expected selector, was "@baz"
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected selector.
+  ,
+1 | .test31@baz{ content: '3.1'; }
+  |        ^
+  '
+  input.scss 1:8  root stylesheet

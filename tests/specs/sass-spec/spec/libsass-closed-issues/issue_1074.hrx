@@ -1,0 +1,23 @@
+<===> input.scss
+$i: 1;
+.foo#{-$i} { a:b }
+.foo-#{$i} { a:b }
+.foo#{-1} { a:b }
+.foo-#{1} { a:b }
+
+<===> output.css
+.foo-1 {
+  a: b;
+}
+
+.foo-1 {
+  a: b;
+}
+
+.foo-1 {
+  a: b;
+}
+
+.foo-1 {
+  a: b;
+}

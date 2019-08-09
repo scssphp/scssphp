@@ -1,0 +1,17 @@
+<===> input.scss
+foo {
+  foo: foo(());
+}
+
+<===> error
+Error: () isn't a valid CSS value.
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: () isn't a valid CSS value
+  ,
+2 |   foo: foo(());
+  |            ^^
+  '
+  input.scss 2:12  root stylesheet

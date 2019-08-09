@@ -1,0 +1,21 @@
+<===> input.scss
+$map: (
+  'red': 'bar',
+  #{re}#{'d'}: 'baz',
+);
+
+.foo {
+  content: inspect($map);
+}
+<===> error
+Error: Duplicate key "red" in map ("red": "bar", #{re}#{"d"}: "baz").
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Duplicate key.
+  ,
+3 |   #{re}#{'d'}: 'baz',
+  |   ^^^^^^^^^^^
+  '
+  input.scss 3:3  root stylesheet

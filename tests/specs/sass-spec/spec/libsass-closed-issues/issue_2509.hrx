@@ -1,0 +1,37 @@
+<===> options.yml
+---
+:todo:
+- dart-sass
+
+<===> input.scss
+[charset i] {
+	display: block;
+}
+
+[charset I] {
+	display: block;
+}
+
+[charset="utf-8" i] {
+	display: block;
+}
+
+[charset="utf-8" I] {
+	display: block;
+}
+<===> output.css
+[charset i] {
+  display: block;
+}
+
+[charset I] {
+  display: block;
+}
+
+[charset="utf-8" i] {
+  display: block;
+}
+
+[charset="utf-8" I] {
+  display: block;
+}

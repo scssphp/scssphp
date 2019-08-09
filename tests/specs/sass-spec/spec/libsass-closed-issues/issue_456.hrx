@@ -1,0 +1,9 @@
+<===> input.scss
+body {
+  -webkit-filter: invert(100%);
+}
+
+<===> output.css
+body {
+  -webkit-filter: invert(100%);
+}

@@ -1,0 +1,28 @@
+<===> input.scss
+.parent {
+    .brother, .sister, .cousin {
+        color: green;
+        sel: &;
+
+        $new-sel: ();
+        @each $s in & {
+            $last: nth($s, -1);
+            $new-sel: append($new-sel, $s #{'+'} $last, comma);
+            x: $new-sel;
+        }
+        @at-root #{$new-sel} {
+            debug: foo;
+        }
+    }
+}
+<===> output.css
+.parent .brother, .parent .sister, .parent .cousin {
+  color: green;
+  sel: .parent .brother, .parent .sister, .parent .cousin;
+  x: .parent .brother + .brother;
+  x: .parent .brother + .brother, .parent .sister + .sister;
+  x: .parent .brother + .brother, .parent .sister + .sister, .parent .cousin + .cousin;
+}
+.parent .brother + .brother, .parent .sister + .sister, .parent .cousin + .cousin {
+  debug: foo;
+}

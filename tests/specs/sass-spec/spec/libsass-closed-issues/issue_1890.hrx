@@ -1,0 +1,20 @@
+<===> input.scss
+.wrap {
+  @media (min-width: 480px) { 
+    display: block;
+    @at-root (without: media){ 
+      .box { 
+        display: inline-block;
+      }
+    } 
+  }
+}
+<===> output.css
+@media (min-width: 480px) {
+  .wrap {
+    display: block;
+  }
+}
+.wrap .box {
+  display: inline-block;
+}

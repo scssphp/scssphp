@@ -1,0 +1,18 @@
+<===> input.scss
+div {
+  $x : true;
+  @while $x {
+    stuff: 1;
+    more-stuff: 2;
+    even-more-stuff: 3;
+    lets-stop-now: 4;
+    $x: false;
+  }
+}
+<===> output.css
+div {
+  stuff: 1;
+  more-stuff: 2;
+  even-more-stuff: 3;
+  lets-stop-now: 4;
+}

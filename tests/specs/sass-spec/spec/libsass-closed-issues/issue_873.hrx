@@ -1,0 +1,26 @@
+<===> input.scss
+$quoted: "notification";
+$unquoted: notification;
+
+@function func($var) {
+  @return $var;
+}
+
+foo {
+  foo: func(notification);
+  foo: #{notification};
+  foo: #{$quoted};
+  foo: $quoted;
+  foo: #{$unquoted};
+  foo: $unquoted;
+}
+
+<===> output.css
+foo {
+  foo: notification;
+  foo: notification;
+  foo: notification;
+  foo: "notification";
+  foo: notification;
+  foo: notification;
+}

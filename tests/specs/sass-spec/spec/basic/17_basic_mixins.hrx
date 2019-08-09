@@ -1,0 +1,59 @@
+<===> input.scss
+@mixin foo($x, $y) {
+  hugabug: $y $x;
+}
+
+@mixin bar($a, $b: flug) {
+  flugablug: $a $b glug;
+}
+
+@mixin hux() {
+  no: parameters here;
+  div, span {
+    some: nested stuff;
+    foo, bar {
+      more: stuff so forth;
+      blah: blah;
+    }
+  }
+  /* end of hux */
+}
+
+a {
+  hey: ho;
+  @include foo(second, third);
+  @include foo($y: kwd-y, $x: kwd-x);
+  goo: boo hoo;
+  @include hux;
+  @include bar(pug);
+  @include bar(pug, mug);
+}
+
+
+$x: from a variable;
+
+div {
+  blah: blah $x blah;
+}
+<===> output.css
+a {
+  hey: ho;
+  hugabug: third second;
+  hugabug: kwd-y kwd-x;
+  goo: boo hoo;
+  no: parameters here;
+  /* end of hux */
+  flugablug: pug flug glug;
+  flugablug: pug mug glug;
+}
+a div, a span {
+  some: nested stuff;
+}
+a div foo, a div bar, a span foo, a span bar {
+  more: stuff so forth;
+  blah: blah;
+}
+
+div {
+  blah: blah from a variable blah;
+}

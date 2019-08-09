@@ -1,0 +1,35 @@
+<===> input.scss
+p {
+  color: fade-in(#f00, 0.3);
+  color: fade-in(#900, 0.8);
+  color: fade-in(#000, .6);
+  color: fade-in(#fff, .2);
+  color: fade-in(#999, .4);
+  color: fade-in(#000, .5);
+  color: fade-in(#333, +.99);
+  // test old function name
+  color: opacify(#f00, 0.3);
+  color: opacify(#900, 0.8);
+  color: opacify(#000, .6);
+  color: opacify(#fff, .2);
+  color: opacify(#999, .4);
+  color: opacify(#000, .5);
+  color: opacify(#333, +.99);
+}
+<===> output.css
+p {
+  color: red;
+  color: #990000;
+  color: black;
+  color: white;
+  color: #999999;
+  color: black;
+  color: #333333;
+  color: red;
+  color: #990000;
+  color: black;
+  color: white;
+  color: #999999;
+  color: black;
+  color: #333333;
+}

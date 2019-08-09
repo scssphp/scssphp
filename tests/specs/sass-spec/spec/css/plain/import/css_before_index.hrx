@@ -1,0 +1,13 @@
+<===> index/other.scss
+other {index: true}
+
+<===> input.scss
+@import 'other';
+
+<===> other.css
+other {index: false}
+
+<===> output.css
+other {
+  index: false;
+}

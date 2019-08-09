@@ -1,0 +1,11 @@
+<===> input.scss
+$map: (aaa: 100, bbb: 200, ccc: 300);
+
+a {
+  b: length($map);
+}
+
+<===> output.css
+a {
+  b: 3;
+}

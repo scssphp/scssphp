@@ -1,0 +1,6 @@
+<===> input.scss
+.#{"foo"}--1 { width:100%; }
+<===> output.css
+.foo--1 {
+  width: 100%;
+}

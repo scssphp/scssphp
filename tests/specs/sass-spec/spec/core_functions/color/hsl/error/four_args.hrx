@@ -1,0 +1,64 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2722
+
+<===>
+================================================================================
+<===> hue/type/input.scss
+hue-type {
+  x: hsl("foo", 100%, 50%, 0.5);
+}
+
+<===> hue/type/error
+Error: $hue: "foo" is not a number.
+  ,
+2 |   x: hsl("foo", 100%, 50%, 0.5);
+  |      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> saturation/type/input.scss
+saturation-type {
+  x: hsl(0, "foo", 50%, 0.5);
+}
+
+<===> saturation/type/error
+Error: $saturation: "foo" is not a number.
+  ,
+2 |   x: hsl(0, "foo", 50%, 0.5);
+  |      ^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> lightness/type/input.scss
+lightness-type {
+  x: hsl(0, 100%, "foo", 0.5);
+}
+
+<===> lightness/type/error
+Error: $lightness: "foo" is not a number.
+  ,
+2 |   x: hsl(0, 100%, "foo", 0.5);
+  |      ^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> alpha/unit/input.scss
+.alpha-unit {
+  a: hsl(0, 0, 0, 0.5px);
+}
+
+<===> alpha/unit/error
+Error: $alpha: Expected 0.5px to have no units or "%".
+  ,
+2 |   a: hsl(0, 0, 0, 0.5px);
+  |      ^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet

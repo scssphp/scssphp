@@ -1,0 +1,11 @@
+<===> input.scss
+pre#{&} {
+  foo {
+    bar: baz;
+  }
+}
+
+<===> output.css
+pre foo {
+  bar: baz;
+}

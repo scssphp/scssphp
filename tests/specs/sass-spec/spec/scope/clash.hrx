@@ -1,0 +1,38 @@
+<===> input.scss
+$foo: 42;
+$bar: 43;
+$baz: 45;
+
+foo {
+  foo: $foo;
+  bar: $bar;
+  baz: $baz;
+
+  $bar: 4; // this is a different $bar than `$bar !global`
+
+  foo: $foo;
+  bar: $bar;
+  baz: $baz;
+
+  @if true {
+    $foo: 3; // this is a different $foo than `$foo !global`
+    $bar: 5; // this is a different $bar than `$bar !global`
+
+    foo: $foo;
+    bar: $bar;
+    baz: $baz;
+  }
+}
+
+<===> output.css
+foo {
+  foo: 42;
+  bar: 43;
+  baz: 45;
+  foo: 42;
+  bar: 4;
+  baz: 45;
+  foo: 3;
+  bar: 5;
+  baz: 45;
+}

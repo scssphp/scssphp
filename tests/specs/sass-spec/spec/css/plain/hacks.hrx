@@ -1,0 +1,23 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+@import "plain";
+
+<===> plain.css
+.hacks {
+  *x: y;
+  :x: y;
+  #x: y;
+  .x: y;
+}
+
+<===> output.css
+.hacks {
+  *x: y;
+  :x: y;
+  #x: y;
+  .x: y;
+}

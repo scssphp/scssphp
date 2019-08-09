@@ -1,0 +1,3 @@
+div::before {
+  content: #{"\""+\e600+"\""};
+}

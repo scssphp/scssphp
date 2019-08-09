@@ -1,0 +1,22 @@
+<===> input.scss
+div {
+
+  @media screen and (min-width: 37.5em) {
+    /* asd */
+  }
+
+  @media screen and (min-width: 48em) {
+    display: none;
+  }
+}
+<===> output.css
+@media screen and (min-width: 37.5em) {
+  div {
+    /* asd */
+  }
+}
+@media screen and (min-width: 48em) {
+  div {
+    display: none;
+  }
+}

@@ -1,0 +1,11 @@
+<===> input.scss
+@import url(//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic);
+html {
+  font-family: roboto, arial, helvetica, sans-serif;
+}
+
+<===> output.css
+@import url(//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic);
+html {
+  font-family: roboto, arial, helvetica, sans-serif;
+}

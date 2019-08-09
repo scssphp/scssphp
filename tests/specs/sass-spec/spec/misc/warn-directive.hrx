@@ -1,0 +1,16 @@
+<===> input.scss
+h1 { color: blue; } 
+@warn "Don't crash the ambulance, whatever you do"
+
+<===> output.css
+h1 {
+  color: blue;
+}
+
+<===> warning
+WARNING: Don't crash the ambulance, whatever you do
+         on line 2 of input.scss
+
+<===> warning-dart-sass
+WARNING: Don't crash the ambulance, whatever you do
+    input.scss 2:1  root stylesheet

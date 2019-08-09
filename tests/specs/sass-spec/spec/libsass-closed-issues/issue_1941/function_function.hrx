@@ -1,0 +1,26 @@
+<===> input.scss
+@function parent() {
+  @function nested() {
+    @return foo;
+  }
+
+  @return nested();
+}
+
+
+test {
+  foo: parent();
+}
+
+<===> error
+Error: Functions can only contain variable declarations and control directives.
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: This at-rule is not allowed here.
+  ,
+2 |   @function nested() {
+  |   ^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:3  root stylesheet

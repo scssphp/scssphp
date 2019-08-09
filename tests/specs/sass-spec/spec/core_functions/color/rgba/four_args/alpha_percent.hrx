@@ -1,0 +1,22 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2719
+
+<===> input.scss
+.alpha-percent {
+  negative: rgba(0, 0, 0, -10%);
+  min: rgba(0, 0, 0, 0%);
+  positive: rgba(0, 0, 0, 45.6%);
+  max: rgba(0, 0, 0, 100%);
+  above-max: rgba(0, 0, 0, 250%);
+}
+
+<===> output.css
+.alpha-percent {
+  negative: rgba(0, 0, 0, 0);
+  min: rgba(0, 0, 0, 0);
+  positive: rgba(0, 0, 0, 0.456);
+  max: black;
+  above-max: black;
+}

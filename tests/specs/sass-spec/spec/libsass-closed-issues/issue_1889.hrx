@@ -1,0 +1,19 @@
+<===> input.scss
+@media (min-width: 640px) { 
+  /* comment */
+}
+
+div {
+  @media (min-width: 320px) { 
+    /* comment */
+  }
+}
+<===> output.css
+@media (min-width: 640px) {
+  /* comment */
+}
+@media (min-width: 320px) {
+  div {
+    /* comment */
+  }
+}

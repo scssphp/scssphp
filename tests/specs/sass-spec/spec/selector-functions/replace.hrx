@@ -1,0 +1,16 @@
+<===> input.scss
+.simple {
+  a: selector-replace('.foo', '.foo', '.bar');
+  b: selector-replace('.foo.bar', '.bar', '.baz');
+  c: selector-replace('.foo.bar', '.bar', '.a .baz');
+  d: selector-replace('.foo.bar', '.baz.bar', '.qux');
+  e: selector-replace('.foo.bar.baz', '.foo.baz', '.qux');
+}
+<===> output.css
+.simple {
+  a: .bar;
+  b: .foo.baz;
+  c: .a .foo.baz;
+  d: .foo.bar;
+  e: .bar.qux;
+}

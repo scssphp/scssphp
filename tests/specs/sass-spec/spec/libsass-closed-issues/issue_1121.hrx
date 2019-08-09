@@ -1,0 +1,12 @@
+<===> input.scss
+$foo: "foo";
+$bar: "bar";
+$baz: "baz";
+/*
+ * <div class="foo #{$foo}" bar="#{$bar}" baz="#{$baz}">
+ */
+
+<===> output.css
+/*
+ * <div class="foo foo" bar="bar" baz="baz">
+ */

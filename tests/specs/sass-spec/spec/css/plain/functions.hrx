@@ -1,0 +1,33 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+@function defined-elsewhere() {@return 12}
+
+@import "plain";
+
+<===> plain.css
+a {
+  hsl: hsl(0, 100%, 50%);
+  hsla: hsla(0, 100%, 50%, 0.5);
+  rgb: rgb(10, 20, 30);
+  rgba: rgb(10, 20, 30, 0.5);
+  grayscale: grayscale(0.1);
+  invert: invert(0.1);
+  alpha: alpha(0.1);
+  defined-elsewhere: defined-elsewhere();
+}
+
+<===> output.css
+a {
+  hsl: hsl(0, 100%, 50%);
+  hsla: hsla(0, 100%, 50%, 0.5);
+  rgb: rgb(10, 20, 30);
+  rgba: rgb(10, 20, 30, 0.5);
+  grayscale: grayscale(0.1);
+  invert: invert(0.1);
+  alpha: alpha(0.1);
+  defined-elsewhere: defined-elsewhere();
+}

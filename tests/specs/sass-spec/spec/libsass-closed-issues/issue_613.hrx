@@ -1,0 +1,31 @@
+<===> input.scss
+$var: 1;
+
+@mixin test {
+  $var: 2;
+}
+
+@function test() {
+  $var: 3;
+  @return "dummy";
+}
+
+.selector {
+  $var: 4;
+  @include test;
+  $dummy: test();
+  content: $var;
+}
+
+.other-selector {
+    content: $var;
+}
+
+<===> output.css
+.selector {
+  content: 4;
+}
+
+.other-selector {
+  content: 1;
+}

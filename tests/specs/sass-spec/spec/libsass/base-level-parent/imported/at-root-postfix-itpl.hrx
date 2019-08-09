@@ -1,0 +1,15 @@
+<===> include.scss
+@at-root {
+  #{&}post {
+    foo {
+      bar: baz;
+    }
+  }
+}
+
+<===> input.scss
+@import "include.scss";
+<===> output.css
+post foo {
+  bar: baz;
+}

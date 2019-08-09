@@ -1,0 +1,27 @@
+<===> input.scss
+foo {
+  bar: baz;
+}
+
+@mixin link() {
+  a:not(.btn) {
+    color: red;
+  }
+}
+
+foo {
+  @include link;
+  @extend .btn;
+  @include link;
+}
+<===> output.css
+foo {
+  bar: baz;
+}
+
+foo a:not(.btn):not(foo) {
+  color: red;
+}
+foo a:not(.btn):not(foo) {
+  color: red;
+}

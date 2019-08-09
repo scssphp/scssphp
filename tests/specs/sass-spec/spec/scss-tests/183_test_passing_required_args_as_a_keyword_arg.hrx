@@ -1,0 +1,13 @@
+<===> input.scss
+@mixin a-mixin($required, $arg1: default-val1, $arg2: default-val2) {
+  required: $required;
+  arg1: $arg1;
+  arg2: $arg2; }
+.mixed { @include a-mixin($required: foo); }
+
+<===> output.css
+.mixed {
+  required: foo;
+  arg1: default-val1;
+  arg2: default-val2;
+}

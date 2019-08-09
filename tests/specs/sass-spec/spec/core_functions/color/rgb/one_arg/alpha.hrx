@@ -1,0 +1,42 @@
+<===> input.scss
+basic {
+  transparent: rgb(0 255 127 / 0);
+  opaque: rgb(190 173 237 / 1);
+  partial: rgb(18 52 86 / 0.5);
+  percent: rgb(18 52 86 / 50%);
+  named: rgb($channels: 0 255 127 / 0.3);
+
+  // Extra parens shouldn't cause the slash to be forced into division.
+  parenthesized: (rgb(0 255 127 / 0.3));
+}
+
+// Channels that are out of bounds are clamped within bounds.
+clamped {
+  red: rgb(256 0 0 / 0.5);
+  green: rgb(0 -1 0 / 0.5);
+  blue: rgb(0 0 9999 / 0.5);
+  alpha-above: rgb(0 0 0 / 1.1);
+  alpha-below: rgb(0 0 0 / -0.1);
+  alpha-above-percent: rgb(0 0 0 / 250%);
+  alpha-below-percent: rgb(0 0 0 / -10%);
+}
+
+<===> output.css
+basic {
+  transparent: rgba(0, 255, 127, 0);
+  opaque: #beaded;
+  partial: rgba(18, 52, 86, 0.5);
+  percent: rgba(18, 52, 86, 0.5);
+  named: rgba(0, 255, 127, 0.3);
+  parenthesized: rgba(0, 255, 127, 0.3);
+}
+
+clamped {
+  red: rgba(255, 0, 0, 0.5);
+  green: rgba(0, 0, 0, 0.5);
+  blue: rgba(0, 0, 255, 0.5);
+  alpha-above: black;
+  alpha-below: rgba(0, 0, 0, 0);
+  alpha-above-percent: black;
+  alpha-below-percent: rgba(0, 0, 0, 0);
+}

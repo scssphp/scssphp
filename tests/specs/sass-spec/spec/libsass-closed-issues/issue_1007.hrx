@@ -1,0 +1,13 @@
+<===> input.scss
+/* start */ foo /* foo */ baz /* bar */ {
+    /* before */ margin /* X */: /* Y */ 0 /* */; /* after */
+} /* end */
+<===> output.css
+/* start */
+foo baz {
+  /* before */
+  margin: 0;
+  /* after */
+}
+
+/* end */

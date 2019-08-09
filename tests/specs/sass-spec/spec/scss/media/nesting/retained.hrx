@@ -1,0 +1,222 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2694
+
+<===> input.scss
+// There's no way to generate the intersection of these queries. We could write
+// `not screen and (color)`, but that actually means "neither `screen` nor
+// `(color)`" rather than "not `screen` but yes `(color)`. However, because they
+// do *have* a meaningful intersection, we output them nested for browsers that
+// support nesting natively.
+//
+// The latest spec allows us to generate `not screen and not (color)` here,
+// which would work, but no browsers support it yet.
+@media not screen {
+  a {b: c}
+  @media (color) {x {y: z}}
+
+  // The "all and" prefix shouldn't change the semantics.
+  @media all and (color) {q {r: s}}
+}
+@media (color) {
+  a {b: c}
+  @media not screen {x {y: z}}
+}
+@media all and (color) {
+  a {b: c}
+  @media not screen {x {y: z}}
+}
+
+// The unification of these would be `screen and not (color)`, which isn't yet
+// supported.
+@media screen {
+  a {b: c}
+  @media not all and (color) {x {y: z}}
+}
+@media not all and (color) {
+  a {b: c}
+  @media screen {x {y: z}}
+}
+
+// `not screen and (color)` means `not (screen and (color))`, so it could still
+// overlap with just `screen` in the case of a screen media without color.
+@media not screen and (color) {
+  a {b: c}
+  @media screen {x {y: z}}
+}
+@media screen {
+  a {b: c}
+  @media not screen and (color) {x {y: z}}
+}
+
+// `not screen and (color)` and `screen and (grid)` are both true for screen
+// user agents with a grid output device and no color support.
+@media not screen and (color) {
+  a {b: c}
+  @media screen and (grid) {x {y: z}}
+}
+@media screen and (grid) {
+  a {b: c}
+  @media not screen and (color) {x {y: z}}
+}
+
+// `not screen` and `not print` allows any media type other than those.
+@media not screen {
+  a {b: c}
+  @media not print {x {y: z}}
+}
+
+// `not screen and (color)` and `not screen and (grid)` allows screen media, but
+// only if it has *neither* color nor grid support.
+@media not screen and (color) {
+  a {b: c}
+  @media not screen and (grid) {x {y: z}}
+}
+
+// If a rule has multiple queries and any of them can't be merged, none of them
+// should be. This avoids duplicating the output and ensures that all code is
+// evaluated in a unique media query context in case we ever provide access to
+// that.
+@media screen, not screen {
+  a {b: c}
+  @media (color) {x {y: z}}
+}
+
+<===> output.css
+@media not screen {
+  a {
+    b: c;
+  }
+  @media (color) {
+    x {
+      y: z;
+    }
+  }
+  @media all and (color) {
+    q {
+      r: s;
+    }
+  }
+}
+
+@media (color) {
+  a {
+    b: c;
+  }
+  @media not screen {
+    x {
+      y: z;
+    }
+  }
+}
+
+@media all and (color) {
+  a {
+    b: c;
+  }
+  @media not screen {
+    x {
+      y: z;
+    }
+  }
+}
+
+@media screen {
+  a {
+    b: c;
+  }
+  @media not all and (color) {
+    x {
+      y: z;
+    }
+  }
+}
+
+@media not all and (color) {
+  a {
+    b: c;
+  }
+  @media screen {
+    x {
+      y: z;
+    }
+  }
+}
+
+@media not screen and (color) {
+  a {
+    b: c;
+  }
+  @media screen {
+    x {
+      y: z;
+    }
+  }
+}
+
+@media screen {
+  a {
+    b: c;
+  }
+  @media not screen and (color) {
+    x {
+      y: z;
+    }
+  }
+}
+
+@media not screen and (color) {
+  a {
+    b: c;
+  }
+  @media screen and (grid) {
+    x {
+      y: z;
+    }
+  }
+}
+
+@media screen and (grid) {
+  a {
+    b: c;
+  }
+  @media not screen and (color) {
+    x {
+      y: z;
+    }
+  }
+}
+
+@media not screen {
+  a {
+    b: c;
+  }
+  @media not print {
+    x {
+      y: z;
+    }
+  }
+}
+
+@media not screen and (color) {
+  a {
+    b: c;
+  }
+  @media not screen and (grid) {
+    x {
+      y: z;
+    }
+  }
+}
+
+@media screen, not screen {
+  a {
+    b: c;
+  }
+  @media (color) {
+    x {
+      y: z;
+    }
+  }
+}

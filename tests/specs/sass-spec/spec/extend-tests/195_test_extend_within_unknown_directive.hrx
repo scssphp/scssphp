@@ -1,0 +1,12 @@
+<===> input.scss
+@flooblehoof {
+.foo {a: b}
+.bar {@extend .foo}
+}
+
+<===> output.css
+@flooblehoof {
+  .foo, .bar {
+    a: b;
+  }
+}

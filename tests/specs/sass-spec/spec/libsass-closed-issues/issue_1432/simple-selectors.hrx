@@ -1,0 +1,16 @@
+<===> input.scss
+@debug(simple-selectors(null));
+
+<===> error
+Error: $selector: null is not a string for `simple-selectors'
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: $selector: null is not a valid selector: it must be a string,
+a list of strings, or a list of lists of strings.
+  ,
+1 | @debug(simple-selectors(null));
+  |        ^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:8  root stylesheet

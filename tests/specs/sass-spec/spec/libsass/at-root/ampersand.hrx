@@ -1,0 +1,21 @@
+<===> input.scss
+foo {
+  @at-root {
+    & {
+      color: blue;
+    }
+
+    &--modifier {
+      color: red;
+    }
+  }
+}
+
+<===> output.css
+foo {
+  color: blue;
+}
+
+foo--modifier {
+  color: red;
+}

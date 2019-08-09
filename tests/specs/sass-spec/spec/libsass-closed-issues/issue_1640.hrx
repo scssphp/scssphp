@@ -1,0 +1,19 @@
+<===> input.scss
+@mixin foo() {
+    @if false {
+      a { b: c }
+    } @else {
+      @content;
+    }
+}
+
+@include foo() {
+  .foo {
+    bar: baz;
+  }
+}
+
+<===> output.css
+.foo {
+  bar: baz;
+}

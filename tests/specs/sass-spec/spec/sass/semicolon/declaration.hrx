@@ -1,0 +1,16 @@
+<===> input.sass
+a
+  b: c;
+
+<===> error
+Error: Invalid CSS after "c": expected expression (e.g. 1px, bold), was ";"
+        on line 2 of input.sass
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: semicolons aren't allowed in the indented syntax.
+  ,
+2 |   b: c;
+  |       ^
+  '
+  input.sass 2:7  root stylesheet

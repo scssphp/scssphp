@@ -1,0 +1,18 @@
+<===> input.scss
+$domain: "sass-lang.com";
+@foo url(https://#{$domain}/),
+     #{domain($domain)},
+     "foo#{'ba' + 'r'}baz",
+     foo#{'ba' + 'r'}baz {
+  .foo {a: b}
+}
+
+<===> output.css
+@foo url(https://sass-lang.com/),
+     domain("sass-lang.com"),
+     "foobarbaz",
+     foobarbaz {
+  .foo {
+    a: b;
+  }
+}

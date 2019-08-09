@@ -1,0 +1,154 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2722
+
+<===>
+================================================================================
+<===> list/empty/input.scss
+empty {
+  x: rgb(());
+}
+
+<===> list/empty/error
+Error: Missing element $red.
+  ,
+2 |   x: rgb(());
+  |      ^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> list/one_element/input.scss
+one-element {
+  x: rgb(1);
+}
+
+<===> list/one_element/error
+Error: Missing element $green.
+  ,
+2 |   x: rgb(1);
+  |      ^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> list/two_elements/input.scss
+two-elements {
+  x: rgb(1 2);
+}
+
+<===> list/two_elements/error
+Error: Missing element $blue.
+  ,
+2 |   x: rgb(1 2);
+  |      ^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> list/four_elements/input.scss
+four-elements {
+  x: rgb(1 2 3 0.4);
+}
+
+<===> list/four_elements/error
+Error: Only 3 elements allowed, but 4 were passed.
+  ,
+2 |   x: rgb(1 2 3 0.4);
+  |      ^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> list/comma_separated/input.scss
+comma-separated {
+  x: rgb((1, 2, 3));
+}
+
+<===> list/comma_separated/error
+Error: $channels must be a space-separated list.
+  ,
+2 |   x: rgb((1, 2, 3));
+  |      ^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> list/bracketed/input.scss
+bracketed {
+  x: rgb([1 2 3]);
+}
+
+<===> list/bracketed/error
+Error: $channels must be an unbracketed list.
+  ,
+2 |   x: rgb([1 2 3]);
+  |      ^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> type/red/input.scss
+red-type {
+  x: rgb("foo" 2 3);
+}
+
+<===> type/red/error
+Error: $red: "foo" is not a number.
+  ,
+2 |   x: rgb("foo" 2 3);
+  |      ^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> type/green/input.scss
+green-type {
+  x: rgb(1 "foo" 3);
+}
+
+<===> type/green/error
+Error: $green: "foo" is not a number.
+  ,
+2 |   x: rgb(1 "foo" 3);
+  |      ^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> type/blue/input.scss
+blue-type {
+  x: rgb(1 2 "foo");
+}
+
+<===> type/blue/error
+Error: $blue: "foo" is not a number.
+  ,
+2 |   x: rgb(1 2 "foo");
+  |      ^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> quoted_var_slash/input.scss
+quoted-var-slash {
+  x: rgb(1 2 "var(--foo) / 0.4");
+}
+
+<===> quoted_var_slash/error
+Error: $blue: "var(--foo) / 0.4" is not a number.
+  ,
+2 |   x: rgb(1 2 "var(--foo) / 0.4");
+  |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet

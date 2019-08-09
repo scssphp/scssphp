@@ -1,0 +1,20 @@
+<===> input.scss
+a {
+  b: {
+    @warn "warn";
+    foo: bar;
+  }
+}
+<===> error
+Error: Illegal nesting: Only properties may be nested beneath properties.
+        on line 3 of input.scss
+  Use --trace for backtrace.
+
+<===> output-dart-sass.css
+a {
+  b-foo: bar;
+}
+
+<===> warning-dart-sass
+WARNING: warn
+    input.scss 3:5  root stylesheet

@@ -1,0 +1,11 @@
+<===> input.scss
+$width: 10;
+
+.test {
+  margin-left: - 54 * $width - 1;
+}
+
+<===> output.css
+.test {
+  margin-left: -541;
+}

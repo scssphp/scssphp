@@ -1,0 +1,17 @@
+<===> input.scss
+%foo {
+	@media screen and (min-width: 300px) {
+		max-width: 80%;
+	}
+}
+
+bar {
+	@extend %foo;
+}
+
+<===> output.css
+@media screen and (min-width: 300px) {
+  bar {
+    max-width: 80%;
+  }
+}

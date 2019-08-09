@@ -1,0 +1,14 @@
+<===> input.scss
+@media screen {
+  $variable: dynamic;
+  .foo-#{$variable} {a: b}
+  .bar {
+    @extend .foo-dynamic
+  }
+}
+<===> output.css
+@media screen {
+  .foo-dynamic, .bar {
+    a: b;
+  }
+}

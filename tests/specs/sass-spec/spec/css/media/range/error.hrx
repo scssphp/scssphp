@@ -1,0 +1,201 @@
+<===> invalid_binary_operator/README.md
+The SassScript binary operators `=`, `>`, `>=`, `<`, and `<=` aren't allowed in
+media query expressions, since they can create syntactic ambiguities.
+
+<===>
+================================================================================
+<===> invalid_binary_operator/before_colon/input.scss
+// Even though this isn't *technically* ambiguous, disallowing it makes parsing
+// much easier because you don't have to disambiguate what the first `<` (or
+// other comparison operator) is.
+@media (1 < 2: 10px) {a {b: c}}
+
+<===> invalid_binary_operator/before_colon/error
+Error: expected ")".
+  ,
+4 | @media (1 < 2: 10px) {a {b: c}}
+  |              ^
+  '
+  input.scss 4:14  root stylesheet
+
+<===>
+================================================================================
+<===> invalid_binary_operator/in_subexpression/input.scss
+// Even though `1 < 2` here isn't syntactically at the top-level, because `<`
+// binds more tightly than `or`, it's disallowed because it's not in parentheses
+// or square brackets.
+@media (1 < 2 or false = width) {a {b: c}}
+
+<===> invalid_binary_operator/in_subexpression/error
+Error: expected ")".
+  ,
+4 | @media (1 < 2 or false = width) {a {b: c}}
+  |                        ^
+  '
+  input.scss 4:24  root stylesheet
+
+<===>
+================================================================================
+<===> invalid_binary_operator/lt/input.scss
+@media (1 < width < 2 < 3) {a {b: c}}
+
+<===> invalid_binary_operator/lt/error
+Error: expected ")".
+  ,
+1 | @media (1 < width < 2 < 3) {a {b: c}}
+  |                       ^
+  '
+  input.scss 1:23  root stylesheet
+
+<===>
+================================================================================
+<===> invalid_binary_operator/lte/input.scss
+@media (1 <= width <= 2 <= 3) {a {b: c}}
+
+<===> invalid_binary_operator/lte/error
+Error: expected ")".
+  ,
+1 | @media (1 <= width <= 2 <= 3) {a {b: c}}
+  |                         ^
+  '
+  input.scss 1:25  root stylesheet
+
+<===>
+================================================================================
+<===> invalid_binary_operator/eq/input.scss
+@media (1 = 2 = width) {a {b: c}}
+
+<===> invalid_binary_operator/eq/error
+Error: expected ")".
+  ,
+1 | @media (1 = 2 = width) {a {b: c}}
+  |               ^
+  '
+  input.scss 1:15  root stylesheet
+
+<===>
+================================================================================
+<===> invalid_binary_operator/gte/input.scss
+@media (3 >= width >= 2 >= 1) {a {b: c}}
+
+<===> invalid_binary_operator/gte/error
+Error: expected ")".
+  ,
+1 | @media (3 >= width >= 2 >= 1) {a {b: c}}
+  |                         ^
+  '
+  input.scss 1:25  root stylesheet
+
+<===>
+================================================================================
+<===> invalid_binary_operator/gt/input.scss
+@media (3 > width > 2 > 1) {a {b: c}}
+
+<===> invalid_binary_operator/gt/error
+Error: expected ")".
+  ,
+1 | @media (3 > width > 2 > 1) {a {b: c}}
+  |                       ^
+  '
+  input.scss 1:23  root stylesheet
+
+<===>
+================================================================================
+<===> invalid_comparison/README.md
+The `<=` and `>=` comparison operators may not contain spaces.
+
+<===>
+================================================================================
+<===> invalid_comparison/lte/input.scss
+@media (width < = 100px) {a {b: c}}
+
+<===> invalid_comparison/lte/error
+Error: Expected expression.
+  ,
+1 | @media (width < = 100px) {a {b: c}}
+  |                 ^
+  '
+  input.scss 1:17  root stylesheet
+
+<===>
+================================================================================
+<===> invalid_comparison/gte/input.scss
+@media (width > = 100px) {a {b: c}}
+
+<===> invalid_comparison/gte/error
+Error: Expected expression.
+  ,
+1 | @media (width > = 100px) {a {b: c}}
+  |                 ^
+  '
+  input.scss 1:17  root stylesheet
+
+<===>
+================================================================================
+<===> invalid_comparison/range_gte/input.scss
+@media (10px > width > = 1px) {a {b: c}}
+
+<===> invalid_comparison/range_gte/error
+Error: Expected expression.
+  ,
+1 | @media (10px > width > = 1px) {a {b: c}}
+  |                        ^
+  '
+  input.scss 1:24  root stylesheet
+
+<===>
+================================================================================
+<===> mismatched_range/README.md
+A range-format media feature must have the first operator match the second.
+
+<===>
+================================================================================
+<===> mismatched_range/gt_lt/input.scss
+@media (1px > width < 2px) {a {b: c}}
+
+<===> mismatched_range/gt_lt/error
+Error: expected ")".
+  ,
+1 | @media (1px > width < 2px) {a {b: c}}
+  |                     ^
+  '
+  input.scss 1:21  root stylesheet
+
+<===>
+================================================================================
+<===> mismatched_range/gte_lte/input.scss
+@media (1px >= width <= 2px) {a {b: c}}
+
+<===> mismatched_range/gte_lte/error
+Error: expected ")".
+  ,
+1 | @media (1px >= width <= 2px) {a {b: c}}
+  |                      ^
+  '
+  input.scss 1:22  root stylesheet
+
+<===>
+================================================================================
+<===> mismatched_range/lt_gt/input.scss
+@media (1px < width > 2px) {a {b: c}}
+
+<===> mismatched_range/lt_gt/error
+Error: expected ")".
+  ,
+1 | @media (1px < width > 2px) {a {b: c}}
+  |                     ^
+  '
+  input.scss 1:21  root stylesheet
+
+<===>
+================================================================================
+<===> mismatched_range/lte_gte/input.scss
+@media (1px <= width >= 2px) {a {b: c}}
+
+<===> mismatched_range/lte_gte/error
+Error: expected ")".
+  ,
+1 | @media (1px <= width >= 2px) {a {b: c}}
+  |                      ^
+  '
+  input.scss 1:22  root stylesheet

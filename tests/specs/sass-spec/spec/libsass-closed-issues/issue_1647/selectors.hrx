@@ -1,0 +1,34 @@
+<===> input.scss
+$map: (foo: 'b', bar: c);
+$list: ('d', e);
+
+a {
+  #{map-get($map, foo)} & {
+      foo: bar;
+  }
+  #{map-get($map, bar)} & {
+      foo: bar;
+  }
+
+  #{nth($list, 1)} & {
+      foo: bar;
+  }
+
+  #{nth($list, 2)} & {
+      foo: bar;
+  }
+}
+
+<===> output.css
+b a {
+  foo: bar;
+}
+c a {
+  foo: bar;
+}
+d a {
+  foo: bar;
+}
+e a {
+  foo: bar;
+}

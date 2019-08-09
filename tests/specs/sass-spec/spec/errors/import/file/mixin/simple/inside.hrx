@@ -1,0 +1,23 @@
+<===> _include.scss
+<===> input.scss
+@mixin import-google-fonts() {
+  @import url("http://fonts.googleapis.com/css?family=#{$family}");
+}
+foo {
+  $family: unquote("Droid+Sans");
+  @include import-google-fonts();
+}
+<===> error
+Error: Undefined variable: "$family".
+        on line 2 of input.scss, in `import-google-fonts'
+        from line 6 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Undefined variable.
+  ,
+2 |   @import url("http://fonts.googleapis.com/css?family=#{$family}");
+  |                                                         ^^^^^^^
+  '
+  input.scss 2:57  import-google-fonts()
+  input.scss 6:3   root stylesheet

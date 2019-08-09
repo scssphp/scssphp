@@ -1,0 +1,29 @@
+<===> input.scss
+$list1: alpha beta gamma;
+$list2: one two three;
+
+$map: (alpha: one, beta: two, gamma: three);
+
+.ma-list {
+  @each $item1, $item2 in zip($list1, $list2) {
+    #{$item1}: $item2;
+  }
+}
+
+.ma-map {
+  @each $key, $value in $map {
+    #{$key}: $value;
+  }
+}
+<===> output.css
+.ma-list {
+  alpha: one;
+  beta: two;
+  gamma: three;
+}
+
+.ma-map {
+  alpha: one;
+  beta: two;
+  gamma: three;
+}

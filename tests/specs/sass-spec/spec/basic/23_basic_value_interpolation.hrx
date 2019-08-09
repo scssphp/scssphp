@@ -1,0 +1,23 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+div {
+  a: hello#{world};
+  a: hello #{world};
+  b: 12#{3};
+  b: type-of(12#{3});
+  b: #{12 + 111};
+  b: type-of(#{12 + 111});
+}
+<===> output.css
+div {
+  a: helloworld;
+  a: hello world;
+  b: 12 3;
+  b: list;
+  b: 123;
+  b: string;
+}

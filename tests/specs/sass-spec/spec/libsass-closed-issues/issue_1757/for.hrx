@@ -1,0 +1,33 @@
+<===> input.scss
+.test .nest {
+  length: length(&);
+  @for $i from 1 through length(&) {
+    $list: nth(&, $i);
+    list: $list;
+    length: length($list);
+  }
+}
+
+.test, .other {
+  length: length(&);
+  @for $i from 1 through length(&) {
+    $list: nth(&, $i);
+    list: $list;
+    length: length($list);
+  }
+}
+
+<===> output.css
+.test .nest {
+  length: 1;
+  list: .test .nest;
+  length: 2;
+}
+
+.test, .other {
+  length: 2;
+  list: .test;
+  length: 1;
+  list: .other;
+  length: 1;
+}

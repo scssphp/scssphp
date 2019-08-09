@@ -1,0 +1,6 @@
+Error: expected "{".
+  ,
+1 | foo{;öüäöüäöü
+  |              ^
+  '
+  input.scss 1:14  root stylesheet

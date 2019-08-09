@@ -1,0 +1,21 @@
+<===> input.scss
+@function map-each($map) {
+  $values: ();
+
+  @each $key, $value in $map {
+    $values: append($values, $value);
+  }
+
+  @return $values;
+}
+
+$map: (foo: bar);
+
+.test {
+  -map-test: map-each($map);
+}
+
+<===> output.css
+.test {
+  -map-test: bar;
+}

@@ -1,0 +1,43 @@
+<===> input.scss
+@function foo($this, $my) {
+  @return (this: $this, my: $my);
+}
+
+a {
+  $map: foo((this: is, my: map)...);
+  @each $k, $v in $map {
+    #{$k}: $v;
+  }
+}
+
+b {
+  $map: call("foo", (this: is, my: map)...);
+  @each $k, $v in $map {
+    #{$k}: $v;
+  }
+}
+
+<===> output.css
+a {
+  this: is;
+  my: map;
+}
+
+b {
+  this: is;
+  my: map;
+}
+
+<===> warning
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(foo)) instead.
+
+<===> warning-dart-sass
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("foo")) instead.
+
+   ,
+13 |   $map: call("foo", (this: is, my: map)...);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   '
+    input.scss 13:9  root stylesheet

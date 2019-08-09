@@ -1,0 +1,61 @@
+<===> input.scss
+.result {
+  output: (0dpi + 1dpi);
+  output: (4.2dpi / 1dpi);
+  output: (4.2dpi * 1dpi / 1dpi);
+  output: (0dpi + 1dpcm);
+  output: (4.2dpi / 1dpcm);
+  output: (4.2dpi * 1dpcm / 1dpi);
+  output: (0dpi + 1dppx);
+  output: (4.2dpi / 1dppx);
+  output: (4.2dpi * 1dppx / 1dpi);
+  output: (0dpcm + 1dpi);
+  output: (4.2dpcm / 1dpi);
+  output: (4.2dpcm * 1dpi / 1dpcm);
+  output: (0dpcm + 1dpcm);
+  output: (4.2dpcm / 1dpcm);
+  output: (4.2dpcm * 1dpcm / 1dpcm);
+  output: (0dpcm + 1dppx);
+  output: (4.2dpcm / 1dppx);
+  output: (4.2dpcm * 1dppx / 1dpcm);
+  output: (0dppx + 1dpi);
+  output: (4.2dppx / 1dpi);
+  output: (4.2dppx * 1dpi / 1dppx);
+  output: (0dppx + 1dpcm);
+  output: (4.2dppx / 1dpcm);
+  output: (4.2dppx * 1dpcm / 1dppx);
+  output: (0dppx + 1dppx);
+  output: (4.2dppx / 1dppx);
+  output: (4.2dppx * 1dppx / 1dppx);
+}
+
+<===> output.css
+.result {
+  output: 1dpi;
+  output: 4.2;
+  output: 4.2dpi;
+  output: 2.54dpi;
+  output: 1.6535433071;
+  output: 4.2dpcm;
+  output: 96dpi;
+  output: 0.04375;
+  output: 4.2dppx;
+  output: 0.3937007874dpcm;
+  output: 10.668;
+  output: 4.2dpi;
+  output: 1dpcm;
+  output: 4.2;
+  output: 4.2dpcm;
+  output: 37.7952755906dpcm;
+  output: 0.111125;
+  output: 4.2dppx;
+  output: 0.0104166667dppx;
+  output: 403.2;
+  output: 4.2dpi;
+  output: 0.0264583333dppx;
+  output: 158.7401574803;
+  output: 4.2dpcm;
+  output: 1dppx;
+  output: 4.2;
+  output: 4.2dppx;
+}

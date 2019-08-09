@@ -1,0 +1,22 @@
+<===> input.scss
+.after-hyphen {
+  // We want to treat interpolation as though it's a valid identifier character,
+  // which means that if it comes after a hyphen or double-hyphen it should be
+  // treated as part of an interpolated identifier that includes that hyphen.
+  standalone-single: -#{foo};
+  standalone-double: --#{foo};
+
+  // It also means that we shouldn't treat the hyphen as a subtraction
+  // operation.
+  adjacent-single: #{foo} -#{bar};
+  adjacent-double: #{foo} --#{bar};
+}
+
+<===> output.css
+.after-hyphen {
+  standalone-single: -foo;
+  standalone-double: --foo;
+
+  adjacent-single: foo -bar;
+  adjacent-double: foo --bar;
+}

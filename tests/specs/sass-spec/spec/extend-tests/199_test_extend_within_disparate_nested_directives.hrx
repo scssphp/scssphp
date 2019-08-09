@@ -1,0 +1,15 @@
+<===> input.scss
+@media screen {@flooblehoof {.foo {a: b}}}
+@media screen {@flooblehoof {.bar {@extend .foo}}}
+
+<===> output.css
+@media screen {
+  @flooblehoof {
+    .foo, .bar {
+      a: b;
+    }
+  }
+}
+@media screen {
+  @flooblehoof {}
+}

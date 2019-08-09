@@ -1,0 +1,36 @@
+<===> input.scss
+$color: "black";
+$color: red;
+$background: "blue";
+
+a {
+  color: $color;
+  background: $background;
+}
+
+$y: before;
+
+$x: 1 2 $y;
+
+foo {
+  a: $x;
+}
+
+$y: after;
+
+foo {
+  a: $x;
+}
+<===> output.css
+a {
+  color: red;
+  background: "blue";
+}
+
+foo {
+  a: 1 2 before;
+}
+
+foo {
+  a: 1 2 before;
+}

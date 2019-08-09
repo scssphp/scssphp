@@ -1,0 +1,14 @@
+<===> input.scss
+p {
+  color: scale-color(hsl(120, 70%, 80%), $lightness: 50%);
+  color: scale-color(hsla(120, 70%, 80%, 0.3), $alpha: 35%);
+  color: scale-color(rgb(200, 150%, 170%), $green: -40%, $blue: 70%);
+  color: scale-color(hsl(200, 70%, 80%), $saturation: -90%, $alpha: -30%);
+}
+<===> output.css
+p {
+  color: #d4f7d4;
+  color: rgba(168, 240, 168, 0.545);
+  color: #c899ff;
+  color: rgba(200, 205, 208, 0.7);
+}

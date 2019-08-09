@@ -1,0 +1,22 @@
+<===> input.scss
+.range {
+  one-digit-each: U+1-B;
+  four-digit-each: U+1A2B-F9E8;
+  six-digit-each: U+1A2B3C-10FFFF;
+  one-then-six: U+1-000007;
+  six-then-one: U+000001-7;
+
+  // Ruby and Dart Sass will allow ranges with values above the maximum allowed
+  // code point, and ranges whose start values are greater than their end
+  // values. These produce invalid CSS, though, and as such are not necessary
+  // for all implementations to support.
+}
+
+<===> output.css
+.range {
+  one-digit-each: U+1-B;
+  four-digit-each: U+1A2B-F9E8;
+  six-digit-each: U+1A2B3C-10FFFF;
+  one-then-six: U+1-000007;
+  six-then-one: U+000001-7;
+}

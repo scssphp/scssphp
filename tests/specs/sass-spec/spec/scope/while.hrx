@@ -1,0 +1,25 @@
+<===> input.scss
+$foo: 42;
+
+.foo {
+  content: $foo;
+}
+
+$condition: 1337;
+@while $condition > 0 {
+  $foo: $condition !global;
+  $condition: 0;
+}
+
+.bar {
+  content: $foo;
+}
+
+<===> output.css
+.foo {
+  content: 42;
+}
+
+.bar {
+  content: 1337;
+}

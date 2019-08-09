@@ -1,0 +1,13 @@
+<===> input.scss
+@fblthp {
+  .foo {
+    @at-root .bar {a: b}
+  }
+}
+
+<===> output.css
+@fblthp {
+  .bar {
+    a: b;
+  }
+}

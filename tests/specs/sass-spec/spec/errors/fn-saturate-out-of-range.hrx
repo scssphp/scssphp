@@ -1,0 +1,23 @@
+<===> input.scss
+foo {
+  bar: saturate(red, 125);
+}
+<===> error
+Error: Amount 125 must be between 0% and 100% for `saturate'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Expected 125 to be within 0 and 100.
+  ,
+2 |   bar: saturate(red, 125);
+  |        ^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:8  root stylesheet
+
+<===> error-libsass
+Error: argument `$amount` of `saturate($color, $amount: false)` must be between -0 and 100
+        on line 2:8 of input.scss, in function `saturate`
+        from line 2:8 of input.scss
+>>   bar: saturate(red, 125);
+   -------^

@@ -1,0 +1,24 @@
+<===> input.scss
+@media screen {
+    a {
+        color: red;
+    }
+}
+
+.link {
+    @media (foo: bar) {
+        display: flex;
+    }
+}
+
+<===> output.css
+@media screen {
+  a {
+    color: red;
+  }
+}
+@media (foo: bar) {
+  .link {
+    display: flex;
+  }
+}

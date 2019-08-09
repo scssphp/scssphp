@@ -1,0 +1,11 @@
+<===> input.scss
+.foo {
+  @at-root & {
+    a: b;
+  }
+}
+
+<===> output.css
+.foo {
+  a: b;
+}

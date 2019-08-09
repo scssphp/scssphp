@@ -1,0 +1,18 @@
+<===> input.scss
+.code.ruby > {
+    &.ruby {
+        color: green;
+    }
+}
+<===> error
+Error: Invalid parent selector for "&.ruby": ".code.ruby >"
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Parent ".code.ruby >" is incompatible with this selector.
+  ,
+2 |     &.ruby {
+  |     ^^^^^^^
+  '
+  input.scss 2:5  root stylesheet

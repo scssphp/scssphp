@@ -1,0 +1,49 @@
+<===> input.scss
+@mixin brokenTest($color: red, $variableArguments...) {
+  $width: map-get(keywords($variableArguments), width);
+  a {
+    width: $width;
+    color: $color;
+  }
+}
+
+@mixin workingTest($variableArguments...) {
+  $width: map-get(keywords($variableArguments), width);
+  $color: map-get(keywords($variableArguments), color);
+  a {
+    width: $width;
+    color: $color;
+  }
+}
+
+@include brokenTest($width: 30px, $color: blue); // #1 fails
+@include brokenTest($color: blue, $width: 30px); // #2 fails
+@include brokenTest(blue, $width: 30px); // #3 works (!)
+@include workingTest($width: 30px, $color: blue); // #4 works
+@include workingTest($color: blue, $width: 30px); // #5 works
+
+<===> output.css
+a {
+  width: 30px;
+  color: blue;
+}
+
+a {
+  width: 30px;
+  color: blue;
+}
+
+a {
+  width: 30px;
+  color: blue;
+}
+
+a {
+  width: 30px;
+  color: blue;
+}
+
+a {
+  width: 30px;
+  color: blue;
+}

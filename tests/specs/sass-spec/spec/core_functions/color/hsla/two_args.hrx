@@ -1,0 +1,43 @@
+<===> input.scss
+opaque-to {
+  opaque: hsla(#123, 1);
+  partial: hsla(#123, 0.5);
+  transparent: hsla(#123, 0);
+}
+
+partial-to {
+  $color: hsla(0, 0, 255, 0.3);
+  opaque: hsla($color, 1);
+  partial: hsla($color, 0.5);
+  transparent: hsla($color, 0);
+}
+
+transparent-to {
+  opaque: hsla(transparent, 1);
+  partial: hsla(transparent, 0.5);
+  transparent: hsla(transparent, 0);
+}
+
+clamped {
+  opaque: hsla(#123, 1.1);
+  transparent: hsla(#123, -0.1);
+}
+
+named {
+  x: hsla($color: #123, $alpha: 0.5);
+}
+
+<===> error
+Error: Missing argument $lightness.
+  ,
+2 |   opaque: hsla(#123, 1);
+  |           ^^^^^^^^^^^^^
+  '
+  input.scss 2:11  root stylesheet
+
+<===> error-libsass
+Error: Function hsla is missing argument $lightness.
+        on line 2 of /sass/spec/core_functions/color/hsla/with_color/input.scss
+>>   opaque: hsla(#123, 1);
+
+   ----------^

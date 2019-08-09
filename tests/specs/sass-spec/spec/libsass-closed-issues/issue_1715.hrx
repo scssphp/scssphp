@@ -1,0 +1,16 @@
+<===> input.scss
+div {
+  color: red(blue, purple);
+}
+<===> error
+Error: wrong number of arguments (2 for 1) for `red'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Only 1 argument allowed, but 2 were passed.
+  ,
+2 |   color: red(blue, purple);
+  |          ^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:10  root stylesheet

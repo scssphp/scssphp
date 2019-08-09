@@ -1,0 +1,8 @@
+<===> input.scss
+.foo > .bar .baz {a: b}
+.foo > .bar .bang {@extend .baz}
+
+<===> output.css
+.foo > .bar .baz, .foo > .bar .bang {
+  a: b;
+}

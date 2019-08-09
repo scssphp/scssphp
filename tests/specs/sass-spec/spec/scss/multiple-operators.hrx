@@ -1,0 +1,14 @@
+<===> input.scss
+$x: 2;
+$y: 1;
+
+@function getResult() { @return true; }
+
+.test {
+    a: $x > $y == getResult();
+}
+
+<===> output.css
+.test {
+  a: true;
+}

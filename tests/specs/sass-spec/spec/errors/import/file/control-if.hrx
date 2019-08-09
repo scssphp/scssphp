@@ -1,0 +1,18 @@
+<===> _include.scss
+<===> input.scss
+@if (true) {
+  @import '_include';
+}
+
+<===> error
+Error: Import directives may not be used within control directives or mixins.
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: This at-rule is not allowed here.
+  ,
+2 |   @import '_include';
+  |   ^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:3  root stylesheet

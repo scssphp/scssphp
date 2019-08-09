@@ -1,0 +1,20 @@
+@charset "UTF-8";
+#foo.ºr {
+  color: red;
+}
+
+#foo.b\a r {
+  color: red;
+}
+
+#foo\.bar {
+  color: red;
+}
+
+#fooºr {
+  color: red;
+}
+
+#foo.bar {
+  color: red;
+}

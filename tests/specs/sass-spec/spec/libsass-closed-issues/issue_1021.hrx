@@ -1,0 +1,8 @@
+<===> input.scss
+div {
+    top: 10px - 2 * 5px /* arrow size */;
+}
+<===> output.css
+div {
+  top: 0px;
+}

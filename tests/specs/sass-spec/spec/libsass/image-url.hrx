@@ -1,0 +1,10 @@
+<===> input.scss
+div {
+  blah: image-url("hello.png", false);
+  blah: image-url("hello.png", true);
+}
+<===> output.css
+div {
+  blah: image-url("hello.png", false);
+  blah: image-url("hello.png", true);
+}

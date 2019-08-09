@@ -1,0 +1,20 @@
+<===> input.scss
+$map1: (
+   red: 'bar',
+  'red': 'foo',
+);
+
+$map2: (
+   red: 'bar',
+  'red': #{red},
+);
+
+.foo {
+  content: inspect($map1);
+  content: inspect($map2);
+}
+<===> output.css
+.foo {
+  content: (red: "bar", "red": "foo");
+  content: (red: "bar", "red": red);
+}

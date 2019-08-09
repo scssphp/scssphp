@@ -1,0 +1,8 @@
+<===> input.scss
+%-a :not([a=b]).baz {a: b}
+:not([a = b]) {@extend .baz} -a {@extend %-a}
+
+<===> output.css
+-a :not([a=b]) {
+  a: b;
+}

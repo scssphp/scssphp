@@ -1,0 +1,34 @@
+<===> input.scss
+$color: red;
+$position: 50%;
+$x: 0;
+
+@mixin foo() {
+  image: url(foo.png);
+}
+
+div {
+  background: {
+    something: {
+      color: green;
+    }
+    @if (type-of($color) == "color") {
+      color: $color;
+    }
+    @if (type-of($position) == "number") {
+      position: $position;
+      @include foo();
+    }
+    groo: foo;
+  }
+  width: $x;
+}
+<===> output.css
+div {
+  background-something-color: green;
+  background-color: red;
+  background-position: 50%;
+  background-image: url(foo.png);
+  background-groo: foo;
+  width: 0;
+}

@@ -1,0 +1,19 @@
+<===> input.scss
+.foo {
+  yellow: yellow;
+  red: red;
+  blue: blue;
+  white: white;
+  black: black;
+  eval: if(red, yellow, null);
+}
+
+<===> output.css
+.foo {
+  yellow: yellow;
+  red: red;
+  blue: blue;
+  white: white;
+  black: black;
+  eval: yellow;
+}

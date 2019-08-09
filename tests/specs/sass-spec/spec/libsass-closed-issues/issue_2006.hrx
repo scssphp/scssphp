@@ -1,0 +1,17 @@
+<===> input.scss
+@mixin main() {
+  bar {
+    baz: 1;
+  }
+}
+
+foo {
+  @at-root {
+    @include main();
+  }
+}
+
+<===> output.css
+bar {
+  baz: 1;
+}

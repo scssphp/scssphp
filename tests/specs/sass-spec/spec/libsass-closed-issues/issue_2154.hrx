@@ -1,0 +1,21 @@
+<===> input.scss
+@media (min-width: 1px) {
+  .first {
+    font-weight: 100;
+
+    @media (min-width: 2px) {}
+  }
+  .second {
+    font-weight: 200;
+  }
+}
+
+<===> output.css
+@media (min-width: 1px) {
+  .first {
+    font-weight: 100;
+  }
+  .second {
+    font-weight: 200;
+  }
+}

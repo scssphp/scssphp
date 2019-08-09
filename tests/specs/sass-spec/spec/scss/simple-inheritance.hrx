@@ -1,0 +1,170 @@
+<===> input.scss
+earth {
+  mammal, bird {
+    blood: warm;
+  }
+}
+
+earth {
+  mammal {
+    produces-milk: true;
+  }
+}
+
+@mixin mammal-says($message) {
+  @extend mammal;
+  says: $message;
+}
+
+dog {
+  @include mammal-says("Woof!");
+}
+
+cat {
+  @include mammal-says("Meow.");
+}
+
+horse, naysayer {
+  @include mammal-says("Nay.");
+}
+
+[hey] {
+  a: b;
+}
+
+ho {
+  @extend [hey];
+  c: d;
+}
+
+fancy outer space vehicle {
+  insides: advanced;
+}
+
+new american mars rover {
+  wheels: big;
+  @extend vehicle;
+}
+
+foo {
+  something: whatever;
+}
+
+a b c {
+  blah: blah;
+  @extend foo;
+}
+
+d e f {
+  blah: blah;
+}
+
+g {
+  @extend f;
+  bloo: bloo;
+}
+<===> output.css
+earth mammal, earth dog, earth cat, earth horse, earth naysayer, earth bird {
+  blood: warm;
+}
+
+earth mammal, earth dog, earth cat, earth horse, earth naysayer {
+  produces-milk: true;
+}
+
+dog {
+  says: "Woof!";
+}
+
+cat {
+  says: "Meow.";
+}
+
+horse, naysayer {
+  says: "Nay.";
+}
+
+[hey], ho {
+  a: b;
+}
+
+ho {
+  c: d;
+}
+
+fancy outer space vehicle, fancy outer space new american mars rover, new american mars fancy outer space rover {
+  insides: advanced;
+}
+
+new american mars rover {
+  wheels: big;
+}
+
+foo, a b c {
+  something: whatever;
+}
+
+a b c {
+  blah: blah;
+}
+
+d e f, d e g {
+  blah: blah;
+}
+
+g {
+  bloo: bloo;
+}
+
+<===> output-dart-sass.css
+earth mammal, earth horse, earth naysayer, earth cat, earth dog, earth bird {
+  blood: warm;
+}
+
+earth mammal, earth horse, earth naysayer, earth cat, earth dog {
+  produces-milk: true;
+}
+
+dog {
+  says: "Woof!";
+}
+
+cat {
+  says: "Meow.";
+}
+
+horse, naysayer {
+  says: "Nay.";
+}
+
+[hey], ho {
+  a: b;
+}
+
+ho {
+  c: d;
+}
+
+fancy outer space vehicle, fancy outer space new american mars rover, new american mars fancy outer space rover {
+  insides: advanced;
+}
+
+new american mars rover {
+  wheels: big;
+}
+
+foo, a b c {
+  something: whatever;
+}
+
+a b c {
+  blah: blah;
+}
+
+d e f, d e g {
+  blah: blah;
+}
+
+g {
+  bloo: bloo;
+}

@@ -1,0 +1,12 @@
+<===> input.scss
+$query: "(feature1: val)";
+@supports (#{$query}) {
+  foo { a: b }
+}
+
+<===> output.css
+@supports (feature1: val) {
+  foo {
+    a: b;
+  }
+}

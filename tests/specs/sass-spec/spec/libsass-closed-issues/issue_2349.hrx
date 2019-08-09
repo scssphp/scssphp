@@ -1,0 +1,12 @@
+<===> input.scss
+$path1: assets/images; // no errors thrown
+$path2: /images;       // errors thrown
+.test {
+  background: url(#{$path1}/image.png);
+  background: url(#{$path2}/image.png);
+}
+<===> output.css
+.test {
+  background: url(assets/images/image.png);
+  background: url(/images/image.png);
+}

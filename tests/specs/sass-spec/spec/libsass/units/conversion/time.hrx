@@ -1,0 +1,31 @@
+<===> input.scss
+.result {
+  output: (0s + 1s);
+  output: (4.2s / 1s);
+  output: (4.2s * 1s / 1s);
+  output: (0s + 1ms);
+  output: (4.2s / 1ms);
+  output: (4.2s * 1ms / 1s);
+  output: (0ms + 1s);
+  output: (4.2ms / 1s);
+  output: (4.2ms * 1s / 1ms);
+  output: (0ms + 1ms);
+  output: (4.2ms / 1ms);
+  output: (4.2ms * 1ms / 1ms);
+}
+
+<===> output.css
+.result {
+  output: 1s;
+  output: 4.2;
+  output: 4.2s;
+  output: 0.001s;
+  output: 4200;
+  output: 4.2ms;
+  output: 1000ms;
+  output: 0.0042;
+  output: 4.2s;
+  output: 1ms;
+  output: 4.2;
+  output: 4.2ms;
+}

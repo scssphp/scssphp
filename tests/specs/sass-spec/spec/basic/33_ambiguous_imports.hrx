@@ -1,0 +1,29 @@
+<===> blir/_fudge.scss
+fudge {
+  color: brown;
+}
+<===> dir/whatever
+<===> dir.scss
+dir {
+  color: blue;
+}
+
+@import "blir/fudge";
+<===> input.scss
+main {
+  color: red;
+}
+
+@import "dir";
+<===> output.css
+main {
+  color: red;
+}
+
+dir {
+  color: blue;
+}
+
+fudge {
+  color: brown;
+}

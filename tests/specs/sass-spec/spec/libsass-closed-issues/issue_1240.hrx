@@ -1,0 +1,28 @@
+<===> input.scss
+$var: 1;
+$list: 2, 3;
+$new-list: append($var, $list);
+$nested-list: $var $list;
+@debug($var);
+@debug($list);
+@debug($new-list);
+@debug($nested-list);
+div {
+ a: $var;
+ a: $list;
+ a: $new-list;
+ a: $nested-list;
+}
+<===> output.css
+div {
+  a: 1;
+  a: 2, 3;
+  a: 1 2, 3;
+  a: 1 2, 3;
+}
+
+<===> warning
+input.scss:5 DEBUG: 1
+input.scss:6 DEBUG: 2, 3
+input.scss:7 DEBUG: 1 (2, 3)
+input.scss:8 DEBUG: 1 (2, 3)

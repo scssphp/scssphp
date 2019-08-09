@@ -1,0 +1,13 @@
+<===> input.scss
+.foo {
+  @for $var from 1 through 5 {a: $var;}
+}
+
+<===> output.css
+.foo {
+  a: 1;
+  a: 2;
+  a: 3;
+  a: 4;
+  a: 5;
+}

@@ -1,0 +1,132 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+foo {
+  test-1: literal+literal;
+  test-2: literal +literal;
+  test-3: literal+ literal;
+  test-4: literal + literal;
+  test-5: literal+"quoted";
+  test-6: literal +"quoted";
+  test-7: literal+ "quoted";
+  test-8: literal + "quoted";
+  test-9: literal+#{interpolant};
+  test-10: literal +#{interpolant};
+  test-11: literal+ #{interpolant};
+  test-12: literal + #{interpolant};
+  test-13: literal+lschema_#{ritlp};
+  test-14: literal +lschema_#{ritlp};
+  test-15: literal+ lschema_#{ritlp};
+  test-16: literal + lschema_#{ritlp};
+  test-17: literal+#{litlp}_rschema;
+  test-18: literal +#{litlp}_rschema;
+  test-19: literal+ #{litlp}_rschema;
+  test-20: literal + #{litlp}_rschema;
+  test-21: "quoted"+"quoted";
+  test-22: "quoted" +"quoted";
+  test-23: "quoted"+ "quoted";
+  test-24: "quoted" + "quoted";
+  test-25: "quoted"+#{interpolant};
+  test-26: "quoted" +#{interpolant};
+  test-27: "quoted"+ #{interpolant};
+  test-28: "quoted" + #{interpolant};
+  test-29: "quoted"+lschema_#{ritlp};
+  test-30: "quoted" +lschema_#{ritlp};
+  test-31: "quoted"+ lschema_#{ritlp};
+  test-32: "quoted" + lschema_#{ritlp};
+  test-33: "quoted"+#{litlp}_rschema;
+  test-34: "quoted" +#{litlp}_rschema;
+  test-35: "quoted"+ #{litlp}_rschema;
+  test-36: "quoted" + #{litlp}_rschema;
+  test-37: #{interpolant}+#{interpolant};
+  test-38: #{interpolant} +#{interpolant};
+  test-39: #{interpolant}+ #{interpolant};
+  test-40: #{interpolant} + #{interpolant};
+  test-41: #{interpolant}+lschema_#{ritlp};
+  test-42: #{interpolant} +lschema_#{ritlp};
+  test-43: #{interpolant}+ lschema_#{ritlp};
+  test-44: #{interpolant} + lschema_#{ritlp};
+  test-45: #{interpolant}+#{litlp}_rschema;
+  test-46: #{interpolant} +#{litlp}_rschema;
+  test-47: #{interpolant}+ #{litlp}_rschema;
+  test-48: #{interpolant} + #{litlp}_rschema;
+  test-49: lschema_#{ritlp}+lschema_#{ritlp};
+  test-50: lschema_#{ritlp} +lschema_#{ritlp};
+  test-51: lschema_#{ritlp}+ lschema_#{ritlp};
+  test-52: lschema_#{ritlp} + lschema_#{ritlp};
+  test-53: lschema_#{ritlp}+#{litlp}_rschema;
+  test-54: lschema_#{ritlp} +#{litlp}_rschema;
+  test-55: lschema_#{ritlp}+ #{litlp}_rschema;
+  test-56: lschema_#{ritlp} + #{litlp}_rschema;
+  test-57: #{litlp}_rschema+#{litlp}_rschema;
+  test-58: #{litlp}_rschema +#{litlp}_rschema;
+  test-59: #{litlp}_rschema+ #{litlp}_rschema;
+  test-60: #{litlp}_rschema + #{litlp}_rschema;
+}
+
+<===> output.css
+foo {
+  test-1: literalliteral;
+  test-2: literalliteral;
+  test-3: literalliteral;
+  test-4: literalliteral;
+  test-5: literalquoted;
+  test-6: literalquoted;
+  test-7: literalquoted;
+  test-8: literalquoted;
+  test-9: literalinterpolant;
+  test-10: literalinterpolant;
+  test-11: literalinterpolant;
+  test-12: literalinterpolant;
+  test-13: literallschema_ritlp;
+  test-14: literallschema_ritlp;
+  test-15: literallschema_ritlp;
+  test-16: literallschema_ritlp;
+  test-17: literallitlp_rschema;
+  test-18: literallitlp_rschema;
+  test-19: literallitlp_rschema;
+  test-20: literallitlp_rschema;
+  test-21: "quotedquoted";
+  test-22: "quotedquoted";
+  test-23: "quotedquoted";
+  test-24: "quotedquoted";
+  test-25: "quotedinterpolant";
+  test-26: "quotedinterpolant";
+  test-27: "quotedinterpolant";
+  test-28: "quotedinterpolant";
+  test-29: "quotedlschema_ritlp";
+  test-30: "quotedlschema_ritlp";
+  test-31: "quotedlschema_ritlp";
+  test-32: "quotedlschema_ritlp";
+  test-33: "quotedlitlp_rschema";
+  test-34: "quotedlitlp_rschema";
+  test-35: "quotedlitlp_rschema";
+  test-36: "quotedlitlp_rschema";
+  test-37: interpolantinterpolant;
+  test-38: interpolantinterpolant;
+  test-39: interpolantinterpolant;
+  test-40: interpolantinterpolant;
+  test-41: interpolantlschema_ritlp;
+  test-42: interpolantlschema_ritlp;
+  test-43: interpolantlschema_ritlp;
+  test-44: interpolantlschema_ritlp;
+  test-45: interpolantlitlp_rschema;
+  test-46: interpolantlitlp_rschema;
+  test-47: interpolantlitlp_rschema;
+  test-48: interpolantlitlp_rschema;
+  test-49: lschema_ritlplschema_ritlp;
+  test-50: lschema_ritlplschema_ritlp;
+  test-51: lschema_ritlplschema_ritlp;
+  test-52: lschema_ritlplschema_ritlp;
+  test-53: lschema_ritlplitlp_rschema;
+  test-54: lschema_ritlplitlp_rschema;
+  test-55: lschema_ritlplitlp_rschema;
+  test-56: lschema_ritlplitlp_rschema;
+  test-57: litlp_rschemalitlp_rschema;
+  test-58: litlp_rschemalitlp_rschema;
+  test-59: litlp_rschemalitlp_rschema;
+  test-60: litlp_rschemalitlp_rschema;
+}

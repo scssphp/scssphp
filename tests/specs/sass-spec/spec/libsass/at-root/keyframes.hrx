@@ -1,0 +1,38 @@
+<===> input.scss
+foo {
+  color: red;
+
+  @at-root {
+    @keyframes animation {
+      to { color: red; }
+    }
+  }
+
+  bar {
+    color: blue;
+
+    @at-root {
+      @keyframes other-animation {
+        to { color: blue; }
+      }
+    }
+  }
+}
+
+<===> output.css
+foo {
+  color: red;
+}
+@keyframes animation {
+  to {
+    color: red;
+  }
+}
+foo bar {
+  color: blue;
+}
+@keyframes other-animation {
+  to {
+    color: blue;
+  }
+}

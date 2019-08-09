@@ -1,0 +1,21 @@
+<===> input.scss
+.parent-sel-value {
+  font-family: &;
+  .parent-sel-interpolation {
+    font-family: #{&};
+     .parent-sel-value-concat {
+        font-family: "Current parent: " + &;
+     }
+  }
+}
+
+<===> output.css
+.parent-sel-value {
+  font-family: .parent-sel-value;
+}
+.parent-sel-value .parent-sel-interpolation {
+  font-family: .parent-sel-value .parent-sel-interpolation;
+}
+.parent-sel-value .parent-sel-interpolation .parent-sel-value-concat {
+  font-family: "Current parent: .parent-sel-value .parent-sel-interpolation .parent-sel-value-concat";
+}

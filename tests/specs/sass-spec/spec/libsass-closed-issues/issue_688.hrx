@@ -1,0 +1,91 @@
+<===> input.scss
+test {
+  /* Convert to px  */
+  px-to-px: 0px + 1px;
+  pt-to-px: 0px + 1pt;
+  pc-to-px: 0px + 1pc;
+  in-to-px: 0px + 1in;
+  mm-to-px: 0px + 1mm;
+  cm-to-px: 0px + 1cm;
+  /* Convert to pt  */
+  px-to-pt: 0pt + 1px;
+  pt-to-pt: 0pt + 1pt;
+  pc-to-pt: 0pt + 1pc;
+  in-to-pt: 0pt + 1in;
+  mm-to-pt: 0pt + 1mm;
+  cm-to-pt: 0pt + 1cm;
+  /* Convert to pc  */
+  px-to-pc: 0pc + 1px;
+  pt-to-pc: 0pc + 1pt;
+  pc-to-pc: 0pc + 1pc;
+  in-to-pc: 0pc + 1in;
+  mm-to-pc: 0pc + 1mm;
+  cm-to-pc: 0pc + 1cm;
+  /* Convert to in  */
+  px-to-in: 0in + 1px;
+  pt-to-in: 0in + 1pt;
+  pc-to-in: 0in + 1pc;
+  in-to-in: 0in + 1in;
+  mm-to-in: 0in + 1mm;
+  cm-to-in: 0in + 1cm;
+  /* Convert to mm  */
+  px-to-mm: 0mm + 1px;
+  pt-to-mm: 0mm + 1pt;
+  pc-to-mm: 0mm + 1pc;
+  in-to-mm: 0mm + 1in;
+  mm-to-mm: 0mm + 1mm;
+  cm-to-mm: 0mm + 1cm; 
+  /* Convert to cm  */
+  px-to-cm: 0cm + 1px;
+  pt-to-cm: 0cm + 1pt;
+  pc-to-cm: 0cm + 1pc;
+  in-to-cm: 0cm + 1in;
+  mm-to-cm: 0cm + 1mm;
+  cm-to-cm: 0cm + 1cm;   
+}
+
+<===> output.css
+test {
+  /* Convert to px  */
+  px-to-px: 1px;
+  pt-to-px: 1.3333333333px;
+  pc-to-px: 16px;
+  in-to-px: 96px;
+  mm-to-px: 3.7795275591px;
+  cm-to-px: 37.7952755906px;
+  /* Convert to pt  */
+  px-to-pt: 0.75pt;
+  pt-to-pt: 1pt;
+  pc-to-pt: 12pt;
+  in-to-pt: 72pt;
+  mm-to-pt: 2.8346456693pt;
+  cm-to-pt: 28.3464566929pt;
+  /* Convert to pc  */
+  px-to-pc: 0.0625pc;
+  pt-to-pc: 0.0833333333pc;
+  pc-to-pc: 1pc;
+  in-to-pc: 6pc;
+  mm-to-pc: 0.2362204724pc;
+  cm-to-pc: 2.3622047244pc;
+  /* Convert to in  */
+  px-to-in: 0.0104166667in;
+  pt-to-in: 0.0138888889in;
+  pc-to-in: 0.1666666667in;
+  in-to-in: 1in;
+  mm-to-in: 0.0393700787in;
+  cm-to-in: 0.3937007874in;
+  /* Convert to mm  */
+  px-to-mm: 0.2645833333mm;
+  pt-to-mm: 0.3527777778mm;
+  pc-to-mm: 4.2333333333mm;
+  in-to-mm: 25.4mm;
+  mm-to-mm: 1mm;
+  cm-to-mm: 10mm;
+  /* Convert to cm  */
+  px-to-cm: 0.0264583333cm;
+  pt-to-cm: 0.0352777778cm;
+  pc-to-cm: 0.4233333333cm;
+  in-to-cm: 2.54cm;
+  mm-to-cm: 0.1cm;
+  cm-to-cm: 1cm;
+}

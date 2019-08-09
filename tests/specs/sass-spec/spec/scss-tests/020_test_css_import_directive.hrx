@@ -1,0 +1,7 @@
+<===> input.scss
+@import 'foo.css';
+<===> output.css
+@import url(foo.css);
+
+<===> output-dart-sass.css
+@import 'foo.css';

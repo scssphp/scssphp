@@ -1,0 +1,30 @@
+<===> input.scss
+$foo: 1 2 3 blah 4;
+foo {
+  bar: call(max, $foo...);
+}
+
+<===> error
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("max")) instead.
+
+Error: "blah" is not a number for `max'
+        on line 3 of spec/libsass-closed-issues/issue_1266/max/input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function(max)) instead.
+
+  ,
+3 |   bar: call(max, $foo...);
+  |        ^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 3:8  root stylesheet
+
+Error: blah is not a number.
+  ,
+3 |   bar: call(max, $foo...);
+  |        ^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 3:8  root stylesheet

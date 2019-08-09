@@ -1,0 +1,15 @@
+<===> input.scss
+color: green;
+
+<===> error
+Error: Invalid CSS after "color: green": expected "{", was ";"
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected "{".
+  ,
+1 | color: green;
+  |             ^
+  '
+  input.scss 1:13  root stylesheet

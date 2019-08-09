@@ -1,0 +1,11 @@
+<===> input.scss
+// For implementations like Dart Sass that process extensions as they occur,
+// extending rules that contain their own extends needs special handling.
+.b {@extend .a}
+.c {@extend .b}
+.a {x: y}
+
+<===> output.css
+.a, .b, .c {
+  x: y;
+}

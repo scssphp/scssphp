@@ -1,0 +1,15 @@
+<===> input.scss
+@else{}
+
+<===> error
+Error: Invalid CSS: @else must come after @if
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: This at-rule is not allowed here.
+  ,
+1 | @else{}
+  | ^^^^^
+  '
+  input.scss 1:1  root stylesheet

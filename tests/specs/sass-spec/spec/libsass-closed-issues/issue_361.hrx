@@ -1,0 +1,9 @@
+<===> input.scss
+h1 {
+  margin-left: percentage(10/(120-20));
+}
+
+<===> output.css
+h1 {
+  margin-left: 10%;
+}

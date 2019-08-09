@@ -1,0 +1,10 @@
+<===> input.scss
+$foo: "bar";
+
+%class //#{$foo}
+{
+  &_baz {
+    color: red;
+  }
+}
+<===> output.css

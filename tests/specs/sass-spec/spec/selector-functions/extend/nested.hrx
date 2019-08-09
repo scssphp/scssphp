@@ -1,0 +1,14 @@
+<===> input.scss
+.qux {
+  &.waldo {
+    .where & {
+      .final {
+        f: selector-extend(#{&} foo, 'foo', '.bar');
+      }
+    }
+  }
+}
+<===> output.css
+.where .qux.waldo .final {
+  f: .where .qux.waldo .final foo, .where .qux.waldo .final .bar;
+}

@@ -1,0 +1,73 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+// At-rule names may be interpolated. Any interpolated at-rule is treated as
+// unknown, except for @keyframes which has behavior that's only triggered at
+// eval-time.
+
+// Interpolation can appear anywhere in a rule.
+@#{"interpolated"}-beginning;
+@interopl#{"ated-mid"}dle;
+@interoplated-#{"end"};
+@#{"entirely-interpolated"};
+
+// An interpolated rule can have all the same kinds of values and blocks as any
+// other unknown rule.
+@#{"plain"} value;
+@#{"interpolated"} #{"value"};
+@#{"block"} {x: y}
+@#{"block-with"} plain-value {x: y}
+@#{"block-with"} #{"interpolated"}-value {x: y}
+
+// An interpolated at-rule doesn't count as a Sass at-rule.
+@#{"error"} not really an error;
+
+// An interpolated at-rule doesn't have any special parse-time behavior, even if
+// it ends up with the same name as an at-rule that does.
+@#{"media"} ($var: value) {
+  .x {y: z}
+}
+
+// The @keyframes rule is an exception, because its special parse behavior is
+// handled at runtime.
+@#{"keyframes"} name {
+  10% {x: y}
+}
+
+<===> output.css
+@interpolated-beginning;
+
+@interoplated-middle;
+
+@interoplated-end;
+
+@entirely-interpolated;
+
+@plain value;
+@interpolated value;
+@block {
+  x: y;
+}
+@block-with plain-value {
+  x: y;
+}
+@block-with interpolated-value {
+  x: y;
+}
+
+@error not really an error;
+
+@media ($var: value) {
+  .x {
+    y: z;
+  }
+}
+
+@keyframes name {
+  10% {
+    x: y;
+  }
+}

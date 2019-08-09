@@ -1,0 +1,38 @@
+<===> input.scss
+@media (retained: before) {
+  a {b: c}
+  @media (a: b) {
+    x {y: z}
+  }
+}
+
+// Regression test for sass/dart-sass#453
+@media (retained: after) {
+  @media (a: b) {
+    x {y: z}
+  }
+  a {b: c}
+}
+
+<===> output.css
+@media (retained: before) {
+  a {
+    b: c;
+  }
+}
+@media (retained: before) and (a: b) {
+  x {
+    y: z;
+  }
+}
+
+@media (retained: after) and (a: b) {
+  x {
+    y: z;
+  }
+}
+@media (retained: after) {
+  a {
+    b: c;
+  }
+}

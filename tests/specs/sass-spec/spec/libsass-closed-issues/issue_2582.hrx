@@ -1,0 +1,12 @@
+<===> input.scss
+.test {
+  font-size: (16px / 16px) + 0em;
+  font-size: (16px / 16px  + 0em);
+  font-size: 16px / 16px  + 0em;
+}
+<===> output.css
+.test {
+  font-size: 1em;
+  font-size: 1em;
+  font-size: 1em;
+}

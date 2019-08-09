@@ -1,0 +1,20 @@
+<===> options.yml
+---
+:ignore_for:
+- dart-sass
+
+<===> input.scss
+$subject: "!";
+foo {
+  bar &.baz#{$subject} .bip {c: d}}
+
+<===> output.css
+bar foo.baz! .bip {
+  c: d;
+}
+
+<===> warning
+DEPRECATION WARNING on line 3, column 1 of input.scss:
+The subject selector operator "!" is deprecated and will be removed in a future release.
+This operator has been replaced by ":has()" in the CSS spec.
+For example: bar &.baz:has(.bip)

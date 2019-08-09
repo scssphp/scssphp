@@ -1,0 +1,7 @@
+<===> input.scss
+div { width: 1px; }
+
+<===> output.css
+div {
+  width: 1px;
+}

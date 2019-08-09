@@ -1,0 +1,30 @@
+<===> input.scss
+basic {
+  transparent: hsl(180, 60%, 50%, 0);
+  opaque: hsl(180, 60%, 50%, 1);
+  partial: hsl(180, 60%, 50%, 0.5);
+  named: hsl($hue: 180, $saturation: 60%, $lightness: 50%, $alpha: 0.4);
+}
+
+// Channels that are out of bounds are clamped within bounds.
+clamped {
+  saturation: hsl(0, -0.1%, 50%, 0.5);
+  blue: hsl(0, 100%, 9999%, 0.5);
+  alpha-above: hsl(0, 100%, 50%, 1.1);
+  alpha-below: rgba(0, 100%, 50%, -0.1);
+}
+
+<===> output.css
+basic {
+  transparent: rgba(51, 204, 204, 0);
+  opaque: #33cccc;
+  partial: rgba(51, 204, 204, 0.5);
+  named: rgba(51, 204, 204, 0.4);
+}
+
+clamped {
+  saturation: rgba(128, 128, 128, 0.5);
+  blue: rgba(255, 255, 255, 0.5);
+  alpha-above: red;
+  alpha-below: rgba(0, 255, 128, 0);
+}

@@ -1,0 +1,12 @@
+<===> input.scss
+.wizard-editor {
+    transform: scale(50/1);
+    transform: scale((50/1));
+    transform: scale( (50/1) );
+}
+<===> output.css
+.wizard-editor {
+  transform: scale(50/1);
+  transform: scale(50);
+  transform: scale(50);
+}

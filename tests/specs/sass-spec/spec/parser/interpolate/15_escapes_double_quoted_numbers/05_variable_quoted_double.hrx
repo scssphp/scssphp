@@ -1,0 +1,42 @@
+<===> input.scss
+$input: "\1\2\3\4\5\6\7\8\9";
+.result {
+  dquoted: "#{#{$input}}";
+  dquoted: "#{"[#{$input}]"}";
+  dquoted: "#{"#{$input}"}";
+  dquoted: "#{'#{$input}'}";
+  dquoted: "#{"['#{$input}']"}";
+  squoted: '#{#{$input}}';
+  squoted: '#{"[#{$input}]"}';
+  squoted: '#{"#{$input}"}';
+  squoted: '#{'#{$input}'}';
+  squoted: '#{"['#{$input}']"}';
+}
+
+<===> output.css
+.result {
+  dquoted: "	";
+  dquoted: "[	]";
+  dquoted: "	";
+  dquoted: "	";
+  dquoted: "['	']";
+  squoted: "	";
+  squoted: "[	]";
+  squoted: "	";
+  squoted: "	";
+  squoted: "['	']";
+}
+
+<===> output-dart-sass.css
+.result {
+  dquoted: "\1\2\3\4\5\6\7\8 	";
+  dquoted: "[\1\2\3\4\5\6\7\8 	]";
+  dquoted: "\1\2\3\4\5\6\7\8 	";
+  dquoted: "\1\2\3\4\5\6\7\8 	";
+  dquoted: "['\1\2\3\4\5\6\7\8 	']";
+  squoted: "\1\2\3\4\5\6\7\8 	";
+  squoted: "[\1\2\3\4\5\6\7\8 	]";
+  squoted: "\1\2\3\4\5\6\7\8 	";
+  squoted: "\1\2\3\4\5\6\7\8 	";
+  squoted: "['\1\2\3\4\5\6\7\8 	']";
+}

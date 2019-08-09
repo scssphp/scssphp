@@ -1,0 +1,8 @@
+<===> input.scss
+$bar : "#foo";
+ul li#{$bar} a span.label { foo: bar; }
+
+<===> output.css
+ul li#foo a span.label {
+  foo: bar;
+}

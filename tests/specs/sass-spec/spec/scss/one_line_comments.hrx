@@ -1,0 +1,9 @@
+<===> input.scss
+.foo bar[val="//"] {
+  baz: bang; //}
+}
+
+<===> output.css
+.foo bar[val="//"] {
+  baz: bang;
+}

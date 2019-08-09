@@ -1,0 +1,10 @@
+<===> input.scss
+$gutter: 20px;
+
+.row {
+  margin: 0 -$gutter;
+}
+<===> output.css
+.row {
+  margin: -20px;
+}

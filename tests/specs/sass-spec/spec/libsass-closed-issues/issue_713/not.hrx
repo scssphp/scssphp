@@ -1,0 +1,21 @@
+<===> input.scss
+@function not() {
+  @return "not";
+}
+
+test {
+  not: not();
+}
+
+<===> error
+Error: Invalid function name "not".
+        on line  of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Invalid function name.
+  ,
+1 | @function not() {
+  | ^^^^^^^^^^^^^^^
+  '
+  input.scss 1:1  root stylesheet

@@ -1,0 +1,19 @@
+<===> input.scss
+$path: "images";
+$file: "kittens.jpg";
+$image: "";
+$other: file_join("images", "kittens.jpg");
+
+@if $image != none {
+	$image: url(file_join($path, $file));
+}
+body {
+	background: $image;
+	color: $other;
+}
+
+<===> output.css
+body {
+  background: url(file_join("images", "kittens.jpg"));
+  color: file_join("images", "kittens.jpg");
+}

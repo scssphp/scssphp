@@ -1,0 +1,10 @@
+<===> input.scss
+$foo: foo;
+
+%#{$foo} {color: blue}
+.bar {@extend %foo}
+
+<===> output.css
+.bar {
+  color: blue;
+}

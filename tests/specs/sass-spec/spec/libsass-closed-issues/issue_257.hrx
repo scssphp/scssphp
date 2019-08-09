@@ -1,0 +1,9 @@
+<===> input.scss
+body{background:blue; a{color:black;}}
+<===> output.css
+body {
+  background: blue;
+}
+body a {
+  color: black;
+}

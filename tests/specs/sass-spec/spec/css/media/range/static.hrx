@@ -1,0 +1,115 @@
+<===> input.scss
+// Plain CSS examples of the media query range syntax.
+
+// Test all the comparison operators.
+@media (height < 600px) {a {b: c}}
+@media (height <= 600px) {a {b: c}}
+@media (height = 600px) {a {b: c}}
+@media (height >= 600px) {a {b: c}}
+@media (height > 600px) {a {b: c}}
+
+// Test all the range operators.
+@media (10px < width < 15px) {a {b: c}}
+@media (10px < width <= 15px) {a {b: c}}
+@media (10px <= width < 15px) {a {b: c}}
+@media (10px <= width <= 15px) {a {b: c}}
+@media (10px > width > 15px) {a {b: c}}
+@media (10px > width >= 15px) {a {b: c}}
+@media (10px >= width > 15px) {a {b: c}}
+@media (10px >= width >= 15px) {a {b: c}}
+
+// Ratio syntax should fall out from Sass's existing rules for handling `/`.
+@media (device-aspect-ratio > 3/2) {a {b: c}}
+@media (3/2 < device-aspect-ratio < 16/9) {a {b: c}}
+
+<===> output.css
+@media (height < 600px) {
+  a {
+    b: c;
+  }
+}
+
+@media (height <= 600px) {
+  a {
+    b: c;
+  }
+}
+
+@media (height = 600px) {
+  a {
+    b: c;
+  }
+}
+
+@media (height >= 600px) {
+  a {
+    b: c;
+  }
+}
+
+@media (height > 600px) {
+  a {
+    b: c;
+  }
+}
+
+@media (10px < width < 15px) {
+  a {
+    b: c;
+  }
+}
+
+@media (10px < width <= 15px) {
+  a {
+    b: c;
+  }
+}
+
+@media (10px <= width < 15px) {
+  a {
+    b: c;
+  }
+}
+
+@media (10px <= width <= 15px) {
+  a {
+    b: c;
+  }
+}
+
+@media (10px > width > 15px) {
+  a {
+    b: c;
+  }
+}
+
+@media (10px > width >= 15px) {
+  a {
+    b: c;
+  }
+}
+
+@media (10px >= width > 15px) {
+  a {
+    b: c;
+  }
+}
+
+@media (10px >= width >= 15px) {
+  a {
+    b: c;
+  }
+}
+
+@media (device-aspect-ratio > 3/2) {
+  a {
+    b: c;
+  }
+}
+
+@media (3/2 < device-aspect-ratio < 16/9) {
+  a {
+    b: c;
+  }
+}
+

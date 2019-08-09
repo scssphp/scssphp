@@ -1,0 +1,8 @@
+<===> input.scss
+%-a [foo=bar].baz {a: b}
+[ns|foo=bar] {@extend .baz} -a {@extend %-a}
+
+<===> output.css
+-a [foo=bar].baz, -a [foo=bar][ns|foo=bar] {
+  a: b;
+}

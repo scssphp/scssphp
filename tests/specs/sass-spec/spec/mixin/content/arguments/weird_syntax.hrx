@@ -1,0 +1,81 @@
+<===> input.scss
+no-space-before-using {
+  @mixin mixin {
+    @content(value1, value2);
+  }
+
+  @include mixin()using ($arg1, $arg2) {
+    arg1: $arg1;
+    arg2: $arg2;
+  }
+}
+
+no-space-after-using {
+  @mixin mixin {
+    @content(value1, value2);
+  }
+
+  @include mixin using($arg1, $arg2) {
+    arg1: $arg1;
+    arg2: $arg2;
+  }
+}
+
+no-space-after-arglist {
+  @mixin mixin {
+    @content(value1, value2);
+  }
+
+  @include mixin using($arg1, $arg2){
+    arg1: $arg1;
+    arg2: $arg2;
+  }
+}
+
+space-after-content {
+  @mixin mixin {
+    @content (value1, value2);
+  }
+
+  @include mixin using ($arg1, $arg2) {
+    arg1: $arg1;
+    arg2: $arg2;
+  }
+}
+
+case-insensitive-using {
+  @mixin mixin {
+    @content(value1, value2);
+  }
+
+  @include mixin UsInG ($arg1, $arg2) {
+    arg1: $arg1;
+    arg2: $arg2;
+  }
+}
+
+<===> output.css
+no-space-before-using {
+  arg1: value1;
+  arg2: value2;
+}
+
+no-space-after-using {
+  arg1: value1;
+  arg2: value2;
+}
+
+no-space-after-arglist {
+  arg1: value1;
+  arg2: value2;
+}
+
+space-after-content {
+  arg1: value1;
+  arg2: value2;
+}
+
+case-insensitive-using {
+  arg1: value1;
+  arg2: value2;
+}

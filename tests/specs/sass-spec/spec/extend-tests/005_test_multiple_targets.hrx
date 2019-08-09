@@ -1,0 +1,13 @@
+<===> input.scss
+.foo {a: b}
+.bar {@extend .foo}
+.blip .foo {c: d}
+
+<===> output.css
+.foo, .bar {
+  a: b;
+}
+
+.blip .foo, .blip .bar {
+  c: d;
+}

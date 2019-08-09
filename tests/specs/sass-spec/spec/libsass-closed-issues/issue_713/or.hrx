@@ -1,0 +1,21 @@
+<===> input.scss
+@function or() {
+  @return "or";
+}
+
+test {
+  or: or();
+}
+
+<===> error
+Error: Invalid function name "or".
+        on line  of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Invalid function name.
+  ,
+1 | @function or() {
+  | ^^^^^^^^^^^^^^
+  '
+  input.scss 1:1  root stylesheet

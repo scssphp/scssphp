@@ -1,0 +1,65 @@
+<===> input.scss
+foo {
+    & bar baz {
+        bam: true;
+    }
+    bar baz & {
+        bam: true;
+    }
+}
+
+foo {
+    & bar + baz {
+        bam: true;
+    }
+    bar + baz & {
+        bam: true;
+    }
+}
+
+foo {
+    & bar > baz {
+        bam: true;
+    }
+    bar > baz & {
+        bam: true;
+    }
+}
+
+foo {
+    & bar ~ baz {
+        bam: true;
+    }
+    bar ~ baz & {
+        bam: true;
+    }
+}
+
+<===> output.css
+foo bar baz {
+  bam: true;
+}
+bar baz foo {
+  bam: true;
+}
+
+foo bar + baz {
+  bam: true;
+}
+bar + baz foo {
+  bam: true;
+}
+
+foo bar > baz {
+  bam: true;
+}
+bar > baz foo {
+  bam: true;
+}
+
+foo bar ~ baz {
+  bam: true;
+}
+bar ~ baz foo {
+  bam: true;
+}

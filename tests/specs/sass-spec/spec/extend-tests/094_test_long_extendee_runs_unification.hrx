@@ -1,0 +1,19 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+ns|*.foo.bar {a: b}
+a.baz {@extend .foo.bar}
+
+<===> error-dart-sass
+Error: compound selectors may no longer be extended.
+Consider `@extend .foo, .bar` instead.
+See http://bit.ly/ExtendCompound for details.
+
+  ,
+2 | a.baz {@extend .foo.bar}
+  |                ^^^^^^^^
+  '
+  input.scss 2:16  root stylesheet

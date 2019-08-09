@@ -1,0 +1,12 @@
+<===> input.scss
+foo {
+  a: b;
+  bar {c: d}}
+
+<===> output.css
+foo {
+  a: b;
+}
+foo bar {
+  c: d;
+}

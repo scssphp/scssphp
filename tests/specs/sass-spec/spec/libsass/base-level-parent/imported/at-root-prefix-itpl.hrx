@@ -1,0 +1,15 @@
+<===> include.scss
+@at-root {
+  pre#{&} {
+    foo {
+      bar: baz;
+    }
+  }
+}
+
+<===> input.scss
+@import "include.scss";
+<===> output.css
+pre foo {
+  bar: baz;
+}

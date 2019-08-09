@@ -1,0 +1,91 @@
+<===> input.scss
+$gutter: 100% / 36.2;
+    $gutter_em: 1rem; //This needs to be rem to not mess up margins
+
+// This calculate the gutter
+@function col_width($n, $use_calc: false) {
+    $divisor: 12 / $n;
+    @if ($use_calc) {
+        $gutter_offset: $gutter_em * ($divisor - 1);
+        @return calc((100% - #{$gutter_offset}) / #{$divisor});
+    }
+    @else {
+        @return (100% - $gutter * ($divisor - 1)) / $divisor;
+    }
+}
+
+// Each number here becomes a grid: onecol, twocol etc. 
+$grids: one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve;
+$i: 1;
+@each $grid in $grids {
+    .#{$grid}col {
+        width: col_width( $i );
+        width: col_width( $i, true );
+    }
+
+    %#{$grid}col {
+        width: col_width( $i );
+        width: col_width( $i, true );
+    }
+    $i: $i + 1;
+}
+<===> output.css
+.onecol {
+  width: 5.8011049724%;
+  width: calc((100% - 11rem) / 12);
+}
+
+.twocol {
+  width: 14.364640884%;
+  width: calc((100% - 5rem) / 6);
+}
+
+.threecol {
+  width: 22.9281767956%;
+  width: calc((100% - 3rem) / 4);
+}
+
+.fourcol {
+  width: 31.4917127072%;
+  width: calc((100% - 2rem) / 3);
+}
+
+.fivecol {
+  width: 40.0552486188%;
+  width: calc((100% - 1.4rem) / 2.4);
+}
+
+.sixcol {
+  width: 48.6187845304%;
+  width: calc((100% - 1rem) / 2);
+}
+
+.sevencol {
+  width: 57.182320442%;
+  width: calc((100% - 0.7142857143rem) / 1.7142857143);
+}
+
+.eightcol {
+  width: 65.7458563536%;
+  width: calc((100% - 0.5rem) / 1.5);
+}
+
+.ninecol {
+  width: 74.3093922652%;
+  width: calc((100% - 0.3333333333rem) / 1.3333333333);
+}
+
+.tencol {
+  width: 82.8729281768%;
+  width: calc((100% - 0.2rem) / 1.2);
+}
+
+.elevencol {
+  width: 91.4364640884%;
+  width: calc((100% - 0.0909090909rem) / 1.0909090909);
+}
+
+.twelvecol {
+  width: 100%;
+  width: calc((100% - 0rem) / 1);
+}

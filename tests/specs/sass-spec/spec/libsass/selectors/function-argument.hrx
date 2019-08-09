@@ -1,0 +1,58 @@
+<===> input.scss
+$Selectors: ();
+
+//////////////////////////////
+// Add selectors of various depths and makeups
+//////////////////////////////
+.foo {
+  $Selectors: append($Selectors, &) !global;
+}
+
+.bar a {
+  $Selectors: append($Selectors, &) !global;
+}
+
+.bar,
+.baz {
+  $Selectors: append($Selectors, &) !global;
+}
+
+.qux {
+  &.waldo {
+    .where & {
+      .final {
+        $Selectors: append($Selectors, &) !global;
+      }
+    }
+  }
+}
+
+//////////////////////////////
+// Display Results
+//////////////////////////////
+.result {
+  length: length($Selectors);
+  content: $Selectors;
+  @for $i from 1 through length($Selectors) {
+    index: $i;
+    length: length(nth($Selectors, $i));
+    content: nth($Selectors, $i);
+  }
+}
+<===> output.css
+.result {
+  length: 4;
+  content: .foo .bar a .bar, .baz .where .qux.waldo .final;
+  index: 1;
+  length: 1;
+  content: .foo;
+  index: 2;
+  length: 1;
+  content: .bar a;
+  index: 3;
+  length: 2;
+  content: .bar, .baz;
+  index: 4;
+  length: 1;
+  content: .where .qux.waldo .final;
+}

@@ -1,0 +1,19 @@
+$char-f: '\66';
+$char-g: '\67';
+
+.test-1 {
+  content: '#{$char-f}\feff';
+}
+
+.test-2 {
+  content: '#{$char-g}\feff';
+}
+
+// this is broken
+.test-3 {
+  content: '\feff#{$char-f}';
+}
+
+.test-4 {
+  content: '\feff#{$char-g}';
+}

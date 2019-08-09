@@ -1,0 +1,131 @@
+<===> global/input.scss
+@mixin global-mixin() {}
+
+a {b: mixin-exists(global-mixin)}
+
+<===> global/output.css
+a {
+  b: true;
+}
+
+<===>
+================================================================================
+<===> local/input.scss
+a {
+  @mixin local-mixin() {}
+  b: mixin-exists(local-mixin);
+}
+
+<===> local/output.css
+a {
+  b: true;
+}
+
+<===>
+================================================================================
+<===> dash_insensitive/input.scss
+@mixin global-mixin() {}
+
+a {b: mixin-exists(global_mixin)}
+
+<===> dash_insensitive/output.css
+a {
+  b: true;
+}
+
+<===>
+================================================================================
+<===> through_import/input.scss
+@import "other";
+a {b: mixin-exists(global-mixin)}
+
+<===> through_import/other.scss
+@mixin global-mixin() {}
+
+<===> through_import/output.css
+a {
+  b: true;
+}
+
+<===>
+================================================================================
+<===> non_existent/input.scss
+a {
+  b: mixin-exists(non-existent);
+}
+
+<===> non_existent/output.css
+a {
+  b: false;
+}
+
+<===>
+================================================================================
+<===> keyword/input.scss
+a {b: mixin-exists($name: foo)}
+
+<===> keyword/output.css
+a {
+  b: false;
+}
+
+<===>
+================================================================================
+<===> error/argument/type/input.scss
+a {b: mixin-exists(12px)}
+
+<===> error/argument/type/error
+Error: $name: 12px is not a string.
+  ,
+1 | a {b: mixin-exists(12px)}
+  |       ^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:7  root stylesheet
+
+<===> error/argument/type/error-libsass
+Error: argument `$name` of `mixin-exists($name)` must be a string
+        on line 1:7 of input.scss, in function `mixin-exists`
+        from line 1:7 of input.scss
+>> a {b: mixin-exists(12px)}
+
+   ------^
+
+<===>
+================================================================================
+<===> error/argument/too_few/input.scss
+a {b: mixin-exists()}
+
+<===> error/argument/too_few/error
+Error: Missing argument $name.
+  ,
+1 | a {b: mixin-exists()}
+  |       ^^^^^^^^^^^^^^
+  '
+  input.scss 1:7  root stylesheet
+
+<===> error/argument/too_few/error-libsass
+Error: Function mixin-exists is missing argument $name.
+        on line 1 of input.scss
+>> a {b: mixin-exists()}
+
+   ------^
+
+<===>
+================================================================================
+<===> error/argument/too_many/input.scss
+a {b: mixin-exists(foo, bar)}
+
+<===> error/argument/too_many/error
+Error: Only 1 argument allowed, but 2 were passed.
+  ,
+1 | a {b: mixin-exists(foo, bar)}
+  |       ^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:7  root stylesheet
+
+<===> error/argument/too_many/error-libsass
+Error: wrong number of arguments (2 for 1) for `mixin-exists'
+        on line 1:7 of input.scss
+>> a {b: mixin-exists(foo, bar)}
+
+   ------^

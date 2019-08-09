@@ -1,0 +1,12 @@
+<===> input.scss
+test {
+  foo: ie-hex-str(#abc) ;
+  goo: ie-hex-str(#3322BB);
+  doo: ie-hex-str(rgba(0, 255, 0, 0.5)) ;
+}
+<===> output.css
+test {
+  foo: #FFAABBCC;
+  goo: #FF3322BB;
+  doo: #8000FF00;
+}

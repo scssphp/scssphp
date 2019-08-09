@@ -1,0 +1,23 @@
+<===> input.scss
+// incorectly terminated
+@mixin missing-paren-error($a,$b, {
+}
+
+<===> error
+Error: Invalid CSS after "...n-error($a,$b, ": expected variable (e.g. $foo), was "{"
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected ")".
+  ,
+2 | @mixin missing-paren-error($a,$b, {
+  |                                   ^
+  '
+  input.scss 2:35  root stylesheet
+
+<===> error-libsass
+Error: Invalid CSS after "...en-error($a,$b,": expected variable (e.g. $foo), was "{"
+        on line 2 of input.scss
+>> @mixin missing-paren-error($a,$b, {
+   --------------------------------^

@@ -1,0 +1,9 @@
+<===> input.scss
+item {
+    background: #{2px} 2px /*red*/;
+}
+
+<===> output.css
+item {
+  background: 2px 2px;
+}

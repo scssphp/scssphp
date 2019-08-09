@@ -1,0 +1,173 @@
+<===> explicit_extension/sass/input.scss
+@import "other.sass"
+
+<===> explicit_extension/sass/other.sass
+a
+  syntax: sass
+
+<===> explicit_extension/sass/other.scss
+a {syntax: scss}
+
+<===> explicit_extension/sass/other.css
+a {syntax: css}
+
+<===> explicit_extension/sass/output.css
+a {
+  syntax: sass;
+}
+
+<===>
+================================================================================
+<===> explicit_extension/scss/input.scss
+@import "other.scss"
+
+<===> explicit_extension/scss/other.sass
+a
+  syntax: sass
+
+<===> explicit_extension/scss/other.scss
+a {syntax: scss}
+
+<===> explicit_extension/scss/other.css
+a {syntax: css}
+
+<===> explicit_extension/scss/output.css
+a {
+  syntax: scss;
+}
+
+<===>
+================================================================================
+<===> precedence/scss_before_css/options.yml
+---
+:todo:
+- libsass # sass/libsass#2699
+
+<===> precedence/scss_before_css/input.scss
+@import "other";
+
+<===> precedence/scss_before_css/other.scss
+a {syntax: scss}
+
+<===> precedence/scss_before_css/other.css
+a {syntax: css}
+
+<===> precedence/scss_before_css/output.css
+a {
+  syntax: scss;
+}
+
+<===>
+================================================================================
+<===> precedence/sass_before_css/options.yml
+---
+:todo:
+- libsass # sass/libsass#2699
+
+<===> precedence/sass_before_css/input.scss
+@import "other";
+
+<===> precedence/sass_before_css/other.sass
+a
+  syntax: sass
+
+<===> precedence/sass_before_css/other.css
+a {syntax: css}
+
+<===> precedence/sass_before_css/output.css
+a {
+  syntax: sass;
+}
+
+<===> precedence/normal_before_index/input.scss
+@import "dir";
+
+<===> precedence/normal_before_index/dir/index.scss
+a {index: true}
+
+<===> precedence/normal_before_index/dir.scss
+a {index: false}
+
+<===> precedence/normal_before_index/output.css
+a {
+  index: false;
+}
+
+<===>
+================================================================================
+<===> index/scss/dir/index.scss
+.foo {
+  a: b;
+}
+
+<===> index/scss/input.scss
+@import "dir";
+
+<===> index/scss/output.css
+.foo {
+  a: b;
+}
+
+<===>
+================================================================================
+<===> index/sass/dir/index.sass
+.foo 
+  a: b
+
+<===> index/sass/input.scss
+@import "dir";
+
+<===> index/sass/output.css
+.foo {
+  a: b;
+}
+
+<===>
+================================================================================
+<===> index/partial/dir/_index.scss
+.foo {
+  a: b;
+}
+
+<===> index/partial/input.scss
+@import "dir";
+
+<===> index/partial/output.css
+.foo {
+  a: b;
+}
+
+<===>
+================================================================================
+<===> index/dir_dot_foo/dir.foo/index.scss
+.foo {
+  a: b;
+}
+
+<===> index/dir_dot_foo/input.scss
+@import "dir.foo";
+
+<===> index/dir_dot_foo/output.css
+.foo {
+  a: b;
+}
+
+<===>
+================================================================================
+<===> index/dir_dot_scss/dir.scss/index.scss
+.foo {
+  a: b;
+}
+
+<===> index/dir_dot_scss/input.scss
+@import "dir.scss";
+
+<===> index/dir_dot_scss/error
+Error: File to import not found or unreadable: dir.scss.
+<===> index/dir_dot_scss/error-dart-sass
+Error: Can't find stylesheet to import.
+  ,
+1 | @import "dir.scss";
+  |         ^^^^^^^^^^
+  '
+  input.scss 1:9  root stylesheet

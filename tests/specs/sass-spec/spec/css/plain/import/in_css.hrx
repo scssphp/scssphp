@@ -1,0 +1,13 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+@import "plain";
+
+<===> plain.css
+@import "whatever";
+
+<===> output.css
+@import "whatever";

@@ -1,0 +1,13 @@
+<===> input.scss
+foo {
+  foo: ceil(4.1);
+  foo: ceil(4.8px);
+  foo: ceil($number: 4.8px);
+}
+
+<===> output.css
+foo {
+  foo: 5;
+  foo: 5px;
+  foo: 5px;
+}

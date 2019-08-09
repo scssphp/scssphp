@@ -1,0 +1,16 @@
+<===> input.scss
+:not(.thing) {
+    color: red;
+}
+:not(.bar) {
+    @extend .thing;
+    background: blue;
+}
+<===> output.css
+:not(.thing) {
+  color: red;
+}
+
+:not(.bar) {
+  background: blue;
+}

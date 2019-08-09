@@ -1,0 +1,25 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+a {
+  // var() is substituted before parsing, so it may contain multiple arguments.
+  b: hsla(var(--foo), 3%, 0.4);
+  b: hsla(1, var(--foo), 0.4);
+  b: hsla(1, 2%, var(--foo));
+  b: hsla(var(--foo), 0.4);
+  b: hsla(1, var(--foo));
+  b: hsla(var(--foo));
+}
+
+<===> output.css
+a {
+  b: hsla(var(--foo), 3%, 0.4);
+  b: hsla(1, var(--foo), 0.4);
+  b: hsla(1, 2%, var(--foo));
+  b: hsla(var(--foo), 0.4);
+  b: hsla(1, var(--foo));
+  b: hsla(var(--foo));
+}

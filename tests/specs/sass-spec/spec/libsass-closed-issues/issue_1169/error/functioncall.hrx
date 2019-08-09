@@ -1,0 +1,25 @@
+<===> input.scss
+@function fncall($void) {
+  @return "key";
+}
+
+$map: (
+  fncall(1+2): 'foo',
+  fncall(1+2): 'bar',
+);
+
+.foo {
+  content: inspect($map);
+}
+<===> error
+Error: Duplicate key "key" in map (fncall(1 + 2): "foo", fncall(1 + 2): "bar").
+        on line 5 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Duplicate key.
+  ,
+7 |   fncall(1+2): 'bar',
+  |   ^^^^^^^^^^^
+  '
+  input.scss 7:3  root stylesheet

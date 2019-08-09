@@ -1,0 +1,69 @@
+<===> input.scss
+foo {
+  c-1: rgba(0,0,0,-1);
+  c0: rgba(0,0,0,0.0);
+  c1: rgba(0,0,0,0.1);
+  c2: rgba(0,0,0,0.2);
+  c3: rgba(0,0,0,0.3);
+  c4: rgba(0,0,0,0.4);
+  c5: rgba(0,0,0,0.5);
+  c6: rgba(0,0,0,0.6);
+  c7: rgba(0,0,0,0.7);
+  c8: rgba(0,0,0,0.8);
+  c9: rgba(0,0,0,0.9);
+  c10: rgba(0,0,0,1);
+  c11: rgba(0,0,0,1.1);
+  c12: rgba(0,0,0,2);
+}
+
+foo {
+  c-1: rgba(black,-1);
+  c0: rgba(black,0.0);
+  c1: rgba(black,0.1);
+  c2: rgba(black,0.2);
+  c3: rgba(black,0.3);
+  c4: rgba(black,0.4);
+  c5: rgba(black,0.5);
+  c6: rgba(black,0.6);
+  c7: rgba(black,0.7);
+  c8: rgba(black,0.8);
+  c9: rgba(black,0.9);
+  c10: rgba(black,1);
+  c11: rgba(black,1.1);
+  c12: rgba(black,2);
+}
+
+<===> output.css
+foo {
+  c-1: rgba(0, 0, 0, 0);
+  c0: rgba(0, 0, 0, 0);
+  c1: rgba(0, 0, 0, 0.1);
+  c2: rgba(0, 0, 0, 0.2);
+  c3: rgba(0, 0, 0, 0.3);
+  c4: rgba(0, 0, 0, 0.4);
+  c5: rgba(0, 0, 0, 0.5);
+  c6: rgba(0, 0, 0, 0.6);
+  c7: rgba(0, 0, 0, 0.7);
+  c8: rgba(0, 0, 0, 0.8);
+  c9: rgba(0, 0, 0, 0.9);
+  c10: black;
+  c11: black;
+  c12: black;
+}
+
+foo {
+  c-1: rgba(0, 0, 0, 0);
+  c0: rgba(0, 0, 0, 0);
+  c1: rgba(0, 0, 0, 0.1);
+  c2: rgba(0, 0, 0, 0.2);
+  c3: rgba(0, 0, 0, 0.3);
+  c4: rgba(0, 0, 0, 0.4);
+  c5: rgba(0, 0, 0, 0.5);
+  c6: rgba(0, 0, 0, 0.6);
+  c7: rgba(0, 0, 0, 0.7);
+  c8: rgba(0, 0, 0, 0.8);
+  c9: rgba(0, 0, 0, 0.9);
+  c10: black;
+  c11: black;
+  c12: black;
+}

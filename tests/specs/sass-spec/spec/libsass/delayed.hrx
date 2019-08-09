@@ -1,0 +1,113 @@
+<===> input.scss
+$x: a 3/4 b;
+$y: hey;
+
+@function foo() {
+  @return 3/4;
+}
+
+div {
+  hoo: 3/4;
+  goo: nth($x, 2);
+  foo: 15 / nth($x, 2);
+  foo: .25 + nth($x, 2);
+  coo: 2/3 / nth($x, 2);
+  bar: $y and true;
+  bar: false and true;
+  bar: (false) and true;
+  @each $elem in $x {
+    blah: $elem;
+  }
+  bloo: foo();
+  @warn 2/3;
+  blix: "hey #{nth($x, 2)} ho";
+}
+
+@media screen and (hux: 3/4) {
+  div {
+    color: red;
+  }
+}
+
+@warn "blah blah";
+
+div {
+  blah: "ho #{nth($x, 2) } ho";
+}
+
+span {
+  fludge: (true and 3/4);
+}
+<===> output.css
+div {
+  hoo: 3/4;
+  goo: 0.75;
+  foo: 20;
+  foo: 1;
+  coo: 0.8888888889;
+  bar: true;
+  bar: false and true;
+  bar: false;
+  blah: a;
+  blah: 0.75;
+  blah: b;
+  bloo: 0.75;
+  blix: "hey 0.75 ho";
+}
+
+@media screen and (hux: 3 / 4) {
+  div {
+    color: red;
+  }
+}
+div {
+  blah: "ho 0.75 ho";
+}
+
+span {
+  fludge: 0.75;
+}
+
+<===> output-dart-sass.css
+div {
+  hoo: 3/4;
+  goo: 0.75;
+  foo: 20;
+  foo: 1;
+  coo: 0.8888888889;
+  bar: true;
+  bar: false;
+  bar: false;
+  blah: a;
+  blah: 0.75;
+  blah: b;
+  bloo: 0.75;
+  blix: "hey 0.75 ho";
+}
+
+@media screen and (hux: 3/4) {
+  div {
+    color: red;
+  }
+}
+div {
+  blah: "ho 0.75 ho";
+}
+
+span {
+  fludge: 0.75;
+}
+
+<===> warning
+WARNING: 2/3
+         on line 21 of input.scss
+
+WARNING: blah blah
+         on line 31 of input.scss
+
+<===> warning-dart-sass
+WARNING: 2/3
+    input.scss 21:3  root stylesheet
+
+WARNING: blah blah
+    input.scss 31:1  root stylesheet

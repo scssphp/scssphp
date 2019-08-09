@@ -1,0 +1,9 @@
+<===> input.scss
+$xs-break: 30em;@media ALL AND (max-width: $xs-break) {header {display: none;}}
+
+<===> output.css
+@media ALL and (max-width: 30em) {
+  header {
+    display: none;
+  }
+}

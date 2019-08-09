@@ -1,0 +1,14 @@
+<===> input.scss
+@mixin foo($x) {
+  style: $x;
+}
+
+div {
+  @include foo(0px 0px 0px 0px #ef8086 inset !important);
+  fludge: foo bar ! important hux;
+}
+<===> output.css
+div {
+  style: 0px 0px 0px 0px #ef8086 inset !important;
+  fludge: foo bar !important hux;
+}

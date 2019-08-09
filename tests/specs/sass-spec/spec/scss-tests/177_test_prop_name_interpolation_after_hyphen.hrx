@@ -1,0 +1,7 @@
+<===> input.scss
+a { -#{"foo"}-bar: b; }
+
+<===> output.css
+a {
+  -foo-bar: b;
+}

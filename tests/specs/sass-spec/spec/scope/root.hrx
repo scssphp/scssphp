@@ -1,0 +1,21 @@
+<===> input.scss
+$foo: 42;
+
+.foo {
+  content: $foo;
+}
+
+$foo: 1337 !global;
+
+.bar {
+  content: $foo;
+}
+
+<===> output.css
+.foo {
+  content: 42;
+}
+
+.bar {
+  content: 1337;
+}

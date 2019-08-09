@@ -1,0 +1,55 @@
+<===> input.scss
+test-1 test-2 test-3 test-4 test-5,
+test-6 test-7 test-8 test-9 test-10 {
+    @each $set in & {
+        set: inspect($set);
+
+        @each $selector in $set {
+            selector: inspect($selector);
+        }
+    }
+}
+
+test-1 test-2 test-3 test-4 test-5,
+test-6 test-7 test-8 test-9 test-10 {
+    @for $i from 1 through length(&) {
+        $set: nth(&, $i);
+        set: inspect($set);
+
+        @each $selector in $set {
+            selector: inspect($selector);
+        }
+    }
+}
+<===> output.css
+test-1 test-2 test-3 test-4 test-5,
+test-6 test-7 test-8 test-9 test-10 {
+  set: test-1 test-2 test-3 test-4 test-5;
+  selector: test-1;
+  selector: test-2;
+  selector: test-3;
+  selector: test-4;
+  selector: test-5;
+  set: test-6 test-7 test-8 test-9 test-10;
+  selector: test-6;
+  selector: test-7;
+  selector: test-8;
+  selector: test-9;
+  selector: test-10;
+}
+
+test-1 test-2 test-3 test-4 test-5,
+test-6 test-7 test-8 test-9 test-10 {
+  set: test-1 test-2 test-3 test-4 test-5;
+  selector: test-1;
+  selector: test-2;
+  selector: test-3;
+  selector: test-4;
+  selector: test-5;
+  set: test-6 test-7 test-8 test-9 test-10;
+  selector: test-6;
+  selector: test-7;
+  selector: test-8;
+  selector: test-9;
+  selector: test-10;
+}

@@ -1,0 +1,140 @@
+<===> none_passed/input.scss
+// It's an error to pass no arguments to a content block that requires them.
+@mixin mixin {
+  @content;
+}
+
+@include mixin using ($arg1, $arg2) {}
+
+<===> none_passed/error
+Error: Missing argument $arg1.
+  ,
+3 |   @content;
+  |   ^^^^^^^^
+  '
+  input.scss 3:3  @content
+  input.scss 3:3  mixin()
+  input.scss 6:1  root stylesheet
+
+<===> none_passed/error-libsass
+Error: Mixin @content is missing argument $arg1.
+        on line 2:3 of test.scss, in mixin `mixin`
+        from line 5:10 of test.scss
+>>   @content;
+
+   --^
+
+<===>
+================================================================================
+<===> none_expected/input.scss
+// It's an error to pass argments to a content block that doesn't take them.
+@mixin mixin {
+  @content(value);
+}
+
+@include mixin {}
+
+<===> none_expected/error
+Error: Only 0 arguments allowed, but 1 was passed.
+  ,
+3 |   @content(value);
+  |   ^^^^^^^^^^^^^^^
+  '
+  input.scss 3:3  @content
+  input.scss 3:3  mixin()
+  input.scss 6:1  root stylesheet
+
+<===> none_expected/error-libsass
+Error: wrong number of arguments (1 for 0) for `@content'
+        on line 2:3 of test.scss, in mixin `@content`
+        from line 2:3 of test.scss, in mixin `mixin`
+        from line 5:10 of test.scss
+>>   @content(value);
+
+   --^
+
+<===>
+================================================================================
+<===> named/input.scss
+// It's an error to pass a named argument that doesn't exist.
+@mixin mixin {
+  @content($invalid: value);
+}
+
+@include mixin using ($valid: value) {}
+
+<===> named/error
+Error: No argument named $invalid.
+  ,
+3 |   @content($invalid: value);
+  |   ^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 3:3  @content
+  input.scss 3:3  mixin()
+  input.scss 6:1  root stylesheet
+
+<===> named/error-libsass
+Error: Mixin @content has no parameter named $invalid
+        on line 2:12 of test.scss, in mixin `@content`
+        from line 2:3 of test.scss, in mixin `mixin`
+        from line 5:10 of test.scss
+>>   @content($invalid: value);
+
+   -----------^
+
+<===>
+================================================================================
+<===> too_few/input.scss
+// It's an error to pass fewer positional arguments than are required.
+@mixin mixin {
+  @content(1);
+}
+
+@include mixin using ($arg1, $arg2) {}
+
+<===> too_few/error
+Error: Missing argument $arg2.
+  ,
+3 |   @content(1);
+  |   ^^^^^^^^^^^
+  '
+  input.scss 3:3  @content
+  input.scss 3:3  mixin()
+  input.scss 6:1  root stylesheet
+
+<===> too_few/error-libsass
+Error: Mixin @content is missing argument $arg2.
+        on line 2:3 of test.scss, in mixin `mixin`
+        from line 5:10 of test.scss
+>>   @content(1);
+
+   --^
+
+<===>
+================================================================================
+<===> too_many/input.scss
+// It's an error to pass more positional arguments than are required.
+@mixin mixin {
+  @content(1, 2, 3);
+}
+
+@include mixin using ($arg1, $arg2) {}
+
+<===> too_many/error
+Error: Only 2 arguments allowed, but 3 were passed.
+  ,
+3 |   @content(1, 2, 3);
+  |   ^^^^^^^^^^^^^^^^^
+  '
+  input.scss 3:3  @content
+  input.scss 3:3  mixin()
+  input.scss 6:1  root stylesheet
+
+<===> too_many/error-libsass
+Error: wrong number of arguments (3 for 2) for `@content'
+        on line 2:3 of test.scss, in mixin `@content`
+        from line 2:3 of test.scss, in mixin `mixin`
+        from line 5:10 of test.scss
+>>   @content(1, 2, 3);
+
+   --^

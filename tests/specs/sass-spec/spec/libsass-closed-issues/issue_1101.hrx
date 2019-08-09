@@ -1,0 +1,9 @@
+<===> input.scss
+$foo: white;
+foo {
+  bar: adjust-color($foo, $hue: -6deg, $lightness: -16, $saturation: -7);
+}
+<===> output.css
+foo {
+  bar: #d6d6d6;
+}

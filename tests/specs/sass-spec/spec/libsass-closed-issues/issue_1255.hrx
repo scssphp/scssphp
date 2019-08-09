@@ -1,0 +1,20 @@
+<===> input.scss
+@function double($value) {
+  @return $value * 2;
+}
+
+@mixin dummy-bug($args...) {
+  @for $i from 1 through length($args) {
+    $args: set-nth($args, $i, double(nth($args, $i)));
+  }
+
+  content: $args;
+}
+
+.foo {
+  @include dummy-bug(1, 2, 3, 4);
+}
+<===> output.css
+.foo {
+  content: 2, 4, 6, 8;
+}

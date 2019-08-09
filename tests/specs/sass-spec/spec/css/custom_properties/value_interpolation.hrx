@@ -1,0 +1,19 @@
+<===> input.scss
+.value-interpolation {
+  // Interpolation is the only Sass construct that's supported in custom
+  // variables.
+  --alone: #{1 + 2};
+  --in-list: a #{1 + 2} c;
+  --in-ident: foo#{1 + 2}bar;
+  --in-string: "foo#{1 + 2}bar";
+  --in-uri: uri(foo#{1 + 2}bar);
+}
+
+<===> output.css
+.value-interpolation {
+  --alone: 3;
+  --in-list: a 3 c;
+  --in-ident: foo3bar;
+  --in-string: "foo3bar";
+  --in-uri: uri(foo3bar);
+}

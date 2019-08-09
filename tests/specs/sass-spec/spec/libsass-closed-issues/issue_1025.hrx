@@ -1,0 +1,21 @@
+<===> input.scss
+@mixin m() {
+  .a & {
+    @content;
+  }
+}
+
+:not(:last-of-type) {
+  top: 10px;
+  @include m {
+    top: 10px;
+  }
+}
+
+<===> output.css
+:not(:last-of-type) {
+  top: 10px;
+}
+.a :not(:last-of-type) {
+  top: 10px;
+}

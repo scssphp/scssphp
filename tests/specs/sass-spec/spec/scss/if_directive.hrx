@@ -1,0 +1,8 @@
+<===> input.scss
+@if "foo" != "foo" {foo {a: b}}
+@else {bar {a: b}}
+
+<===> output.css
+bar {
+  a: b;
+}

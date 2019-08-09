@@ -1,0 +1,18 @@
+<===> input.scss
+.simple {
+  a: selector-nest('.foo');
+  b: selector-nest('.foo', '.bar');
+  c: selector-nest('.foo', '.bar', '.baz');
+  d: selector-nest('.a .foo', '.b .bar');
+  e: selector-nest('.foo', '&.bar');
+  e: selector-nest('.foo', '&.bar', '.baz &');
+}
+<===> output.css
+.simple {
+  a: .foo;
+  b: .foo .bar;
+  c: .foo .bar .baz;
+  d: .a .foo .b .bar;
+  e: .foo.bar;
+  e: .baz .foo.bar;
+}

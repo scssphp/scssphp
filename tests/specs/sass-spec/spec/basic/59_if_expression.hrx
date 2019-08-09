@@ -1,0 +1,17 @@
+<===> input.scss
+$x: 0;
+$if-false: whatever;
+
+div {
+  foo: if($if-true: hey, $if-false: ho, $condition: true);
+  foo: if($if-true: hey, $if-false: ho, $condition: false);
+  foo: if($x != 0, if($x, true, false), unquote("x is zero"));
+  foo: if(false, 1/0, $if-false: $if-false);
+}
+<===> output.css
+div {
+  foo: hey;
+  foo: ho;
+  foo: x is zero;
+  foo: whatever;
+}

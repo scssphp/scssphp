@@ -1,0 +1,55 @@
+<===> input.scss
+$x: rgb(0, 255, 255);
+
+div {
+  color: rgb(255, $blue: 0, $green: 255);
+  background: rgb(123, 45, 6);
+  grah: rgba(#f0e, $alpha: .5);
+  blah: rgba(1,2,3,.6);
+  
+  floo: $x;
+  bloo: rgba($x, 0.7);
+  groo: $x;
+  
+  $x: rgb(123, 45, 6);
+  
+  hoo: red($x);
+  moo: green($x);
+  poo: blue($x);
+  
+  goo: mix(rgba(255, 0, 0, 0.5), #00f);
+  
+  boo: invert(#123456);
+}
+
+<===> output.css
+div {
+  color: yellow;
+  background: #7b2d06;
+  grah: rgba(255, 0, 238, 0.5);
+  blah: rgba(1, 2, 3, 0.6);
+  floo: cyan;
+  bloo: rgba(0, 255, 255, 0.7);
+  groo: cyan;
+  hoo: 123;
+  moo: 45;
+  poo: 6;
+  goo: rgba(64, 0, 191, 0.75);
+  boo: #edcba9;
+}
+
+<===> output-dart-sass.css
+div {
+  color: yellow;
+  background: #7b2d06;
+  grah: rgba(255, 0, 238, 0.5);
+  blah: rgba(1, 2, 3, 0.6);
+  floo: aqua;
+  bloo: rgba(0, 255, 255, 0.7);
+  groo: aqua;
+  hoo: 123;
+  moo: 45;
+  poo: 6;
+  goo: rgba(64, 0, 191, 0.75);
+  boo: #edcba9;
+}

@@ -1,0 +1,31 @@
+<===> input.scss
+// 3.5 added the $bracketed parameter to join() and made it generally
+// bracketed-list-aware.
+.join {
+  both-bracketed: join([foo bar], [baz bang]);
+  first-bracketed: join([foo bar], baz bang);
+  second-bracketed: join(foo bar, [baz bang]);
+  bracketed-true: join(foo, bar, $bracketed: true);
+  bracketed-false: join([foo], [bar], $bracketed: false);
+  separator-and-bracketed: join(foo, bar, $separator: comma, $bracketed: true);
+  bracketed-and-separator: join(foo, bar, $bracketed: true, $separator: comma);
+  separator-and-bracketed-positional:
+      join(foo, bar, comma, true);
+
+  // All values are valid in boolean contexts.
+  unusual-bracketed-type: join(foo, bar, $bracketed: foo);
+  bracketed-null: join([foo], [bar], $bracketed: null);
+}
+<===> output.css
+.join {
+  both-bracketed: [foo bar baz bang];
+  first-bracketed: [foo bar baz bang];
+  second-bracketed: foo bar baz bang;
+  bracketed-true: [foo bar];
+  bracketed-false: foo bar;
+  separator-and-bracketed: [foo, bar];
+  bracketed-and-separator: [foo, bar];
+  separator-and-bracketed-positional: [foo, bar];
+  unusual-bracketed-type: [foo bar];
+  bracketed-null: foo bar;
+}

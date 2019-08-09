@@ -1,0 +1,14 @@
+<===> input.scss
+test {
+  left: expression(callSomeFunc());
+  content: expression("Smile :-)");
+}
+
+<===> error
+Error: Invalid CSS after "...sion("Smile :-)": expected ";", was "");"
+
+<===> output-dart-sass.css
+test {
+  left: expression(callSomeFunc());
+  content: expression("Smile :-)");
+}

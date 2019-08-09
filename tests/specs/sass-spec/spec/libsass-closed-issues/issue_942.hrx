@@ -1,0 +1,20 @@
+<===> input.scss
+$v: ".foo \
+.bar";
+
+#{$v} {
+	color: #F00;
+}
+
+div {
+	content: "foo\
+bar";
+}
+<===> output.css
+.foo .bar {
+  color: #F00;
+}
+
+div {
+  content: "foobar";
+}

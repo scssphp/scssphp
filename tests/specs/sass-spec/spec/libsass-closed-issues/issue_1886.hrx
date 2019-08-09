@@ -1,0 +1,8 @@
+<===> input.scss
+body {
+  background: url()
+}
+<===> output.css
+body {
+  background: url();
+}

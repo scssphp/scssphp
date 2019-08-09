@@ -1,0 +1,15 @@
+<===> input.scss
+// libsass issue 659: never output empty blocks
+// https://github.com/sass/libsass/issues/659
+
+@function null() {
+  @return null;
+}
+
+$foo: null;
+
+.test {
+  out: null();
+  out: $foo;
+}
+<===> output.css

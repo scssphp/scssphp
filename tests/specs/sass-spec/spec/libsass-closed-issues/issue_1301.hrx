@@ -1,0 +1,11 @@
+<===> input.scss
+$name: "my-class";
+
+.-#{$name} {
+  content: "test";
+}
+
+<===> output.css
+.-my-class {
+  content: "test";
+}

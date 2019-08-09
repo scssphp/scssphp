@@ -1,0 +1,15 @@
+<===> input.sass
+@import url("foo");
+
+<===> error
+Error: Invalid CSS after "url("foo")": expected media query list, was ";"
+        on line 1 of input.sass
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: semicolons aren't allowed in the indented syntax.
+  ,
+1 | @import url("foo");
+  |                   ^
+  '
+  input.sass 1:19  root stylesheet

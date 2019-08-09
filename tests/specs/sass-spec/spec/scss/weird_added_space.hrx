@@ -1,0 +1,11 @@
+<===> input.scss
+$value : bip;
+
+foo {
+  bar: -moz-#{$value};
+}
+
+<===> output.css
+foo {
+  bar: -moz-bip;
+}

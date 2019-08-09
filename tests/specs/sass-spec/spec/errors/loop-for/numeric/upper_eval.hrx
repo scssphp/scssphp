@@ -1,0 +1,21 @@
+<===> input.scss
+@function foo() {
+	@for $i from 1 through "foo" {
+		@return $i;
+	}
+}
+
+bar { baz: foo(); }
+<===> error
+Error: "foo" is not an integer.
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: "foo" is not a number.
+  ,
+2 |     @for $i from 1 through "foo" {
+  |                            ^^^^^
+  '
+  input.scss 2:25  foo()
+  input.scss 7:12  root stylesheet

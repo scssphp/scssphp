@@ -1,0 +1,154 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2722
+
+<===>
+================================================================================
+<===> list/empty/input.scss
+empty {
+  x: hsl(());
+}
+
+<===> list/empty/error
+Error: Missing element $hue.
+  ,
+2 |   x: hsl(());
+  |      ^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> list/comma_separated/input.scss
+comma-separated {
+  x: hsl((0, 100%, 50%));
+}
+
+<===> list/comma_separated/error
+Error: $channels must be a space-separated list.
+  ,
+2 |   x: hsl((0, 100%, 50%));
+  |      ^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> list/bracketed/input.scss
+bracketed {
+  x: hsl([0 100% 50%]);
+}
+
+<===> list/bracketed/error
+Error: $channels must be an unbracketed list.
+  ,
+2 |   x: hsl([0 100% 50%]);
+  |      ^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> list/one_element/input.scss
+one-arg {
+  x: hsl(0);
+}
+
+<===> list/one_element/error
+Error: Missing element $saturation.
+  ,
+2 |   x: hsl(0);
+  |      ^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> list/two_elements/input.scss
+two-elements {
+  x: hsl(0 100%);
+}
+
+<===> list/two_elements/error
+Error: Missing element $lightness.
+  ,
+2 |   x: hsl(0 100%);
+  |      ^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> list/four_elements/input.scss
+four-elements {
+  x: hsl(0 100% 50% 0.4);
+}
+
+<===> list/four_elements/error
+Error: Only 3 elements allowed, but 4 were passed.
+  ,
+2 |   x: hsl(0 100% 50% 0.4);
+  |      ^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> type/hue/input.scss
+hue-type {
+  x: hsl("foo" 100% 50%);
+}
+
+<===> type/hue/error
+Error: $hue: "foo" is not a number.
+  ,
+2 |   x: hsl("foo" 100% 50%);
+  |      ^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> type/saturation/input.scss
+saturation-type {
+  x: hsl(0 "foo" 50%);
+}
+
+<===> type/saturation/error
+Error: $saturation: "foo" is not a number.
+  ,
+2 |   x: hsl(0 "foo" 50%);
+  |      ^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> type/lightness/input.scss
+lightness-type {
+  x: hsl(0 100% "foo");
+}
+
+<===> type/lightness/error
+Error: $lightness: "foo" is not a number.
+  ,
+2 |   x: hsl(0 100% "foo");
+  |      ^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> quoted_var_slash/input.scss
+quoted-var-slash {
+  x: hsl(0 100% "var(--foo) / 0.4");
+}
+
+<===> quoted_var_slash/error
+Error: $lightness: "var(--foo) / 0.4" is not a number.
+  ,
+2 |   x: hsl(0 100% "var(--foo) / 0.4");
+  |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet

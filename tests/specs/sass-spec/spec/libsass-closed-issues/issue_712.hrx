@@ -1,0 +1,30 @@
+<===> input.scss
+.foo {
+  content: 'foo';
+}
+
+@media print {
+  .bar {
+    @extend .foo;
+  }
+}
+
+<===> error
+Error: You may not @extend an outer selector from within @media.
+       You may only @extend selectors within the same directive.
+       From "@extend .foo" on line 7 of input.scss.
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: From line 1, column 1 of input.scss: 
+  ,
+1 | .foo {
+  | ^^^^^
+  '
+You may not @extend selectors across media queries.
+  ,
+7 |     @extend .foo;
+  |     ^^^^^^^^^^^^
+  '
+  input.scss 7:5  root stylesheet

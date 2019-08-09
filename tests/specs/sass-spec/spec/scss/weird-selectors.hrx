@@ -1,0 +1,26 @@
+<===> input.scss
+> > E {
+  color: red;
+}
+
+E > > {
+  color: red;
+}
+
+> > E > > {
+  > > F > > {
+    color: red;
+  }
+}
+<===> output.css
+> > E {
+  color: red;
+}
+
+E > > {
+  color: red;
+}
+
+> > E > > > > F > > {
+  color: red;
+}

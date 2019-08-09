@@ -1,0 +1,16 @@
+<===> input.scss
+foo {
+  test-02: selector-append(".foo", ">.bar");
+}
+<===> error
+Error: Can't append "> .bar" to ".foo" for `selector-append'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Can't append > .bar to .foo.
+  ,
+2 |   test-02: selector-append(".foo", ">.bar");
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:12  root stylesheet

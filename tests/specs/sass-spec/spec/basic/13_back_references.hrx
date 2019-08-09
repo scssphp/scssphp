@@ -1,0 +1,14 @@
+<===> input.scss
+hey, ho {
+  & > boo, foo &.goo {
+    bloo: bloo;
+  }
+  blah: blah;
+}
+<===> output.css
+hey, ho {
+  blah: blah;
+}
+hey > boo, foo hey.goo, ho > boo, foo ho.goo {
+  bloo: bloo;
+}

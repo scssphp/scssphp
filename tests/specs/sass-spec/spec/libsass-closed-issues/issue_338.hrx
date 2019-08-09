@@ -1,0 +1,11 @@
+<===> input.scss
+$list: ("a", "b");
+
+test {
+    content: if( length($list) > 2, nth($list, 3), nth($list, 1) );
+}
+
+<===> output.css
+test {
+  content: "a";
+}

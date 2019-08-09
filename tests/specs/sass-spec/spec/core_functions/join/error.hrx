@@ -1,0 +1,79 @@
+<===> README.md
+`join()` is unique in that it takes multiple optional arguments that can be
+passed independently of one another. This may necessitate unusual
+implementation, so we go out of our way to verify that it disallows invalid
+calls.
+
+<===>
+================================================================================
+<===> named/input.scss
+.join-named-error {
+  error: join(foo, bar, $invalid: true); }
+
+<===> named/error
+Error: Unknown argument $invalid (true) for `join'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> named/error-dart-sass
+Error: No argument named $invalid.
+  ,
+2 |   error: join(foo, bar, $invalid: true); }
+  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:10  root stylesheet
+
+<===> named/error-libsass
+Error: Function join has no parameter named $invalid
+        on line 2:25 of input.scss
+>>   error: join(foo, bar, $invalid: true); }
+
+   ------------------------^
+
+<===>
+================================================================================
+<===> positional/input.scss
+.join-positional-error {
+  error: join(foo, bar, comma, true, false); }
+
+<===> positional/error
+Error: wrong number of arguments (5 for 2..4) for `join'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> positional/error-dart-sass
+Error: Only 4 arguments allowed, but 5 were passed.
+  ,
+2 |   error: join(foo, bar, comma, true, false); }
+  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:10  root stylesheet
+
+<===> positional/error-libsass
+Error: wrong number of arguments (5 for 4) for `join'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===>
+================================================================================
+<===> positional_and_named/input.scss
+.join-positional-and-named-error {
+  error: join(foo, bar, comma, true, false, $invalid: true); }
+
+<===> positional_and_named/error
+Error: wrong number of arguments (5 for 2..4) for `join'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> positional_and_named/error-dart-sass
+Error: Only 4 arguments allowed, but 5 were passed.
+  ,
+2 |   error: join(foo, bar, comma, true, false, $invalid: true); }
+  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:10  root stylesheet
+
+<===> positional_and_named/error-libsass
+Error: wrong number of arguments (6 for 4) for `join'
+        on line 2 of input.scss
+  Use --trace for backtrace.

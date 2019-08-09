@@ -1,0 +1,16 @@
+<===> input.scss
+%foo {
+  &bar {
+    display: block;
+  }
+  &.bar {
+    display: block;
+  }
+}
+zoo {
+  @extend %foo;
+}
+<===> output.css
+zoo.bar {
+  display: block;
+}

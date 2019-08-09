@@ -1,0 +1,7 @@
+<===> input.scss
+foo:nth-child(#{5 + "n"}) {a: b}
+
+<===> output.css
+foo:nth-child(5n) {
+  a: b;
+}

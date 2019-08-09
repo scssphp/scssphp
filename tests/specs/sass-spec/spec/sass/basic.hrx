@@ -1,0 +1,13 @@
+<===> input.sass
+div
+	a
+		color: red
+	li
+		color: green
+<===> output.css
+div a {
+  color: red;
+}
+div li {
+  color: green;
+}

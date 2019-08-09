@@ -1,0 +1,20 @@
+<===> input.scss
+@function test($rest...,$param) {}
+<===> error
+Error: Invalid CSS after "...n test($rest...": expected ")", was ",$param) {}"
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected ")".
+  ,
+1 | @function test($rest...,$param) {}
+  |                        ^
+  '
+  input.scss 1:24  root stylesheet
+
+<===> error-libsass
+Error: required parameters must precede variable-length parameters
+        on line 1 of input.scss
+>> @function test($rest...,$param) {}
+   ------------------------^

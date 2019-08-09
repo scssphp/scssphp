@@ -1,0 +1,8 @@
+<===> input.scss
+%-a ::foo(2n+1).baz {a: b}
+::foo(2n+1) {@extend .baz} -a {@extend %-a}
+
+<===> output.css
+-a ::foo(2n+1) {
+  a: b;
+}

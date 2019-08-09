@@ -1,0 +1,18 @@
+<===> input.scss
+$quoted_list: "foo", "bar", "baz";
+$unquoted_list: foo, bar, baz;
+
+foo {
+  foo: #{foo, bar, baz};
+  foo: #{"foo", "bar", "baz"};
+  foo: #{$quoted_list};
+  foo: #{$unquoted_list};
+}
+
+<===> output.css
+foo {
+  foo: foo, bar, baz;
+  foo: foo, bar, baz;
+  foo: foo, bar, baz;
+  foo: foo, bar, baz;
+}

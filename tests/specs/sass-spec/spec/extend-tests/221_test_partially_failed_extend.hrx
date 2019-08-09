@@ -1,0 +1,13 @@
+<===> input.scss
+test { @extend .rc; }
+.rc {color: white;}
+.prices span.pill span.rc {color: red;}
+
+<===> output.css
+.rc, test {
+  color: white;
+}
+
+.prices span.pill span.rc {
+  color: red;
+}

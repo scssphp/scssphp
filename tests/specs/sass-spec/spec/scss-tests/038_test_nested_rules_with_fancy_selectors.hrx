@@ -1,0 +1,16 @@
+<===> input.scss
+foo {
+  .bar {a: b}
+  :baz {c: d}
+  bang:bop {e: f}}
+
+<===> output.css
+foo .bar {
+  a: b;
+}
+foo :baz {
+  c: d;
+}
+foo bang:bop {
+  e: f;
+}

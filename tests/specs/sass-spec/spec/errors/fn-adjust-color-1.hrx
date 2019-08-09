@@ -1,0 +1,16 @@
+<===> input.scss
+foo {
+  test: adjust-color(red, $red: 0.5, $hue: 0.2);
+}
+<===> error
+Error: Cannot specify HSL and RGB values for a color at the same time for `adjust-color'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: RGB parameters may not be passed along with HSL parameters.
+  ,
+2 |   test: adjust-color(red, $red: 0.5, $hue: 0.2);
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:9  root stylesheet

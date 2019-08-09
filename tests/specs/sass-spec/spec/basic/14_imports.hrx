@@ -1,0 +1,58 @@
+<===> a.scss
+div {
+  span {
+    moo: goo;
+  }
+}
+
+$x: boo;
+<===> b.scss
+hoo {
+  mux: scooba-dee-doo;
+  flux: gooboo $x;
+  @import "d.scss";
+}
+<===> d.scss
+d {
+  inside: d now;
+}
+<===> input.scss
+@import "a.scss";
+
+foo {
+  blah: blah;
+  goo {
+    blee: blee;
+    @import "../14_imports/b.scss";
+    hello: world;
+  }
+  @import "sub/c.scss";
+}
+<===> sub/c.scss
+blux {
+  hey: another thing;
+  ho: will this work;
+}
+<===> output.css
+div span {
+  moo: goo;
+}
+
+foo {
+  blah: blah;
+}
+foo goo {
+  blee: blee;
+  hello: world;
+}
+foo goo hoo {
+  mux: scooba-dee-doo;
+  flux: gooboo boo;
+}
+foo goo hoo d {
+  inside: d now;
+}
+foo blux {
+  hey: another thing;
+  ho: will this work;
+}

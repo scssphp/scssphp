@@ -1,0 +1,29 @@
+<===> input.scss
+@mixin where($sel: null) {
+    @if ( & == $sel ) {
+        h1 { color: white; }
+    } @else {
+        h1 { color: blue; }
+    }
+}
+.hive { @include where(); } 
+.bee { @include where(".bee"); } 
+.amp { @include where(&); } 
+.quotedamp { @include where("&"); } 
+
+<===> output.css
+.hive h1 {
+  color: blue;
+}
+
+.bee h1 {
+  color: blue;
+}
+
+.amp h1 {
+  color: white;
+}
+
+.quotedamp h1 {
+  color: blue;
+}

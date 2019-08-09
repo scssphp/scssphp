@@ -1,0 +1,23 @@
+<===> input.scss
+foo {
+  foo: 3 - "bar";
+  foo: (3 - "bar");
+  foo: 3 / "bar";
+  foo: (3 / "bar");
+}
+
+<===> output.css
+foo {
+  foo: 3-"bar";
+  foo: 3-"bar";
+  foo: 3 / "bar";
+  foo: 3/"bar";
+}
+
+<===> output-dart-sass.css
+foo {
+  foo: 3-"bar";
+  foo: 3-"bar";
+  foo: 3/"bar";
+  foo: 3/"bar";
+}

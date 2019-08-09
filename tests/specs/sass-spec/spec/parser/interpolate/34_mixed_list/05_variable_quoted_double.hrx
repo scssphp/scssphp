@@ -1,0 +1,28 @@
+<===> input.scss
+$input: "["',foo   ,   '"]"    "bar";
+.result {
+  dquoted: "#{#{$input}}";
+  dquoted: "#{"[#{$input}]"}";
+  dquoted: "#{"#{$input}"}";
+  dquoted: "#{'#{$input}'}";
+  dquoted: "#{"['#{$input}']"}";
+  squoted: '#{#{$input}}';
+  squoted: '#{"[#{$input}]"}';
+  squoted: '#{"#{$input}"}';
+  squoted: '#{'#{$input}'}';
+  squoted: '#{"['#{$input}']"}';
+}
+
+<===> output.css
+.result {
+  dquoted: "[ ,foo   ,    ] bar";
+  dquoted: "[[ ,foo   ,    ] bar]";
+  dquoted: "[ ,foo   ,    ] bar";
+  dquoted: "[ ,foo   ,    ] bar";
+  dquoted: "['[ ,foo   ,    ] bar']";
+  squoted: "[ ,foo   ,    ] bar";
+  squoted: "[[ ,foo   ,    ] bar]";
+  squoted: "[ ,foo   ,    ] bar";
+  squoted: "[ ,foo   ,    ] bar";
+  squoted: "['[ ,foo   ,    ] bar']";
+}

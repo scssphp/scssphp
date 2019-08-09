@@ -1,0 +1,18 @@
+<===> input.scss
+$count: 0;
+
+@function foo() {
+    $count: $count + 1 !global;
+    $selector: ('.bar' 'baz');
+    @return $selector;
+}
+
+
+#{foo()} {
+    count: $count;
+}
+
+<===> output.css
+.bar baz {
+  count: 1;
+}

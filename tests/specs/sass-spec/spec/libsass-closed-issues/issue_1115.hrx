@@ -1,0 +1,23 @@
+<===> input.scss
+foo {
+    bar: "x\79";
+    baz: "#{x}\79";
+    bar: "x\a";
+    baz: "#{x}\a";
+}
+
+<===> output.css
+foo {
+  bar: "x\79";
+  baz: "xy";
+  bar: "x\a";
+  baz: "x\a";
+}
+
+<===> output-dart-sass.css
+foo {
+  bar: "xy";
+  baz: "xy";
+  bar: "x\a";
+  baz: "x\a";
+}

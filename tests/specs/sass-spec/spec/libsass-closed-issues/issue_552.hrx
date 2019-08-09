@@ -1,0 +1,23 @@
+<===> input.scss
+a,
+div {
+    top: 0;
+}
+
+.a,
+.b {
+    &.c {
+        color: red;
+    }
+}
+
+<===> output.css
+a,
+div {
+  top: 0;
+}
+
+.a.c,
+.b.c {
+  color: red;
+}

@@ -1,0 +1,13 @@
+<===> input.scss
+.foo:baz:baz {
+  float: left;
+}
+
+.bar {
+  @extend .foo;
+}
+
+<===> output.css
+.foo:baz:baz, .bar:baz:baz {
+  float: left;
+}

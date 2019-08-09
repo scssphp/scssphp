@@ -1,0 +1,15 @@
+<===> input.scss
+@function push($list, $items...) {
+  @return join($list, $items, $separator: auto);
+}
+
+.test {
+  $list: push(1 2 3, 4, 5);
+  list: inspect($list);
+  value: nth($list, 4);
+}
+<===> output.css
+.test {
+  list: 1 2 3 4 5;
+  value: 4;
+}

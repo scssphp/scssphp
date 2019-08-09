@@ -1,0 +1,22 @@
+<===> input.scss
+@mixin foo() {
+    foo: &;
+}
+
+foo {
+  @include foo { bar: baz }
+}
+
+<===> error
+Error: Mixin "foo" does not accept a content block.
+        on line 6 of input.scss, in `foo'
+        from line 6 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Mixin doesn't accept a content block.
+  ,
+6 |   @include foo { bar: baz }
+  |   ^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 6:3  root stylesheet

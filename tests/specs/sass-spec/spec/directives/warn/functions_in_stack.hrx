@@ -1,0 +1,30 @@
+<===> input.scss
+@function issues-warning($a) {
+  @warn "From function: #{inspect($a)}";
+  @return $a;
+}
+
+@mixin calls-function-that-warns($a) {
+  warned: issues-warning($a);
+}
+
+.test {
+  @include calls-function-that-warns(testing);
+}
+
+<===> output.css
+.test {
+  warned: testing;
+}
+
+<===> warning
+WARNING: From function: testing
+         on line 2 of input.scss, in `issues-warning'
+         from line 7 of input.scss, in `calls-function-that-warns'
+         from line 11 of input.scss
+
+<===> warning-dart-sass
+WARNING: From function: testing
+    input.scss 2:3   issues-warning()
+    input.scss 7:11  calls-function-that-warns()
+    input.scss 11:3  root stylesheet

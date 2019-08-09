@@ -1,0 +1,33 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+$input: \1\2\3\4\5\6\7\8\9;
+.result {
+  dquoted: "#{#{$input}}";
+  dquoted: "#{"[#{$input}]"}";
+  dquoted: "#{"#{$input}"}";
+  dquoted: "#{'#{$input}'}";
+  dquoted: "#{"['#{$input}']"}";
+  squoted: '#{#{$input}}';
+  squoted: '#{"[#{$input}]"}';
+  squoted: '#{"#{$input}"}';
+  squoted: '#{'#{$input}'}';
+  squoted: '#{"['#{$input}']"}';
+}
+
+<===> output.css
+.result {
+  dquoted: "\\1 \\2 \\3 \\4 \\5 \\6 \\7 \\8 \\9 ";
+  dquoted: "[\\1 \\2 \\3 \\4 \\5 \\6 \\7 \\8 \\9 ]";
+  dquoted: "\\1 \\2 \\3 \\4 \\5 \\6 \\7 \\8 \\9 ";
+  dquoted: "\\1 \\2 \\3 \\4 \\5 \\6 \\7 \\8 \\9 ";
+  dquoted: "['\\1 \\2 \\3 \\4 \\5 \\6 \\7 \\8 \\9 ']";
+  squoted: "\\1 \\2 \\3 \\4 \\5 \\6 \\7 \\8 \\9 ";
+  squoted: "[\\1 \\2 \\3 \\4 \\5 \\6 \\7 \\8 \\9 ]";
+  squoted: "\\1 \\2 \\3 \\4 \\5 \\6 \\7 \\8 \\9 ";
+  squoted: "\\1 \\2 \\3 \\4 \\5 \\6 \\7 \\8 \\9 ";
+  squoted: "['\\1 \\2 \\3 \\4 \\5 \\6 \\7 \\8 \\9 ']";
+}

@@ -1,0 +1,22 @@
+<===> input.scss
+.base-0  { color: green; }
+.base-1  { display: block; }
+.base-2  { border: 1px solid blue; }
+.added {
+@for $i from 0 to 3 {
+  @extend .base-#{$i};
+}
+}
+
+<===> output.css
+.base-0, .added {
+  color: green;
+}
+
+.base-1, .added {
+  display: block;
+}
+
+.base-2, .added {
+  border: 1px solid blue;
+}

@@ -1,0 +1,18 @@
+<===> input.scss
+$x: .03;
+$y: 0.7;
+
+#foo {
+  color: saturate($x);
+  color: saturate($y);
+  -webkit-filter: grayscale(.03);
+  -webkit-filter: grayscale(0.7);
+}
+
+<===> output.css
+#foo {
+  color: saturate(0.03);
+  color: saturate(0.7);
+  -webkit-filter: grayscale(0.03);
+  -webkit-filter: grayscale(0.7);
+}

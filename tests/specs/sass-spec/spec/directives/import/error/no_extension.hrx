@@ -1,0 +1,23 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+@import "other";
+
+<===> other
+a {b: c}
+
+<===> error
+Error: File to import not found or unreadable: other.
+        on line 1 of /sass/spec/directives/import/no_extension/input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Can't find stylesheet to import.
+  ,
+1 | @import "other";
+  |         ^^^^^^^
+  '
+  input.scss 1:9  root stylesheet

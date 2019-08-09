@@ -1,0 +1,17 @@
+<===> input.scss
+@function foo($one, $two) {
+  @return $one + $two;
+}
+
+$nums: 1px 2px;
+
+.foo {
+  left: foo($nums...);
+  bottom: $nums 3px;
+}
+
+<===> output.css
+.foo {
+  left: 3px;
+  bottom: 1px 2px 3px;
+}

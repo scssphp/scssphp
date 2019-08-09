@@ -1,0 +1,115 @@
+<===> input.scss
+@mixin A($width: 0, $height: 0, $opacity: 0) {
+  width: $width;
+  height: $height;
+  opacity: $opacity;
+}
+
+@mixin B($args...) {
+  @include A($args...);
+}
+
+@mixin C($args...) {
+  @include B($args...);
+}
+
+.testOneLevelPassthrough {
+  @include B(1px, 2px, 0.3);
+}
+
+.testOneLevelNoArgs {
+  @include B();
+}
+
+.testOneLevelSingleArg {
+  @include B(1px);
+}
+
+.testOneLevelNamedSingleArg {
+  @include B($opacity: 0.1);
+}
+
+.testOneLevelNamedArgs {
+  @include B($opacity: 0.3, $width: 1px, $height: 2px);
+}
+
+.testTwoLevelPassthrough {
+  @include C(1px, 2px, 0.3);
+}
+
+.testTwoLevelNoArgs {
+  @include C();
+}
+
+.testTwoLevelSingleArg {
+  @include C(1px);
+}
+
+.testTwoLevelNamedSingleArg {
+  @include C($opacity: 0.1);
+}
+
+.testTwoLevelNamedArgs {
+  @include C($opacity: 0.3, $width: 1px, $height: 2px);
+}
+
+<===> output.css
+.testOneLevelPassthrough {
+  width: 1px;
+  height: 2px;
+  opacity: 0.3;
+}
+
+.testOneLevelNoArgs {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.testOneLevelSingleArg {
+  width: 1px;
+  height: 0;
+  opacity: 0;
+}
+
+.testOneLevelNamedSingleArg {
+  width: 0;
+  height: 0;
+  opacity: 0.1;
+}
+
+.testOneLevelNamedArgs {
+  width: 1px;
+  height: 2px;
+  opacity: 0.3;
+}
+
+.testTwoLevelPassthrough {
+  width: 1px;
+  height: 2px;
+  opacity: 0.3;
+}
+
+.testTwoLevelNoArgs {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.testTwoLevelSingleArg {
+  width: 1px;
+  height: 0;
+  opacity: 0;
+}
+
+.testTwoLevelNamedSingleArg {
+  width: 0;
+  height: 0;
+  opacity: 0.1;
+}
+
+.testTwoLevelNamedArgs {
+  width: 1px;
+  height: 2px;
+  opacity: 0.3;
+}

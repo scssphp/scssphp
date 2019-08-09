@@ -1,0 +1,108 @@
+<===> input.scss
+$stuff: 1 2 3;
+
+$three: 3;
+
+div {
+  a: 1 + 2;
+  b: 3 + 3/4;
+  c: 1/2 + 1/2;
+  /* shouldn't eval the following "300" */
+  d: 300;
+  /* increasingly jacked-up edge cases that combine arithmetic with lists */
+  e: 1 + (5/10 2 3);
+  f: 1 + ((2+(3 4) 5) 6);
+  g: 1 + ((1+(14/7 8) 9) 6);
+  /* shouldn't perform the following division */
+  h: 15 / 3 / 5;
+  /* should perform the following division now */
+  i: (15 / 3 / 5);
+  /* this too */
+  j: (15 / 3) / 5;
+  /* and this */
+  k: 15 / $three;
+  l: 15 / 5 / $three;
+  m: 1/2, $stuff url("www.foo.com/blah.png") blah blah;
+  n: 1 2 3, $stuff 4 5 (6, 7 8 9);
+  o: 3px + 3px + 3px;
+  p: 4 + 1px;
+  q: (20pt / 10pt);
+  r: 16em * 4;
+  s: (5em / 2);
+  t: 1 + (2 + (3/4 + (4/5 6/7)));
+
+  // Arithmetic operations in Sass should never fail, since we implicitly use
+  // floating-point for all numbers.
+  one-over-zero: (1 / 0);
+  zero-over-zero: (0 / 0);
+  one-mod-zero: 1 % 0;
+  zero-mod-zero: 0 % 0;
+}
+
+<===> output.css
+div {
+  a: 3;
+  b: 3.75;
+  c: 1;
+  /* shouldn't eval the following "300" */
+  d: 300;
+  /* increasingly jacked-up edge cases that combine arithmetic with lists */
+  e: 15/10 2 3;
+  f: 123 4 5 6;
+  g: 1114/7 8 9 6;
+  /* shouldn't perform the following division */
+  h: 15 / 3 / 5;
+  /* should perform the following division now */
+  i: 1;
+  /* this too */
+  j: 1;
+  /* and this */
+  k: 5;
+  l: 1;
+  m: 1/2, 1 2 3 url("www.foo.com/blah.png") blah blah;
+  n: 1 2 3, 1 2 3 4 5 6, 7 8 9;
+  o: 9px;
+  p: 5px;
+  q: 2;
+  r: 64em;
+  s: 2.5em;
+  t: 120.754/5 6/7;
+  one-over-zero: Infinity;
+  zero-over-zero: NaN;
+  one-mod-zero: NaN;
+  zero-mod-zero: NaN;
+}
+
+<===> output-dart-sass.css
+div {
+  a: 3;
+  b: 3.75;
+  c: 1;
+  /* shouldn't eval the following "300" */
+  d: 300;
+  /* increasingly jacked-up edge cases that combine arithmetic with lists */
+  e: 15/10 2 3;
+  f: 123 4 5 6;
+  g: 1114/7 8 9 6;
+  /* shouldn't perform the following division */
+  h: 15/3/5;
+  /* should perform the following division now */
+  i: 1;
+  /* this too */
+  j: 1;
+  /* and this */
+  k: 5;
+  l: 1;
+  m: 1/2, 1 2 3 url("www.foo.com/blah.png") blah blah;
+  n: 1 2 3, 1 2 3 4 5 6, 7 8 9;
+  o: 9px;
+  p: 5px;
+  q: 2;
+  r: 64em;
+  s: 2.5em;
+  t: 120.754/5 6/7;
+  one-over-zero: Infinity;
+  zero-over-zero: NaN;
+  one-mod-zero: NaN;
+  zero-mod-zero: NaN;
+}

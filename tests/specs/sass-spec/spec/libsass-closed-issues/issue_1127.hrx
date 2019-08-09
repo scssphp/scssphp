@@ -1,0 +1,86 @@
+<===> input.scss
+$a: to-upper-case('abcd');
+$b: to-upper-case("abcd");
+$c: to-upper-case(abcd);
+
+foo {
+    content: #{$a};
+    content: #{$b};
+    content: #{$c};
+    content: '#{$a}';
+    content: '#{$b}';
+    content: '#{$c}';
+    content: "#{$a}";
+    content: "#{$b}";
+    content: "#{$c}";
+
+    content: #{unquote($a)};
+    content: #{unquote($b)};
+    content: #{unquote($c)};
+    content: '#{unquote($a)}';
+    content: '#{unquote($b)}';
+    content: '#{unquote($c)}';
+    content: "#{unquote($a)}";
+    content: "#{unquote($b)}";
+    content: "#{unquote($c)}";
+
+    content: #{$a + unquote("efg")};
+    content: #{$b + unquote("efg")};
+    content: #{$c + unquote("efg")};
+    content: '#{$a + unquote("efg")}';
+    content: '#{$b + unquote("efg")}';
+    content: '#{$c + unquote("efg")}';
+    content: "#{$a + unquote("efg")}";
+    content: "#{$b + unquote("efg")}";
+    content: "#{$c + unquote("efg")}";
+
+    content: #{$a + unquote("")};
+    content: #{$b + unquote("")};
+    content: #{$c + unquote("")};
+    content: '#{$a + unquote("")}';
+    content: '#{$b + unquote("")}';
+    content: '#{$c + unquote("")}';
+    content: "#{$a + unquote("")}";
+    content: "#{$b + unquote("")}";
+    content: "#{$c + unquote("")}";
+}
+
+<===> output.css
+foo {
+  content: ABCD;
+  content: ABCD;
+  content: ABCD;
+  content: "ABCD";
+  content: "ABCD";
+  content: "ABCD";
+  content: "ABCD";
+  content: "ABCD";
+  content: "ABCD";
+  content: ABCD;
+  content: ABCD;
+  content: ABCD;
+  content: "ABCD";
+  content: "ABCD";
+  content: "ABCD";
+  content: "ABCD";
+  content: "ABCD";
+  content: "ABCD";
+  content: ABCDefg;
+  content: ABCDefg;
+  content: ABCDefg;
+  content: "ABCDefg";
+  content: "ABCDefg";
+  content: "ABCDefg";
+  content: "ABCDefg";
+  content: "ABCDefg";
+  content: "ABCDefg";
+  content: ABCD;
+  content: ABCD;
+  content: ABCD;
+  content: "ABCD";
+  content: "ABCD";
+  content: "ABCD";
+  content: "ABCD";
+  content: "ABCD";
+  content: "ABCD";
+}

@@ -1,0 +1,29 @@
+<===> input.scss
+foo {
+  c0: opacity(rgba(0,0,0,0.0));
+  c1: opacity(rgba(0,0,0,0.1));
+  c2: opacity(rgba(0,0,0,0.2));
+  c3: opacity(rgba(0,0,0,0.3));
+  c4: opacity(rgba(0,0,0,0.4));
+  c5: opacity(rgba(0,0,0,0.5));
+  c6: opacity(rgba(0,0,0,0.6));
+  c7: opacity(rgba(0,0,0,0.7));
+  c8: opacity(rgba(0,0,0,0.8));
+  c9: opacity(rgba(0,0,0,0.9));
+  c10: opacity(rgba(0,0,0,1));
+}
+
+<===> output.css
+foo {
+  c0: 0;
+  c1: 0.1;
+  c2: 0.2;
+  c3: 0.3;
+  c4: 0.4;
+  c5: 0.5;
+  c6: 0.6;
+  c7: 0.7;
+  c8: 0.8;
+  c9: 0.9;
+  c10: 1;
+}

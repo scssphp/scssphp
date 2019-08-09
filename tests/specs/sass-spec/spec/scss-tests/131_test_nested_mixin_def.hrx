@@ -1,0 +1,9 @@
+<===> input.scss
+foo {
+  @mixin bar {a: b}
+  @include bar; }
+
+<===> output.css
+foo {
+  a: b;
+}

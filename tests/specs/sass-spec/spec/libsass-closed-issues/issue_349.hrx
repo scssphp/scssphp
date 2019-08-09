@@ -1,0 +1,14 @@
+<===> input.scss
+div {
+  blah: not true;
+}
+
+<===> output.css
+div {
+  blah: not true;
+}
+
+<===> output-dart-sass.css
+div {
+  blah: false;
+}

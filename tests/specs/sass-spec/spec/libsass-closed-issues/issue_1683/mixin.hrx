@@ -1,0 +1,21 @@
+<===> input.scss
+@mixin foo($x, $y) { }
+
+a {
+  @include foo(1 2 3...);
+}
+
+<===> error-dart-sass
+Error: Only 2 arguments allowed, but 3 were passed.
+  ,
+4 |   @include foo(1 2 3...);
+  |   ^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 4:3  foo()
+  input.scss 4:3  root stylesheet
+
+<===> output.css
+<===> warning
+WARNING: Mixin foo takes 2 arguments but 3 were passed.
+        on line 4 of input.scss
+This will be an error in future versions of Sass.

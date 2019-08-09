@@ -1,0 +1,44 @@
+<===> input.scss
+@mixin all-vip() {
+  test: vip;
+}
+@mixin gold() {
+  test: gold;
+}
+@mixin platinum() {
+  test: platinum;
+}
+
+@mixin icons-sprite($icon-name){
+    @if $icon-name == 'all-vip' {
+        @include all-vip();
+    }
+    @else if $icon-name == 'gold' {
+        @include gold();
+    }
+    @else if $icon-name == 'platinum' {
+        @include platinum();
+    }
+}
+
+div {
+  @include icons-sprite("platinum");
+  @include icons-sprite("all-vip");
+  @include icons-sprite("gold");
+}
+div {
+  @include icons-sprite(platinum);
+  @include icons-sprite(all-vip);
+  @include icons-sprite(gold);
+}
+<===> output.css
+div {
+  test: platinum;
+  test: vip;
+  test: gold;
+}
+
+div {
+  test: platinum;
+  test: vip;
+}

@@ -1,0 +1,28 @@
+<===> input.scss
+@import "hey1.css", "cookie.css", url("hey2.css"), "fudge.css";
+
+$foo:"goodbye";
+div[name="hello"] {
+  color: blue;
+}
+
+@import "bludge.css";
+<===> output.css
+@import url(hey1.css);
+@import url(cookie.css);
+@import url("hey2.css");
+@import url(fudge.css);
+@import url(bludge.css);
+div[name="hello"] {
+  color: blue;
+}
+
+<===> output-dart-sass.css
+@import "hey1.css";
+@import "cookie.css";
+@import url("hey2.css");
+@import "fudge.css";
+@import "bludge.css";
+div[name=hello] {
+  color: blue;
+}

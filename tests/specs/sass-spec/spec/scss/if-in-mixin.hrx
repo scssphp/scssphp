@@ -1,0 +1,29 @@
+<===> input.scss
+$x: true;
+
+@mixin foobar() {
+  @if $x {
+    $x: false !global;
+    content: foo;
+  }
+  @else {
+    $x: true !global;
+    content: bar;
+  }
+}
+
+div {
+  @include foobar();
+  @include foobar();
+  @include foobar();
+  $x: true !global;
+  @include foobar();
+}
+
+<===> output.css
+div {
+  content: foo;
+  content: bar;
+  content: foo;
+  content: foo;
+}

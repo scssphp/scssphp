@@ -1,0 +1,18 @@
+<===> input.scss
+@function foo() {
+  @return 2;
+}
+
+$foo: false;
+@if foo() % 2 == 0 {
+  $foo: true;
+}
+
+a {
+  foo: $foo;
+}
+
+<===> output.css
+a {
+  foo: true;
+}

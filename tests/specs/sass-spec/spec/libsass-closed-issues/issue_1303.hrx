@@ -1,0 +1,9 @@
+<===> input.scss
+.simple {
+  a: selector-replace('foo.bar', 'foo', 'foo[baz]');
+}
+
+<===> output.css
+.simple {
+  a: foo.bar[baz];
+}

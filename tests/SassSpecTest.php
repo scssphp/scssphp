@@ -110,7 +110,7 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
      */
     public function provideTests()
     {
-        $dir    = dirname(__DIR__) . '/vendor/sass/sass-spec/spec';
+        $dir    = __DIR__ . '/specs/sass-spec/spec';
         $specs  = [];
         $subdir = '';
 

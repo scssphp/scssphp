@@ -1,0 +1,27 @@
+<===> input.scss
+round {
+  positive-middle: round(1.5);
+  positive-high: round(1.51);
+  positive-low: round(1.49);
+
+  negative-middle: round(-1.5);
+  negative-high: round(-1.51);
+  negative-low: round(-1.49);
+
+  almost-middle: round(1.49999999999);
+  with-units: round(1.1px);
+  with-named: round($number: 1.1px);
+}
+
+<===> output.css
+round {
+  positive-middle: 2;
+  positive-high: 2;
+  positive-low: 1;
+  negative-middle: -2;
+  negative-high: -2;
+  negative-low: -1;
+  almost-middle: 1;
+  with-units: 1px;
+  with-named: 1px;
+}

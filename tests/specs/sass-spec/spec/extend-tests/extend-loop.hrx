@@ -1,0 +1,205 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+// Make sure extend loops are handled correctly. Test in all different orderings
+// so we can be sure this works for implementations like Dart Sass where extend
+// order matters.
+
+@media order1 {
+  .x1.y1.a1 {x: y; @extend .b1}
+  .z1.b1 {x: y; @extend .c1}
+  .c1 {x: y; @extend .a1}
+}
+
+@media order2 {
+  .x2.y2.a2 {x: y; @extend .b2}
+  .c2 {x: y; @extend .a2}
+  .z2.b2 {x: y; @extend .c2}
+}
+
+@media order3 {
+  .z3.b3 {x: y; @extend .c3}
+  .x3.y3.a3 {x: y; @extend .b3}
+  .c3 {x: y; @extend .a3}
+}
+
+@media order4 {
+  .z4.b4 {x: y; @extend .c4}
+  .c4 {x: y; @extend .a4}
+  .x4.y4.a4 {x: y; @extend .b4}
+}
+
+@media order5 {
+  .c5 {x: y; @extend .a5}
+  .z5.b5 {x: y; @extend .c5}
+  .x5.y5.a5 {x: y; @extend .b5}
+}
+
+@media order6 {
+  .c6 {x: y; @extend .a6}
+  .x6.y6.a6 {x: y; @extend .b6}
+  .z6.b6 {x: y; @extend .c6}
+}
+
+<===> output.css
+@media order1 {
+  .x1.y1.a1, .x1.y1.c1, .x1.y1.z1.b1 {
+    x: y;
+  }
+
+  .z1.b1, .z1.x1.y1.a1, .z1.x1.y1.c1, .z1.x1.y1.b1 {
+    x: y;
+  }
+
+  .c1, .z1.b1, .z1.x1.y1.a1, .z1.x1.y1.c1 {
+    x: y;
+  }
+}
+@media order2 {
+  .x2.y2.a2, .x2.y2.c2, .x2.y2.z2.b2 {
+    x: y;
+  }
+
+  .c2, .z2.b2, .z2.x2.y2.a2, .z2.x2.y2.c2 {
+    x: y;
+  }
+
+  .z2.b2, .z2.x2.y2.a2, .z2.x2.y2.c2, .z2.x2.y2.b2 {
+    x: y;
+  }
+}
+@media order3 {
+  .z3.b3, .z3.x3.y3.a3, .z3.x3.y3.c3, .z3.x3.y3.b3 {
+    x: y;
+  }
+
+  .x3.y3.a3, .x3.y3.c3, .x3.y3.z3.b3 {
+    x: y;
+  }
+
+  .c3, .z3.b3, .z3.x3.y3.a3, .z3.x3.y3.c3 {
+    x: y;
+  }
+}
+@media order4 {
+  .z4.b4, .z4.x4.y4.a4, .z4.x4.y4.c4, .z4.x4.y4.b4 {
+    x: y;
+  }
+
+  .c4, .z4.b4, .z4.x4.y4.a4, .z4.x4.y4.c4 {
+    x: y;
+  }
+
+  .x4.y4.a4, .x4.y4.c4, .x4.y4.z4.b4 {
+    x: y;
+  }
+}
+@media order5 {
+  .c5, .z5.b5, .z5.x5.y5.a5, .z5.x5.y5.c5 {
+    x: y;
+  }
+
+  .z5.b5, .z5.x5.y5.a5, .z5.x5.y5.c5, .z5.x5.y5.b5 {
+    x: y;
+  }
+
+  .x5.y5.a5, .x5.y5.c5, .x5.y5.z5.b5 {
+    x: y;
+  }
+}
+@media order6 {
+  .c6, .z6.b6, .z6.x6.y6.a6, .z6.x6.y6.c6 {
+    x: y;
+  }
+
+  .x6.y6.a6, .x6.y6.c6, .x6.y6.z6.b6 {
+    x: y;
+  }
+
+  .z6.b6, .z6.x6.y6.a6, .z6.x6.y6.c6, .z6.x6.y6.b6 {
+    x: y;
+  }
+}
+
+<===> output-dart-sass.css
+@media order1 {
+  .x1.y1.a1, .x1.y1.c1, .x1.y1.z1.b1 {
+    x: y;
+  }
+
+  .z1.b1, .z1.x1.y1.a1, .z1.x1.y1.c1, .z1.x1.y1.b1 {
+    x: y;
+  }
+
+  .c1, .z1.b1, .z1.x1.y1.a1, .z1.x1.y1.c1, .z1.x1.y1.b1 {
+    x: y;
+  }
+}
+@media order2 {
+  .x2.y2.a2, .x2.y2.c2, .x2.y2.z2.b2 {
+    x: y;
+  }
+
+  .c2, .z2.b2, .z2.x2.y2.a2, .z2.x2.y2.c2, .z2.x2.y2.b2 {
+    x: y;
+  }
+
+  .z2.b2, .z2.x2.y2.a2, .z2.x2.y2.c2, .z2.x2.y2.b2 {
+    x: y;
+  }
+}
+@media order3 {
+  .z3.b3, .z3.x3.y3.a3, .z3.x3.y3.c3, .z3.x3.y3.b3 {
+    x: y;
+  }
+
+  .x3.y3.a3, .x3.y3.c3, .x3.y3.z3.b3 {
+    x: y;
+  }
+
+  .c3, .z3.b3, .z3.x3.y3.a3, .z3.x3.y3.c3, .z3.x3.y3.b3 {
+    x: y;
+  }
+}
+@media order4 {
+  .z4.b4, .z4.x4.y4.a4, .z4.x4.y4.c4, .z4.x4.y4.b4 {
+    x: y;
+  }
+
+  .c4, .z4.b4, .z4.x4.y4.a4, .z4.x4.y4.c4, .z4.x4.y4.b4 {
+    x: y;
+  }
+
+  .x4.y4.a4, .x4.y4.c4, .x4.y4.z4.b4 {
+    x: y;
+  }
+}
+@media order5 {
+  .c5, .z5.b5, .z5.x5.y5.a5, .z5.x5.y5.c5, .z5.x5.y5.b5 {
+    x: y;
+  }
+
+  .z5.b5, .z5.x5.y5.a5, .z5.x5.y5.c5, .z5.x5.y5.b5 {
+    x: y;
+  }
+
+  .x5.y5.a5, .x5.y5.c5, .x5.y5.z5.b5 {
+    x: y;
+  }
+}
+@media order6 {
+  .c6, .z6.b6, .z6.x6.y6.a6, .z6.x6.y6.c6, .z6.x6.y6.b6 {
+    x: y;
+  }
+
+  .x6.y6.a6, .x6.y6.c6, .x6.y6.z6.b6 {
+    x: y;
+  }
+
+  .z6.b6, .z6.x6.y6.a6, .z6.x6.y6.c6, .z6.x6.y6.b6 {
+    x: y;
+  }
+}

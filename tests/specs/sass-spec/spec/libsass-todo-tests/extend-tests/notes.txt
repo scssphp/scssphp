@@ -1,0 +1,5 @@
+These specs currently produces a deprecation warning in Sass 3.4.16.
+
+The subject selector operator "!" is deprecated and will be removed in a future release.
+This operator has been replaced by ":has()" in the CSS spec.
+For example: foo bar:has(baz)

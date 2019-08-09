@@ -1,0 +1,33 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2700
+
+<===> input.scss
+$input: \B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z;
+.result {
+  dquoted: "#{#{$input}}";
+  dquoted: "#{"[#{$input}]"}";
+  dquoted: "#{"#{$input}"}";
+  dquoted: "#{'#{$input}'}";
+  dquoted: "#{"['#{$input}']"}";
+  squoted: '#{#{$input}}';
+  squoted: '#{"[#{$input}]"}';
+  squoted: '#{"#{$input}"}';
+  squoted: '#{'#{$input}'}';
+  squoted: '#{"['#{$input}']"}';
+}
+
+<===> output.css
+.result {
+  dquoted: "\\b \\c \\d \\e \\f GHIJKLMNOPQRSTUVWXYZ";
+  dquoted: "[\\b \\c \\d \\e \\f GHIJKLMNOPQRSTUVWXYZ]";
+  dquoted: "\\b \\c \\d \\e \\f GHIJKLMNOPQRSTUVWXYZ";
+  dquoted: "\\b \\c \\d \\e \\f GHIJKLMNOPQRSTUVWXYZ";
+  dquoted: "['\\b \\c \\d \\e \\f GHIJKLMNOPQRSTUVWXYZ']";
+  squoted: "\\b \\c \\d \\e \\f GHIJKLMNOPQRSTUVWXYZ";
+  squoted: "[\\b \\c \\d \\e \\f GHIJKLMNOPQRSTUVWXYZ]";
+  squoted: "\\b \\c \\d \\e \\f GHIJKLMNOPQRSTUVWXYZ";
+  squoted: "\\b \\c \\d \\e \\f GHIJKLMNOPQRSTUVWXYZ";
+  squoted: "['\\b \\c \\d \\e \\f GHIJKLMNOPQRSTUVWXYZ']";
+}

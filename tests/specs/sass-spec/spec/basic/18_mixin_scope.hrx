@@ -1,0 +1,35 @@
+<===> input.scss
+$x: global x;
+$y: global y;
+
+@mixin foo($x) {
+  f-a: $x;
+  f-b: $y;
+  $x: local x changed by foo;
+  $y: global y changed by foo !global;
+  $z: new local z;
+  f-a: $x;
+  f-b: $y;
+  f-c: $z;
+}
+
+div {
+  a: $x;
+  b: $y;
+  @include foo(arg);
+  a: $x;
+  b: $y;
+}
+
+<===> output.css
+div {
+  a: global x;
+  b: global y;
+  f-a: arg;
+  f-b: global y;
+  f-a: local x changed by foo;
+  f-b: global y changed by foo;
+  f-c: new local z;
+  a: global x;
+  b: global y changed by foo;
+}

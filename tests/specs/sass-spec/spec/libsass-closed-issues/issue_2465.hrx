@@ -1,0 +1,23 @@
+<===> input.scss
+foo {
+  a: 4e2px;
+  b: 5e-2px;
+  c: 6e2px + 3px;
+  d: 7e-2px + 3px;
+}
+
+<===> output.css
+foo {
+  a: 4e2px;
+  b: 5e-2px;
+  c: 603px;
+  d: 3.07px;
+}
+
+<===> output-dart-sass.css
+foo {
+  a: 400px;
+  b: 0.05px;
+  c: 603px;
+  d: 3.07px;
+}

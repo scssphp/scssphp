@@ -1,0 +1,15 @@
+<===> input.scss
+foo {
+  @function foo() {@return 1}
+  a: foo(); }
+
+bar {b: foo()}
+
+<===> output.css
+foo {
+  a: 1;
+}
+
+bar {
+  b: foo();
+}

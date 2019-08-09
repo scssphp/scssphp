@@ -1,0 +1,15 @@
+<===> input.scss
+foo {
+  bar: baz;
+  bang: {
+    bip: 1px;
+    bop: bar;
+    blat:{baf:bort}}}
+
+<===> output.css
+foo {
+  bar: baz;
+  bang-bip: 1px;
+  bang-bop: bar;
+  bang-blat-baf: bort;
+}

@@ -1,0 +1,9 @@
+<===> input.scss
+// test.scss:
+a {
+  background-image: url(fn("s"));
+}
+<===> output.css
+a {
+  background-image: url(fn("s"));
+}

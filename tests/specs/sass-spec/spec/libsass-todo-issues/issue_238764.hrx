@@ -1,0 +1,22 @@
+<===> input.scss
+@mixin bar {
+  @at-root @bar {a: b}
+}
+
+.foo {
+  @include bar;
+}
+<===> error
+Error: Invalid CSS after "": expected selector, was "@bar"
+        on line 2 of input.scss, in `bar'
+        from line 6 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected selector.
+  ,
+2 |   @at-root @bar{a: b}
+  |            ^
+  '
+  input.scss 2:12  bar()
+  input.scss 6:3   root stylesheet

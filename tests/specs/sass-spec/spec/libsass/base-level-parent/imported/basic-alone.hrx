@@ -1,0 +1,23 @@
+<===> include.scss
+& {
+  foo {
+    bar: baz;
+  }
+}
+
+<===> input.scss
+@import "include.scss";
+<===> error
+Error: Base-level rules cannot contain the parent-selector-referencing character '&'.
+        on line 1 of include.scss
+        from line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Top-level selectors may not contain the parent selector "&".
+  ,
+1 | & {
+  | ^^
+  '
+  include.scss 1:1  @import
+  input.scss 1:9    root stylesheet

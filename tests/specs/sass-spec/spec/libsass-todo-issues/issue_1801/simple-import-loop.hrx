@@ -1,0 +1,21 @@
+<===> _susy.scss
+@import 'susy';
+
+<===> input.scss
+@import 'susy';
+
+<===> error
+Error: An @import loop has been found: _susy.scss imports itself
+        on line 1 of _susy.scss
+        from line 1 of _susy.scss
+        from line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: This file is already being loaded.
+  ,
+1 | @import 'susy';
+  |         ^^^^^^
+  '
+  _susy.scss 1:9  @import
+  input.scss 1:9  root stylesheet

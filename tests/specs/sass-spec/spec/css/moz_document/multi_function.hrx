@@ -1,0 +1,31 @@
+<===> input.scss
+@-moz-document url(http://www.w3.org/),
+               url-prefix(http://www.w3.org/Style/),
+               domain(mozilla.org),
+               regexp("https:.*") {
+  a {b: c}
+}
+
+<===> output.css
+@-moz-document url(http://www.w3.org/),
+               url-prefix(http://www.w3.org/Style/),
+               domain(mozilla.org),
+               regexp("https:.*") {
+  a {
+    b: c;
+  }
+}
+
+<===> warning
+DEPRECATION WARNING on line 1, column 1 of input.scss: 
+@-moz-document is deprecated and support will be removed from Sass in a future
+relase. For details, see http://bit.ly/moz-document.
+
+  ,
+1 | / @-moz-document url(http://www.w3.org/),
+2 | |                url-prefix(http://www.w3.org/Style/),
+3 | |                domain(mozilla.org),
+4 | |                regexp("https:.*") {
+5 | |   a {b: c}
+6 | \ }
+  '

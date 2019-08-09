@@ -1,0 +1,14 @@
+<===> input.scss
+.foo {
+  test-01: +0 % 1;
+  test-02: -0 % 1;
+  test-03: +0 % -1;
+  test-04: -0 % -1;
+}
+<===> output.css
+.foo {
+  test-01: 0;
+  test-02: 0;
+  test-03: 0;
+  test-04: 0;
+}

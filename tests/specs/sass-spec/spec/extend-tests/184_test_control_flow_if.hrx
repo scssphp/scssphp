@@ -1,0 +1,20 @@
+<===> input.scss
+.true  { color: green; }
+.false { color: red;   }
+.also-true {
+@if true { @extend .true;  }
+@else    { @extend .false; }
+}
+.also-false {
+@if false { @extend .true;  }
+@else     { @extend .false; }
+}
+
+<===> output.css
+.true, .also-true {
+  color: green;
+}
+
+.false, .also-false {
+  color: red;
+}

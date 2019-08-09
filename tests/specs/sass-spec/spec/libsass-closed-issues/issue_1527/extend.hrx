@@ -1,0 +1,17 @@
+<===> input.scss
+foo {
+  @extend &;
+}
+
+<===> error
+Error: Can't extend &: can't extend parent selectors
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Parent selectors aren't allowed here.
+  ,
+2 |   @extend &;
+  |           ^
+  '
+  input.scss 2:11  root stylesheet

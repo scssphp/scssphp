@@ -1,0 +1,8 @@
+<===> input.scss
+%-a :foo.baz {a: b}
+:foo {@extend .baz} -a {@extend %-a}
+
+<===> output.css
+-a :foo {
+  a: b;
+}

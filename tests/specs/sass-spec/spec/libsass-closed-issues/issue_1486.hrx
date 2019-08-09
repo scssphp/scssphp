@@ -1,0 +1,97 @@
+<===> input.scss
+$a: 41px;
+
+@function a() {
+  @return 42px;
+}
+
+foo {
+  foo: $a -121px;
+  foo: ($a -122px);
+  foo: $a*3-123px;
+  foo: ($a*3-124px);
+  foo: $a*3 -123px;
+  foo: ($a*3 -124px);
+  foo: $a*3 - 123px;
+  foo: ($a*3 - 124px);
+  foo: $a*3- 123px;
+  foo: ($a*3- 124px);
+  foo: $a*3- 123px;
+  foo: ($a*3- 124px);
+}
+
+bar {
+  bar: a() -121px;
+  bar: (a() -122px);
+  bar: a()*3-123px;
+  bar: (a()*3-124px);
+  bar: a()*3 -123px;
+  bar: (a()*3 -124px);
+  bar: a()*3 - 123px;
+  bar: (a()*3 - 124px);
+  bar: a()*3- 123px;
+  bar: (a()*3- 124px);
+  bar: a()*3- 123px;
+  bar: (a()*3- 124px);
+}
+
+baz {
+  baz: 43px -121px;
+  baz: (43px -122px);
+  baz: 43px*3-123px;
+  baz: (43px*3-124px);
+  baz: 43px*3 -123px;
+  baz: (43px*3 -124px);
+  baz: 43px*3 - 123px;
+  baz: (43px*3 - 124px);
+  baz: 43px*3- 123px;
+  baz: (43px*3- 124px);
+  baz: 43px*3- 123px;
+  baz: (43px*3- 124px);
+}
+
+<===> output.css
+foo {
+  foo: 41px -121px;
+  foo: 41px -122px;
+  foo: 0px;
+  foo: -1px;
+  foo: 123px -123px;
+  foo: 123px -124px;
+  foo: 0px;
+  foo: -1px;
+  foo: 0px;
+  foo: -1px;
+  foo: 0px;
+  foo: -1px;
+}
+
+bar {
+  bar: 42px -121px;
+  bar: 42px -122px;
+  bar: 3px;
+  bar: 2px;
+  bar: 126px -123px;
+  bar: 126px -124px;
+  bar: 3px;
+  bar: 2px;
+  bar: 3px;
+  bar: 2px;
+  bar: 3px;
+  bar: 2px;
+}
+
+baz {
+  baz: 43px -121px;
+  baz: 43px -122px;
+  baz: 6px;
+  baz: 5px;
+  baz: 129px -123px;
+  baz: 129px -124px;
+  baz: 6px;
+  baz: 5px;
+  baz: 6px;
+  baz: 5px;
+  baz: 6px;
+  baz: 5px;
+}

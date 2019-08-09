@@ -1,0 +1,16 @@
+<===> input.scss
+@import "plain";
+
+<===> plain.css
+a {
+  and: true and false;
+  or: true or false;
+  not: not true;
+}
+
+<===> output.css
+a {
+  and: true and false;
+  or: true or false;
+  not: not true;
+}

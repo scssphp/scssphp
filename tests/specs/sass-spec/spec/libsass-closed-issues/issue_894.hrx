@@ -1,0 +1,20 @@
+<===> input.scss
+a {/**/}
+b {content: 'something so I have a non-empty expected output'}
+<===> output.css
+a {
+  /**/
+}
+
+b {
+  content: 'something so I have a non-empty expected output';
+}
+
+<===> output-dart-sass.css
+a {
+  /**/
+}
+
+b {
+  content: "something so I have a non-empty expected output";
+}

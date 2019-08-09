@@ -1,0 +1,145 @@
+<===> input.scss
+// Content blocks' argument lists can define arguments in in all the same ways
+// as they're defined in any other argument list.
+
+with-defaults {
+  nothing-passed {
+    @mixin mixin {
+      @content;
+    }
+
+    @include mixin using ($arg1: value1, $arg2: value2) {
+      arg1: $arg1;
+      arg2: $arg2;
+    }
+  }
+
+  partial-override {
+    @mixin mixin {
+      @content($arg2: other2);
+    }
+
+    @include mixin using ($arg1: value1, $arg2: value2) {
+      arg1: $arg1;
+      arg2: $arg2;
+    }
+  }
+
+  total-override {
+    @mixin mixin {
+      @content(other1, other2);
+    }
+
+    @include mixin using ($arg1: value1, $arg2: value2) {
+      arg1: $arg1;
+      arg2: $arg2;
+    }
+  }
+}
+
+with-splat {
+  nothing-passed {
+    @mixin mixin {
+      @content;
+    }
+
+    @include mixin using ($args...) {
+      positional: inspect($args);
+      keywords: inspect(keywords($args));
+    }
+  }
+
+  positional-passed {
+    @mixin mixin {
+      @content(value1, value2, value3);
+    }
+
+    @include mixin using ($args...) {
+      positional: inspect($args);
+      keywords: inspect(keywords($args));
+    }
+  }
+
+  named-passed {
+    @mixin mixin {
+      @content($arg1: value1, $arg2: value2);
+    }
+
+    @include mixin using ($args...) {
+      positional: inspect($args);
+      keywords: inspect(keywords($args));
+    }
+  }
+
+  both-passed {
+    @mixin mixin {
+      @content(value1, $arg2: value2);
+    }
+
+    @include mixin using ($args...) {
+      positional: inspect($args);
+      keywords: inspect(keywords($args));
+    }
+  }
+}
+
+<===> output.css
+with-defaults nothing-passed {
+  arg1: value1;
+  arg2: value2;
+}
+with-defaults partial-override {
+  arg1: value1;
+  arg2: other2;
+}
+with-defaults total-override {
+  arg1: other1;
+  arg2: other2;
+}
+
+with-splat nothing-passed {
+  positional: ();
+  keywords: ();
+}
+with-splat positional-passed {
+  positional: value1, value2, value3;
+  keywords: ();
+}
+with-splat named-passed {
+  positional: ();
+  keywords: (arg1: value1, arg2: value2);
+}
+with-splat both-passed {
+  positional: (value1,);
+  keywords: (arg2: value2);
+}
+
+<===> output-libsass.css
+with-defaults nothing-passed {
+  arg1: value1;
+  arg2: value2;
+}
+with-defaults partial-override {
+  arg1: value1;
+  arg2: other2;
+}
+with-defaults total-override {
+  arg1: other1;
+  arg2: other2;
+}
+
+with-splat nothing-passed {
+  positional: ();
+  keywords: ();
+}
+with-splat positional-passed {
+  positional: value1, value2, value3;
+  keywords: ();
+}
+with-splat named-passed {
+  keywords: (arg1: value1, arg2: value2);
+}
+with-splat both-passed {
+  positional: value1;
+  keywords: (arg2: value2);
+}

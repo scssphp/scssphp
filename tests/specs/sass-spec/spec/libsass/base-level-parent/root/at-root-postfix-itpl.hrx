@@ -1,0 +1,13 @@
+<===> input.scss
+@at-root {
+  #{&}post {
+    foo {
+      bar: baz;
+    }
+  }
+}
+
+<===> output.css
+post foo {
+  bar: baz;
+}

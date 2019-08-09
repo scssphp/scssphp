@@ -1,0 +1,13 @@
+<===> input.scss
+@function plus($var1, $var2) {
+  @return $var1 + $var2;
+}
+
+bar {
+  a: plus(1, 2);
+}
+
+<===> output.css
+bar {
+  a: 3;
+}

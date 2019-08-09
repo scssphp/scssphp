@@ -1,0 +1,12 @@
+<===> input.scss
+@media (min-width: 980px) {
+    a {
+        color: red;
+    }
+}
+<===> output.css
+@media (min-width: 980px) {
+  a {
+    color: red;
+  }
+}

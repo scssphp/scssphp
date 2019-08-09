@@ -1,0 +1,72 @@
+<===> options.yml
+---
+:warning_todo:
+- libsass # sass/libsass#2834
+
+<===> input.scss
+$i: 9;
+$z: 3 !default;
+div {
+  asd: $i;
+  $i: 99 !global;
+  $n: 42 !global;
+  qwe: $i;
+  zapf: $z;
+  $z: 84;
+  ding: $z;
+}
+div {
+  foo: $n;
+  foo: $i;
+  $i: 999;
+  $n: 999;
+  foo: $n;
+  foo: $i;
+  div {
+    $i: 9999;
+    $n: 9999 !default;
+    bar: $i;
+    bar: $n;
+  }
+  baz: $i;
+}
+div {
+  asd: $i;
+  qwe: $n;
+  zap: $z;
+}
+<===> output.css
+div {
+  asd: 9;
+  qwe: 99;
+  zapf: 3;
+  ding: 84;
+}
+
+div {
+  foo: 42;
+  foo: 99;
+  foo: 999;
+  foo: 999;
+  baz: 9999;
+}
+div div {
+  bar: 9999;
+  bar: 999;
+}
+
+div {
+  asd: 99;
+  qwe: 42;
+  zap: 3;
+}
+
+<===> warning
+DEPRECATION WARNING: As of Dart Sass 2.0.0, !global assignments won't be able to
+declare new variables. Consider adding `$n: null` at the top level.
+
+  ,
+6 |   $n: 42 !global;
+  |   ^^^^^^^^^^^^^^
+  '
+    input.scss 6:3  root stylesheet

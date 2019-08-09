@@ -1,0 +1,16 @@
+<===> input.scss
+$list: "item-1" "item-2" "item-3";
+
+#hello {
+  @if length($list) % 2 == 0 {
+    color: blue;
+  }
+
+  @else {
+    color: red;
+  }
+}
+<===> output.css
+#hello {
+  color: red;
+}

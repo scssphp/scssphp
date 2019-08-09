@@ -1,0 +1,13 @@
+<===> input.scss
+div {
+  color: unquote("hello");
+  color: un#{quo}te("hello");
+  color: ("hello")un#{quo}te;
+}
+
+<===> output.css
+div {
+  color: hello;
+  color: unquote("hello");
+  color: "hello" unquote;
+}

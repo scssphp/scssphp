@@ -1,0 +1,11 @@
+<===> input.scss
+$map: (foo: bar, bar: baz);
+
+foo {
+  a: nth($map, 2);
+}
+
+<===> output.css
+foo {
+  a: bar baz;
+}

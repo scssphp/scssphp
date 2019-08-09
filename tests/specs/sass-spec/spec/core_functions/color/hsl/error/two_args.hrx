@@ -1,0 +1,49 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2722
+
+<===>
+================================================================================
+<===> color/type/input.scss
+color-type {
+  x: hsl("foo", 0.5);
+}
+
+<===> color/type/error
+Error: Missing argument $lightness.
+  ,
+2 |   x: hsl("foo", 0.5);
+  |      ^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> alpha/type/input.scss
+alpha-type {
+  x: hsl(#123, "foo");
+}
+
+<===> alpha/type/error
+Error: Missing argument $lightness.
+  ,
+2 |   x: hsl(#123, "foo");
+  |      ^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> alpha/unit/input.scss
+.alpha-unit {
+  a: hsl(#123, 0.5px);
+}
+
+<===> alpha/unit/error
+Error: Missing argument $lightness.
+  ,
+2 |   a: hsl(#123, 0.5px);
+  |      ^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet

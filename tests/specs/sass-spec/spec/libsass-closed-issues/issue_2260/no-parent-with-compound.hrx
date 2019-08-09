@@ -1,0 +1,28 @@
+<===> input.scss
+@mixin test() {
+  @at-root {
+    @content;
+  }
+}
+
+@include test {
+  .test & {
+    property: value;
+   }
+ }
+<===> error
+Error: Base-level rules cannot contain the parent-selector-referencing character '&'.
+        on line 8 of input.scss, in `@content'
+        from line 3 of input.scss, in `test'
+        from line 7 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Top-level selectors may not contain the parent selector "&".
+  ,
+8 |   .test & {
+  |   ^^^^^^^^
+  '
+  input.scss 8:3  @content
+  input.scss 3:5  test()
+  input.scss 7:1  root stylesheet

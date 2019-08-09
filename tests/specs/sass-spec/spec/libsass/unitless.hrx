@@ -1,0 +1,12 @@
+<===> input.scss
+div {
+  hoo: unitless(42);
+  hee: unitless(42px);
+  foo: unitless(3.14in);
+}
+<===> output.css
+div {
+  hoo: true;
+  hee: false;
+  foo: false;
+}

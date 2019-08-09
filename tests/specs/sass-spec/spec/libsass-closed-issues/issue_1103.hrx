@@ -1,0 +1,66 @@
+<===> _import.scss
+foo { bar: baz }
+baz { bar: foo }
+
+@media screen and (max-width: 2) {
+    foo { bar: baz }
+    baz { bar: foo }
+}
+
+<===> input.scss
+@import "import";
+
+@media screen and (min-width: 1) {
+    foo { bar: baz }
+    baz { bar: foo }
+}
+
+@media screen and (min-width: 1) {
+    @import "import";
+}
+
+<===> output.css
+foo {
+  bar: baz;
+}
+
+baz {
+  bar: foo;
+}
+
+@media screen and (max-width: 2) {
+  foo {
+    bar: baz;
+  }
+
+  baz {
+    bar: foo;
+  }
+}
+@media screen and (min-width: 1) {
+  foo {
+    bar: baz;
+  }
+
+  baz {
+    bar: foo;
+  }
+}
+@media screen and (min-width: 1) {
+  foo {
+    bar: baz;
+  }
+
+  baz {
+    bar: foo;
+  }
+}
+@media screen and (min-width: 1) and (max-width: 2) {
+  foo {
+    bar: baz;
+  }
+
+  baz {
+    bar: foo;
+  }
+}

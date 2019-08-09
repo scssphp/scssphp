@@ -1,0 +1,4 @@
+<===> input.scss
+@import url(http://fonts.googleapis.com/css?family=Titillium+Web:400,300,200,600);
+<===> output.css
+@import url(http://fonts.googleapis.com/css?family=Titillium+Web:400,300,200,600);

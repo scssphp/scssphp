@@ -1,0 +1,18 @@
+<===> input.scss
+$params1: #fff .5;
+test {
+  color: rgba($params1...);
+}
+
+$params2: 10 250 130 .5;
+test {
+  color: rgba($params2...);
+}
+<===> output.css
+test {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+test {
+  color: rgba(10, 250, 130, 0.5);
+}

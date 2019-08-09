@@ -1,0 +1,18 @@
+<===> input.scss
+test {
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#223344', endColorstr='#112233',GradientType=0 );
+}
+
+@mixin opacity($opacity) {
+    opacity: $opacity / 100;
+    filter: alpha(opacity=$opacity);
+}
+<===> output.css
+test {
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#223344', endColorstr='#112233',GradientType=0 );
+}
+
+<===> output-dart-sass.css
+test {
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#223344", endColorstr="#112233",GradientType=0 );
+}

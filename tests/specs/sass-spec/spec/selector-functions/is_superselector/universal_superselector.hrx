@@ -1,0 +1,25 @@
+<===> input.scss
+universal-selector {
+  test-01: is-superselector("*", "*");
+  test-02: is-superselector("|*", "*");
+  test-03: is-superselector("*|*", "*");
+  test-04: is-superselector("*", "|*");
+  test-05: is-superselector("|*", "|*");
+  test-06: is-superselector("*|*", "|*");
+  test-07: is-superselector("*", "*|*");
+  test-08: is-superselector("|*", "*|*");
+  test-09: is-superselector("*|*", "*|*");
+}
+
+<===> output.css
+universal-selector {
+  test-01: true;
+  test-02: false;
+  test-03: false;
+  test-04: false;
+  test-05: true;
+  test-06: false;
+  test-07: false;
+  test-08: false;
+  test-09: true;
+}

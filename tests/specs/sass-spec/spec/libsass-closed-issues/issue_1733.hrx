@@ -1,0 +1,11 @@
+<===> input.scss
+foo {
+  a: #ff6600;
+  b: #ff6600
+}
+
+<===> output.css
+foo {
+  a: #ff6600;
+  b: #ff6600;
+}

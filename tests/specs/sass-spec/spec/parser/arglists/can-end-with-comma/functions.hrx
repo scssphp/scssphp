@@ -1,0 +1,37 @@
+<===> input.scss
+@function one-positional-arg($a,) {
+  @return positional 1 $a;
+}
+
+@function two-positional-args($a, $b,) {
+  @return positional 2 $a $b;
+}
+
+@function one-keyword-arg($a: a,) {
+  @return keyword 1 $a;
+}
+
+@function two-keyword-args($a: a, $b: b,) {
+  @return keyword 2 $a $b;
+}
+
+@function mixed-args($a, $b: b,) {
+  @return keyword 2 $a $b;
+}
+
+.calls {
+  one-positional-arg: one-positional-arg(a,);
+  two-positional-args: two-positional-args(a,b,);
+  one-keyword-arg: one-keyword-arg($a: z,);
+  two-keyword-args: two-keyword-args($a: y,$b: z,);
+  mixed-args: mixed-args(y, $b: z,);
+}
+
+<===> output.css
+.calls {
+  one-positional-arg: positional 1 a;
+  two-positional-args: positional 2 a b;
+  one-keyword-arg: keyword 1 z;
+  two-keyword-args: keyword 2 y z;
+  mixed-args: keyword 2 y z;
+}

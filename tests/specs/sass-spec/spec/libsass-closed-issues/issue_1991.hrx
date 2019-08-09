@@ -1,0 +1,6 @@
+<===> input.scss
+$tests: (
+  0: 'foo',
+  false: 'bar',
+);
+<===> output.css

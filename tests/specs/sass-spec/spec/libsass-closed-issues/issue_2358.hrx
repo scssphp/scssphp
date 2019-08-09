@@ -1,0 +1,53 @@
+<===> input.scss
+.outer {
+  @at-root .root {
+    .inner {
+      .element {
+        --modifier#{&}--another-modifier {
+          content: "#{&}";
+        }
+        &--modifier#{&}--another-modifier {
+          content: "#{&}";
+        }
+      }
+    }
+  }
+}
+
+@at-root .block {
+  &__element {
+    #{&} {
+      content: "#{&}";
+    }
+    &--modifier {
+      content: "#{&}";
+    }
+    --modifier#{&}--another-modifier {
+      content: "#{&}";
+    }
+    &--modifier#{&}--another-modifier {
+      content: "#{&}";
+    }
+  }
+}
+
+<===> output.css
+.root .inner .element --modifier.root .inner .element--another-modifier {
+  content: ".root .inner .element --modifier.root .inner .element--another-modifier";
+}
+.root .inner .element--modifier.root .inner .element--another-modifier {
+  content: ".root .inner .element--modifier.root .inner .element--another-modifier";
+}
+
+.block__element .block__element {
+  content: ".block__element .block__element";
+}
+.block__element--modifier {
+  content: ".block__element--modifier";
+}
+.block__element --modifier.block__element--another-modifier {
+  content: ".block__element --modifier.block__element--another-modifier";
+}
+.block__element--modifier.block__element--another-modifier {
+  content: ".block__element--modifier.block__element--another-modifier";
+}

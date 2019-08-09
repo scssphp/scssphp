@@ -1,0 +1,25 @@
+<===> input.scss
+$name: "lighten";
+$args: ("color": #ff0000, "amount": 10%);
+foo {
+  bar: call($name, $args...);
+}
+
+<===> output.css
+foo {
+  bar: #ff3333;
+}
+
+<===> warning
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(lighten)) instead.
+
+<===> warning-dart-sass
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("lighten")) instead.
+
+  ,
+4 |   bar: call($name, $args...);
+  |        ^^^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 4:8  root stylesheet

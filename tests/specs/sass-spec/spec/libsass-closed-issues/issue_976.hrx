@@ -1,0 +1,12 @@
+<===> input.scss
+.debug {
+  @debug-this {
+    foo: bar;
+  }
+}
+<===> output.css
+@debug-this {
+  .debug {
+    foo: bar;
+  }
+}

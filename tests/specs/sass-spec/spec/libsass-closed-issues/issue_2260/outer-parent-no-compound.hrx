@@ -1,0 +1,18 @@
+<===> input.scss
+@mixin test() {
+  .outer {
+    @at-root {
+      @content;
+    }
+  }
+}
+
+@include test {
+  .test {
+    property: value;
+   }
+ }
+<===> output.css
+.test {
+  property: value;
+}

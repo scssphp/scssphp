@@ -1,0 +1,16 @@
+<===> input.scss
+foo {
+  test: random(#{5});
+}
+<===> error
+Error: $limit: "5" is not a number for `random'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: $limit: 5 is not a number.
+  ,
+2 |   test: random(#{5});
+  |         ^^^^^^^^^^^^
+  '
+  input.scss 2:9  root stylesheet

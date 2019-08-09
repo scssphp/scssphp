@@ -1,0 +1,26 @@
+<===> input.scss
+$map: (aaa: 100, bbb: 200, ccc: 300);
+
+a {
+  b: index($map, aaa 100);
+  b: index($map, bbb 200);
+  b: index($map, ccc 300);
+
+  c: index($map, (aaa 100));
+  c: index($map, (bbb 200));
+  c: index($map, (ccc 300));
+
+  d: index($map, (aaa, 100));
+  d: index($map, (bbb, 200));
+  d: index($map, (ccc, 300));
+}
+
+<===> output.css
+a {
+  b: 1;
+  b: 2;
+  b: 3;
+  c: 1;
+  c: 2;
+  c: 3;
+}

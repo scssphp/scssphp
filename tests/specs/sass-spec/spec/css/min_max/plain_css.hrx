@@ -1,0 +1,39 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+// If a min() or max() function would be a valid plain CSS value, possibly
+// including interoplation, parse it as plain CSS.
+
+.plain-css {
+  number: min(1px) max(1px);
+  interpolation: min(#{1px + 2px}) max(#{1px + 2px});
+  nested-min-max: min(max(1px, 2px)) max(min(1px, 2px));
+  calc: min(calc(10% + 1px)) max(calc(10% + 1px));
+  env: min(env(--foo), env(@&[*^{$(*)&}@^]%$), env(inter#{p + o}lated))
+       max(env(--foo), env(@&[*^{$(*)&}@^]%$), env(inter#{p + o}lated));
+  var: min(var(--foo), var(@&[*^{$(*)&}@^]%$), var(inter#{p + o}lated))
+       max(var(--foo), var(@&[*^{$(*)&}@^]%$), var(inter#{p + o}lated));
+  operations: min(1px - 2px * 3px / 4px) max(1px - 2px * 3px / 4px);
+  parens: min((1px + 2px) * 3px) max((1px + 2px) * 3px);
+  two-arguments: min(1px, 2px) max(1px, 2px);
+  three-arguments: min(1px, 2px, 3px) max(1px, 2px, 3px);
+  case-insensitive: mIn(1px + 2px) MaX(1px + 2px);
+}
+
+<===> output.css
+.plain-css {
+  number: min(1px) max(1px);
+  interpolation: min(3px) max(3px);
+  nested-min-max: min(max(1px, 2px)) max(min(1px, 2px));
+  calc: min(calc(10% + 1px)) max(calc(10% + 1px));
+  env: min(env(--foo), env(@&[*^{$(*)&}@^]%$), env(interpolated)) max(env(--foo), env(@&[*^{$(*)&}@^]%$), env(interpolated));
+  var: min(var(--foo), var(@&[*^{$(*)&}@^]%$), var(interpolated)) max(var(--foo), var(@&[*^{$(*)&}@^]%$), var(interpolated));
+  operations: min(1px - 2px * 3px / 4px) max(1px - 2px * 3px / 4px);
+  parens: min((1px + 2px) * 3px) max((1px + 2px) * 3px);
+  two-arguments: min(1px, 2px) max(1px, 2px);
+  three-arguments: min(1px, 2px, 3px) max(1px, 2px, 3px);
+  case-insensitive: min(1px + 2px) max(1px + 2px);
+}

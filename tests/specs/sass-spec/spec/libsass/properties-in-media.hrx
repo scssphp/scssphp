@@ -1,0 +1,37 @@
+<===> input.scss
+@media only screen {
+    /* asd */
+  color: red;
+  color: gray;
+    /* asd */
+  color: green;
+  foo {
+    bar: baz;
+    qwe: baz;
+  }
+  color: blue;
+  color: yellow;
+}
+<===> error-dart-sass
+Error: expected "{".
+  ,
+3 |   color: red;
+  |             ^
+  '
+  input.scss 3:13  root stylesheet
+
+<===> output.css
+@media only screen {
+  /* asd */
+  color: red;
+  color: gray;
+  /* asd */
+  color: green;
+  foo {
+    bar: baz;
+    qwe: baz;
+  }
+
+  color: blue;
+  color: yellow;
+}

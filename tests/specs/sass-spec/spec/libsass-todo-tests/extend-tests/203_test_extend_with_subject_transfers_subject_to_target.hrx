@@ -1,0 +1,22 @@
+<===> input.scss
+a.foo .bar {a: b}
+.bip .bap! {@extend .foo}
+
+<===> error-dart-sass
+Error: expected "{".
+  ,
+2 | .bip .bap! {@extend .foo}
+  |          ^
+  '
+  input.scss 2:10  root stylesheet
+
+<===> output.css
+a.foo .bar, .bip a.bap! .bar {
+  a: b;
+}
+
+<===> warning
+DEPRECATION WARNING on line 2, column 1 of input.scss:
+The subject selector operator "!" is deprecated and will be removed in a future release.
+This operator has been replaced by ":has()" in the CSS spec.
+For example: .bip .bap

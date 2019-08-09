@@ -1,0 +1,112 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2726
+
+<===> input.scss
+no-alpha {
+  calc-1: rgba(calc(1) 2 3);
+  calc-2: rgba(1 calc(2) 3);
+  calc-3: rgba(1 2 calc(3));
+
+  var-1: rgba(var(--foo) 2 3);
+  var-2: rgba(1 var(--foo) 3);
+  var-3: rgba(1 2 var(--foo));
+
+  env-1: rgba(env(--foo) 2 3);
+  env-2: rgba(1 env(--foo) 3);
+  env-3: rgba(1 2 env(--foo));
+
+  min-1: rgba(min(1) 2 3);
+  min-2: rgba(1 min(2) 3);
+  min-3: rgba(1 2 min(3));
+
+  max-1: rgba(max(1) 2 3);
+  max-2: rgba(1 max(2) 3);
+  max-3: rgba(1 2 max(3));
+
+  // var() is substituted before parsing, so it may contain multiple arguments.
+  multi-argument-var-1-of-2: rgba(var(--foo) 2);
+  multi-argument-var-2-of-2: rgba(1 var(--foo));
+  multi-argument-var-1-of-1: rgba(var(--foo));
+}
+
+alpha {
+  calc-1: rgba(calc(1) 2 3 / 0.4);
+  calc-2: rgba(1 calc(2) 3 / 0.4);
+  calc-3: rgba(1 2 calc(3) / 0.4);
+  calc-4: rgba(1 2 3 / calc(0.4));
+
+  var-1: rgba(var(--foo) 2 3 / 0.4);
+  var-2: rgba(1 var(--foo) 3 / 0.4);
+  var-3: rgba(1 2 var(--foo) / 0.4);
+  var-4: rgba(1 2 3 / var(--foo));
+
+  env-1: rgba(env(--foo) 2 3 / 0.4);
+  env-2: rgba(1 env(--foo) 3 / 0.4);
+  env-3: rgba(1 2 env(--foo) / 0.4);
+  env-4: rgba(1 2 3 / env(--foo));
+
+  min-1: rgba(min(1) 2 3 / 0.4);
+  min-2: rgba(1 min(2) 3 / 0.4);
+  min-3: rgba(1 2 min(3) / 0.4);
+  min-4: rgba(1 2 3 / min(0.4));
+
+  max-1: rgba(max(1) 2 3 / 0.4);
+  max-2: rgba(1 max(2) 3 / 0.4);
+  max-3: rgba(1 2 max(3) / 0.4);
+  max-4: rgba(1 2 3 / max(0.4));
+
+  // var() is substituted before parsing, so it may contain multiple arguments.
+  multi-argument-var-1-of-2: rgba(var(--foo) 2 / 0.4);
+  multi-argument-var-2-of-2: rgba(1 var(--foo) / 0.4);
+  multi-argument-var-1-of-1: rgba(var(--foo) / 0.4);
+}
+
+<===> output.css
+no-alpha {
+  calc-1: rgba(calc(1), 2, 3);
+  calc-2: rgba(1, calc(2), 3);
+  calc-3: rgba(1, 2, calc(3));
+  var-1: rgba(var(--foo), 2, 3);
+  var-2: rgba(1, var(--foo), 3);
+  var-3: rgba(1, 2, var(--foo));
+  env-1: rgba(env(--foo), 2, 3);
+  env-2: rgba(1, env(--foo), 3);
+  env-3: rgba(1, 2, env(--foo));
+  min-1: rgba(min(1), 2, 3);
+  min-2: rgba(1, min(2), 3);
+  min-3: rgba(1, 2, min(3));
+  max-1: rgba(max(1), 2, 3);
+  max-2: rgba(1, max(2), 3);
+  max-3: rgba(1, 2, max(3));
+  multi-argument-var-1-of-2: rgba(var(--foo) 2);
+  multi-argument-var-2-of-2: rgba(1 var(--foo));
+  multi-argument-var-1-of-1: rgba(var(--foo));
+}
+
+alpha {
+  calc-1: rgba(calc(1), 2, 3, 0.4);
+  calc-2: rgba(1, calc(2), 3, 0.4);
+  calc-3: rgba(1 2 calc(3)/0.4);
+  calc-4: rgba(1 2 3/calc(0.4));
+  var-1: rgba(var(--foo), 2, 3, 0.4);
+  var-2: rgba(1, var(--foo), 3, 0.4);
+  var-3: rgba(1 2 var(--foo)/0.4);
+  var-4: rgba(1 2 3/var(--foo));
+  env-1: rgba(env(--foo), 2, 3, 0.4);
+  env-2: rgba(1, env(--foo), 3, 0.4);
+  env-3: rgba(1 2 env(--foo)/0.4);
+  env-4: rgba(1 2 3/env(--foo));
+  min-1: rgba(min(1), 2, 3, 0.4);
+  min-2: rgba(1, min(2), 3, 0.4);
+  min-3: rgba(1 2 min(3)/0.4);
+  min-4: rgba(1 2 3/min(0.4));
+  max-1: rgba(max(1), 2, 3, 0.4);
+  max-2: rgba(1, max(2), 3, 0.4);
+  max-3: rgba(1 2 max(3)/0.4);
+  max-4: rgba(1 2 3/max(0.4));
+  multi-argument-var-1-of-2: rgba(var(--foo) 2/0.4);
+  multi-argument-var-2-of-2: rgba(1 var(--foo)/0.4);
+  multi-argument-var-1-of-1: rgba(var(--foo)/0.4);
+}

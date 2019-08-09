@@ -1,0 +1,11 @@
+<===> input.scss
+div {
+  foo: map-values((foo: 1, bar: 2));
+  foo: map-values((foo: 1, bar: 2, baz: 2));
+}
+
+<===> output.css
+div {
+  foo: 1, 2;
+  foo: 1, 2, 2;
+}

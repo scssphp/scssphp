@@ -1,0 +1,19 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+@import "other";
+
+<===> other.css
+other {syntax: css}
+
+<===> other.sass
+other
+  syntax: sass
+
+<===> output.css
+other {
+  syntax: sass;
+}

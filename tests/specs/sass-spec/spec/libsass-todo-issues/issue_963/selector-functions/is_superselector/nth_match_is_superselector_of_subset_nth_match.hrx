@@ -1,0 +1,12 @@
+<===> input.scss
+@import "../assert_helpers";
+
+test {
+  a: assert_strict_superselector(':nth-child(2n of .foo, .bar, .baz)', '#x:nth-child(2n of .foo.bip, .baz.bang)');
+  b: assert_strict_superselector(':nth-last-child(2n of .foo, .bar, .baz)', '#x:nth-last-child(2n of .foo.bip, .baz.bang)');
+}
+<===> output.css
+test {
+  a: true;
+  b: true;
+}

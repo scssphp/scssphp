@@ -1,0 +1,23 @@
+<===> input.scss
+// The "$var" variable should only be set locally, despite being in the same
+// mixin each time.
+@mixin with-local-variable($recurse) {
+  $var: before;
+
+  @if ($recurse) {
+    @include with-local-variable($recurse: false);
+  }
+
+  var: $var;
+  $var: after;
+}
+
+.environment-locality {
+  @include with-local-variable($recurse: true);
+}
+
+<===> output.css
+.environment-locality {
+  var: before;
+  var: before;
+}

@@ -1,0 +1,28 @@
+<===> _input-bug.scss
+$include-foo: true !default;
+.bar { display: none; }
+@if ($include-foo) {
+  .foo { display: none; }
+}
+<===> input.scss
+$include-foo: true !default;
+.my-scope {
+  .bar {  display: none; }
+  @if ($include-foo) {
+    .foo { display: none; }
+  }
+  @import 'input-bug';
+}
+<===> output.css
+.my-scope .bar {
+  display: none;
+}
+.my-scope .foo {
+  display: none;
+}
+.my-scope .bar {
+  display: none;
+}
+.my-scope .foo {
+  display: none;
+}

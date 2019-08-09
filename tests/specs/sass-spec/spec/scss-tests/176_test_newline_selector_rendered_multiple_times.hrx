@@ -1,0 +1,20 @@
+<===> input.scss
+@for $i from 1 through 2 {
+  form {
+    input,
+    select {
+      color: white;
+    }
+  }
+}
+
+<===> output.css
+form input,
+form select {
+  color: white;
+}
+
+form input,
+form select {
+  color: white;
+}

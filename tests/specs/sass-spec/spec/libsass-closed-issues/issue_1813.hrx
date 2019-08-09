@@ -1,0 +1,20 @@
+<===> input.scss
+@function foo($value) {
+  $a: bar($value);
+  @return $value;
+}
+
+@function bar($list) {
+  @while (true) {
+    @return true;
+  }
+}
+
+a {
+  b: foo(true);
+}
+
+<===> output.css
+a {
+  b: true;
+}

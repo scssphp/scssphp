@@ -1,0 +1,10 @@
+<===> bubble/empty/input.scss
+// Regression test for sass/dart-sass#611.
+a {
+  @keyframes {/**/}
+}
+
+<===> bubble/empty/output.css
+@keyframes {
+  /**/
+}

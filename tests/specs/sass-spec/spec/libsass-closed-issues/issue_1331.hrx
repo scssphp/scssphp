@@ -1,0 +1,16 @@
+<===> input.scss
+$m: (foo: 1px, null: 2px, false: 3px, true: 4px);
+
+@debug $m;
+@debug map-get($m, foo);
+@debug map-get($m, null);
+@debug map-get($m, false);
+@debug map-get($m, true);
+
+<===> output.css
+<===> warning
+input.scss:3 DEBUG: (foo: 1px, null: 2px, false: 3px, true: 4px)
+input.scss:4 DEBUG: 1px
+input.scss:5 DEBUG: 2px
+input.scss:6 DEBUG: 3px
+input.scss:7 DEBUG: 4px

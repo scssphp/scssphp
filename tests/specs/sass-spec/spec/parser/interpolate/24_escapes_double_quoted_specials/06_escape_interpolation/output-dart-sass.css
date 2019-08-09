@@ -1,0 +1,7 @@
+@charset "UTF-8";
+.result {
+  output: "[#{" \0 _\a _\a  "}]";
+  output: "#{" \0 _\a _\a  "}";
+  output: '#{"�_\a_\a"}';
+  output: "['#{" \0 _\a _\a  "}']";
+}

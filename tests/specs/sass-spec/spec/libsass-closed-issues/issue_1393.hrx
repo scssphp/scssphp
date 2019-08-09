@@ -1,0 +1,13 @@
+<===> input.scss
+div {
+  back#{ground}: {
+    imag#{e}: url(foo.png);
+    pos#{it}ion: 50%;
+  }
+}
+
+<===> output.css
+div {
+  background-image: url(foo.png);
+  background-position: 50%;
+}

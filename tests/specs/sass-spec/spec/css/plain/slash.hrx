@@ -1,0 +1,12 @@
+<===> input.scss
+@import "plain";
+
+<===> plain.css
+a {
+  slash: 1/2/foo/bar;
+}
+
+<===> output.css
+a {
+  slash: 1/2/foo/bar;
+}

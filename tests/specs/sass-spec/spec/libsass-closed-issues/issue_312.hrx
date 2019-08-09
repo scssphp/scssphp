@@ -1,0 +1,50 @@
+<===> input.scss
+@for $i from 0 through 10 {
+    .foo [index = "#{$i}"] {
+        transform: translateY($i * 100%);
+    }
+}
+<===> output.css
+.foo [index="0"] {
+  transform: translateY(0%);
+}
+
+.foo [index="1"] {
+  transform: translateY(100%);
+}
+
+.foo [index="2"] {
+  transform: translateY(200%);
+}
+
+.foo [index="3"] {
+  transform: translateY(300%);
+}
+
+.foo [index="4"] {
+  transform: translateY(400%);
+}
+
+.foo [index="5"] {
+  transform: translateY(500%);
+}
+
+.foo [index="6"] {
+  transform: translateY(600%);
+}
+
+.foo [index="7"] {
+  transform: translateY(700%);
+}
+
+.foo [index="8"] {
+  transform: translateY(800%);
+}
+
+.foo [index="9"] {
+  transform: translateY(900%);
+}
+
+.foo [index="10"] {
+  transform: translateY(1000%);
+}

@@ -1,0 +1,74 @@
+<===> options.yml
+---
+:warning_todo:
+- libsass # sass/libsass#2834
+
+<===> input.scss
+$a: 10px !global !default;
+$b: 20px !default !global;
+$c: 30px !default !default !default !global !global !global;
+$d: 40px !global !global !global !default !default !default;
+$e: 50px !global !default !global !default !global !default;
+
+foo {
+  a: $a;
+  b: $b;
+  c: $c;
+  d: $d;
+  e: $e;
+}
+
+<===> output.css
+foo {
+  a: 10px;
+  b: 20px;
+  c: 30px;
+  d: 40px;
+  e: 50px;
+}
+
+<===> warning
+DEPRECATION WARNING: As of Dart Sass 2.0.0, !global assignments won't be able to
+declare new variables. Consider adding `$a: null` at the top level.
+
+  ,
+1 | $a: 10px !global !default;
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 1:1  root stylesheet
+
+DEPRECATION WARNING: As of Dart Sass 2.0.0, !global assignments won't be able to
+declare new variables. Consider adding `$b: null` at the top level.
+
+  ,
+2 | $b: 20px !default !global;
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 2:1  root stylesheet
+
+DEPRECATION WARNING: As of Dart Sass 2.0.0, !global assignments won't be able to
+declare new variables. Consider adding `$c: null` at the top level.
+
+  ,
+3 | $c: 30px !default !default !default !global !global !global;
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 3:1  root stylesheet
+
+DEPRECATION WARNING: As of Dart Sass 2.0.0, !global assignments won't be able to
+declare new variables. Consider adding `$d: null` at the top level.
+
+  ,
+4 | $d: 40px !global !global !global !default !default !default;
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 4:1  root stylesheet
+
+DEPRECATION WARNING: As of Dart Sass 2.0.0, !global assignments won't be able to
+declare new variables. Consider adding `$e: null` at the top level.
+
+  ,
+5 | $e: 50px !global !default !global !default !global !default;
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 5:1  root stylesheet

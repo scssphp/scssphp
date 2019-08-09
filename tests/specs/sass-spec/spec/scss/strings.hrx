@@ -1,0 +1,18 @@
+<===> input.scss
+div {
+  content: blang + 1;
+  content: 1 + blang;
+  content: "blang" + 1;
+  content: 1 + "blang";
+  content: bar + "foo";
+  content: "quoted" + unquoted;
+}
+<===> output.css
+div {
+  content: blang1;
+  content: 1blang;
+  content: "blang1";
+  content: "1blang";
+  content: barfoo;
+  content: "quotedunquoted";
+}

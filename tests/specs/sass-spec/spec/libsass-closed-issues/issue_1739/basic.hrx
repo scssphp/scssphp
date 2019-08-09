@@ -1,0 +1,106 @@
+<===> input.scss
+div {
+  baz: 2/3;
+  baz: 2/  3;
+  baz: 2  /3;
+  baz: 2  /  3;
+}
+
+add {
+  baz: 2+3;
+  baz: 2+  3;
+  baz: 2  +3;
+  baz: 2  +  3;
+}
+
+sub {
+  baz: 2-3;
+  baz: 2-  3;
+  baz: 2  -3;
+  baz: 2  -  3;
+}
+
+mul {
+  baz: 2*3;
+  baz: 2*  3;
+  baz: 2  *3;
+  baz: 2  *  3;
+}
+
+mod {
+  baz: 2%3;
+  baz: 2%  3;
+  baz: 2  %3;
+  baz: 2  %  3;
+}
+<===> output.css
+div {
+  baz: 2/3;
+  baz: 2/  3;
+  baz: 2  /3;
+  baz: 2  /  3;
+}
+
+add {
+  baz: 5;
+  baz: 5;
+  baz: 2  +3;
+  baz: 5;
+}
+
+sub {
+  baz: -1;
+  baz: -1;
+  baz: 2  -3;
+  baz: -1;
+}
+
+mul {
+  baz: 6;
+  baz: 6;
+  baz: 6;
+  baz: 6;
+}
+
+mod {
+  baz: 2% 3;
+  baz: 2%  3;
+  baz: 2;
+  baz: 2;
+}
+
+<===> output-dart-sass.css
+div {
+  baz: 2/3;
+  baz: 2/3;
+  baz: 2/3;
+  baz: 2/3;
+}
+
+add {
+  baz: 5;
+  baz: 5;
+  baz: 5;
+  baz: 5;
+}
+
+sub {
+  baz: -1;
+  baz: -1;
+  baz: 2 -3;
+  baz: -1;
+}
+
+mul {
+  baz: 6;
+  baz: 6;
+  baz: 6;
+  baz: 6;
+}
+
+mod {
+  baz: 2% 3;
+  baz: 2% 3;
+  baz: 2;
+  baz: 2;
+}

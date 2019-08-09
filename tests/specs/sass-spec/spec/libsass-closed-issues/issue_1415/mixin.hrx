@@ -1,0 +1,37 @@
+<===> input.scss
+@mixin prepend-foo {
+  $parent: &;
+
+  @if $parent {
+    .foo & {
+      @content;
+    }
+  } @else {
+    .foo {
+      @content;
+    }
+  }
+}
+
+@include prepend-foo {
+  bar {
+    color: red;
+  }
+}
+
+bar {
+  @include prepend-foo {
+    baz {
+      color: red;
+    }
+  }
+}
+
+<===> output.css
+.foo bar {
+  color: red;
+}
+
+.foo bar baz {
+  color: red;
+}

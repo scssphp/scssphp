@@ -1,0 +1,11 @@
+<===> input.scss
+@foo #{"directive"} {
+  .#{"foo"} { #{"foo-prop"}: #{"foo-val"}; }
+}
+
+<===> output.css
+@foo directive {
+  .foo {
+    foo-prop: foo-val;
+  }
+}

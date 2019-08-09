@@ -1,0 +1,12 @@
+<===> input.scss
+// Make sure compound selectors are unified when two :not()s are extended.
+// :not() is special here because it's the only selector that's extended by
+// adding to the compound selector, rather than creating a new selector list.
+.a {@extend .c}
+.b {@extend .d}
+:not(.c):not(.d) {x: y}
+
+<===> output.css
+:not(.c):not(.a):not(.d):not(.b) {
+  x: y;
+}

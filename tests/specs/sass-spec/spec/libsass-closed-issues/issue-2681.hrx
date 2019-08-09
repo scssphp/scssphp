@@ -1,0 +1,29 @@
+<===> input.scss
+%button-styles {
+  color: red;
+
+  &:focus {
+    color: blue;
+  }
+}
+
+[type="button"] {
+  @extend %button-styles;
+}
+
+
+<===> output.css
+[type="button"] {
+  color: red;
+}
+[type="button"]:focus {
+  color: blue;
+}
+
+<===> output-dart-sass.css
+[type=button] {
+  color: red;
+}
+[type=button]:focus {
+  color: blue;
+}

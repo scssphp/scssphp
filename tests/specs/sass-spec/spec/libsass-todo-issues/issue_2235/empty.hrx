@@ -1,0 +1,9 @@
+<===> input.scss
+@media all and (min-width: 100px) {
+  @import "https://example.org";
+}
+
+<===> output.css
+@media all and (min-width: 100px) {
+  @import "https://example.org";
+}

@@ -1,0 +1,19 @@
+<===> input.scss
+$variable: 1;
+
+$foo: #{$variable}px;
+$bar: #{1}px;
+$baz: "1px";
+
+div {
+  top: -$foo;
+  top: -$bar;
+  top: -$baz;
+}
+
+<===> output.css
+div {
+  top: -1px;
+  top: -1px;
+  top: -"1px";
+}

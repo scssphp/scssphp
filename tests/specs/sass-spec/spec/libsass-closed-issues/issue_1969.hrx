@@ -1,0 +1,16 @@
+<===> input.scss
+$base-text-color: #666;
+
+@function calcNavbarTextColor ($base-text-color) {
+        @return $base-text-color;
+}
+
+$header-text-color: calcNavbarTextColor($base-text-color);
+
+.test_class {
+        color: lighten($header-text-color, 20%);
+}
+<===> output.css
+.test_class {
+  color: #999999;
+}

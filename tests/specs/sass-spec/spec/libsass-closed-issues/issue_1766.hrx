@@ -1,0 +1,18 @@
+<===> foo.scss
+foo { bar: baz }
+
+<===> input.scss
+@media all { @import "foo.scss" }
+@media all { @import "foo.scss"; }
+
+<===> output.css
+@media all {
+  foo {
+    bar: baz;
+  }
+}
+@media all {
+  foo {
+    bar: baz;
+  }
+}

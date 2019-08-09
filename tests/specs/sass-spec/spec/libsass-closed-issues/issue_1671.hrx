@@ -1,0 +1,25 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+$foo: 5px;
+a {
+    background: url('img.png') no-repeat 6px 0 / #{$foo};
+    background: url('img.png') no-repeat 6px 1 / #{$foo};
+    background: url('img.png') no-repeat 6px 1px / #{$foo};
+    background: url('img.png') no-repeat 6px #{$foo} / 0;
+    background: url('img.png') no-repeat 6px #{$foo} / 1;
+    background: url('img.png') no-repeat 6px #{$foo} / 1px;
+}
+
+<===> output.css
+a {
+  background: url("img.png") no-repeat 6px 0/5px;
+  background: url("img.png") no-repeat 6px 1/5px;
+  background: url("img.png") no-repeat 6px 1px/5px;
+  background: url("img.png") no-repeat 6px 5px/0;
+  background: url("img.png") no-repeat 6px 5px/1;
+  background: url("img.png") no-repeat 6px 5px/1px;
+}

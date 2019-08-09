@@ -1,0 +1,8 @@
+<===> input.scss
+/* Testing to make sure that a trailing comma doesn't break the tests */
+$map: (
+  hello: world,
+);
+
+<===> output.css
+/* Testing to make sure that a trailing comma doesn't break the tests */

@@ -1,0 +1,17 @@
+<===> input.scss
+a {
+  @error "error";
+  foo: bar;
+}
+<===> error
+Error: error
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: "error"
+  ,
+2 |   @error "error";
+  |   ^^^^^^^^^^^^^^
+  '
+  input.scss 2:3  root stylesheet

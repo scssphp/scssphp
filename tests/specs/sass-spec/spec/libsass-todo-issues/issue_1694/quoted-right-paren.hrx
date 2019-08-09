@@ -1,0 +1,17 @@
+<===> input.scss
+test {
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=20\);
+}
+
+<===> error-dart-sass
+Error: expected ")".
+  ,
+2 |   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=20\);
+  |                                                               ^
+  '
+  input.scss 2:63  root stylesheet
+
+<===> output.css
+test {
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=20\);
+}

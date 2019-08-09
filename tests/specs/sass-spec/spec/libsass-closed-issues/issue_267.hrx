@@ -1,0 +1,13 @@
+<===> input.scss
+$x: foo;
+@keyframes $x {
+  to {
+    blah: blah;
+  }
+}
+<===> output.css
+@keyframes $x {
+  to {
+    blah: blah;
+  }
+}

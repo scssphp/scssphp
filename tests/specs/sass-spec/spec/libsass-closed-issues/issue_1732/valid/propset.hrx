@@ -1,0 +1,12 @@
+<===> input.scss
+foo { 
+  border: {
+    width: 1px;
+    color: green;
+  }
+}
+<===> output.css
+foo {
+  border-width: 1px;
+  border-color: green;
+}

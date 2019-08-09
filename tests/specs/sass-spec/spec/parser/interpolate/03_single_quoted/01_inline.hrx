@@ -1,0 +1,29 @@
+<===> input.scss
+.result {
+  output: 'squoted';
+  output: #{'squoted'};
+  output: "[#{'squoted'}]";
+  output: "#{'squoted'}";
+  output: '#{'squoted'}';
+  output: "['#{'squoted'}']";
+}
+
+<===> output.css
+.result {
+  output: 'squoted';
+  output: squoted;
+  output: "[squoted]";
+  output: "squoted";
+  output: "squoted";
+  output: "['squoted']";
+}
+
+<===> output-dart-sass.css
+.result {
+  output: "squoted";
+  output: squoted;
+  output: "[squoted]";
+  output: "squoted";
+  output: "squoted";
+  output: "['squoted']";
+}

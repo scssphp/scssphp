@@ -1,0 +1,9 @@
+<===> input.scss
+@import url(foo.css) only screen;
+@import url(foo.css) (min-width:400px);
+@import url(foo.css) (min-width:400px) and (max-width:599px);
+
+<===> output.css
+@import url(foo.css) only screen;
+@import url(foo.css) (min-width: 400px);
+@import url(foo.css) (min-width: 400px) and (max-width: 599px);

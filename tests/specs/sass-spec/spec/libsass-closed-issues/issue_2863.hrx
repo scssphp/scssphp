@@ -1,0 +1,21 @@
+<===> input.scss 
+$squoted: "'dquoted'";
+$dquoted: "\"squoted\"";
+
+test {
+    str-slice-single: str-slice( $squoted, 1, 2 );
+    str-slice-double: str-slice( $dquoted, 1, 2 );
+    str-index-single: str-index( $squoted, "q" );
+    str-index-double: str-index( $dquoted, "q" );
+    str-insert-single: str-insert( $squoted, "p", 2 );
+    str-insert-double: str-insert( $dquoted, "p", 2 );
+}
+<===> output.css 
+test {
+  str-slice-single: "'d";
+  str-slice-double: '"s';
+  str-index-single: 3;
+  str-index-double: 3;
+  str-insert-single: "'pdquoted'";
+  str-insert-double: '"psquoted"';
+}

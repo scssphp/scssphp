@@ -1,0 +1,15 @@
+<===> input.scss
+.a {
+  display: block;
+}
+
+.b {
+  @at-root (without: media) {
+    @extend .a;
+  }
+} 
+
+<===> output.css
+.a, .b {
+  display: block;
+}

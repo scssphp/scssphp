@@ -1,0 +1,12 @@
+<===> input.scss
+a {
+  &.div,
+  &.span {
+    display: block;
+  }
+}
+
+<===> output.css
+a.div, a.span {
+  display: block;
+}

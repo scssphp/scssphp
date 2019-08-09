@@ -1,0 +1,16 @@
+<===> input.scss
+.a-#{quote('' + b)} {
+  c: d;
+}
+
+.a-#{'' + b} {
+  c: d;
+}
+<===> output.css
+.a-b {
+  c: d;
+}
+
+.a-b {
+  c: d;
+}

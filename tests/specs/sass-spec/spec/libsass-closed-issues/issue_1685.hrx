@@ -1,0 +1,7 @@
+<===> input.scss
+@function foo($x, $y...) { @return null }
+
+a {
+  b: foo(1 2 3...);
+}
+<===> output.css

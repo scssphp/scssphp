@@ -1,0 +1,26 @@
+@charset "UTF-8";
+.normalize {
+  name-start-char: ax ax ax ax ax ax;
+  name-start-char-non-hex: xx;
+  name-start-char-non-ascii: ☃x ☃x ☃x;
+  name-char-in-middle: a-x a-x;
+  name-char-at-start: \-x \-x;
+  digit-in-middle: a1x a1x;
+  digit-at-start: \31 x \31 x;
+  non-printable: \0 x \1 x \2 x \3 x \4 x \5 x \6 x \7 x \8 x \b x \e x \f x \10 x \11 x \12 x \13 x \14 x \15 x \16 x \17 x \18 x \19 x \1a x \1b x \1c x \1d x \1e x \1f x \7f x;
+  newline: \a x \c x \d x;
+  tab: \9 x \9 x;
+  name-char-interpolation-beginning: \-foo;
+  name-char-interpolation-middle: foo-bar;
+  name-char-interpolation-end: foo-;
+  raw-escaped-tab: \	;
+}
+
+@media screen\9  {
+  x {
+    y: z;
+  }
+}
+selector\9  {
+  x: y;
+}

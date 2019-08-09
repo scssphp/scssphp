@@ -1,0 +1,22 @@
+<===> input.scss
+.a {
+  display: block;
+}
+
+.b {
+  @at-root (with: media) {
+    @extend .a;
+  }
+}
+<===> error
+Error: Extend directives may only be used within rules.
+input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: @extend may only be used within style rules.
+  ,
+7 |     @extend .a;
+  |     ^^^^^^^^^^
+  '
+  input.scss 7:5  root stylesheet

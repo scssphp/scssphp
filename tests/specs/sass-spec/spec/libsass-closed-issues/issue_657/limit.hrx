@@ -1,0 +1,32 @@
+<===> input.scss
+$values: ();
+$limit: 10;
+
+foo {
+  $num: random($limit);
+  $is-digit: type-of($num) == number and floor($num) == $num;
+  $is-within-range: $num >= 1 and $num <= $limit;
+  $is-random: index($values, $num) == null;
+  $values: append($values, $num);
+
+  @for $i from 1 through 1000 {
+    $num: random($limit);
+    $is-digit: $is-digit and type-of($num) == number and floor($num) == $num;
+    $is-within-range: $is-within-range and $num >= 1 and $num <= $limit;
+    $is-random: $is-random and index($values, $num) == null;
+    $values: append($values, $num);
+  }
+
+  is-defined: $num != "random(10)";
+  is-digit: $is-digit;
+  is-within-range: $is-within-range;
+    is-random: $is-random;
+}
+
+<===> output.css
+foo {
+  is-defined: true;
+  is-digit: true;
+  is-within-range: true;
+  is-random: false;
+}

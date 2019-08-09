@@ -1,0 +1,15 @@
+<===> input.scss
+@error unquote("\"foo\" and \"bar\"");
+
+<===> error
+Error: "foo" and "bar"
+        on line 1 of /sass/spec/libsass-issues/issue_2156/input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: "foo" and "bar"
+  ,
+1 | @error unquote("\"foo\" and \"bar\"");
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:1  root stylesheet

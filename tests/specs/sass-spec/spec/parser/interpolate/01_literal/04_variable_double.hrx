@@ -1,0 +1,18 @@
+<===> input.scss
+$input: literal;
+.result {
+  output: #{#{$input}};
+  output: #{"[#{$input}]"};
+  output: #{"#{$input}"};
+  output: #{'#{$input}'};
+  output: #{"['#{$input}']"};
+}
+
+<===> output.css
+.result {
+  output: literal;
+  output: [literal];
+  output: literal;
+  output: literal;
+  output: ['literal'];
+}

@@ -1,0 +1,13 @@
+<===> input.scss
+@warn;
+
+<===> error
+Error: Invalid CSS after "@warn": expected expression (e.g. 1px, bold), was ";"
+
+<===> error-dart-sass
+Error: Expected expression.
+  ,
+1 | @warn;
+  |      ^
+  '
+  input.scss 1:6  root stylesheet

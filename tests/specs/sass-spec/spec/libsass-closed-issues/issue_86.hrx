@@ -1,0 +1,19 @@
+<===> input.scss
+.color-functions {
+    $color: red;
+    hue: hue($color);
+    hue-type: type-of(hue($color));
+    hue-unit: unit(hue($color));
+    hue-comparable: comparable(hue($color), hue($color));
+	test-1: comparable(lightness(red), 1%);
+	test-2: comparable(saturation(red), 1%);
+}
+<===> output.css
+.color-functions {
+  hue: 0deg;
+  hue-type: number;
+  hue-unit: "deg";
+  hue-comparable: true;
+  test-1: true;
+  test-2: true;
+}

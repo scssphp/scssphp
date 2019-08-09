@@ -1,0 +1,29 @@
+<===> input.scss
+// The CSS nav-up property and its siblings allow ID tokens in their values, so
+// Sass parses any tokens that start with a "#" followed by an identifier as an
+// ID if it can't be parsed as a color.
+a {
+  // These IDs are the wrong number of letters to be a hex color.
+  two-letters: #ab;
+  five-letters: #abcde;
+  seven-letters: #abcdefa;
+  nine-letters: #abcdefabc;
+
+  // These IDs contain letters outside the hexadecimal gamut.
+  three-letters-not-hex: #axc;
+  four-letters-not-hex: #axcd;
+  six-letters-not-hex: #abcxde;
+  eight-letters-not-hex: #abcxdefa;
+}
+
+<===> output.css
+a {
+  two-letters: #ab;
+  five-letters: #abcde;
+  seven-letters: #abcdefa;
+  nine-letters: #abcdefabc;
+  three-letters-not-hex: #axc;
+  four-letters-not-hex: #axcd;
+  six-letters-not-hex: #abcxde;
+  eight-letters-not-hex: #abcxdefa;
+}

@@ -1,0 +1,15 @@
+<===> input.scss
+@error "Buckle your seatbelt Dorothy, 'cause Kansas is going bye-bye"
+
+<===> error
+Error: Buckle your seatbelt Dorothy, 'cause Kansas is going bye-bye
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: "Buckle your seatbelt Dorothy, 'cause Kansas is going bye-bye"
+  ,
+1 | @error "Buckle your seatbelt Dorothy, 'cause Kansas is going bye-bye"
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:1  root stylesheet

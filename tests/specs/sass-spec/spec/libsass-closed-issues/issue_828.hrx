@@ -1,0 +1,23 @@
+<===> input.scss
+foo {
+  box-shadow: inset -1.5em 0 1.5em -0.75em rgba(0, 0, 0, 0.25);
+  box-shadow: inset -1.5em 0 1.5em - 0.75em rgba(0, 0, 0, 0.25);
+  box-shadow: inset -1.5em 0 1.5em- 0.75em rgba(0, 0, 0, 0.25);
+  box-shadow: inset -1.5em 0 1.5em-0.75em rgba(0, 0, 0, 0.25);
+  box-shadow: inset -1.5em 0 1.5em -.75em rgba(0, 0, 0, .25);
+  box-shadow: inset -1.5em 0 1.5em - .75em rgba(0, 0, 0, .25);
+  box-shadow: inset -1.5em 0 1.5em- .75em rgba(0, 0, 0, .25);
+  box-shadow: inset -1.5em 0 1.5em-.75em rgba(0, 0, 0, .25);
+}
+
+<===> output.css
+foo {
+  box-shadow: inset -1.5em 0 1.5em -0.75em rgba(0, 0, 0, 0.25);
+  box-shadow: inset -1.5em 0 0.75em rgba(0, 0, 0, 0.25);
+  box-shadow: inset -1.5em 0 1.5em- 0.75em rgba(0, 0, 0, 0.25);
+  box-shadow: inset -1.5em 0 0.75em rgba(0, 0, 0, 0.25);
+  box-shadow: inset -1.5em 0 1.5em -0.75em rgba(0, 0, 0, 0.25);
+  box-shadow: inset -1.5em 0 0.75em rgba(0, 0, 0, 0.25);
+  box-shadow: inset -1.5em 0 1.5em- 0.75em rgba(0, 0, 0, 0.25);
+  box-shadow: inset -1.5em 0 0.75em rgba(0, 0, 0, 0.25);
+}

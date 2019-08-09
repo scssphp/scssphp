@@ -1,0 +1,27 @@
+<===> options.yml
+---
+:warning_todo:
+- libsass
+
+<===> input.sass
+foo
+  bar: baz
+  &:hover
+    baz:bam
+
+<===> output.css
+foo {
+  bar: baz;
+}
+
+<===> warning
+WARNING on line 4 of input.sass:
+This selector doesn't have any properties and will not be rendered.
+
+<===> warning-dart-sass
+WARNING on line 4, column 5 of input.sass: 
+This selector doesn't have any properties and won't be rendered.
+  ,
+4 |     baz:bam
+  |     ^^^^^^^
+  '

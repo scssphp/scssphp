@@ -1,0 +1,23 @@
+<===> input.scss
+$foo: 42;
+
+.foo {
+  content: $foo;
+}
+
+@each $item in 1337 {
+  $foo: $item !global;
+}
+
+.bar {
+  content: $foo;
+}
+
+<===> output.css
+.foo {
+  content: 42;
+}
+
+.bar {
+  content: 1337;
+}

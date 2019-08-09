@@ -1,0 +1,32 @@
+<===> input.scss
+foo {
+  // c-1: adjust-color(black,$alpha:-1);
+  c0: adjust-color(black,$alpha:0.0);
+  c1: adjust-color(black,$alpha:0.1);
+  c2: adjust-color(black,$alpha:0.2);
+  c3: adjust-color(black,$alpha:0.3);
+  c4: adjust-color(black,$alpha:0.4);
+  c5: adjust-color(black,$alpha:0.5);
+  c6: adjust-color(black,$alpha:0.6);
+  c7: adjust-color(black,$alpha:0.7);
+  c8: adjust-color(black,$alpha:0.8);
+  c9: adjust-color(black,$alpha:0.9);
+  c10: adjust-color(black,$alpha:1);
+  // c11: adjust-color(black,$alpha:1.1);
+  // c12: adjust-color(black,$alpha:2);
+}
+
+<===> output.css
+foo {
+  c0: black;
+  c1: black;
+  c2: black;
+  c3: black;
+  c4: black;
+  c5: black;
+  c6: black;
+  c7: black;
+  c8: black;
+  c9: black;
+  c10: black;
+}

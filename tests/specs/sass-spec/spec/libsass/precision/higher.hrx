@@ -1,0 +1,16 @@
+<===> options.yml
+---
+:precision: 6
+
+<===> input.scss
+test {
+  foo: 0.4999 round(0.4999);
+  bar: 0.49999 round(0.49999);
+  baz: 0.499999 round(0.499999);
+}
+<===> output.css
+test {
+  foo: 0.4999 0;
+  bar: 0.49999 0;
+  baz: 0.499999 0;
+}

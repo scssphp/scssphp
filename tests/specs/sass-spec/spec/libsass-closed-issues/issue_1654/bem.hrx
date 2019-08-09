@@ -1,0 +1,26 @@
+<===> input.scss
+%foo,
+.foo {
+ display:block;
+
+  &--up {
+   border: none;
+ }
+}
+
+.zoo {
+  @extend %foo;
+
+  &--up {
+    @extend %foo--up;
+  }
+}
+<===> output.css
+.zoo,
+.foo {
+  display: block;
+}
+.zoo--up,
+.foo--up {
+  border: none;
+}

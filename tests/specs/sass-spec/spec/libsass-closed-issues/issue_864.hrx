@@ -1,0 +1,6 @@
+<===> input.scss
+div { color: desaturate(#999, 50%); }
+<===> output.css
+div {
+  color: #999999;
+}

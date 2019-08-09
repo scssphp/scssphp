@@ -1,0 +1,44 @@
+<===> input.scss
+@function foo($a, $b) {
+  @return ($a $b);
+}
+
+foo {
+  foo: 1px / 2px;
+  foo: 1px / round(1.5);
+  foo: foo(1px / 2px, 1px / round(1.5));
+  foo: missing(1px / 2px, 1px / round(1.5));
+  foo: call(missing, 1px / 2px, 1px / round(1.5));
+}
+
+<===> output.css
+foo {
+  foo: 1px / 2px;
+  foo: 0.5px;
+  foo: 0.5 0.5px;
+  foo: missing(1px/2px, 0.5px);
+  foo: missing(1px/2px, 0.5px);
+}
+
+<===> output-dart-sass.css
+foo {
+  foo: 1px/2px;
+  foo: 0.5px;
+  foo: 0.5 0.5px;
+  foo: missing(1px/2px, 0.5px);
+  foo: missing(1px/2px, 0.5px);
+}
+
+<===> warning
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(missing)) instead.
+
+<===> warning-dart-sass
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function(missing)) instead.
+
+  ,
+10|   foo: call(missing, 1px / 2px, 1px / round(1.5));
+  |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 10:8  root stylesheet

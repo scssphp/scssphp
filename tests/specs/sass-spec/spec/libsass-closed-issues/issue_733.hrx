@@ -1,0 +1,17 @@
+<===> input.scss
+@function getter() {
+  @return 42px;
+}
+
+test {
+  content: getter()-1;
+  content: getter()- 1;
+  content: getter() -1;
+}
+
+<===> output.css
+test {
+  content: 41px;
+  content: 41px;
+  content: 42px -1;
+}

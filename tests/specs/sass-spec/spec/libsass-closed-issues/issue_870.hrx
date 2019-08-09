@@ -1,0 +1,49 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+$quoted-strings-csv: "alpha", "beta", 'gamma', 'delta';
+$quoted-strings-ssv: "alpha" "beta" 'gamma' 'delta';
+
+.csv {
+  output: $quoted-strings-csv;
+  output: #{$quoted-strings-csv};
+  output: "[#{$quoted-strings-csv}]";
+  output: "#{$quoted-strings-csv}";
+  output: "["#{$quoted-strings-csv}"]";
+  output: '#{$quoted-strings-csv}';
+  output: "['#{$quoted-strings-csv}']";
+}
+
+.ssv {
+  output: $quoted-strings-ssv;
+  output: #{$quoted-strings-ssv};
+  output: "[#{$quoted-strings-ssv}]";
+  output: "#{$quoted-strings-ssv}";
+  output: "["#{$quoted-strings-ssv}"]";
+  output: '#{$quoted-strings-ssv}';
+  output: "['#{$quoted-strings-ssv}']";
+}
+
+<===> output.css
+.csv {
+  output: "alpha", "beta", "gamma", "delta";
+  output: alpha, beta, gamma, delta;
+  output: "[alpha, beta, gamma, delta]";
+  output: "alpha, beta, gamma, delta";
+  output: "[" alpha, beta, gamma, delta "]";
+  output: "alpha, beta, gamma, delta";
+  output: "['alpha, beta, gamma, delta']";
+}
+
+.ssv {
+  output: "alpha" "beta" "gamma" "delta";
+  output: alpha beta gamma delta;
+  output: "[alpha beta gamma delta]";
+  output: "alpha beta gamma delta";
+  output: "[" alpha beta gamma delta "]";
+  output: "alpha beta gamma delta";
+  output: "['alpha beta gamma delta']";
+}

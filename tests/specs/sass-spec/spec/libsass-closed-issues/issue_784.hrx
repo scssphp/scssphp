@@ -1,0 +1,13 @@
+<===> input.scss
+.foo {
+  @each $item in (a: 1, b: 2, c: 3) {
+    each: $item;
+  }
+}
+
+<===> output.css
+.foo {
+  each: a 1;
+  each: b 2;
+  each: c 3;
+}

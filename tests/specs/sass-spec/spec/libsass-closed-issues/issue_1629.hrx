@@ -1,0 +1,9 @@
+<===> input.scss
+foo {
+  background: url(...) 2rem 3rem / auto 2rem;
+}
+
+<===> output.css
+foo {
+  background: url(...) 2rem 3rem/auto 2rem;
+}

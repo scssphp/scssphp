@@ -1,0 +1,57 @@
+<===> input.scss
+%place-to-go {
+  font-size: 1em;
+}
+
+a::foo(1){
+  @extend %place-to-go;
+}
+a::foo(2){
+  @extend %place-to-go;
+}
+b::foo(1){
+  @extend %place-to-go;
+}
+b::foo(2){
+  @extend %place-to-go;
+}
+
+:bar(1){
+  @extend %place-to-go;
+}
+:bar(2){
+  @extend %place-to-go;
+}
+:bar(3){
+  @extend %place-to-go;
+}
+
+[foo]{
+  @extend %place-to-go;
+}
+[bar]{
+  @extend %place-to-go;
+}
+[baz]{
+  @extend %place-to-go;
+}
+
+[bar="1"]{
+  @extend %place-to-go;
+}
+[bar="2"]{
+  @extend %place-to-go;
+}
+[bar="3"]{
+  @extend %place-to-go;
+}
+
+<===> output.css
+a::foo(1), a::foo(2), b::foo(1), b::foo(2), :bar(1), :bar(2), :bar(3), [foo], [bar], [baz], [bar="1"], [bar="2"], [bar="3"] {
+  font-size: 1em;
+}
+
+<===> output-dart-sass.css
+[bar="3"], [bar="2"], [bar="1"], [baz], [bar], [foo], :bar(3), :bar(2), :bar(1), b::foo(2), b::foo(1), a::foo(2), a::foo(1) {
+  font-size: 1em;
+}

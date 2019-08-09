@@ -1,0 +1,11 @@
+<===> input.scss
+.foo {
+  content: function-exists("feature-exists");
+  content: feature-exists("foo");
+}
+
+<===> output.css
+.foo {
+  content: true;
+  content: false;
+}

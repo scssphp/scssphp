@@ -1,0 +1,23 @@
+<===> input.scss
+$map: (
+  alpha: 1,
+  beta: 2,
+  gamma: 3,
+  delta: (
+    eta: 5,
+    eta: 6,
+  ),
+);
+
+<===> error
+Error: Duplicate key "eta" in map (eta: 5, eta: 6).
+        on line 5 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Duplicate key.
+  ,
+7 |     eta: 6,
+  |     ^^^
+  '
+  input.scss 7:5  root stylesheet

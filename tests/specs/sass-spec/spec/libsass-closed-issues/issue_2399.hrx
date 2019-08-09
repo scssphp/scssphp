@@ -1,0 +1,20 @@
+<===> input.scss
+.thing {
+	color: black;
+}
+
+.a,
+.b,
+.c,
+.d,
+.e {
+	&:not(.thing) { @extend .thing; }
+}
+<===> output.css
+.thing, .a:not(.thing),
+.b:not(.thing),
+.c:not(.thing),
+.d:not(.thing),
+.e:not(.thing) {
+  color: black;
+}

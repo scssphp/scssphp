@@ -1,0 +1,14 @@
+<===> options.yml
+---
+:ignore_for:
+- dart-sass
+
+<===> input.scss
+test {
+  test: foo + null;
+}
+
+<===> error
+Error: Invalid null operation: ""foo" plus null".
+        on line 2 of input.scss
+  Use --trace for backtrace.

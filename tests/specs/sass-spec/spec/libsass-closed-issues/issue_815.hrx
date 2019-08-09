@@ -1,0 +1,11 @@
+<===> input.scss
+foo {
+  foo: str-slice("bar", 1, 2);
+  bar: str-slice("bar", 3);
+}
+
+<===> output.css
+foo {
+  foo: "ba";
+  bar: "r";
+}

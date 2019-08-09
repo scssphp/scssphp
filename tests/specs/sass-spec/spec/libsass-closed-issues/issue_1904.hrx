@@ -1,0 +1,10 @@
+<===> input.scss
+.foo {
+  &--#{'bar'} {
+    color: red;
+  }
+}
+<===> output.css
+.foo--bar {
+  color: red;
+}

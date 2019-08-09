@@ -1,0 +1,66 @@
+<===> red/type/input.scss
+red-type {
+  x: rgb("foo", 0, 0);
+}
+
+<===> red/type/error
+Error: $red: "foo" is not a number.
+  ,
+2 |   x: rgb("foo", 0, 0);
+  |      ^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===> red/type/error-libsass
+Error: argument `$red` of `rgb($red, $green, $blue)` must be a number
+        on line 2:6 of input.scss, in function `rgb`
+        from line 2:6 of input.scss
+>>   x: rgb("foo", 0, 0);
+
+   -----^
+
+<===>
+================================================================================
+<===> green/type/input.scss
+green-type {
+  x: rgb(0, "foo", 0);
+}
+
+<===> green/type/error
+Error: $green: "foo" is not a number.
+  ,
+2 |   x: rgb(0, "foo", 0);
+  |      ^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===> green/type/error-libsass
+Error: argument `$green` of `rgb($red, $green, $blue)` must be a number
+        on line 2:6 of input.scss, in function `rgb`
+        from line 2:6 of input.scss
+>>   x: rgb(0, "foo", 0);
+
+   -----^
+
+<===>
+================================================================================
+<===> blue/type/input.scss
+blue-type {
+  x: rgb(0, 0, "foo");
+}
+
+<===> blue/type/error
+Error: $blue: "foo" is not a number.
+  ,
+2 |   x: rgb(0, 0, "foo");
+  |      ^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===> blue/type/error-libsass
+Error: argument `$blue` of `rgb($red, $green, $blue)` must be a number
+        on line 2:6 of input.scss, in function `rgb`
+        from line 2:6 of input.scss
+>>   x: rgb(0, 0, "foo");
+
+   -----^

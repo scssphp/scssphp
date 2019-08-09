@@ -1,0 +1,7 @@
+<===> input.scss
+div { color: red; }
+
+<===> output.css
+div {
+  color: red;
+}

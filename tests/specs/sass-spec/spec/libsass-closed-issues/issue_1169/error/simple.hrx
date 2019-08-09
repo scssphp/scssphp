@@ -1,0 +1,13 @@
+<===> input.scss
+$map: (
+  red: 'bar',
+  #{red}: 'baz',
+);
+
+.foo {
+  content: inspect($map);
+}
+<===> output.css
+.foo {
+  content: (red: "bar", red: "baz");
+}

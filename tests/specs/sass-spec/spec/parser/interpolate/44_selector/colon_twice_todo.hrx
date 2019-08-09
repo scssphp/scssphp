@@ -1,0 +1,22 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+test {
+  filter: progid:DXImageTransform.Microsoft.#{Alpha(opacity=20)};
+}
+
+<===> error
+Error: Invalid CSS after "  filter: progid": expected ";", was ":DXImageTransfo..."
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected "(".
+  ,
+2 |   filter: progid:DXImageTransform.Microsoft.#{Alpha(opacity=20)};
+  |                                             ^
+  '
+  input.scss 2:45  root stylesheet

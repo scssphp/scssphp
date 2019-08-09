@@ -1,0 +1,8 @@
+<===> input.scss
+$baz: 12;
+@foo bar#{$baz} qux {a: b}
+
+<===> output.css
+@foo bar12 qux {
+  a: b;
+}

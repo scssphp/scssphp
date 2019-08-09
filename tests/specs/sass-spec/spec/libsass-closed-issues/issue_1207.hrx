@@ -1,0 +1,14 @@
+<===> input.scss
+@function test($pos) {
+  @return test-#{$pos};
+}
+
+.foo {
+  content: test(str-slice('scale-0', 7));   // Nope
+  content: test-#{str-slice('scale-0', 7)}; // Yep
+}
+<===> output.css
+.foo {
+  content: test-0;
+  content: test-0;
+}

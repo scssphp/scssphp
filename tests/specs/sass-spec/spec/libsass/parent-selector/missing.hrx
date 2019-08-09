@@ -1,0 +1,52 @@
+<===> input.scss
+$tablet-portrait:                 768px;
+$tablet-landscape:                980px;
+$desk-normal:                     1120px;
+$desk-big:                        1280px;
+$grid-breakpoints-immobile: (
+        'tablet-portrait':   '(min-width: ' + $tablet-portrait + ') and (max-width: ' + $tablet-landscape + ')',
+        'tablet-landscape':  '(min-width: ' +  $tablet-landscape + ') and (max-width: ' + $desk-normal + ')',
+        'desk-normal':       '(min-width: ' +  $desk-normal + ') and (max-width: ' + $desk-big + ')',
+        'desk-big':          '(min-width: ' +  $desk-big + ')'
+);
+@mixin grid-media-query($media-query, $breakpointDefinitions) {
+  $breakpoint-found: false;
+
+  @each $breakpoint, $breakpointvalue in $breakpointDefinitions{
+    $name: $breakpoint;
+    $declaration: $breakpointvalue;
+
+    @if $media-query == $name and $declaration{
+      $breakpoint-found: true;
+
+      @media only screen and #{$declaration} {
+        @content;
+      }
+    }
+  }
+}
+
+@each $name in map-keys($grid-breakpoints-immobile) {
+  @include grid-media-query($name, $grid-breakpoints-immobile) {
+    body.immobile & {
+      margin-bottom: 0;
+    }
+  }
+}
+
+<===> error
+Error: Base-level rules cannot contain the parent-selector-referencing character '&'.
+        on line 30 of /sass/spec/parent-selector/missing/input.scss, in `@content'
+        from line 22 of /sass/spec/parent-selector/missing/input.scss, in `grid-media-query'
+        from line 29 of /sass/spec/parent-selector/missing/input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Top-level selectors may not contain the parent selector "&".
+   ,
+30 |     body.immobile & {
+   |     ^^^^^^^^^^^^^^^^
+   '
+  input.scss 30:5  @content
+  input.scss 22:9  grid-media-query()
+  input.scss 29:3  root stylesheet

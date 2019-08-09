@@ -1,0 +1,9 @@
+<===> input.scss
+foo {
+  foo: feature-exists('at-error');
+}
+
+<===> output.css
+foo {
+  foo: true;
+}

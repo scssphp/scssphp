@@ -1,0 +1,13 @@
+<===> input.scss
+$key: 'bar';
+.test12#{'\\@#{$key}'} { content: '1.2'; }
+
+<===> output.css
+.test12\@bar {
+  content: '1.2';
+}
+
+<===> output-dart-sass.css
+.test12\@bar {
+  content: "1.2";
+}

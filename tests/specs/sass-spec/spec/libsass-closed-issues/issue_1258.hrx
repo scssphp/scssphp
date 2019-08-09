@@ -1,0 +1,24 @@
+<===> options.yml
+---
+:ignore_for:
+- dart-sass
+
+<===> input.scss
+$list:   '(-webkit-min-device-pixel-ratio: 2)', '(min-resolution: 192dpi)';
+$string: '(-webkit-min-device-pixel-ratio: 2),   (min-resolution: 192dpi)';
+
+.foo {
+  // I should not unquote a list, I know. But still.
+  content: unquote($list);
+  content: unquote($string);
+}
+<===> output.css
+.foo {
+  content: "(-webkit-min-device-pixel-ratio: 2)", "(min-resolution: 192dpi)";
+  content: (-webkit-min-device-pixel-ratio: 2),   (min-resolution: 192dpi);
+}
+
+<===> warning
+DEPRECATION WARNING: Passing "(-webkit-min-device-pixel-ratio: 2)", "(min-resolution: 192dpi)", a non-string value, to unquote()
+will be an error in future versions of Sass.
+        on line 6 of input.scss

@@ -1,0 +1,44 @@
+<===> plain_css_function/input.scss
+// A plain CSS function causes min() to be parsed as Sass, and then fail at
+// runtime because the argument isn't a number.
+.plain-css-function {
+  x: min(something(1px), 2px);
+}
+
+<===> plain_css_function/error
+Error: something(1px) is not a number.
+  ,
+4 |   x: min(something(1px), 2px);
+  |      ^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 4:6  root stylesheet
+
+<===> plain_css_function/error-libsass
+Error: "something(1px)" is not a number for `min'
+        on line 4:6 of /sass/spec/css/min_max/error/plain_css_function/input.scss, in function `min`
+        from line 4:6 of /sass/spec/css/min_max/error/plain_css_function/input.scss
+>>   x: min(something(1px), 2px);
+
+   -----^
+
+<===> dangling_operator/input.scss
+// A dangling operator is a syntax error in both syntaxes, so it should fail to
+// compile.
+.dangling-operator {
+  x: min(1px +, 2px);
+}
+
+<===> dangling_operator/error
+Error: Expected expression.
+  ,
+4 |   x: min(1px +, 2px);
+  |               ^
+  '
+  input.scss 4:15  root stylesheet
+
+<===> dangling_operator/error-libsass
+Error: Invalid CSS after "  x: min(1px +": expected expression (e.g. 1px, bold), was ", 2px);"
+        on line 4:15 of /sass/spec/css/min_max/error/dangling_operator/input.scss
+>>   x: min(1px +, 2px);
+
+   --------------^

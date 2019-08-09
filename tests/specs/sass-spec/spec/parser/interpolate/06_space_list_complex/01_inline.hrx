@@ -1,0 +1,19 @@
+<===> input.scss
+.result {
+  output: gamme "'"delta"'";
+  output: #{gamme "'"delta"'"};
+  output: "[#{gamme "'"delta"'"}]";
+  output: "#{gamme "'"delta"'"}";
+  output: '#{gamme "'"delta"'"}';
+  output: "['#{gamme "'"delta"'"}']";
+}
+
+<===> output.css
+.result {
+  output: gamme "'" delta "'";
+  output: gamme ' delta ';
+  output: "[gamme ' delta ']";
+  output: "gamme ' delta '";
+  output: "gamme ' delta '";
+  output: "['gamme ' delta '']";
+}

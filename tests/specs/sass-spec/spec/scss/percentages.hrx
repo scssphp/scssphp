@@ -1,0 +1,27 @@
+<===> input.scss
+div {
+  width: 10% + 20%;
+  height: 10% - 20%;
+  width: 10% + 10;
+  width: 10 + 10%;
+  height: 10% - 10;
+  height: 10 - 10%;
+  blah: (20% / 4%);
+  flah: 12 * 75%;
+  grah: 75% * 12;
+  // hwah: (24 / 8%);
+  nyah: (35% / 7);
+}
+<===> output.css
+div {
+  width: 30%;
+  height: -10%;
+  width: 20%;
+  width: 20%;
+  height: 0%;
+  height: 0%;
+  blah: 5;
+  flah: 900%;
+  grah: 900%;
+  nyah: 5%;
+}

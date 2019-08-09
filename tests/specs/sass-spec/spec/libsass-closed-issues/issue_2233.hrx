@@ -1,0 +1,14 @@
+<===> foo.scss
+a { b: c; }
+
+<===> input.scss
+@media all and (min-width: 100px) {
+  @import "foo"
+}
+
+<===> output.css
+@media all and (min-width: 100px) {
+  a {
+    b: c;
+  }
+}

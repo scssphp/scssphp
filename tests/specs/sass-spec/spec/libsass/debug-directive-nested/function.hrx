@@ -1,0 +1,25 @@
+<===> input.scss
+@function c() {
+  @warn test;
+  @return d;
+}
+
+a {
+  b: {
+    c: c();
+  }
+}
+
+<===> output.css
+a {
+  b-c: d;
+}
+
+<===> warning
+WARNING: test
+         on line 2 of input.scss
+
+<===> warning-dart-sass
+WARNING: test
+    input.scss 2:3  c()
+    input.scss 8:8  root stylesheet

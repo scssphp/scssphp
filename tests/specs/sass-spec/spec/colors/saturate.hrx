@@ -1,0 +1,18 @@
+<===> input.scss
+p {
+  color: saturate(#f00, 10%);
+  color: saturate(#900, 10%);
+  color: saturate(#000, 10%);
+  color: saturate(#fff, 10%);
+  color: saturate(#999, 10%);
+  color: saturate(#000, 10%);
+}
+<===> output.css
+p {
+  color: red;
+  color: #990000;
+  color: black;
+  color: white;
+  color: #a38f8f;
+  color: black;
+}

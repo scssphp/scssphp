@@ -1,0 +1,27 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2700
+
+<===> input.scss
+// SassScript functions operate on the normalized form of the identifier.
+.script {
+  unescaped-str-length: str-length(ax) str-length(\61x) str-length(\00061 x);
+  escaped-str-length: str-length(\1Ax) str-length(\0001A x);
+
+  unescaped-slice: str-slice(xaz, 2, 2) str-slice(x\61z, 2, 2) str-slice(x\00061 z, 2, 2);
+  escaped-slice: str-slice(x\1Az, 2, 5) str-slice(x\0001A z, 2, 5);
+
+  unescaped-quote: quote(ax) quote(\61x) quote(\00061 x);
+  escaped-quote: quote(\1Ax) quote(\0001A x);
+}
+
+<===> output.css
+.script {
+  unescaped-str-length: 2 2 2;
+  escaped-str-length: 5 5;
+  unescaped-slice: a a a;
+  escaped-slice: \1a  \1a ;
+  unescaped-quote: "ax" "ax" "ax";
+  escaped-quote: "\\1a x" "\\1a x";
+}

@@ -1,0 +1,18 @@
+<===> options.yml
+---
+:ignore_for:
+- dart-sass
+
+<===> input.scss
+.foo {a: b}
+.bar {c: d}
+.baz {@extend .foo, .bar}
+
+<===> output.css
+.foo, .baz {
+  a: b;
+}
+
+.bar, .baz {
+  c: d;
+}

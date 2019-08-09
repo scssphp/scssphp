@@ -1,0 +1,24 @@
+<===> input.scss
+$input: literal;
+.result {
+  output: "[\#{literal}]";
+  output: "\#{literal}";
+  output: '\#{literal}';
+  output: "['\#{literal}']";
+}
+
+<===> output.css
+.result {
+  output: "[\#{literal}]";
+  output: "\#{literal}";
+  output: '\#{literal}';
+  output: "['\#{literal}']";
+}
+
+<===> output-dart-sass.css
+.result {
+  output: "[#{literal}]";
+  output: "#{literal}";
+  output: "#{literal}";
+  output: "['#{literal}']";
+}

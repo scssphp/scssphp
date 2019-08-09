@@ -1,0 +1,11 @@
+<===> input.scss
+$value: 10;
+
+foo {
+  filter: foo(opacity=$value*100);
+}
+
+<===> output.css
+foo {
+  filter: foo(opacity=1000);
+}

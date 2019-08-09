@@ -1,0 +1,28 @@
+<===> input.scss
+@mixin bar() {
+  @at-root { @content; }
+}
+
+.test {
+  @include bar() {
+    color: yellow;
+    .nest2 {
+      color: green;
+    }
+  }
+}
+
+<===> error
+Error: Properties are only allowed within rules, directives, mixin includes, or other properties.
+        on line 7 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Declarations may only be used within style rules.
+  ,
+7 |     color: yellow;
+  |     ^^^^^^^^^^^^^
+  '
+  input.scss 7:5   @content
+  input.scss 2:14  bar()
+  input.scss 6:3   root stylesheet

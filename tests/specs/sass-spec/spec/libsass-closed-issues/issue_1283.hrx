@@ -1,0 +1,11 @@
+<===> input.scss
+$map: map-merge((1 2: 3), (2 1: 3));
+
+.test {
+  test: inspect($map);
+}
+
+<===> output.css
+.test {
+  test: (1 2: 3, 2 1: 3);
+}

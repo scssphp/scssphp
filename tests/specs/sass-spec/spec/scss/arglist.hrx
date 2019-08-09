@@ -1,0 +1,16 @@
+<===> input.scss
+@mixin foo($x, $y, $zs...) {
+  foo-x: $x;
+  foo-y: $y;
+  foo-zs: $zs;
+}
+
+div {
+  @include foo(a, b, c, d, e);
+}
+<===> output.css
+div {
+  foo-x: a;
+  foo-y: b;
+  foo-zs: c, d, e;
+}

@@ -1,0 +1,18 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+.foo,
+.bar {
+  .baz & {
+    color: red;
+  }
+}
+
+<===> output.css
+.baz .foo,
+.baz .bar {
+  color: red;
+}

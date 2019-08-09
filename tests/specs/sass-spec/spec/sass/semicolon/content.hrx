@@ -1,0 +1,16 @@
+<===> input.sass
+@mixin foo
+  @content;
+
+<===> error
+Error: Invalid CSS after "@content": expected newline, was ";"
+        on line 1 of input.sass
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: semicolons aren't allowed in the indented syntax.
+  ,
+2 |   @content;
+  |           ^
+  '
+  input.sass 2:11  root stylesheet

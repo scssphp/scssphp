@@ -1,0 +1,280 @@
+<===> options.yml
+---
+:todo:
+- dart-sass
+
+<===> input.scss
+// ----
+// Sass (v3.4.21)
+// Compass (v1.0.3)
+// ----
+
+@function remove-modifiers($selector) {
+    // convert selector to a string
+    $selector: inspect(nth($selector, 1));
+  
+    $modifier: '';
+  
+    // Find out where the first modifier starts
+    $modifier-index: str-index($selector, '"--');
+  
+    @if $modifier-index {
+      // Strip the first part of the selector up until the first modifier
+      $modifier: str-slice($selector, $modifier-index);
+      // Find out where the modifier ends
+      $modifier-end: str-index($modifier, '"]');
+      // Isolate the modifier
+      $modifier: str-slice($modifier, 0, $modifier-end);
+      // Remove the modifier from the selector
+      $selector: str-replace($selector, $modifier, '');
+      // Remove junk characters
+      $selector: str-replace($selector, '[class*=]', '');
+      // Recurse the function to eliminate any remainig modifiers
+      $selector: remove-modifiers($selector);
+    }
+  
+    @return $selector;
+  }
+  
+  @function remove-duplicates($list, $recursive: false) {
+    $result: ();
+    
+    @each $item in $list {
+      @if not index($result, $item) {
+        @if length($item) > 1 and $recursive {
+          $result: append($result, remove-duplicates($item, $recursive));
+        }
+        @else {
+          $result: append($result, $item);
+        }
+      }
+    }
+    
+    @return $result;
+  }
+  
+  @function str-replace($string, $search, $replace) { 
+    $index: str-index($string, $search);
+  
+    @if $index {
+      @return str-slice($string, 1, $index - 1) + $replace + str-replace(
+        str-slice($string, $index + str-length($search)), $search, $replace
+      );
+    }
+  
+    @return $string;
+  }
+  
+  @function module-tree($selector) {
+    $parent-module: $module;
+  
+    // Remove any modifers
+    $selectors: remove-modifiers($selector);
+  
+    // Remove any junk characters
+    $selectors: str-replace($selectors, '.', '');
+    $selectors: str-replace($selectors, '[class*="--', '');
+    $selectors: str-replace($selectors, '[class*="', '');
+    $selectors: str-replace($selectors, '--"]', '');
+    $selectors: str-replace($selectors, '"]', '');
+  
+    // Spoof our modules into a list
+    $selectors: str-replace($selectors, ' ', ', ');
+    $selectors: selector-parse($selectors);
+  
+    @return $selectors;
+  }
+  
+  @function list-remove($list, $value, $recursive: false) { 
+      $result: ();
+  
+      @for $i from 1 through length($list) {
+          @if type-of(nth($list, $i)) == list and $recursive {
+              $result: append($result, list-remove(nth($list, $i), $value, $recursive), comma);
+          } @else if nth($list, $i) != $value {
+              $result: append($result, nth($list, $i), comma);
+          }
+      }
+  
+      @return $result;
+   }
+   
+  @function this($options...) {
+    $value: map-get($config, $options...);
+    $debug: true;
+  
+    $this: &;
+  
+    @if length($this) > 0 {
+      @if str-index(inspect(nth($this, 1)), '%') == 1 {
+        $debug: false;
+      }
+    }
+  
+    @if $debug and not $value and $value != false {
+        @warn '#{$options} not found in #{$module} config';
+    }
+  
+    @return $value;
+  }
+  
+  @function config($map-old, $map-new) {
+      // Merge default and custom options
+      $map-merged: map-merge($map-old, $map-new);
+    
+      // Store config in global variable
+      $config: $map-merged !global;
+  
+      // Return merged map
+      @return $map-merged;
+  }
+  
+  @mixin module($module: $module) {
+    $nested: &;
+  
+    @if not $nested {
+      $module: $module !global;
+    }
+    
+    $selectors: ();
+  
+    @each $item in $module {
+      $selectors: join($selectors, '.#{$module}', comma);
+      $selectors: join($selectors, '[class*="#{$module}--"]', comma);
+    }
+      
+    #{$selectors} {
+      @content;
+    }
+  }
+  
+  @mixin component($components: null, $glue: '__') {
+      $selectors: '[class*="#{$module}#{$glue}"]';
+      $this: &;
+      $tree: module-tree($this);
+      $namespace: nth($tree, length($tree));
+  
+      @if $components {
+        $selectors: ();
+  
+        @each $component in $components {
+          $selectors: join(
+            $selectors, 
+            '.#{$namespace}#{$glue}#{$component}, [class*="#{$namespace}#{$glue}#{$component}-"]', 
+            comma
+          );
+        }
+      }
+  
+      $parents: ();
+  
+      @each $selector in & {
+        // spoof the selector into a list
+        $selector: str-replace(inspect($selector), ' ', ', ');
+        $selector: selector-parse($selector);
+  
+        // if the last item isn't a modifier, remove it
+        @if not str-index(inspect(nth($selector, length($selector))), '[class*="--') {
+          $selector: list-remove($selector, nth($selector, length($selector)));
+        }
+  
+        // convert the selector back into a string
+        @if length($selector) == 1 {
+          $selector: nth($selector, 1);
+        }
+        $selector: str-replace(inspect($selector), ', ', ' ');
+  
+        // Re-build the parent selector
+        $parents: append($parents, $selector, comma);
+      }
+  
+      // remove duplicate selectors
+      $parents: remove-duplicates($parents);
+  
+      @if length($parents) == 1 {
+        $parents: nth($parents, 1);
+      }
+  
+      @if ($parents == '()') {
+        @at-root #{$selectors} {
+          @content;
+        }
+      } @else {
+        @at-root #{$parents} {
+          #{$selectors} {
+              @content;
+          }
+        }
+      }
+  
+  }
+  
+  @mixin modifier($modifier) {
+    $selectors: &;
+  
+    @if str-index(inspect(&), '.#{$module}') {
+      $selectors: ();
+  
+      @for $i from 1 through length(&) {
+        @if $i % 2 == 0 {
+          $selectors: append($selectors, nth(&, $i), comma);
+        }
+      }
+    }
+  
+    @at-root #{$selectors} {
+      $modifier-selectors: ();
+      
+      @each $item in $modifier {
+        $modifier-selectors: join(
+          $modifier-selectors, '&[class*="--#{$modifier}"]', comma
+        );
+      }
+  
+      #{$modifier-selectors} {
+        @content;
+      }
+    }
+  }
+  
+  @mixin button($custom:()) {
+    $buttons: config((
+      'group-spacing': 1em
+    ), $custom);
+  
+    @include module('button') {
+      @include component('group') {
+        content: 'fizzbuzz';
+        @include module {
+          margin-left: this('group-spacing');
+          &:first-child {
+            margin-left: 0;
+          }
+        }
+      }
+    }
+  }
+  
+  @include button();
+  
+  @include module('modal') {
+    @include modifier('animate') {
+      @include modifier('zoom') {
+        content: "fizzbuzz"
+      }
+    }
+  }
+<===> output.css
+.button__group, [class*="button__group-"] {
+  content: 'fizzbuzz';
+}
+.button__group .button, .button__group [class*="button--"], [class*="button__group-"] .button, [class*="button__group-"] [class*="button--"] {
+  margin-left: 1em;
+}
+.button__group .button:first-child, .button__group [class*="button--"]:first-child, [class*="button__group-"] .button:first-child, [class*="button__group-"] [class*="button--"]:first-child {
+  margin-left: 0;
+}
+
+[class*="modal--"][class*="--animate"][class*="--zoom"] {
+  content: "fizzbuzz";
+}

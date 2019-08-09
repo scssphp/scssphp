@@ -1,0 +1,88 @@
+<===> input.scss
+// Media query range syntax with SassScript expressions.
+
+// Single comparisons.
+$width: width;
+@media ($width < 600px) {a {dynamic: left}}
+@media (width < 500px + 100px) {a {dynamic: right}}
+@media ($width < 500px + 100px) {a {dynamic: both}}
+@media ($width = 500px + 100px) {a {separator: equals}}
+
+// Ranges.
+@media (50px + 50px < width < 600px) {a {dynamic: left}}
+@media (100px < $width < 600px) {a {dynamic: middle}}
+@media (100px < width < 500px + 100px) {a {dynamic: right}}
+@media (50px + 50px < $width < 500px + 100px) {a {dynamic: all}}
+
+// Comparison operators are allowed as long as they're not at the top level.
+@media (width < (1 < 2)) {a {comparison: in-operator}}
+@media (width < if(1 < 2, 500px, 600px)) {a {comparison: in-function}}
+@media (width < [1 < 2]) {a {comparison: in-square-brackets}}
+
+<===> output.css
+@media (width < 600px) {
+  a {
+    dynamic: left;
+  }
+}
+
+@media (width < 600px) {
+  a {
+    dynamic: right;
+  }
+}
+
+@media (width < 600px) {
+  a {
+    dynamic: both;
+  }
+}
+
+@media (width = 600px) {
+  a {
+    separator: equals;
+  }
+}
+
+@media (100px < width < 600px) {
+  a {
+    dynamic: left;
+  }
+}
+
+@media (100px < width < 600px) {
+  a {
+    dynamic: middle;
+  }
+}
+
+@media (100px < width < 600px) {
+  a {
+    dynamic: right;
+  }
+}
+
+@media (100px < width < 600px) {
+  a {
+    dynamic: all;
+  }
+}
+
+@media (width < true) {
+  a {
+    comparison: in-operator;
+  }
+}
+
+@media (width < 500px) {
+  a {
+    comparison: in-function;
+  }
+}
+
+@media (width < [true]) {
+  a {
+    comparison: in-square-brackets;
+  }
+}
+

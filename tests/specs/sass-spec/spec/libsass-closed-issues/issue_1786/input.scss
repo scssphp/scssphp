@@ -1,0 +1,6 @@
+$input: "\0_\a_\A";
+
+test {
+    bug1: "#{"_\a" + b}";
+    bug2: "#{a $input}";
+}

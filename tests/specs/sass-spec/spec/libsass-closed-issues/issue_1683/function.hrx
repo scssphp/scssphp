@@ -1,0 +1,20 @@
+<===> input.scss
+@function foo($x, $y) { @return null }
+
+a {
+  b: foo(1 2 3...);
+}
+<===> error-dart-sass
+Error: Only 2 arguments allowed, but 3 were passed.
+  ,
+4 |   b: foo(1 2 3...);
+  |      ^^^^^^^^^^^^^
+  '
+  input.scss 4:6  foo()
+  input.scss 4:6  root stylesheet
+
+<===> output.css
+<===> warning
+WARNING: Function foo takes 2 arguments but 3 were passed.
+        on line 4 of input.scss
+This will be an error in future versions of Sass.

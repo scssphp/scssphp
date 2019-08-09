@@ -1,0 +1,21 @@
+<===> input.scss
+div {
+  @foo {
+    font: a;
+  }
+  @bar {
+    color: b;
+  }
+}
+
+<===> output.css
+@foo {
+  div {
+    font: a;
+  }
+}
+@bar {
+  div {
+    color: b;
+  }
+}

@@ -1,0 +1,15 @@
+<===> input.scss
+#{a==b}
+
+<===> error
+Error: Invalid CSS after "#{a==b}": expected "{", was ""
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected "{".
+  ,
+1 | #{a==b}
+  |        ^
+  '
+  input.scss 1:8  root stylesheet

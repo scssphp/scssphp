@@ -1,0 +1,41 @@
+<===> input.scss
+a {
+  &.#{#ff0} {
+    color: red;
+  }
+}
+
+<===> error
+WARNING on line 2, column 5 of input.scss:
+You probably don't mean to use the color value `#ff0' in interpolation here.
+It may end up represented as #ffff00, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "#ff0").
+If you really want to use the color value here, use `"" + #ff0'.
+
+Error: Invalid CSS after "&.": expected class name, was "#ff0"
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+WARNING: You probably don't mean to use the color value yellow in interpolation here.
+It may end up represented as #ff0, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "yellow").
+If you really want to use the color value here, use '"" + #ff0'.
+
+  ,
+2 |   &.#{#ff0} {
+  |       ^^^^
+  '
+    input.scss 2:7  root stylesheet
+
+Error: Expected identifier.
+  ,
+2 |   &.#ff0{
+  |     ^
+  '
+  input.scss 2:5  root stylesheet
+
+<===> error-libsass
+Error: Invalid CSS after "&": expected selector, was ".#ff0"
+        on line 2 of input.scss
+  Use --trace for backtrace.

@@ -1,0 +1,23 @@
+<===> input.scss
+%dog {
+    @media (min-width: 10px) {
+        &:hover {
+            display: none;
+        }
+    }
+}
+
+.puppy {
+    @extend %dog;
+    background-color: red;
+}
+<===> output.css
+@media (min-width: 10px) {
+  .puppy:hover {
+    display: none;
+  }
+}
+
+.puppy {
+  background-color: red;
+}

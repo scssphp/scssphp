@@ -1,0 +1,47 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2726
+:ignore_for:
+
+<===> input.scss
+a {
+  calc-1: hsl(calc(1), 2%, 3%);
+  calc-2: hsl(1, calc(2%), 3%);
+  calc-3: hsl(1, 2%, calc(3%));
+
+  var-1: hsl(var(--foo), 2%, 3%);
+  var-2: hsl(1, var(--foo), 3%);
+  var-3: hsl(1, 2%, var(--foo));
+
+  env-1: hsl(env(--foo), 2%, 3%);
+  env-2: hsl(1, env(--foo), 3%);
+  env-3: hsl(1, 2%, env(--foo));
+
+  min-1: hsl(min(1), 2%, 3%);
+  min-2: hsl(1, min(2%), 3%);
+  min-3: hsl(1, 2%, min(3%));
+
+  max-1: hsl(max(1), 2%, 3%);
+  max-2: hsl(1, max(2%), 3%);
+  max-3: hsl(1, 2%, max(3%));
+}
+
+<===> output.css
+a {
+  calc-1: hsl(calc(1), 2%, 3%);
+  calc-2: hsl(1, calc(2%), 3%);
+  calc-3: hsl(1, 2%, calc(3%));
+  var-1: hsl(var(--foo), 2%, 3%);
+  var-2: hsl(1, var(--foo), 3%);
+  var-3: hsl(1, 2%, var(--foo));
+  env-1: hsl(env(--foo), 2%, 3%);
+  env-2: hsl(1, env(--foo), 3%);
+  env-3: hsl(1, 2%, env(--foo));
+  min-1: hsl(min(1), 2%, 3%);
+  min-2: hsl(1, min(2%), 3%);
+  min-3: hsl(1, 2%, min(3%));
+  max-1: hsl(max(1), 2%, 3%);
+  max-2: hsl(1, max(2%), 3%);
+  max-3: hsl(1, 2%, max(3%));
+}

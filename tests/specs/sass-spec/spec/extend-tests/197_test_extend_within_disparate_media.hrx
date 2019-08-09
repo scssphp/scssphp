@@ -1,0 +1,10 @@
+<===> input.scss
+@media screen {.foo {a: b}}
+@media screen {.bar {@extend .foo}}
+
+<===> output.css
+@media screen {
+  .foo, .bar {
+    a: b;
+  }
+}

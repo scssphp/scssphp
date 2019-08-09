@@ -1,0 +1,133 @@
+<===> space_after_at/input.scss
+// No whitespace is allowed between the @ and the rule name.
+@ unknown;
+
+<===> space_after_at/error
+Error: Expected identifier.
+  ,
+2 | @ unknown;
+  |  ^
+  '
+  input.scss 2:2  root stylesheet
+
+<===> space_after_at/error-libsass
+Error: Invalid CSS after "... the rule name.": expected 1 selector or at-rule, was "@ unknown;"
+        on line 1 of /sass/spec/css/unknown_directive/error/space_after_at/input.scss
+>> // No whitespace is allowed between the @ and the rule name.
+
+   ^
+
+<===>
+================================================================================
+<===> in_declaration/input.scss
+// Unknown at-rules aren't allowed in property declarations.
+.x {
+  y: {
+    @asdf;
+  }
+}
+
+<===> in_declaration/error
+Error: This at-rule is not allowed here.
+  ,
+4 |     @asdf;
+  |     ^^^^^
+  '
+  input.scss 4:5  root stylesheet
+
+<===> in_declaration/error-libsass
+Error: Illegal nesting: Only properties may be nested beneath properties.
+        on line 4 of /sass/spec/css/unknown_directive/error/in_declaration/input.scss
+>>     @asdf;
+
+   ----^
+
+<===>
+================================================================================
+<===> in_function/input.scss
+// Unknown at-rules aren't allowed in functions.
+@function foo() {
+  @asdf;
+  @return null;
+}
+
+<===> in_function/error
+Error: This at-rule is not allowed here.
+  ,
+3 |   @asdf;
+  |   ^^^^^
+  '
+  input.scss 3:3  root stylesheet
+
+<===> in_function/error-libsass
+Error: Functions can only contain variable declarations and control directives.
+        on line 3 of /sass/spec/css/unknown_directive/error/in_function/input.scss
+>>   @asdf;
+
+   --^
+
+<===>
+================================================================================
+<===> interpolation/space_after_at/input.scss
+// No whitespace is allowed between the @ and the rule name.
+@ #{"unknown"};
+
+<===> interpolation/space_after_at/error
+Error: Expected identifier.
+  ,
+2 | @ #{"unknown"};
+  |  ^
+  '
+  input.scss 2:2  root stylesheet
+
+<===> interpolation/space_after_at/error-libsass
+Error: Invalid CSS after "... the rule name.": expected 1 selector or at-rule, was '@ #{"unknown"};'
+        on line 1 of /sass/spec/css/unknown_directive/error/interpolated/space_after_at/input.scss
+>> // No whitespace is allowed between the @ and the rule name.
+
+   ^
+
+<===>
+================================================================================
+<===> interpolation/in_declaration/options.yml
+---
+:todo:
+- libsass
+
+<===> interpolation/in_declaration/input.scss
+// Unknown at-rules aren't allowed in property declarations.
+.x {
+  y: {
+    @#{"asdf"};
+  }
+}
+
+<===> interpolation/in_declaration/error
+Error: Expected identifier.
+  ,
+4 |     @#{"asdf"};
+  |      ^
+  '
+  input.scss 4:6  root stylesheet
+
+<===>
+================================================================================
+<===> interpolation/in_function/options.yml
+---
+:todo:
+- libsass
+
+<===> interpolation/in_function/input.scss
+// Unknown at-rules aren't allowed in functions.
+@function foo() {
+  @#{"asdf"};
+  @return null;
+}
+
+<===> interpolation/in_function/error
+Error: Expected identifier.
+  ,
+3 |   @#{"asdf"};
+  |    ^
+  '
+  input.scss 3:4  root stylesheet

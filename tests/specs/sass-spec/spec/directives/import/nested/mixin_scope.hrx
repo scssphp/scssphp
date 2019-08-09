@@ -1,0 +1,18 @@
+<===> input.scss
+.parent {
+  // This should be visible to the imported stylesheet. There's not really a
+  // good reason for this, but it's the historical behavior so whatever.
+  @mixin local {
+    x {y: z}
+  }
+
+  @import 'other';
+}
+
+<===> other.scss
+@include local;
+
+<===> output.css
+.parent x {
+  y: z;
+}

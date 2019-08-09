@@ -1,0 +1,33 @@
+<===> input.scss
+basic {
+  transparent: hsla(180 60% 50% / 0);
+  opaque: hsla(180 60% 50% / 1);
+  partial: hsla(180 60% 50% / 0.5);
+  named: hsla($channels: 180 60% 50% / 0.4);
+
+  // Extra parens shouldn't cause the slash to be forced into division.
+  parenthesized: (hsl(180 60% 50% / 0.4));
+}
+
+clamped {
+  saturation: hsla(0 -0.1% 50% / 0.5);
+  lightness: hsla(0 100% 9999% / 0.5);
+  alpha-above: hsla(0 100% 50% / 1.1);
+  alpha-below: hsla(0 100% 50% / -0.1);
+}
+
+<===> output.css
+basic {
+  transparent: rgba(51, 204, 204, 0);
+  opaque: #33cccc;
+  partial: rgba(51, 204, 204, 0.5);
+  named: rgba(51, 204, 204, 0.4);
+  parenthesized: rgba(51, 204, 204, 0.4);
+}
+
+clamped {
+  saturation: rgba(128, 128, 128, 0.5);
+  lightness: rgba(255, 255, 255, 0.5);
+  alpha-above: red;
+  alpha-below: rgba(255, 0, 0, 0);
+}

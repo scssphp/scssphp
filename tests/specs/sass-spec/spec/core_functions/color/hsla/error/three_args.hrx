@@ -1,0 +1,49 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2722
+
+<===>
+================================================================================
+<===> hue/type/input.scss
+hue-type {
+  x: hsla("foo", 100%, 50%);
+}
+
+<===> hue/type/error
+Error: $hue: "foo" is not a number.
+  ,
+2 |   x: hsla("foo", 100%, 50%);
+  |      ^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> saturation/type/input.scss
+saturation-type {
+  x: hsla(0, "foo", 50%);
+}
+
+<===> saturation/type/error
+Error: $saturation: "foo" is not a number.
+  ,
+2 |   x: hsla(0, "foo", 50%);
+  |      ^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===>
+================================================================================
+<===> lightness/type/input.scss
+lightness-type {
+  x: hsla(0, 100%, "foo");
+}
+
+<===> lightness/type/error
+Error: $lightness: "foo" is not a number.
+  ,
+2 |   x: hsla(0, 100%, "foo");
+  |      ^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet

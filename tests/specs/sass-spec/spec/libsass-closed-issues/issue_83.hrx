@@ -1,0 +1,24 @@
+<===> input.scss
+@mixin colors($color) {
+  border-color: $color;
+  background-color: $color;
+  @content;
+}
+.colors {
+  @include colors {
+    color: $color;
+  }
+  border-width: 10px;
+}
+<===> error
+Error: Mixin colors is missing argument $color.
+
+<===> error-dart-sass
+Error: Missing argument $color.
+  ,
+7 | /   @include colors {
+8 | |     color: $color;
+9 | \   }
+  '
+  input.scss 7:3  colors()
+  input.scss 7:3  root stylesheet

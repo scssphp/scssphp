@@ -1,0 +1,29 @@
+<===> input.scss
+.simple {
+  a: selector-unify('.foo', '.foo');
+  b: selector-unify('.foo', '.bar');
+  c: selector-unify('.foo.bar', '.bar.baz');
+  d: selector-unify('.a .foo', '.b .bar');
+  e: selector-unify('.a .foo', '.a .bar');
+  f: selector-unify('p', 'a');
+  g: selector-unify('.foo >', '.bar');
+  h: selector-unify('.foo', '.bar >');
+  i: selector-unify('.foo, .bar', '.baz, .bang');
+}
+
+.foo, .bar {
+  content: selector-unify(&, '.baz, .bang');
+}
+<===> output.css
+.simple {
+  a: .foo;
+  b: .foo.bar;
+  c: .foo.bar.baz;
+  d: .a .b .foo.bar, .b .a .foo.bar;
+  e: .a .foo.bar;
+  i: .foo.baz, .foo.bang, .bar.baz, .bar.bang;
+}
+
+.foo, .bar {
+  content: .foo.baz, .foo.bang, .bar.baz, .bar.bang;
+}

@@ -1,0 +1,16 @@
+<===> input.scss
+$list: foo bar baz;
+$list--comma: foo, bar, baz;
+$single: foo;
+
+div {
+  _list-space: list-separator($list);
+  _list-comma: list-separator($list--comma);
+  _single-item: list-separator($single);
+}
+<===> output.css
+div {
+  _list-space: space;
+  _list-comma: comma;
+  _single-item: space;
+}

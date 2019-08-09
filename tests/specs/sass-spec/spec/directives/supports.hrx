@@ -1,0 +1,17 @@
+<===> error/syntax/trailing_or/input.scss
+@supports (a: b) or {}
+
+<===> error/syntax/trailing_or/error
+Error: expected "(".
+  ,
+1 | @supports (a: b) or {}
+  |                     ^
+  '
+  input.scss 1:21  root stylesheet
+
+<===> error/syntax/trailing_or/error-libsass
+Error: Invalid CSS after "...orts (a: b) or ": expected @supports condition (e.g. (display: flexbox)), was "{}"
+        on line 1:20 of /sass/spec/directives/supports/error/syntax/trailing_or/input.scss
+>> @supports (a: b) or {
+
+   -----------------------^

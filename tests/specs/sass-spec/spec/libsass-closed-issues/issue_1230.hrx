@@ -1,0 +1,11 @@
+<===> input.scss
+div {
+  transition-property:
+    border-color,
+    box-shadow,
+    color;
+}
+<===> output.css
+div {
+  transition-property: border-color, box-shadow, color;
+}

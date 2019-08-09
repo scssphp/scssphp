@@ -1,0 +1,12 @@
+<===> input.scss
+@media all {
+  .foo {
+	color: red;
+  }
+}
+<===> output.css
+@media all {
+  .foo {
+    color: red;
+  }
+}

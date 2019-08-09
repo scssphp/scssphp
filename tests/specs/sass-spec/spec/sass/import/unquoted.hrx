@@ -1,0 +1,17 @@
+<===> input.sass
+@import unquoted, sub/unquoted
+
+<===> sub/unquoted.scss
+d {e: f}
+
+<===> unquoted.scss
+a {b: c}
+
+<===> output.css
+a {
+  b: c;
+}
+
+d {
+  e: f;
+}

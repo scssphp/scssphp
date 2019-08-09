@@ -1,0 +1,29 @@
+<===> input.scss
+foo {
+  minus-before-minus: - 1 - 2;
+  minus-after-minus:  1 - - 2;
+  plus-before-minus:  + 1 - 2;
+  plus-after-minus:   1 - + 2;
+  not-before-plus:    not 1 + 2;
+  not-after-plus:     1 + not 2;
+
+  minus-after-comma:  (1, - 2);
+  plus-after-comma:   (1, + 2);
+  slash-after-comma:  (1, / 2);
+  not-after-comma:    (1, not 2);
+}
+
+<===> output.css
+foo {
+  minus-before-minus: -3;
+  minus-after-minus: 3;
+  plus-before-minus: -1;
+  plus-after-minus: -1;
+  not-before-plus: false2;
+  not-after-plus: 1false;
+
+  minus-after-comma: 1, -2;
+  plus-after-comma: 1, 2;
+  slash-after-comma: 1, /2;
+  not-after-comma: 1, false;
+}

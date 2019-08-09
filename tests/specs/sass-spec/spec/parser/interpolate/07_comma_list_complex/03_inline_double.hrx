@@ -1,0 +1,17 @@
+<===> input.scss
+.result {
+  output: #{#{gamma, "'"delta"'"}};
+  output: #{"[#{gamma, "'"delta"'"}]"};
+  output: #{"#{gamma, "'"delta"'"}"};
+  output: #{'#{gamma, "'"delta"'"}'};
+  output: #{"['#{gamma, "'"delta"'"}']"};
+}
+
+<===> output.css
+.result {
+  output: gamma, ' delta ';
+  output: [gamma, ' delta '];
+  output: gamma, ' delta ';
+  output: gamma, ' delta ';
+  output: ['gamma, ' delta ''];
+}

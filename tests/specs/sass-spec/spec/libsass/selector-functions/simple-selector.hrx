@@ -1,0 +1,10 @@
+<===> input.scss
+foo {
+  test-01: simple-selectors(".foo.bar");
+  test-02: simple-selectors(".foo.bar.baz");
+}
+<===> output.css
+foo {
+  test-01: .foo, .bar;
+  test-02: .foo, .bar, .baz;
+}

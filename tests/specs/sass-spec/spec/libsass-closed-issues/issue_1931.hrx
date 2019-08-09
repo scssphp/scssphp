@@ -1,0 +1,9 @@
+<===> input.scss
+$var: 'http://test.com';
+body {
+  background-image: url( #{$var});
+}
+<===> output.css
+body {
+  background-image: url(http://test.com);
+}

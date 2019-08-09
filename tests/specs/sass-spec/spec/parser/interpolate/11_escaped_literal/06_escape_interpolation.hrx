@@ -1,0 +1,24 @@
+<===> input.scss
+$input: l\\ite\ral;
+.result {
+  output: "[\#{l\\ite\ral}]";
+  output: "\#{l\\ite\ral}";
+  output: '\#{l\\ite\ral}';
+  output: "['\#{l\\ite\ral}']";
+}
+
+<===> output.css
+.result {
+  output: "[\#{l\\ite\ral}]";
+  output: "\#{l\\ite\ral}";
+  output: '\#{l\\ite\ral}';
+  output: "['\#{l\\ite\ral}']";
+}
+
+<===> output-dart-sass.css
+.result {
+  output: "[#{l\\iteral}]";
+  output: "#{l\\iteral}";
+  output: "#{l\\iteral}";
+  output: "['#{l\\iteral}']";
+}

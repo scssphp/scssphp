@@ -1,0 +1,28 @@
+<===> input.scss
+@debug(selector-extend(".a .b", "&b", ndll));
+
+<===> status
+65
+
+<===> error-dart-sass
+Error: Error: Parent selectors aren't allowed here.
+  ,
+1 | &b
+  | ^^
+  '
+  - 1:1  root stylesheet
+  ,
+1 | @debug(selector-extend(".a .b", "&b", ndll));
+  |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:8  root stylesheet
+
+<===> error-libsass
+Error: Parent selectors aren't allowed here.
+        on line 1:33 of sass-spec/spec/libsass-closed-issues/issue_2779/input.scss, in function `selector-extend`
+        from line 1:7 of sass-spec/spec/libsass-closed-issues/issue_2779/input.scss
+>> @debug(selector-extend(".a .b", "&b", ndll));
+
+   --------------------------------^
+
+<===> output.css

@@ -1,0 +1,9 @@
+<===> input.scss
+%x#bar {a: b}
+%y, %y:first-letter {@extend %x}
+a {@extend %y}
+
+<===> output.css
+a#bar, a#bar:first-letter {
+  a: b;
+}

@@ -1,0 +1,20 @@
+<===> input.scss
+a {
+  width: 4.0px;
+  height: 3.00px;
+  opacity: 1.0;
+}
+
+<===> output.css
+a {
+  width: 4.0px;
+  height: 3.00px;
+  opacity: 1.0;
+}
+
+<===> output-dart-sass.css
+a {
+  width: 4px;
+  height: 3px;
+  opacity: 1;
+}

@@ -1,0 +1,192 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+@-moz-document url(#{"sass-lang.com"}) {
+  a {type: unquoted full url}
+}
+@-moz-document url(#{sa + ss}-lang.com) {
+  a {type: unquoted partial url}
+}
+@-moz-document url("#{sa + ss}-lang.com") {
+  a {type: quoted partial url}
+}
+
+@-moz-document url-prefix(#{"https://sass-lang.com/docs"}) {
+  a {type: unquoted full url-prefix}
+}
+@-moz-document url-prefix(#{ht + tps}://sass-lang.com/docs) {
+  a {type: unquoted partial url-prefix}
+}
+@-moz-document url-prefix("#{ht + tps}://sass-lang.com/docs") {
+  a {type: quoted partial url-prefix}
+}
+
+@-moz-document domain(#{"sass-lang.com"}) {
+  a {type: unquoted full domain}
+}
+@-moz-document domain(#{sa + ss}-lang.com) {
+  a {type: unquoted partial domain}
+}
+@-moz-document domain("#{sa + ss}-lang.com") {
+  a {type: quoted partial domain}
+}
+
+@-moz-document regexp("#{ht + tp}s:.*") {
+  a {type: regexp}
+}
+
+<===> output.css
+@-moz-document url(sass-lang.com) {
+  a {
+    type: unquoted full url;
+  }
+}
+@-moz-document url(sass-lang.com) {
+  a {
+    type: unquoted partial url;
+  }
+}
+@-moz-document url("sass-lang.com") {
+  a {
+    type: quoted partial url;
+  }
+}
+@-moz-document url-prefix(https://sass-lang.com/docs) {
+  a {
+    type: unquoted full url-prefix;
+  }
+}
+@-moz-document url-prefix(https://sass-lang.com/docs) {
+  a {
+    type: unquoted partial url-prefix;
+  }
+}
+@-moz-document url-prefix("https://sass-lang.com/docs") {
+  a {
+    type: quoted partial url-prefix;
+  }
+}
+@-moz-document domain(sass-lang.com) {
+  a {
+    type: unquoted full domain;
+  }
+}
+@-moz-document domain(sass-lang.com) {
+  a {
+    type: unquoted partial domain;
+  }
+}
+@-moz-document domain("sass-lang.com") {
+  a {
+    type: quoted partial domain;
+  }
+}
+@-moz-document regexp("https:.*") {
+  a {
+    type: regexp;
+  }
+}
+
+<===> warning
+DEPRECATION WARNING on line 1, column 1 of input.scss: 
+@-moz-document is deprecated and support will be removed from Sass in a future
+relase. For details, see http://bit.ly/moz-document.
+
+  ,
+1 | / @-moz-document url(#{"sass-lang.com"}) {
+2 | |   a {type: unquoted full url}
+3 | \ }
+  '
+
+DEPRECATION WARNING on line 4, column 1 of input.scss: 
+@-moz-document is deprecated and support will be removed from Sass in a future
+relase. For details, see http://bit.ly/moz-document.
+
+  ,
+4 | / @-moz-document url(#{sa + ss}-lang.com) {
+5 | |   a {type: unquoted partial url}
+6 | \ }
+  '
+
+DEPRECATION WARNING on line 7, column 1 of input.scss: 
+@-moz-document is deprecated and support will be removed from Sass in a future
+relase. For details, see http://bit.ly/moz-document.
+
+  ,
+7 | / @-moz-document url("#{sa + ss}-lang.com") {
+8 | |   a {type: quoted partial url}
+9 | \ }
+  '
+
+DEPRECATION WARNING on line 11, column 1 of input.scss: 
+@-moz-document is deprecated and support will be removed from Sass in a future
+relase. For details, see http://bit.ly/moz-document.
+
+   ,
+11 | / @-moz-document url-prefix(#{"https://sass-lang.com/docs"}) {
+12 | |   a {type: unquoted full url-prefix}
+13 | \ }
+   '
+
+DEPRECATION WARNING on line 14, column 1 of input.scss: 
+@-moz-document is deprecated and support will be removed from Sass in a future
+relase. For details, see http://bit.ly/moz-document.
+
+   ,
+14 | / @-moz-document url-prefix(#{ht + tps}://sass-lang.com/docs) {
+15 | |   a {type: unquoted partial url-prefix}
+16 | \ }
+   '
+
+DEPRECATION WARNING on line 17, column 1 of input.scss: 
+@-moz-document is deprecated and support will be removed from Sass in a future
+relase. For details, see http://bit.ly/moz-document.
+
+   ,
+17 | / @-moz-document url-prefix("#{ht + tps}://sass-lang.com/docs") {
+18 | |   a {type: quoted partial url-prefix}
+19 | \ }
+   '
+
+DEPRECATION WARNING on line 21, column 1 of input.scss: 
+@-moz-document is deprecated and support will be removed from Sass in a future
+relase. For details, see http://bit.ly/moz-document.
+
+   ,
+21 | / @-moz-document domain(#{"sass-lang.com"}) {
+22 | |   a {type: unquoted full domain}
+23 | \ }
+   '
+
+DEPRECATION WARNING on line 24, column 1 of input.scss: 
+@-moz-document is deprecated and support will be removed from Sass in a future
+relase. For details, see http://bit.ly/moz-document.
+
+   ,
+24 | / @-moz-document domain(#{sa + ss}-lang.com) {
+25 | |   a {type: unquoted partial domain}
+26 | \ }
+   '
+
+DEPRECATION WARNING on line 27, column 1 of input.scss: 
+@-moz-document is deprecated and support will be removed from Sass in a future
+relase. For details, see http://bit.ly/moz-document.
+
+   ,
+27 | / @-moz-document domain("#{sa + ss}-lang.com") {
+28 | |   a {type: quoted partial domain}
+29 | \ }
+   '
+
+DEPRECATION WARNING on line 31, column 1 of input.scss: 
+@-moz-document is deprecated and support will be removed from Sass in a future
+relase. For details, see http://bit.ly/moz-document.
+
+   ,
+31 | / @-moz-document regexp("#{ht + tp}s:.*") {
+32 | |   a {type: regexp}
+33 | \ }
+   '

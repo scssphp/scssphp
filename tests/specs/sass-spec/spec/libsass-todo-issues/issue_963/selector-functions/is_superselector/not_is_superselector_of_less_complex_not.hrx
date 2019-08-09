@@ -1,0 +1,12 @@
+<===> input.scss
+@import "../assert_helpers";
+
+test {
+  a: assert_strict_superselector(':not(.foo.bar)', ':not(.foo)');
+  b: assert_strict_superselector(':not(.foo .bar)', ':not(.bar)');
+}
+<===> output.css
+test {
+  a: true;
+  b: true;
+}

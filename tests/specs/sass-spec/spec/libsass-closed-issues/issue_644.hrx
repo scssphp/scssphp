@@ -1,0 +1,9 @@
+<===> input.scss
+foo {
+  background-image: url(foo/#{"bar"}/baz.jpg);
+}
+
+<===> output.css
+foo {
+  background-image: url(foo/bar/baz.jpg);
+}

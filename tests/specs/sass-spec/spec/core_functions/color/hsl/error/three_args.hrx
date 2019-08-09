@@ -1,0 +1,66 @@
+<===> hue/type/input.scss
+hue-type {
+  x: hsl("foo", 100%, 50%);
+}
+
+<===> hue/type/error
+Error: $hue: "foo" is not a number.
+  ,
+2 |   x: hsl("foo", 100%, 50%);
+  |      ^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===> hue/type/error-libsass
+Error: argument `$hue` of `hsl($hue, $saturation, $lightness)` must be a number
+        on line 2 of /sass/spec/core_functions/color/hsl/error/hue_type/input.scss, in function `hsl`
+        from line 2 of /sass/spec/core_functions/color/hsl/error/hue_type/input.scss
+>>   x: hsl("foo", 100%, 50%);
+
+   -----^
+
+<===>
+================================================================================
+<===> saturation/type/input.scss
+saturation-type {
+  x: hsl(0, "foo", 50%);
+}
+
+<===> saturation/type/error
+Error: $saturation: "foo" is not a number.
+  ,
+2 |   x: hsl(0, "foo", 50%);
+  |      ^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===> saturation/type/error-libsass
+Error: argument `$saturation` of `hsl($hue, $saturation, $lightness)` must be a number
+        on line 2 of /sass/spec/core_functions/color/hsl/error/saturation_type/input.scss, in function `hsl`
+        from line 2 of /sass/spec/core_functions/color/hsl/error/saturation_type/input.scss
+>>   x: hsl(0, "foo", 50%);
+
+   -----^
+
+<===>
+================================================================================
+<===> lightness/type/input.scss
+lightness-type {
+  x: hsl(0, 100%, "foo");
+}
+
+<===> lightness/type/error
+Error: $lightness: "foo" is not a number.
+  ,
+2 |   x: hsl(0, 100%, "foo");
+  |      ^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:6  root stylesheet
+
+<===> lightness/type/error-libsass
+Error: argument `$lightness` of `hsl($hue, $saturation, $lightness)` must be a number
+        on line 2 of /sass/spec/core_functions/color/hsl/error/lightness_type/input.scss, in function `hsl`
+        from line 2 of /sass/spec/core_functions/color/hsl/error/lightness_type/input.scss
+>>   x: hsl(0, 100%, "foo");
+
+   -----^

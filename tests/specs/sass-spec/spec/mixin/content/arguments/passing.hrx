@@ -1,0 +1,84 @@
+<===> input.scss
+// Arguments can be passed to content blocks in all the same ways as they're
+// passed to any other argument list.
+
+by-position {
+  @mixin mixin {
+    @content(value1, value2);
+  }
+
+  @include mixin using ($arg1, $arg2) {
+    arg1: $arg1;
+    arg2: $arg2;
+  }
+}
+
+by-name {
+  @mixin mixin {
+    @content($arg1: value1, $arg2: value2);
+  }
+
+  @include mixin using ($arg1, $arg2) {
+    arg1: $arg1;
+    arg2: $arg2;
+  }
+}
+
+list-splat {
+  @mixin mixin {
+    @content((value1 value2)...);
+  }
+
+  @include mixin using ($arg1, $arg2) {
+    arg1: $arg1;
+    arg2: $arg2;
+  }
+}
+
+map-splat {
+  @mixin mixin {
+    @content((arg1: value1, arg2: value2)...);
+  }
+
+  @include mixin using ($arg1, $arg2) {
+    arg1: $arg1;
+    arg2: $arg2;
+  }
+}
+
+mixed-splat {
+  @mixin mixin {
+    @content((value1,)..., (arg2: value2)...);
+  }
+
+  @include mixin using ($arg1, $arg2) {
+    arg1: $arg1;
+    arg2: $arg2;
+  }
+}
+
+<===> output.css
+by-position {
+  arg1: value1;
+  arg2: value2;
+}
+
+by-name {
+  arg1: value1;
+  arg2: value2;
+}
+
+list-splat {
+  arg1: value1;
+  arg2: value2;
+}
+
+map-splat {
+  arg1: value1;
+  arg2: value2;
+}
+
+mixed-splat {
+  arg1: value1;
+  arg2: value2;
+}

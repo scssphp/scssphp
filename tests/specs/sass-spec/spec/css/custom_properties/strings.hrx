@@ -1,0 +1,21 @@
+<===> input.scss
+.strings {
+  // Strings are tokenized as units, so their contents shouldn't affect anything
+  // else.
+  --text: "foo";
+  --bang: "!";
+  --semicolon: ";";
+  --square: "][";
+  --curly: "}{";
+  --parens: ")(";
+}
+
+<===> output.css
+.strings {
+  --text: "foo";
+  --bang: "!";
+  --semicolon: ";";
+  --square: "][";
+  --curly: "}{";
+  --parens: ")(";
+}

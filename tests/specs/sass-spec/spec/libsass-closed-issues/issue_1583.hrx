@@ -1,0 +1,51 @@
+<===> input.scss
+$ls: ((foo,));
+
+foo {
+  baz: length($ls);
+  baz: type-of($ls);
+  baz: inspect($ls);
+}
+
+bar {
+  baz: length(&);
+  baz: type-of(&);
+  baz: inspect(&);
+}
+
+foo {
+  string: inspect(&);
+  str-length: str-length(inspect(&));
+  list-length: length(&);
+}
+
+foo, bar {
+  string: inspect(&);
+  str-length: str-length(inspect(&));
+  list-length: length(&);
+}
+
+<===> output.css
+foo {
+  baz: 1;
+  baz: list;
+  baz: (foo,);
+}
+
+bar {
+  baz: 1;
+  baz: list;
+  baz: (bar,);
+}
+
+foo {
+  string: (foo,);
+  str-length: 6;
+  list-length: 1;
+}
+
+foo, bar {
+  string: foo, bar;
+  str-length: 8;
+  list-length: 2;
+}

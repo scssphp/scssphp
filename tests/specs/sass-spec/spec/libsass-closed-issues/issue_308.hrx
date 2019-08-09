@@ -1,0 +1,43 @@
+<===> options.yml
+---
+:warning_todo:
+- libsass
+
+<===> input.scss
+$var: orange;
+
+.test {
+  color: $var;
+}
+
+.#{$var} {
+  color: #C0362C;
+}
+
+<===> output.css
+.test {
+  color: orange;
+}
+
+.orange {
+  color: #C0362C;
+}
+
+<===> warning
+WARNING on line 7, column 2 of input.scss:
+You probably don't mean to use the color value `orange' in interpolation here.
+It may end up represented as #ffa500, which will likely produce invalid CSS.
+Always quote color names when using them as strings (for example, "orange").
+If you really want to use the color value here, use `"" + $var'.
+
+<===> warning-dart-sass
+WARNING: You probably don't mean to use the color value orange in interpolation here.
+It may end up represented as orange, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "orange").
+If you really want to use the color value here, use '"" + $var'.
+
+  ,
+7 | .#{$var} {
+  |    ^^^^
+  '
+    input.scss 7:4  root stylesheet

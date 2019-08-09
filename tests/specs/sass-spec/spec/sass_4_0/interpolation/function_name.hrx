@@ -1,0 +1,36 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+@function identity($arg) {@return $arg}
+
+.function-name {
+  start: #{1 + 1}foo(arg);
+  mid: foo#{1 + 1}bar(arg);
+  end: foo#{1 + 1}(arg);
+  full: #{foo}(arg);
+
+  evaluates-args: foo#{1 + 1}bar(2 + 2);
+  $list: 1, 2, 3, 4, 5;
+  supports-splats: foo#{1 + 1}bar($list...);
+
+  not-built-in-function: qu#{o}te(arg);
+  not-user-defined-function: id#{enti}ty(arg);
+
+  // In 3.5, this would interpret "red()" as a live function call.
+  followed-by-function: b#{o}red(arg);
+}
+<===> output.css
+.function-name {
+  start: 2foo(arg);
+  mid: foo2bar(arg);
+  end: foo2(arg);
+  full: foo(arg);
+  evaluates-args: foo2bar(4);
+  supports-splats: foo2bar(1, 2, 3, 4, 5);
+  not-built-in-function: quote(arg);
+  not-user-defined-function: identity(arg);
+  followed-by-function: bored(arg);
+}

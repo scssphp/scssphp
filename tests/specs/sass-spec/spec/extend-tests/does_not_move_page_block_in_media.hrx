@@ -1,0 +1,13 @@
+<===> input.scss
+@media screen {
+  a { x:y; }
+  @page {}
+}
+<===> output.css
+@media screen {
+  a {
+    x: y;
+  }
+
+  @page {}
+}

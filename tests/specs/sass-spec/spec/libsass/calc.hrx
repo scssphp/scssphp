@@ -1,0 +1,18 @@
+<===> input.scss
+$x: 2;
+body {
+  width: calc($x + 2 - 3em / hoolabaloo);
+  width: -moz-calc($x + 2 - 3em / hoolabaloo);
+  width: -webkit-calc($x + 2 - 3em / hoolabaloo);
+  width: -ms-calc($x + 2 - 3em / hoolabaloo);
+  height: foo(2 + 2);
+}
+
+<===> output.css
+body {
+  width: calc($x + 2 - 3em / hoolabaloo);
+  width: -moz-calc($x + 2 - 3em / hoolabaloo);
+  width: -webkit-calc($x + 2 - 3em / hoolabaloo);
+  width: -ms-calc($x + 2 - 3em / hoolabaloo);
+  height: foo(4);
+}

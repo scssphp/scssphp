@@ -1,0 +1,67 @@
+<===> input.scss
+@function foo() {
+  @return "bar";
+}
+
+@function bar() {
+    @return "foo" + "," + bar;
+}
+
+a {
+  b: foo(), "bar";
+  b: foo(), "bar"
+}
+
+b {
+  b: #{foo(), "bar"};
+  b: #{foo(), "bar"}
+}
+
+c {
+  b: "foo", bar;
+}
+
+d {
+  b: #{"foo", bar};
+  b: #{"foo", bar}
+}
+
+e {
+  b: #{bar()};
+  b: #{bar()}
+}
+
+f {
+  b: "foo" + "," + bar;
+  b: "foo" + "," + bar
+}
+
+<===> output.css
+a {
+  b: "bar", "bar";
+  b: "bar", "bar";
+}
+
+b {
+  b: bar, bar;
+  b: bar, bar;
+}
+
+c {
+  b: "foo", bar;
+}
+
+d {
+  b: foo, bar;
+  b: foo, bar;
+}
+
+e {
+  b: foo,bar;
+  b: foo,bar;
+}
+
+f {
+  b: "foo,bar";
+  b: "foo,bar";
+}

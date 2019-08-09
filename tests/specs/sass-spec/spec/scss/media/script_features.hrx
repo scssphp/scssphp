@@ -1,0 +1,23 @@
+<===> input.scss
+$foo: 3;
+$bar: 4;
+// Media features are special-cased to allow raw script without interpolation.
+@media only screen and (max-width: $foo) and (min-width: $bar) {x {y: z}}
+
+// Not just variables, but full script
+$vals: 1 2 3;
+@media screen and (max-width: 1 + 2) and (min-width: 5 + 6 + nth($vals, 2)) {x {y: z}}
+
+
+<===> output.css
+@media only screen and (max-width: 3) and (min-width: 4) {
+  x {
+    y: z;
+  }
+}
+
+@media screen and (max-width: 3) and (min-width: 13) {
+  x {
+    y: z;
+  }
+}

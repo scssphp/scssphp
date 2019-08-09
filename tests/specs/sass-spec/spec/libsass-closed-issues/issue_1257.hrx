@@ -1,0 +1,13 @@
+<===> input.scss
+.foo {
+  color: invert(red...);
+}
+<===> output.css
+.foo {
+  color: cyan;
+}
+
+<===> output-dart-sass.css
+.foo {
+  color: aqua;
+}

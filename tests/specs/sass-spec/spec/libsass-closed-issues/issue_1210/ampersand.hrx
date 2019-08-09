@@ -1,0 +1,91 @@
+<===> input.scss
+foo {
+  @at-root {
+    & {
+      color: blue;
+    }
+
+    &--modifier {
+      color: red;
+    }
+  }
+}
+
+foo {
+  color: blue;
+
+  @at-root {
+    & bar {
+      color: red;
+    }
+  }
+}
+
+foo {
+  color: blue;
+
+  @at-root {
+    bar & {
+      color: red;
+    }
+  }
+}
+
+foo {
+  color: blue;
+
+  @at-root {
+    bar {
+        & baz {
+            color: red;
+        }
+    }
+  }
+}
+
+foo {
+    @at-root bar & {
+        color: red;
+
+        & baz {
+            color: blue;
+        }
+    }
+}
+
+<===> output.css
+foo {
+  color: blue;
+}
+
+foo--modifier {
+  color: red;
+}
+
+foo {
+  color: blue;
+}
+foo bar {
+  color: red;
+}
+
+foo {
+  color: blue;
+}
+bar foo {
+  color: red;
+}
+
+foo {
+  color: blue;
+}
+bar baz {
+  color: red;
+}
+
+bar foo {
+  color: red;
+}
+bar foo baz {
+  color: blue;
+}

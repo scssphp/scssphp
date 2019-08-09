@@ -1,0 +1,46 @@
+<===> global/first_declaration/options.yml
+---
+:warning_todo:
+- libsass # sass/libsass#2834
+
+<===>
+================================================================================
+<===> global/first_declaration/top_level/input.scss
+$var: value !global;
+a {b: $var}
+
+<===> global/first_declaration/top_level/output.css
+a {
+  b: value;
+}
+
+<===> global/first_declaration/top_level/warning
+DEPRECATION WARNING: As of Dart Sass 2.0.0, !global assignments won't be able to
+declare new variables. Consider adding `$var: null` at the top level.
+
+  ,
+1 | $var: value !global;
+  | ^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 1:1  root stylesheet
+
+<===>
+================================================================================
+<===> global/first_declaration/nested/input.scss
+x {$var: value !global}
+a {b: $var}
+
+<===> global/first_declaration/nested/output.css
+a {
+  b: value;
+}
+
+<===> global/first_declaration/nested/warning
+DEPRECATION WARNING: As of Dart Sass 2.0.0, !global assignments won't be able to
+declare new variables. Consider adding `$var: null` at the top level.
+
+  ,
+1 | x {$var: value !global}
+  |    ^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 1:4  root stylesheet

@@ -1,0 +1,10 @@
+<===> input.scss
+.foo {
+  [baz="#{&}"] {
+    foo: bar;
+  }
+}
+<===> output.css
+.foo [baz=".foo"] {
+  foo: bar;
+}

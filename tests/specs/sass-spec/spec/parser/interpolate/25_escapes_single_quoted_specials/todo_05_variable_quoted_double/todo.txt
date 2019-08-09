@@ -1,0 +1,2 @@
+Fails on shared build (gcc/clang)
+Looks like some issue with "\r"

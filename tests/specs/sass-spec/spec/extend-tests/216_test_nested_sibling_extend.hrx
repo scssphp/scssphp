@@ -1,0 +1,16 @@
+<===> input.scss
+.foo {@extend .bar}
+
+.parent {
+.bar {
+  width: 2000px;
+}
+.foo {
+  @extend .bar
+}
+}
+
+<===> output.css
+.parent .bar, .parent .foo {
+  width: 2000px;
+}

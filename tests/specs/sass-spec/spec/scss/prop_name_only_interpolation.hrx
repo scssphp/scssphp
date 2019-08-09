@@ -1,0 +1,7 @@
+<===> input.scss
+foo {#{"baz" + "bang"}: blip}
+
+<===> output.css
+foo {
+  bazbang: blip;
+}

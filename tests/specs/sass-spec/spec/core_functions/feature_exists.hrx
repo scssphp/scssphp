@@ -1,0 +1,8 @@
+<===> input.scss
+.feature-exists {
+  custom-property: feature-exists(custom-property);
+}
+<===> output.css
+.feature-exists {
+  custom-property: true;
+}

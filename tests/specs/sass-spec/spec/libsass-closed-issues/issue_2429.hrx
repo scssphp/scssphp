@@ -1,0 +1,8 @@
+<===> input.scss
+input[type=url] {
+  content: bar
+}
+<===> output.css
+input[type=url] {
+  content: bar;
+}

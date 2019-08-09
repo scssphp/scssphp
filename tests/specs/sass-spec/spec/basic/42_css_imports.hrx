@@ -1,0 +1,36 @@
+<===> input.scss
+div {
+  color: red;
+}
+
+@import "hux\ bux.css";
+@import "foo.css";
+
+span {
+  color: blue;
+}
+
+@import "bar.css";
+<===> output.css
+@import url(hux bux.css);
+@import url(foo.css);
+@import url(bar.css);
+div {
+  color: red;
+}
+
+span {
+  color: blue;
+}
+
+<===> output-dart-sass.css
+@import "hux\ bux.css";
+@import "foo.css";
+@import "bar.css";
+div {
+  color: red;
+}
+
+span {
+  color: blue;
+}

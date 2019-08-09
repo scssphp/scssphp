@@ -1,0 +1,22 @@
+<===> input.scss
+$foo: 400px;
+$bar: "min-width:400px";
+@import url(foo.css) (min-width:400px);
+@import url(foo.css) (min-width:$foo);
+@import url(foo.css) (min-width:#{$foo});
+@import url(foo.css) ($bar);
+@import url(foo.css) (#{$bar});
+
+<===> output.css
+@import url(foo.css) (min-width: 400px);
+@import url(foo.css) (min-width: 400px);
+@import url(foo.css) (min-width: 400px);
+@import url(foo.css) (min-width: 400px);
+@import url(foo.css) (min-width: 400px);
+
+<===> output-dart-sass.css
+@import url(foo.css) (min-width: 400px);
+@import url(foo.css) (min-width: 400px);
+@import url(foo.css) (min-width: 400px);
+@import url(foo.css) (min-width:400px);
+@import url(foo.css) (min-width:400px);

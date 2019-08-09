@@ -1,0 +1,15 @@
+<===> input.scss
+/* any */@media/* first */
+/* screen */screen /*something */ , /* else */
+/* not */not/* print */print /* final */ {  /* whatever */
+    body { line-height: 1.2 }
+}
+
+<===> output.css
+/* any */
+@media screen, not print {
+  /* whatever */
+  body {
+    line-height: 1.2;
+  }
+}

@@ -1,0 +1,8 @@
+<===> input.scss
+foo {
+  bar: #{"\\"}#{"baz"};
+}
+<===> output.css
+foo {
+  bar: \baz;
+}

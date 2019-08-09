@@ -1,0 +1,106 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+$x: ground;
+$y: e;
+$z: it;
+
+div {
+  back#{$x}: {
+    imag#{$y}: url(foo.png);
+    pos#{$z}ion: 50%;
+  }
+}
+
+span {
+  background: {
+    image: url(bar.png);
+    position: 100%;
+  }
+}
+
+p {
+  border: {
+    upper: {
+      left: 2px;
+      right: 3px;
+    }
+  }
+}
+
+@warn 2 + 3;
+
+/* 2 + 3 */
+/* #{2 + 3} */
+
+foo|div {
+  color: red;
+}
+
+$-hey : hey;
+
+div sp\ ,#abcan {
+  color: red;
+  p, |q {
+    background: blue;
+    color: \hey;
+    width: \10 + \20 \ ;
+    a {
+      height: 1;
+    }
+  }
+}
+
+d\ v, sp\ n {
+  a {
+    color: blue;
+  }
+}
+<===> output.css
+div {
+  background-image: url(foo.png);
+  background-position: 50%;
+}
+
+span {
+  background-image: url(bar.png);
+  background-position: 100%;
+}
+
+p {
+  border-upper-left: 2px;
+  border-upper-right: 3px;
+}
+
+/* 2 + 3 */
+/* 5 */
+foo|div {
+  color: red;
+}
+
+div sp\ , #abcan {
+  color: red;
+}
+div sp\  p, div sp\  |q, #abcan p, #abcan |q {
+  background: blue;
+  color: hey;
+  width: \10 \ \ ;
+}
+div sp\  p a, div sp\  |q a, #abcan p a, #abcan |q a {
+  height: 1;
+}
+
+d\ v a, sp\ n a {
+  color: blue;
+}
+
+<===> warning
+WARNING: 5
+         on line 28 of input.scss
+
+<===> warning-dart-sass
+WARNING: 5
+    input.scss 28:1  root stylesheet

@@ -1,0 +1,13 @@
+<===> input.scss
+$x: hello;
+$y: 1/2 3/4 (2+3);
+
+div {
+  content: 1 2 $x;
+  content: $y;
+}
+<===> output.css
+div {
+  content: 1 2 hello;
+  content: 1/2 3/4 5;
+}

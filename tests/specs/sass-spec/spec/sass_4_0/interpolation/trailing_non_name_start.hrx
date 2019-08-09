@@ -1,0 +1,20 @@
+<===> input.scss
+.trailing-non-name-start {
+  // We want to treat interpolation as though it's a valid identifier character,
+  // which means that if it's followed by a [name character][] that's not a
+  // [name start character][] it should still treat that as part of the
+  // identifier.
+  //
+  // [name character]: https://drafts.csswg.org/css-syntax-3/#name-code-point
+  // [name start character]: https://drafts.csswg.org/css-syntax-3/#name-start-code-point
+  digit: foo#{bar}12;
+  hyphen: foo#{bar}-12;
+  double-hyphen: foo#{bar}--12;
+}
+
+<===> output.css
+.trailing-non-name-start {
+  digit: foobar12;
+  hyphen: foobar-12;
+  double-hyphen: foobar--12;
+}

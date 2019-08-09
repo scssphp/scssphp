@@ -1,0 +1,99 @@
+<===> input.scss
+$bar: true;
+
+@mixin mixin() {
+    mix: in;
+}
+
+@mixin include() {
+    @content;
+}
+
+p {
+    @at-root {
+        @if $bar {
+            #if {
+                height: 100px;
+            }
+        }
+        @if (not $bar) {
+        } @else if($bar) {
+            #elseif {
+                width: 100px;
+            }
+        }
+        @if (not $bar) {
+        } @else {
+            #else {
+                width: 100px;
+            }
+        }
+        @for $i from 1 through 1 {
+            #for {
+                foo: bar#{$i};
+            }
+        }
+        $i: 0;
+        @while ($i == 0) {
+            $i: $i + 1;
+            #while {
+                foo: bar#{$i};
+            }
+        }
+        @each $i in (1) {
+            #each {
+                foo: bar#{$i};
+            }
+        }
+        #inc {
+            @include mixin();
+            @include include() {
+                inc: lude;
+            }
+        }
+        @supports (display: flex) {
+            a {display: flex}
+        }
+        @foo {
+           bar: bat;
+        }
+    }
+}
+<===> output.css
+#if {
+  height: 100px;
+}
+
+#elseif {
+  width: 100px;
+}
+
+#else {
+  width: 100px;
+}
+
+#for {
+  foo: bar1;
+}
+
+#while {
+  foo: bar1;
+}
+
+#each {
+  foo: bar1;
+}
+
+#inc {
+  mix: in;
+  inc: lude;
+}
+
+@supports (display: flex) {
+  a {
+    display: flex;
+  }
+}
+@foo {
+  bar: bat;
+}

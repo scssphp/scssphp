@@ -1,0 +1,117 @@
+<===> arglist/invalid/input.scss
+@mixin mixin {
+  @content;
+}
+
+@include mixin() using ($arg1: ) {}
+
+<===> arglist/invalid/error
+Error: Expected expression.
+  ,
+5 | @include mixin() using ($arg1: ) {}
+  |                                ^
+  '
+  input.scss 5:32  root stylesheet
+
+<===> arglist/invalid/error-libsass
+Error: Invalid CSS after "...) using ($arg1:": expected expression (e.g. 1px, bold), was ") {}"
+        on line 5:32 of test.scss
+>> @include mixin() using ($arg1: ) {}
+
+   -------------------------------^
+
+<===>
+================================================================================
+<===> arglist/missing/input.scss
+@mixin mixin {
+  @content;
+}
+
+@include mixin using {}
+
+<===> arglist/missing/error
+Error: expected "(".
+  ,
+5 | @include mixin using {}
+  |                      ^
+  '
+  input.scss 5:22  root stylesheet
+
+<===> arglist/missing/error-libsass
+Error: Invalid CSS after "...ude mixin using": expected "(", was "{}"
+        on line 5:16 of test.scss
+>> @include mixin using {}
+
+   ---------------^
+
+<===>
+================================================================================
+<===> arglist/missing_parens/input.scss
+@mixin mixin {
+  @content;
+}
+
+@include mixin using $arg1 {}
+
+<===> arglist/missing_parens/error
+Error: expected "(".
+  ,
+5 | @include mixin using $arg1 {}
+  |                      ^
+  '
+  input.scss 5:22  root stylesheet
+
+<===> arglist/missing_parens/error-libsass
+Error: Invalid CSS after "...ude mixin using": expected "(", was "$arg1 {}"
+        on line 5:16 of test.scss
+>> @include mixin using $arg1 {}
+
+   ---------------^
+
+<===>
+================================================================================
+<===> missing_using/input.scss
+@mixin mixin {
+  @content;
+}
+
+@include mixin() () {}
+
+<===> missing_using/error
+Error: expected ";".
+  ,
+5 | @include mixin() () {}
+  |                  ^
+  '
+  input.scss 5:18  root stylesheet
+
+<===> missing_using/error-libsass
+Error: Invalid CSS after "@include mixin()": expected ";", was "() {}"
+        on line 5:16 of test.scss
+>> @include mixin() () {}
+
+   ---------------^
+
+<===>
+================================================================================
+<===> missing_block/input.scss
+@mixin mixin {
+  @content;
+}
+
+@include mixin using ();
+
+<===> missing_block/error
+Error: expected "{".
+  ,
+5 | @include mixin using ();
+  |                        ^
+  '
+  input.scss 5:24  root stylesheet
+
+<===> missing_block/error-libsass
+Error: Invalid CSS after "... mixin using ()": expected "{", was ";"
+        on line 5:23 of test.scss
+>> @include mixin using ();
+
+   ----------------------^

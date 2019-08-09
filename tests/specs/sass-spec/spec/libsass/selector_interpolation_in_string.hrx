@@ -1,0 +1,7 @@
+<===> input.scss
+foo[val="bar #{"foo" + " bar"} baz"] {a: b}
+
+<===> output.css
+foo[val="bar foo bar baz"] {
+  a: b;
+}

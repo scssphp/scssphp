@@ -1,0 +1,3 @@
+Error: Invalid UTF-8 character "\x8A"
+        on line 1 of input.scss
+  Use --trace for backtrace.

@@ -1,0 +1,7 @@
+<===> input.scss
+.keyed { color: rgba($color: #a7c, $alpha: 0.4) }
+
+<===> output.css
+.keyed {
+  color: rgba(170, 119, 204, 0.4);
+}

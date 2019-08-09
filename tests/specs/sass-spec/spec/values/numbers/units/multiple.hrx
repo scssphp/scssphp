@@ -1,0 +1,75 @@
+<===> input.scss
+.multiple {
+  // Sass units that are multiplied and divided along with the values.
+  multiple-numerators: inspect(1px * 1rad);
+  multiple-denominators: inspect((1 / 1px / 1rad));
+  divide-by-multiple-numerators: inspect(1 / (1px * 1rad));
+  divide-by-multiple-denominators: inspect(1 / (1 / 1px / 1rad));
+
+  // Units that appear in both the numerator and denominator cancel out, leaving
+  // remaining units in place.
+  $number: 1px * 1rad / 1ms / 1Hz;
+  multiplication-cancels-denominator: inspect($number * 1ms);
+  multiplication-cancels-denominator-twice: inspect($number * (1ms * 1Hz));
+  multiplication-cancels-numerator: inspect($number * (1 / 1px));
+  multiplication-cancels-numerator-twice: inspect($number * (1 / 1px / 1rad));
+  multiplication-cancels-both: inspect($number * (1ms / 1px));
+  division-cancels-numerator: inspect($number / 1rad);
+  division-cancels-numerator-twice: inspect($number / (1px * 1rad));
+  division-cancels-denominator: inspect($number / (1 / 1ms));
+  division-cancels-denominator-twice: inspect($number / (1 / 1ms / 1Hz));
+  division-cancels-both: inspect($number / (1px / 1ms));
+
+  // Units cancel if they're compatible, even if they aren't identical.
+  multiplication-cancels-compatible: inspect($number * 1s);
+  division-cancels-compatible: inspect($number / 1in);
+
+  // Units cancel even if they're totally unknown to Sass.
+  $number: 1foo * 1bar / 1baz / 1qux;
+  multiplication-cancels-unknown: inspect($number * 1baz);
+  division-cancels-unknown: inspect($number / 1foo);
+}
+
+<===> output.css
+.multiple {
+  multiple-numerators: 1px*rad;
+  multiple-denominators: 1/px*rad;
+  divide-by-multiple-numerators: 1/px*rad;
+  divide-by-multiple-denominators: 1px*rad;
+  multiplication-cancels-denominator: 1px*rad/Hz;
+  multiplication-cancels-denominator-twice: 1px*rad;
+  multiplication-cancels-numerator: 1rad/Hz*ms;
+  multiplication-cancels-numerator-twice: 1/Hz*ms;
+  multiplication-cancels-both: 1rad/Hz;
+  division-cancels-numerator: 1px/Hz*ms;
+  division-cancels-numerator-twice: 1/Hz*ms;
+  division-cancels-denominator: 1px*rad/Hz;
+  division-cancels-denominator-twice: 1px*rad;
+  division-cancels-both: 1rad/Hz;
+  multiplication-cancels-compatible: 1000px*rad/Hz;
+  division-cancels-compatible: 0.0104166667rad/Hz*ms;
+  multiplication-cancels-unknown: 1bar*foo/qux;
+  division-cancels-unknown: 1bar/baz*qux;
+}
+
+<===> output-dart-sass.css
+.multiple {
+  multiple-numerators: 1px*rad;
+  multiple-denominators: 1(px*rad)^-1;
+  divide-by-multiple-numerators: 1(px*rad)^-1;
+  divide-by-multiple-denominators: 1px*rad;
+  multiplication-cancels-denominator: 1px*rad/Hz;
+  multiplication-cancels-denominator-twice: 1px*rad;
+  multiplication-cancels-numerator: 1rad/ms*Hz;
+  multiplication-cancels-numerator-twice: 1(ms*Hz)^-1;
+  multiplication-cancels-both: 1rad/Hz;
+  division-cancels-numerator: 1px/ms*Hz;
+  division-cancels-numerator-twice: 1(ms*Hz)^-1;
+  division-cancels-denominator: 1px*rad/Hz;
+  division-cancels-denominator-twice: 1px*rad;
+  division-cancels-both: 1rad/Hz;
+  multiplication-cancels-compatible: 1000px*rad/Hz;
+  division-cancels-compatible: 0.0104166667rad/ms*Hz;
+  multiplication-cancels-unknown: 1foo*bar/qux;
+  division-cancels-unknown: 1bar/baz*qux;
+}

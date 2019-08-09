@@ -1,0 +1,12 @@
+<===> include.scss
+@if (true) {
+  .foo { display: none; }
+}
+<===> input.scss
+.my-scope {
+  @import 'include.scss';
+}
+<===> output.css
+.my-scope .foo {
+  display: none;
+}

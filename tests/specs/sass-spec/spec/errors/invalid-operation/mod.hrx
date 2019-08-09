@@ -1,0 +1,17 @@
+<===> input.scss
+test {
+  err: 2px % red;
+}
+<===> error
+Error: Undefined operation: "2px mod red".
+        on line 2:8 of input.scss
+>>   err: 2px % red;
+   -------^
+
+<===> error-dart-sass
+Error: Undefined operation "2px % red".
+  ,
+2 |   err: 2px % red;
+  |        ^^^^^^^^^
+  '
+  input.scss 2:8  root stylesheet

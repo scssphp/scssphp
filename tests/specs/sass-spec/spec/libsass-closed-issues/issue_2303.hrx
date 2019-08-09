@@ -1,0 +1,21 @@
+<===> _module.scss
+.okay {
+  background: green;
+}
+
+@if true {
+  .broken {
+    background: red;
+  }
+}
+<===> input.scss
+.wrapper-class {
+  @import 'module';
+}
+<===> output.css
+.wrapper-class .okay {
+  background: green;
+}
+.wrapper-class .broken {
+  background: red;
+}

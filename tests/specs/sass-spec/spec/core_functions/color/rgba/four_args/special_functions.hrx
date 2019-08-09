@@ -1,0 +1,65 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2726
+
+<===> input.scss
+a {
+  calc-1: rgba(calc(1), 2, 3, 0.4);
+  calc-2: rgba(1, calc(2), 3, 0.4);
+  calc-3: rgba(1, 2, calc(3), 0.4);
+  calc-4: rgba(1, 2, 3, calc(0.4));
+
+  var-1: rgba(var(--foo), 2, 3, 0.4);
+  var-2: rgba(1, var(--foo), 3, 0.4);
+  var-3: rgba(1, 2, var(--foo), 0.4);
+  var-4: rgba(1, 2, 3, var(--foo));
+
+  env-1: rgba(env(--foo), 2, 3, 0.4);
+  env-2: rgba(1, env(--foo), 3, 0.4);
+  env-3: rgba(1, 2, env(--foo), 0.4);
+  env-4: rgba(1, 2, 3, env(--foo));
+
+  min-1: rgba(min(1), 2, 3, 0.4);
+  min-2: rgba(1, min(2), 3, 0.4);
+  min-3: rgba(1, 2, min(3), 0.4);
+  min-4: rgba(1, 2, 3, min(0.4));
+
+  max-1: rgba(max(1), 2, 3, 0.4);
+  max-2: rgba(1, max(2), 3, 0.4);
+  max-3: rgba(1, 2, max(3), 0.4);
+  max-4: rgba(1, 2, 3, max(0.4));
+
+  calc-2-args: rgba(blue, calc(0.4));
+  var-2-args-alpha: rgba(blue, var(--foo));
+  var-2-args-color: rgba(var(--foo), 0.4);
+  var-2-args-both: rgba(var(--foo), var(--foo));
+}
+
+<===> output.css
+a {
+  calc-1: rgba(calc(1), 2, 3, 0.4);
+  calc-2: rgba(1, calc(2), 3, 0.4);
+  calc-3: rgba(1, 2, calc(3), 0.4);
+  calc-4: rgba(1, 2, 3, calc(0.4));
+  var-1: rgba(var(--foo), 2, 3, 0.4);
+  var-2: rgba(1, var(--foo), 3, 0.4);
+  var-3: rgba(1, 2, var(--foo), 0.4);
+  var-4: rgba(1, 2, 3, var(--foo));
+  env-1: rgba(env(--foo), 2, 3, 0.4);
+  env-2: rgba(1, env(--foo), 3, 0.4);
+  env-3: rgba(1, 2, env(--foo), 0.4);
+  env-4: rgba(1, 2, 3, env(--foo));
+  min-1: rgba(min(1), 2, 3, 0.4);
+  min-2: rgba(1, min(2), 3, 0.4);
+  min-3: rgba(1, 2, min(3), 0.4);
+  min-4: rgba(1, 2, 3, min(0.4));
+  max-1: rgba(max(1), 2, 3, 0.4);
+  max-2: rgba(1, max(2), 3, 0.4);
+  max-3: rgba(1, 2, max(3), 0.4);
+  max-4: rgba(1, 2, 3, max(0.4));
+  calc-2-args: rgba(0, 0, 255, calc(0.4));
+  var-2-args-alpha: rgba(0, 0, 255, var(--foo));
+  var-2-args-color: rgba(var(--foo), 0.4);
+  var-2-args-both: rgba(var(--foo), var(--foo));
+}

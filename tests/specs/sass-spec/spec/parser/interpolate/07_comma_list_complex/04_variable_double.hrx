@@ -1,0 +1,18 @@
+<===> input.scss
+$input: gamma, "'"delta"'";
+.result {
+  output: #{#{$input}};
+  output: #{"[#{$input}]"};
+  output: #{"#{$input}"};
+  output: #{'#{$input}'};
+  output: #{"['#{$input}']"};
+}
+
+<===> output.css
+.result {
+  output: gamma, ' delta ';
+  output: [gamma, ' delta '];
+  output: gamma, ' delta ';
+  output: gamma, ' delta ';
+  output: ['gamma, ' delta ''];
+}

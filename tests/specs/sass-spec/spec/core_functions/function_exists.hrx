@@ -1,0 +1,131 @@
+<===> global/input.scss
+@function global-function() {@return null}
+
+a {b: function-exists(global-function)}
+
+<===> global/output.css
+a {
+  b: true;
+}
+
+<===>
+================================================================================
+<===> local/input.scss
+a {
+  @function local-function() {@return null}
+  b: function-exists(local-function);
+}
+
+<===> local/output.css
+a {
+  b: true;
+}
+
+<===>
+================================================================================
+<===> dash_insensitive/input.scss
+@function global-function() {@return null}
+
+a {b: function-exists(global_function)}
+
+<===> dash_insensitive/output.css
+a {
+  b: true;
+}
+
+<===>
+================================================================================
+<===> through_import/input.scss
+@import "other";
+a {b: function-exists(global-function)}
+
+<===> through_import/other.scss
+@function global-function() {@return null}
+
+<===> through_import/output.css
+a {
+  b: true;
+}
+
+<===>
+================================================================================
+<===> non_existent/input.scss
+a {
+  b: function-exists(non-existent);
+}
+
+<===> non_existent/output.css
+a {
+  b: false;
+}
+
+<===>
+================================================================================
+<===> keyword/input.scss
+a {b: function-exists($name: foo)}
+
+<===> keyword/output.css
+a {
+  b: false;
+}
+
+<===>
+================================================================================
+<===> error/argument/type/input.scss
+a {b: function-exists(12px)}
+
+<===> error/argument/type/error
+Error: $name: 12px is not a string.
+  ,
+1 | a {b: function-exists(12px)}
+  |       ^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:7  root stylesheet
+
+<===> error/argument/type/error-libsass
+Error: $name: 12px is not a string for `function-exists'
+        on line 1:7 of input.scss, in function `function-exists`
+        from line 1:7 of input.scss
+>> a {b: function-exists(12px)}
+
+   ------^
+
+<===>
+================================================================================
+<===> error/argument/too_few/input.scss
+a {b: function-exists()}
+
+<===> error/argument/too_few/error
+Error: Missing argument $name.
+  ,
+1 | a {b: function-exists()}
+  |       ^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:7  root stylesheet
+
+<===> error/argument/too_few/error-libsass
+Error: Function function-exists is missing argument $name.
+        on line 1 of input.scss
+>> a {b: function-exists()}
+
+   ------^
+
+<===>
+================================================================================
+<===> error/argument/too_many/input.scss
+a {b: function-exists(foo, bar)}
+
+<===> error/argument/too_many/error
+Error: Only 1 argument allowed, but 2 were passed.
+  ,
+1 | a {b: function-exists(foo, bar)}
+  |       ^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:7  root stylesheet
+
+<===> error/argument/too_many/error-libsass
+Error: wrong number of arguments (2 for 1) for `function-exists'
+        on line 1:7 of input.scss
+>> a {b: function-exists(foo, bar)}
+
+   ------^

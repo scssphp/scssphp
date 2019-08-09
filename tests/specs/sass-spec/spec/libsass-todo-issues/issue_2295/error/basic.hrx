@@ -1,0 +1,21 @@
+<===> include.scss
+display: none;
+
+<===> input.scss
+.my-scope {
+  @import 'include.scss';
+}
+<===> error
+Error: Invalid CSS after "display: none": expected "{", was ";"
+        on line 1 of include.scss
+        from line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected "{".
+  ,
+1 | display: none;
+  |              ^
+  '
+  include.scss 1:14  root stylesheet
+  input.scss 2:11    root stylesheet

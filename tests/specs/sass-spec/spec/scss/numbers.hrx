@@ -1,0 +1,14 @@
+<===> input.scss
+div {
+  width: 10px;
+  height: 20%;
+  blah: 12;
+  color: #abc;
+}
+<===> output.css
+div {
+  width: 10px;
+  height: 20%;
+  blah: 12;
+  color: #abc;
+}

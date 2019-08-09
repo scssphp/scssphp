@@ -1,0 +1,1963 @@
+<===> input.scss
+@import "lib/_bourbon.scss";
+
+box:hover {
+  @include animation-name(scale, slide);
+  @include animation-duration(2s);
+  @include animation-timing-function(ease);
+  @include animation-iteration-count(infinite);
+
+  // Animation shorthand works the same as the CSS3 animation shorthand
+  @include animation(scale 1s ease-in, slide 2s ease);
+}
+
+div {
+  @include appearance(none);
+
+   /* boo boo boo */
+  // Multiple image assets
+  @include background-image(url("/images/a.png"), url("images/b.png"));
+
+  // Image asset with a linear-gradient
+  @include background-image(url("/images/a.png"), linear-gradient(white 0, yellow 50%, transparent 50%));
+
+  // Multiple linear-gradients - Demo
+  @include background-image(linear-gradient(hsla(0, 100%, 100%, 0.25) 0%, hsla(0, 100%, 100%, 0.08) 50%, transparent 50%),
+                             linear-gradient(#4e7ba3, darken(#4e7ba4, 10%)));
+
+  // NOT SUPPORTED - Multiple image assets with shorthand notation
+  @include background-image(url("/images/a.png") center no-repeat, url("images/b.png") left repeat);
+}
+
+<===> lib/_bourbon-deprecated-upcoming.scss
+//************************************************************************//
+// These mixins/functions are deprecated
+// They will be removed in the next MAJOR version release
+//************************************************************************//
+@mixin box-shadow ($shadows...) {
+  @include prefixer(box-shadow, $shadows, spec);
+  @warn "box-shadow is deprecated and will be removed in the next major version release";
+}
+
+@mixin background-size ($lengths...) {
+  @include prefixer(background-size, $lengths, spec);
+  @warn "background-size is deprecated and will be removed in the next major version release";
+}
+
+<===> lib/_bourbon.scss
+// Custom Helpers
+@import "helpers/deprecated-webkit-gradient";
+@import "helpers/gradient-positions-parser";
+@import "helpers/linear-positions-parser";
+@import "helpers/radial-arg-parser";
+@import "helpers/radial-positions-parser";
+@import "helpers/render-gradients";
+@import "helpers/shape-size-stripper";
+
+// Custom Functions
+@import "functions/compact";
+@import "functions/flex-grid";
+@import "functions/grid-width";
+@import "functions/linear-gradient";
+@import "functions/modular-scale";
+@import "functions/px-to-em";
+@import "functions/radial-gradient";
+@import "functions/tint-shade";
+@import "functions/transition-property-name";
+
+// CSS3 Mixins
+@import "css3/animation";
+@import "css3/appearance";
+@import "css3/backface-visibility";
+@import "css3/background";
+@import "css3/background-image";
+@import "css3/border-image";
+@import "css3/border-radius";
+@import "css3/box-sizing";
+@import "css3/columns";
+@import "css3/flex-box";
+@import "css3/font-face";
+@import "css3/hidpi-media-query";
+@import "css3/image-rendering";
+@import "css3/inline-block";
+@import "css3/keyframes";
+@import "css3/linear-gradient";
+@import "css3/perspective";
+@import "css3/radial-gradient";
+@import "css3/transform";
+@import "css3/transition";
+@import "css3/user-select";
+@import "css3/placeholder";
+
+// Addons & other mixins
+@import "addons/button";
+@import "addons/clearfix";
+@import "addons/font-family";
+@import "addons/hide-text";
+@import "addons/html5-input-types";
+@import "addons/position";
+@import "addons/prefixer";
+@import "addons/retina-image";
+@import "addons/size";
+@import "addons/timing-functions";
+@import "addons/triangle";
+
+// Soon to be deprecated Mixins
+@import "bourbon-deprecated-upcoming";
+
+<===> lib/addons/_button.scss
+@mixin button ($style: simple, $base-color: #4294f0) {
+
+  @if type-of($style) == color {
+    $base-color: $style;
+    $style: simple;
+  }
+
+  // Grayscale button
+  @if $base-color == grayscale($base-color) {
+    @if $style == simple {
+      @include simple($base-color, $grayscale: true);
+    }
+
+    @else if $style == shiny {
+      @include shiny($base-color, $grayscale: true);
+    }
+
+    @else if $style == pill {
+      @include pill($base-color, $grayscale: true);
+    }
+  }
+
+  // Colored button
+  @else {
+    @if $style == simple {
+      @include simple($base-color);
+    }
+
+    @else if $style == shiny {
+      @include shiny($base-color);
+    }
+
+    @else if $style == pill {
+      @include pill($base-color);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+
+// Simple Button
+//************************************************************************//
+@mixin simple($base-color, $grayscale: false) {
+  $color:         hsl(0, 0, 100%);
+  $border:        adjust-color($base-color, $saturation:  9%,  $lightness: -14%);
+  $inset-shadow:  adjust-color($base-color, $saturation: -8%,  $lightness:  15%);
+  $stop-gradient: adjust-color($base-color, $saturation:  9%,  $lightness: -11%);
+  $text-shadow:   adjust-color($base-color, $saturation:  15%, $lightness: -18%);
+
+  @if lightness($base-color) > 70% {
+    $color:       hsl(0, 0, 20%);
+    $text-shadow: adjust-color($base-color, $saturation: 10%, $lightness: 4%);
+  }
+
+  @if $grayscale == true {
+    $border:        grayscale($border);
+    $inset-shadow:  grayscale($inset-shadow);
+    $stop-gradient: grayscale($stop-gradient);
+    $text-shadow:   grayscale($text-shadow);
+  }
+
+  border: 1px solid $border;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 0 0 $inset-shadow;
+  color: $color;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: bold;
+  @include linear-gradient ($base-color, $stop-gradient);
+  padding: 7px 18px;
+  text-decoration: none;
+  text-shadow: 0 1px 0 $text-shadow;
+  background-clip: padding-box;
+
+  &:hover:not(:disabled) {
+    $base-color-hover:    adjust-color($base-color, $saturation: -4%, $lightness: -5%);
+    $inset-shadow-hover:  adjust-color($base-color, $saturation: -7%, $lightness:  5%);
+    $stop-gradient-hover: adjust-color($base-color, $saturation:  8%, $lightness: -14%);
+
+    @if $grayscale == true {
+      $base-color-hover:    grayscale($base-color-hover);
+      $inset-shadow-hover:  grayscale($inset-shadow-hover);
+      $stop-gradient-hover: grayscale($stop-gradient-hover);
+    }
+
+    box-shadow: inset 0 1px 0 0 $inset-shadow-hover;
+    cursor: pointer;
+    @include linear-gradient ($base-color-hover, $stop-gradient-hover);
+  }
+
+  &:active:not(:disabled) {
+    $border-active:       adjust-color($base-color, $saturation: 9%, $lightness: -14%);
+    $inset-shadow-active: adjust-color($base-color, $saturation: 7%, $lightness: -17%);
+
+    @if $grayscale == true {
+      $border-active:       grayscale($border-active);
+      $inset-shadow-active: grayscale($inset-shadow-active);
+    }
+
+    border: 1px solid $border-active;
+    box-shadow: inset 0 0 8px 4px $inset-shadow-active, inset 0 0 8px 4px $inset-shadow-active, 0 1px 1px 0 #eee;
+  }
+}
+
+
+// Shiny Button
+//************************************************************************//
+@mixin shiny($base-color, $grayscale: false) {
+  $color:         hsl(0, 0, 100%);
+  $border:        adjust-color($base-color, $red: -117, $green: -111, $blue: -81);
+  $border-bottom: adjust-color($base-color, $red: -126, $green: -127, $blue: -122);
+  $fourth-stop:   adjust-color($base-color, $red: -79,  $green: -70,  $blue: -46);
+  $inset-shadow:  adjust-color($base-color, $red:  37,  $green:  29,  $blue:  12);
+  $second-stop:   adjust-color($base-color, $red: -56,  $green: -50,  $blue: -33);
+  $text-shadow:   adjust-color($base-color, $red: -140, $green: -141, $blue: -114);
+  $third-stop:    adjust-color($base-color, $red: -86,  $green: -75,  $blue: -48);
+
+  @if lightness($base-color) > 70% {
+    $color:       hsl(0, 0, 20%);
+    $text-shadow: adjust-color($base-color, $saturation: 10%, $lightness: 4%);
+  }
+
+  @if $grayscale == true {
+    $border:        grayscale($border);
+    $border-bottom: grayscale($border-bottom);
+    $fourth-stop:   grayscale($fourth-stop);
+    $inset-shadow:  grayscale($inset-shadow);
+    $second-stop:   grayscale($second-stop);
+    $text-shadow:   grayscale($text-shadow);
+    $third-stop:    grayscale($third-stop);
+  }
+
+  border: 1px solid $border;
+  border-bottom: 1px solid $border-bottom;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 0 0 $inset-shadow;
+  color: $color;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: bold;
+  @include linear-gradient(top, $base-color 0%, $second-stop 50%, $third-stop 50%, $fourth-stop 100%);
+  padding: 8px 20px;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0 -1px 1px $text-shadow;
+
+  &:hover:not(:disabled) {
+    $first-stop-hover:  adjust-color($base-color, $red: -13, $green: -15, $blue: -18);
+    $second-stop-hover: adjust-color($base-color, $red: -66, $green: -62, $blue: -51);
+    $third-stop-hover:  adjust-color($base-color, $red: -93, $green: -85, $blue: -66);
+    $fourth-stop-hover: adjust-color($base-color, $red: -86, $green: -80, $blue: -63);
+
+    @if $grayscale == true {
+      $first-stop-hover:  grayscale($first-stop-hover);
+      $second-stop-hover: grayscale($second-stop-hover);
+      $third-stop-hover:  grayscale($third-stop-hover);
+      $fourth-stop-hover: grayscale($fourth-stop-hover);
+    }
+
+    cursor: pointer;
+    @include linear-gradient(top, $first-stop-hover  0%,
+                                  $second-stop-hover 50%,
+                                  $third-stop-hover  50%,
+                                  $fourth-stop-hover 100%);
+  }
+
+  &:active:not(:disabled) {
+    $inset-shadow-active: adjust-color($base-color, $red: -111, $green: -116, $blue: -122);
+
+    @if $grayscale == true {
+      $inset-shadow-active: grayscale($inset-shadow-active);
+    }
+
+    box-shadow: inset 0 0 20px 0 $inset-shadow-active, 0 1px 0 #fff;
+  }
+}
+
+
+// Pill Button
+//************************************************************************//
+@mixin pill($base-color, $grayscale: false) {
+  $color:         hsl(0, 0, 100%);
+  $border-bottom: adjust-color($base-color, $hue:  8, $saturation: -11%, $lightness: -26%);
+  $border-sides:  adjust-color($base-color, $hue:  4, $saturation: -21%, $lightness: -21%);
+  $border-top:    adjust-color($base-color, $hue: -1, $saturation: -30%, $lightness: -15%);
+  $inset-shadow:  adjust-color($base-color, $hue: -1, $saturation: -1%,  $lightness:  7%);
+  $stop-gradient: adjust-color($base-color, $hue:  8, $saturation:  14%, $lightness: -10%);
+  $text-shadow:   adjust-color($base-color, $hue:  5, $saturation: -19%, $lightness: -15%);
+
+  @if lightness($base-color) > 70% {
+    $color:       hsl(0, 0, 20%);
+    $text-shadow: adjust-color($base-color, $saturation: 10%, $lightness: 4%);
+  }
+
+  @if $grayscale == true {
+    $border-bottom: grayscale($border-bottom);
+    $border-sides:  grayscale($border-sides);
+    $border-top:    grayscale($border-top);
+    $inset-shadow:  grayscale($inset-shadow);
+    $stop-gradient: grayscale($stop-gradient);
+    $text-shadow:   grayscale($text-shadow);
+  }
+
+  border: 1px solid $border-top;
+  border-color: $border-top $border-sides $border-bottom;
+  border-radius: 16px;
+  box-shadow: inset 0 1px 0 0 $inset-shadow, 0 1px 2px 0 #b3b3b3;
+  color: $color;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: normal;
+  line-height: 1;
+  @include linear-gradient ($base-color, $stop-gradient);
+  padding: 5px 16px;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0 -1px 1px $text-shadow;
+  background-clip: padding-box;
+
+  &:hover:not(:disabled) {
+    $base-color-hover:    adjust-color($base-color,                                $lightness: -4.5%);
+    $border-bottom:       adjust-color($base-color, $hue:  8, $saturation:  13.5%, $lightness: -32%);
+    $border-sides:        adjust-color($base-color, $hue:  4, $saturation: -2%,    $lightness: -27%);
+    $border-top:          adjust-color($base-color, $hue: -1, $saturation: -17%,   $lightness: -21%);
+    $inset-shadow-hover:  adjust-color($base-color,           $saturation: -1%,    $lightness:  3%);
+    $stop-gradient-hover: adjust-color($base-color, $hue:  8, $saturation: -4%,    $lightness: -15.5%);
+    $text-shadow-hover:   adjust-color($base-color, $hue:  5, $saturation: -5%,    $lightness: -22%);
+
+    @if $grayscale == true {
+      $base-color-hover:    grayscale($base-color-hover);
+      $border-bottom:       grayscale($border-bottom);
+      $border-sides:        grayscale($border-sides);
+      $border-top:          grayscale($border-top);
+      $inset-shadow-hover:  grayscale($inset-shadow-hover);
+      $stop-gradient-hover: grayscale($stop-gradient-hover);
+      $text-shadow-hover:   grayscale($text-shadow-hover);
+    }
+
+    border: 1px solid $border-top;
+    border-color: $border-top $border-sides $border-bottom;
+    box-shadow: inset 0 1px 0 0 $inset-shadow-hover;
+    cursor: pointer;
+    @include linear-gradient ($base-color-hover, $stop-gradient-hover);
+    text-shadow: 0 -1px 1px $text-shadow-hover;
+    background-clip: padding-box;
+  }
+
+  &:active:not(:disabled) {
+    $active-color:         adjust-color($base-color, $hue: 4,  $saturation: -12%,  $lightness: -10%);
+    $border-active:        adjust-color($base-color, $hue: 6,  $saturation: -2.5%, $lightness: -30%);
+    $border-bottom-active: adjust-color($base-color, $hue: 11, $saturation:  6%,   $lightness: -31%);
+    $inset-shadow-active:  adjust-color($base-color, $hue: 9,  $saturation:  2%,   $lightness: -21.5%);
+    $text-shadow-active:   adjust-color($base-color, $hue: 5,  $saturation: -12%,  $lightness: -21.5%);
+
+    @if $grayscale == true {
+      $active-color:         grayscale($active-color);
+      $border-active:        grayscale($border-active);
+      $border-bottom-active: grayscale($border-bottom-active);
+      $inset-shadow-active:  grayscale($inset-shadow-active);
+      $text-shadow-active:   grayscale($text-shadow-active);
+    }
+
+    background: $active-color;
+    border: 1px solid $border-active;
+    border-bottom: 1px solid $border-bottom-active;
+    box-shadow: inset 0 0 6px 3px $inset-shadow-active, 0 1px 0 0 #fff;
+    text-shadow: 0 -1px 1px $text-shadow-active;
+  }
+}
+
+<===> lib/addons/_clearfix.scss
+// Micro clearfix provides an easy way to contain floats without adding additional markup
+//
+// Example usage:
+//
+//    // Contain all floats within .wrapper
+//    .wrapper {
+//      @include clearfix;
+//      .content,
+//      .sidebar {
+//        float : left;
+//      }
+//    }
+
+@mixin clearfix {
+  *zoom: 1;
+
+  &:before,
+  &:after {
+    content: " ";
+    display: table;
+  }
+
+  &:after {
+    clear: both;
+  }
+}
+
+// Acknowledgements
+// Micro clearfix: [Nicolas Gallagher](http://nicolasgallagher.com/micro-clearfix-hack/)
+
+<===> lib/addons/_font-family.scss
+$georgia: Georgia, Cambria, "Times New Roman", Times, serif;
+$helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$lucida-grande: "Lucida Grande", Tahoma, Verdana, Arial, sans-serif;
+$monospace: "Bitstream Vera Sans Mono", Consolas, Courier, monospace;
+$verdana: Verdana, Geneva, sans-serif;
+
+<===> lib/addons/_hide-text.scss
+@mixin hide-text {
+  color:            transparent;
+  font:             0/0 a;
+  text-shadow:      none;
+}
+
+<===> lib/addons/_html5-input-types.scss
+//************************************************************************//
+// Generate a variable ($all-text-inputs) with a list of all html5
+// input types that have a text-based input, excluding textarea.
+// http://diveintohtml5.org/forms.html
+//************************************************************************//
+$inputs-list: 'input[type="email"]',
+              'input[type="number"]',
+              'input[type="password"]',
+              'input[type="search"]',
+              'input[type="tel"]',
+              'input[type="text"]',
+              'input[type="url"]',
+
+              // Webkit & Gecko may change the display of these in the future
+              'input[type="color"]',
+              'input[type="date"]',
+              'input[type="datetime"]',
+              'input[type="datetime-local"]',
+              'input[type="month"]',
+              'input[type="time"]',
+              'input[type="week"]';
+
+$unquoted-inputs-list: ();
+@each $input-type in $inputs-list {
+  $unquoted-inputs-list: append($unquoted-inputs-list, unquote($input-type), comma);
+}
+
+$all-text-inputs: $unquoted-inputs-list;
+
+
+// Hover Pseudo-class
+//************************************************************************//
+$all-text-inputs-hover: ();
+@each $input-type in $unquoted-inputs-list {
+      $input-type-hover: $input-type + ":hover";
+      $all-text-inputs-hover: append($all-text-inputs-hover, $input-type-hover, comma);
+}
+
+// Focus Pseudo-class
+//************************************************************************//
+$all-text-inputs-focus: ();
+@each $input-type in $unquoted-inputs-list {
+      $input-type-focus: $input-type + ":focus";
+      $all-text-inputs-focus: append($all-text-inputs-focus, $input-type-focus, comma);
+}
+
+// You must use interpolation on the variable:
+// #{$all-text-inputs}
+// #{$all-text-inputs-hover}
+// #{$all-text-inputs-focus}
+
+// Example
+//************************************************************************//
+//   #{$all-text-inputs}, textarea {
+//     border: 1px solid red;
+//   }
+
+<===> lib/addons/_position.scss
+@mixin position ($position: relative, $coordinates: 0 0 0 0) {
+
+  @if type-of($position) == list {
+    $coordinates: $position;
+    $position: relative;
+  }
+
+  $top: nth($coordinates, 1);
+  $right: nth($coordinates, 2);
+  $bottom: nth($coordinates, 3);
+  $left: nth($coordinates, 4);
+
+  position: $position;
+
+  @if $top == auto {
+    top: $top;
+  }
+  @else if not(unitless($top)) {
+    top: $top;
+  }
+
+  @if $right == auto {
+    right: $right;
+  }
+  @else if not(unitless($right)) {
+    right: $right;
+  }
+
+  @if $bottom == auto {
+    bottom: $bottom;
+  }
+  @else if not(unitless($bottom)) {
+    bottom: $bottom;
+  }
+
+  @if $left == auto {
+    left: $left;
+  }
+  @else if not(unitless($left)) {
+    left: $left;
+  }
+}
+
+<===> lib/addons/_prefixer.scss
+//************************************************************************//
+// Example: @include prefixer(border-radius, $radii, webkit ms spec);
+//************************************************************************//
+$prefix-for-webkit:    true !default;
+$prefix-for-mozilla:   true !default;
+$prefix-for-microsoft: true !default;
+$prefix-for-opera:     true !default;
+$prefix-for-spec:      true !default; // required for keyframe mixin
+
+@mixin prefixer ($property, $value, $prefixes) {
+  @each $prefix in $prefixes {
+    @if $prefix == webkit {
+      @if $prefix-for-webkit {
+        -webkit-#{$property}: $value;
+      }
+    }
+    @else if $prefix == moz {
+      @if $prefix-for-mozilla {
+        -moz-#{$property}: $value;
+      }
+    }
+    @else if $prefix == ms {
+      @if $prefix-for-microsoft {
+        -ms-#{$property}: $value;
+      }
+    }
+    @else if $prefix == o {
+      @if $prefix-for-opera {
+        -o-#{$property}: $value;
+      }
+    }
+    @else if $prefix == spec {
+      @if $prefix-for-spec {
+        #{$property}: $value;
+      }
+    }
+    @else  {
+      @warn "Unrecognized prefix: #{$prefix}";
+    }
+  }
+}
+
+@mixin disable-prefix-for-all() {
+  $prefix-for-webkit:    false;
+  $prefix-for-mozilla:   false;
+  $prefix-for-microsoft: false;
+  $prefix-for-opera:     false;
+  $prefix-for-spec:      false;
+}
+
+<===> lib/addons/_retina-image.scss
+@mixin retina-image($filename, $background-size, $extension: png, $retina-filename: null, $asset-pipeline: false) {
+  @if $asset-pipeline {
+    background-image: image_url("#{$filename}.#{$extension}");
+  }
+  @else {
+    background-image: url("#{$filename}.#{$extension}");
+  }
+
+  @include hidpi {
+
+    @if $asset-pipeline {
+      @if $retina-filename {
+        background-image: image_url("#{$retina-filename}.#{$extension}");
+      }
+      @else {
+        background-image: image_url("#{$filename}@2x.#{$extension}");
+      }
+    }
+
+    @else {
+      @if $retina-filename {
+        background-image: url("#{$retina-filename}.#{$extension}");
+      }
+      @else {
+        background-image: url("#{$filename}@2x.#{$extension}");
+      }
+    }
+
+    background-size: $background-size;
+
+  }
+}
+
+<===> lib/addons/_size.scss
+@mixin size($size) {
+  @if length($size) == 1 {
+    @if $size == auto {
+      width:  $size;
+      height: $size;
+    }
+
+    @else if unitless($size) {
+      width:  $size + px;
+      height: $size + px;
+    }
+
+    @else if not(unitless($size)) {
+      width:  $size;
+      height: $size;
+    }
+  }
+
+  // Width x Height
+  @if length($size) == 2 {
+    $width:  nth($size, 1);
+    $height: nth($size, 2);
+
+    @if $width == auto {
+      width: $width;
+    }
+    @else if not(unitless($width)) {
+      width: $width;
+    }
+    @else if unitless($width) {
+      width: $width + px;
+    }
+
+    @if $height == auto {
+      height: $height;
+    }
+    @else if not(unitless($height)) {
+      height: $height;
+    }
+    @else if unitless($height) {
+      height: $height + px;
+    }
+  }
+}
+
+<===> lib/addons/_timing-functions.scss
+// CSS cubic-bezier timing functions. Timing functions courtesy of jquery.easie (github.com/jaukia/easie)
+// Timing functions are the same as demo'ed here: http://jqueryui.com/demos/effect/easing.html
+
+// EASE IN
+$ease-in-quad:      cubic-bezier(0.550,  0.085, 0.680, 0.530);
+$ease-in-cubic:     cubic-bezier(0.550,  0.055, 0.675, 0.190);
+$ease-in-quart:     cubic-bezier(0.895,  0.030, 0.685, 0.220);
+$ease-in-quint:     cubic-bezier(0.755,  0.050, 0.855, 0.060);
+$ease-in-sine:      cubic-bezier(0.470,  0.000, 0.745, 0.715);
+$ease-in-expo:      cubic-bezier(0.950,  0.050, 0.795, 0.035);
+$ease-in-circ:      cubic-bezier(0.600,  0.040, 0.980, 0.335);
+$ease-in-back:      cubic-bezier(0.600, -0.280, 0.735, 0.045);
+
+// EASE OUT
+$ease-out-quad:     cubic-bezier(0.250,  0.460, 0.450, 0.940);
+$ease-out-cubic:    cubic-bezier(0.215,  0.610, 0.355, 1.000);
+$ease-out-quart:    cubic-bezier(0.165,  0.840, 0.440, 1.000);
+$ease-out-quint:    cubic-bezier(0.230,  1.000, 0.320, 1.000);
+$ease-out-sine:     cubic-bezier(0.390,  0.575, 0.565, 1.000);
+$ease-out-expo:     cubic-bezier(0.190,  1.000, 0.220, 1.000);
+$ease-out-circ:     cubic-bezier(0.075,  0.820, 0.165, 1.000);
+$ease-out-back:     cubic-bezier(0.175,  0.885, 0.320, 1.275);
+
+// EASE IN OUT
+$ease-in-out-quad:  cubic-bezier(0.455,  0.030, 0.515, 0.955);
+$ease-in-out-cubic: cubic-bezier(0.645,  0.045, 0.355, 1.000);
+$ease-in-out-quart: cubic-bezier(0.770,  0.000, 0.175, 1.000);
+$ease-in-out-quint: cubic-bezier(0.860,  0.000, 0.070, 1.000);
+$ease-in-out-sine:  cubic-bezier(0.445,  0.050, 0.550, 0.950);
+$ease-in-out-expo:  cubic-bezier(1.000,  0.000, 0.000, 1.000);
+$ease-in-out-circ:  cubic-bezier(0.785,  0.135, 0.150, 0.860);
+$ease-in-out-back:  cubic-bezier(0.680, -0.550, 0.265, 1.550);
+
+<===> lib/addons/_triangle.scss
+@mixin triangle ($size, $color, $direction) {
+  height: 0;
+  width: 0;
+
+  @if ($direction == up) or ($direction == down) or ($direction == right) or ($direction == left) {
+    border-color: transparent;
+    border-style: solid;
+    border-width: $size / 2;
+
+    @if $direction == up {
+      border-bottom-color: $color;
+
+    } @else if $direction == right {
+      border-left-color:   $color;
+
+    } @else if $direction == down {
+      border-top-color:    $color;
+
+    } @else if $direction == left {
+      border-right-color:  $color;
+    }
+  }
+
+  @else if ($direction == up-right) or ($direction == up-left) {
+    border-top: $size solid $color;
+
+    @if $direction == up-right {
+      border-left:  $size solid transparent;
+
+    } @else if $direction == up-left {
+      border-right: $size solid transparent;
+    }
+  }
+
+  @else if ($direction == down-right) or ($direction == down-left) {
+    border-bottom: $size solid $color;
+
+    @if $direction == down-right {
+      border-left:  $size solid transparent;
+
+    } @else if $direction == down-left {
+      border-right: $size solid transparent;
+    }
+  }
+}
+
+<===> lib/css3/_animation.scss
+// http://www.w3.org/TR/css3-animations/#the-animation-name-property-
+// Each of these mixins support comma separated lists of values, which allows different transitions for individual properties to be described in a single style rule. Each value in the list corresponds to the value at that same position in the other properties.
+
+// Official animation shorthand property.
+@mixin animation ($animations...) {
+  @include prefixer(animation, $animations, webkit moz spec);
+}
+
+// Individual Animation Properties
+@mixin animation-name ($names...) {
+  @include prefixer(animation-name, $names, webkit moz spec);
+}
+
+
+@mixin animation-duration ($times...) {
+  @include prefixer(animation-duration, $times, webkit moz spec);
+}
+
+
+@mixin animation-timing-function ($motions...) {
+// ease | linear | ease-in | ease-out | ease-in-out
+  @include prefixer(animation-timing-function, $motions, webkit moz spec);
+}
+
+
+@mixin animation-iteration-count ($values...) {
+// infinite | <number>
+  @include prefixer(animation-iteration-count, $values, webkit moz spec);
+}
+
+
+@mixin animation-direction ($directions...) {
+// normal | alternate
+  @include prefixer(animation-direction, $directions, webkit moz spec);
+}
+
+
+@mixin animation-play-state ($states...) {
+// running | paused
+  @include prefixer(animation-play-state, $states, webkit moz spec);
+}
+
+
+@mixin animation-delay ($times...) {
+  @include prefixer(animation-delay, $times, webkit moz spec);
+}
+
+
+@mixin animation-fill-mode ($modes...) {
+// none | forwards | backwards | both
+  @include prefixer(animation-fill-mode, $modes, webkit moz spec);
+}
+
+<===> lib/css3/_appearance.scss
+@mixin appearance ($value) {
+  @include prefixer(appearance, $value, webkit moz ms o spec);
+}
+
+<===> lib/css3/_backface-visibility.scss
+//************************************************************************//
+// Backface-visibility mixin
+//************************************************************************//
+@mixin backface-visibility($visibility) {
+  @include prefixer(backface-visibility, $visibility, webkit spec);
+}
+
+<===> lib/css3/_background-image.scss
+//************************************************************************//
+// Background-image property for adding multiple background images with
+// gradients, or for stringing multiple gradients together.
+//************************************************************************//
+
+@mixin background-image($images...) {
+  background-image: _add-prefix($images, webkit);
+  background-image: _add-prefix($images);
+}
+
+@function _add-prefix($images, $vendor: false) {
+  $images-prefixed: ();
+  $gradient-positions: false;
+  @for $i from 1 through length($images) {
+    $type: type-of(nth($images, $i)); // Get type of variable - List or String
+
+    // If variable is a list - Gradient
+    @if $type == list {
+      $gradient-type: nth(nth($images, $i), 1); // linear or radial
+      $gradient-pos: null;
+      $gradient-args: null;
+
+      @if ($gradient-type == linear) or ($gradient-type == radial) {
+        $gradient-pos:  nth(nth($images, $i), 2); // Get gradient position
+        $gradient-args: nth(nth($images, $i), 3); // Get actual gradient (red, blue)
+      }
+      @else {
+        $gradient-args: nth(nth($images, $i), 2); // Get actual gradient (red, blue)
+      }
+
+      $gradient-positions: _gradient-positions-parser($gradient-type, $gradient-pos);
+      $gradient: _render-gradients($gradient-positions, $gradient-args, $gradient-type, $vendor);
+      $images-prefixed: append($images-prefixed, $gradient, comma);
+    }
+    // If variable is a string - Image
+    @else if $type == string {
+      $images-prefixed: join($images-prefixed, nth($images, $i), comma);
+    }
+  }
+  @return $images-prefixed;
+}
+
+//Examples:
+  //@include background-image(linear-gradient(top, orange, red));
+  //@include background-image(radial-gradient(50% 50%, cover circle, orange, red));
+  //@include background-image(url("/images/a.png"), linear-gradient(orange, red));
+  //@include background-image(url("image.png"), linear-gradient(orange, red), url("image.png"));
+  //@include background-image(linear-gradient(hsla(0, 100%, 100%, 0.25) 0%, hsla(0, 100%, 100%, 0.08) 50%, transparent 50%), linear-gradient(orange, red));
+
+<===> lib/css3/_background.scss
+//************************************************************************//
+// Background property for adding multiple backgrounds using shorthand
+// notation.
+//************************************************************************//
+
+@mixin background(
+  $background-1       , $background-2: false,
+  $background-3: false, $background-4: false,
+  $background-5: false, $background-6: false,
+  $background-7: false, $background-8: false,
+  $background-9: false, $background-10: false,
+  $fallback: false
+) {
+  $backgrounds: compact($background-1, $background-2,
+                $background-3, $background-4,
+                $background-5, $background-6,
+                $background-7, $background-8,
+                $background-9, $background-10);
+
+  $fallback-color: false;
+  @if (type-of($fallback) == color) or ($fallback == "transparent") {
+    $fallback-color: $fallback;
+  }
+  @else {
+    $fallback-color: _extract-background-color($backgrounds);
+  }
+
+  @if $fallback-color {
+    background-color: $fallback-color;
+  }
+  background: _background-add-prefix($backgrounds, webkit);
+  background: _background-add-prefix($backgrounds);
+}
+
+@function _extract-background-color($backgrounds) {
+  $final-bg-layer: nth($backgrounds, length($backgrounds));
+  @if type-of($final-bg-layer) == list {
+    @for $i from 1 through length($final-bg-layer) {
+      $value: nth($final-bg-layer, $i);
+      @if type-of($value) == color {
+        @return $value;
+      }
+    }
+  }
+  @return false;
+}
+
+@function _background-add-prefix($backgrounds, $vendor: false) {
+  $backgrounds-prefixed: ();
+
+  @for $i from 1 through length($backgrounds) {
+    $shorthand: nth($backgrounds, $i); // Get member for current index
+    $type: type-of($shorthand); // Get type of variable - List (gradient) or String (image)
+
+    // If shorthand is a list (gradient)
+    @if $type == list {
+      $first-member: nth($shorthand, 1); // Get first member of shorthand
+
+      // Linear Gradient
+      @if index(linear radial, nth($first-member, 1)) {
+        $gradient-type: nth($first-member, 1); // linear || radial
+        $gradient-args:      false;
+        $gradient-positions: false;
+        $shorthand-start:    false;
+        @if type-of($first-member) == list { // Linear gradient plus additional shorthand values - lg(red,orange)repeat,...
+          $gradient-positions: nth($first-member, 2);
+          $gradient-args:      nth($first-member, 3);
+          $shorthand-start: 2;
+        }
+        @else { // Linear gradient only - lg(red,orange),...
+          $gradient-positions: nth($shorthand, 2);
+          $gradient-args:      nth($shorthand, 3); // Get gradient (red, blue)
+        }
+
+        $gradient-positions: _gradient-positions-parser($gradient-type, $gradient-positions);
+        $gradient: _render-gradients($gradient-positions, $gradient-args, $gradient-type, $vendor);
+
+        // Append any additional shorthand args to gradient
+        @if $shorthand-start {
+          @for $j from $shorthand-start through length($shorthand) {
+            $gradient: join($gradient, nth($shorthand, $j), space);
+          }
+        }
+        $backgrounds-prefixed: append($backgrounds-prefixed, $gradient, comma);
+      }
+      // Image with additional properties
+      @else {
+        $backgrounds-prefixed: append($backgrounds-prefixed, $shorthand, comma);
+      }
+    }
+    // If shorthand is a simple string (color or image)
+    @else if $type == string {
+      $backgrounds-prefixed: join($backgrounds-prefixed, $shorthand, comma);
+    }
+  }
+  @return $backgrounds-prefixed;
+}
+
+//Examples:
+  //@include background(linear-gradient(top, orange, red));
+  //@include background(radial-gradient(circle at 40% 40%, orange, red));
+  //@include background(url("/images/a.png") no-repeat, linear-gradient(orange, red));
+  //@include background(url("image.png") center center, linear-gradient(orange, red), url("image.png"));
+
+<===> lib/css3/_border-image.scss
+@mixin border-image($images) {
+  -webkit-border-image: _border-add-prefix($images, webkit);
+     -moz-border-image: _border-add-prefix($images, moz);
+       -o-border-image: _border-add-prefix($images, o);
+          border-image: _border-add-prefix($images);
+}
+
+@function _border-add-prefix($images, $vendor: false) {
+  $border-image: null;
+  $images-type:  type-of(nth($images, 1));
+  $first-var:    nth(nth($images, 1), 1);          // Get type of Gradient (Linear || radial)
+
+  // If input is a gradient
+  @if $images-type == string {
+    @if ($first-var == "linear") or ($first-var == "radial") {
+      $gradient-type: nth($images, 1);           // Get type of gradient (linear || radial)
+      $gradient-pos:  nth($images, 2);           // Get gradient position
+      $gradient-args: nth($images, 3);           // Get actual gradient (red, blue)
+      $gradient-positions: _gradient-positions-parser($gradient-type, $gradient-pos);
+      $border-image:  _render-gradients($gradient-positions, $gradient-args, $gradient-type, $vendor);
+    }
+    // If input is a URL
+    @else {
+      $border-image: $images;
+    }
+  }
+  // If input is gradient or url + additional args
+  @else if $images-type == list {
+    $type: type-of(nth($images, 1));           // Get type of variable - List or String
+
+    // If variable is a list - Gradient
+    @if $type == list {
+      $gradient: nth($images, 1);
+      $gradient-type: nth($gradient, 1);           // Get type of gradient (linear || radial)
+      $gradient-pos:  nth($gradient, 2);           // Get gradient position
+      $gradient-args: nth($gradient, 3);           // Get actual gradient (red, blue)
+      $gradient-positions: _gradient-positions-parser($gradient-type, $gradient-pos);
+      $border-image:  _render-gradients($gradient-positions, $gradient-args, $gradient-type, $vendor);
+
+      @for $i from 2 through length($images) {
+        $border-image: append($border-image, nth($images, $i));
+      }
+    }
+  }
+  @return $border-image;
+}
+
+//Examples:
+// @include border-image(url("image.png"));
+// @include border-image(url("image.png") 20 stretch);
+// @include border-image(linear-gradient(45deg, orange, yellow));
+// @include border-image(linear-gradient(45deg, orange, yellow) stretch);
+// @include border-image(linear-gradient(45deg, orange, yellow) 20 30 40 50 stretch round);
+// @include border-image(radial-gradient(top, cover, orange, yellow, orange));
+
+
+<===> lib/css3/_border-radius.scss
+//************************************************************************//
+// Shorthand Border-radius mixins
+//************************************************************************//
+@mixin border-top-radius($radii) {
+  @include prefixer(border-top-left-radius, $radii, spec);
+  @include prefixer(border-top-right-radius, $radii, spec);
+}
+
+@mixin border-bottom-radius($radii) {
+  @include prefixer(border-bottom-left-radius, $radii, spec);
+  @include prefixer(border-bottom-right-radius, $radii, spec);
+}
+
+@mixin border-left-radius($radii) {
+  @include prefixer(border-top-left-radius, $radii, spec);
+  @include prefixer(border-bottom-left-radius, $radii, spec);
+}
+
+@mixin border-right-radius($radii) {
+  @include prefixer(border-top-right-radius, $radii, spec);
+  @include prefixer(border-bottom-right-radius, $radii, spec);
+}
+
+<===> lib/css3/_box-sizing.scss
+@mixin box-sizing ($box) {
+//  content-box | border-box | inherit
+  @include prefixer(box-sizing, $box, webkit moz spec);
+}
+
+<===> lib/css3/_columns.scss
+@mixin columns($arg: auto) {
+// <column-count> || <column-width>
+  @include prefixer(columns, $arg, webkit moz spec);
+}
+
+@mixin column-count($int: auto) {
+// auto || integer
+  @include prefixer(column-count, $int, webkit moz spec);
+}
+
+@mixin column-gap($length: normal) {
+// normal || length
+  @include prefixer(column-gap, $length, webkit moz spec);
+}
+
+@mixin column-fill($arg: auto) {
+// auto || length
+  @include prefixer(columns-fill, $arg, webkit moz spec);
+}
+
+@mixin column-rule($arg) {
+// <border-width> || <border-style> || <color>
+  @include prefixer(column-rule, $arg, webkit moz spec);
+}
+
+@mixin column-rule-color($color) {
+  @include prefixer(column-rule-color, $color, webkit moz spec);
+}
+
+@mixin column-rule-style($style: none) {
+// none | hidden | dashed | dotted | double | groove | inset | inset | outset | ridge | solid
+  @include prefixer(column-rule-style, $style, webkit moz spec);
+}
+
+@mixin column-rule-width ($width: none) {
+  @include prefixer(column-rule-width, $width, webkit moz spec);
+}
+
+@mixin column-span($arg: none) {
+// none || all
+  @include prefixer(column-span, $arg, webkit moz spec);
+}
+
+@mixin column-width($length: auto) {
+// auto || length
+  @include prefixer(column-width, $length, webkit moz spec);
+}
+
+<===> lib/css3/_flex-box.scss
+// CSS3 Flexible Box Model and property defaults
+
+// Custom shorthand notation for flexbox
+@mixin box($orient: inline-axis, $pack: start, $align: stretch) {
+  @include display-box;
+  @include box-orient($orient);
+  @include box-pack($pack);
+  @include box-align($align);
+}
+
+@mixin display-box {
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
+}
+
+@mixin box-orient($orient: inline-axis) {
+// horizontal|vertical|inline-axis|block-axis|inherit
+  @include prefixer(box-orient, $orient, webkit moz spec);
+}
+
+@mixin box-pack($pack: start) {
+// start|end|center|justify
+  @include prefixer(box-pack, $pack, webkit moz spec);
+}
+
+@mixin box-align($align: stretch) {
+// start|end|center|baseline|stretch
+  @include prefixer(box-align, $align, webkit moz spec);
+}
+
+@mixin box-direction($direction: normal) {
+// normal|reverse|inherit
+  @include prefixer(box-direction, $direction, webkit moz spec);
+}
+
+@mixin box-lines($lines: single) {
+// single|multiple
+  @include prefixer(box-lines, $lines, webkit moz spec);
+}
+
+@mixin box-ordinal-group($int: 1) {
+  @include prefixer(box-ordinal-group, $int, webkit moz spec);
+}
+
+@mixin box-flex($value: 0.0) {
+  @include prefixer(box-flex, $value, webkit moz spec);
+}
+
+@mixin box-flex-group($int: 1) {
+  @include prefixer(box-flex-group, $int, webkit moz spec);
+}
+
+<===> lib/css3/_font-face.scss
+// Order of the includes matters, and it is: normal, bold, italic, bold+italic.
+
+@mixin font-face($font-family, $file-path, $weight: normal, $style: normal, $asset-pipeline: false ) {
+  @font-face {
+    font-family: $font-family;
+    font-weight: $weight;
+    font-style: $style;
+
+    @if $asset-pipeline == true {
+      src: font-url('#{$file-path}.eot');
+      src: font-url('#{$file-path}.eot?#iefix')          format('embedded-opentype'),
+           font-url('#{$file-path}.woff')                format('woff'),
+           font-url('#{$file-path}.ttf')                 format('truetype'),
+           font-url('#{$file-path}.svg##{$font-family}') format('svg');
+    } @else {
+      src: url('#{$file-path}.eot');
+      src: url('#{$file-path}.eot?#iefix')               format('embedded-opentype'),
+           url('#{$file-path}.woff')                     format('woff'),
+           url('#{$file-path}.ttf')                      format('truetype'),
+           url('#{$file-path}.svg##{$font-family}')      format('svg');
+    }
+  }
+}
+
+<===> lib/css3/_hidpi-media-query.scss
+// HiDPI mixin. Default value set to 1.3 to target Google Nexus 7 (http://bjango.com/articles/min-device-pixel-ratio/)
+@mixin hidpi($ratio: 1.3) {
+  @media only screen and (-webkit-min-device-pixel-ratio: $ratio),
+  only screen and (min--moz-device-pixel-ratio: $ratio),
+  only screen and (-o-min-device-pixel-ratio: #{$ratio}/1),
+  only screen and (min-resolution: #{round($ratio*96)}dpi),
+  only screen and (min-resolution: #{$ratio}dppx) {
+    @content;
+  }
+}
+
+<===> lib/css3/_image-rendering.scss
+@mixin image-rendering ($mode:optimizeQuality) {
+
+  @if ($mode == optimize-contrast) {
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -o-crisp-edges;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: optimize-contrast;
+  }
+
+  @else {
+      image-rendering: $mode;
+  }
+}
+
+<===> lib/css3/_inline-block.scss
+// Legacy support for inline-block in IE7 (maybe IE6)
+@mixin inline-block {
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+}
+
+<===> lib/css3/_keyframes.scss
+// Adds keyframes blocks for supported prefixes, removing redundant prefixes in the block's content
+@mixin keyframes($name) {
+  $original-prefix-for-webkit:    $prefix-for-webkit;
+  $original-prefix-for-mozilla:   $prefix-for-mozilla;
+  $original-prefix-for-microsoft: $prefix-for-microsoft;
+  $original-prefix-for-opera:     $prefix-for-opera;
+  $original-prefix-for-spec:      $prefix-for-spec;
+
+  @if $original-prefix-for-webkit {
+    @include disable-prefix-for-all();
+    $prefix-for-webkit: true;
+    #{"@-webkit-keyframes"} #{$name} {
+      @content;
+    }
+  }
+  @if $original-prefix-for-mozilla {
+    @include disable-prefix-for-all();
+    $prefix-for-mozilla: true;
+    #{"@-moz-keyframes"} #{$name} {
+      @content;
+    }
+  }
+  @if $original-prefix-for-opera {
+    @include disable-prefix-for-all();
+    $prefix-for-opera: true;
+    #{"@-o-keyframes"} #{$name} {
+      @content;
+    }
+  }
+  @if $original-prefix-for-spec {
+    @include disable-prefix-for-all();
+    $prefix-for-spec: true;
+    #{"@keyframes"} #{$name} {
+      @content;
+    }
+  }
+
+  $prefix-for-webkit:    $original-prefix-for-webkit;
+  $prefix-for-mozilla:   $original-prefix-for-mozilla;
+  $prefix-for-microsoft: $original-prefix-for-microsoft;
+  $prefix-for-opera:     $original-prefix-for-opera;
+  $prefix-for-spec:      $original-prefix-for-spec;
+}
+
+<===> lib/css3/_linear-gradient.scss
+@mixin linear-gradient($pos, $G1, $G2: false,
+                       $G3: false, $G4: false,
+                       $G5: false, $G6: false,
+                       $G7: false, $G8: false,
+                       $G9: false, $G10: false,
+                       $deprecated-pos1: left top,
+                       $deprecated-pos2: left bottom,
+                       $fallback: false) {
+  // Detect what type of value exists in $pos
+  $pos-type: type-of(nth($pos, 1));
+  $pos-spec: null;
+  $pos-degree: null;
+
+  // If $pos is missing from mixin, reassign vars and add default position
+  @if ($pos-type == color) or (nth($pos, 1) == "transparent")  {
+    $G10: $G9; $G9: $G8; $G8: $G7; $G7: $G6; $G6: $G5;
+     $G5: $G4; $G4: $G3; $G3: $G2; $G2: $G1; $G1: $pos;
+     $pos: null;
+  }
+
+  @if $pos {
+    $positions: _linear-positions-parser($pos);
+    $pos-degree: nth($positions, 1);
+    $pos-spec:   nth($positions, 2);
+  }
+
+  $full: compact($G1, $G2, $G3, $G4, $G5, $G6, $G7, $G8, $G9, $G10);
+
+  // Set $G1 as the default fallback color
+  $fallback-color: nth($G1, 1);
+
+  // If $fallback is a color use that color as the fallback color
+  @if (type-of($fallback) == color) or ($fallback == "transparent") {
+    $fallback-color: $fallback;
+  }
+
+  background-color: $fallback-color;
+  background-image: _deprecated-webkit-gradient(linear, $deprecated-pos1, $deprecated-pos2, $full); // Safari <= 5.0
+  background-image: -webkit-linear-gradient($pos-degree $full); // Safari 5.1+, Chrome
+  background-image: unquote("linear-gradient(#{$pos-spec}#{$full})");
+}
+
+<===> lib/css3/_perspective.scss
+@mixin perspective($depth: none) {
+  // none | <length>
+  @include prefixer(perspective, $depth, webkit moz spec);
+}
+
+@mixin perspective-origin($value: 50% 50%) {
+  @include prefixer(perspective-origin, $value, webkit moz spec);
+}
+
+<===> lib/css3/_placeholder.scss
+$placeholders: '-webkit-input-placeholder',
+               '-moz-placeholder',
+               '-ms-input-placeholder';
+
+@mixin placeholder {
+  @each $placeholder in $placeholders {
+    @if $placeholder == "-webkit-input-placeholder" {
+      &::#{$placeholder} {
+        @content;
+      }
+    }
+    @else if $placeholder == "-moz-placeholder" {
+      // FF 18-
+      &:#{$placeholder} {
+        @content;
+      }
+
+      // FF 19+
+      &::#{$placeholder} {
+        @content;
+      }
+    }
+    @else {
+      &:#{$placeholder} {
+        @content;
+      }
+    }
+  }
+}
+
+<===> lib/css3/_radial-gradient.scss
+// Requires Sass 3.1+
+@mixin radial-gradient($G1,        $G2,
+                       $G3: false, $G4: false,
+                       $G5: false, $G6: false,
+                       $G7: false, $G8: false,
+                       $G9: false, $G10: false,
+                       $pos: null,
+                       $shape-size: null,
+                       $deprecated-pos1: center center,
+                       $deprecated-pos2: center center,
+                       $deprecated-radius1: 0,
+                       $deprecated-radius2: 460,
+                       $fallback: false) {
+
+  $data: _radial-arg-parser($G1, $G2, $pos, $shape-size);
+  $G1:  nth($data, 1);
+  $G2:  nth($data, 2);
+  $pos: nth($data, 3);
+  $shape-size: nth($data, 4);
+
+  $full: compact($G1, $G2, $G3, $G4, $G5, $G6, $G7, $G8, $G9, $G10);
+
+  // Strip deprecated cover/contain for spec
+  $shape-size-spec: _shape-size-stripper($shape-size);
+
+  // Set $G1 as the default fallback color
+  $first-color: nth($full, 1);
+  $fallback-color: nth($first-color, 1);
+
+  @if (type-of($fallback) == color) or ($fallback == "transparent") {
+    $fallback-color: $fallback;
+  }
+
+  // Add Commas and spaces
+  $shape-size: if($shape-size, '#{$shape-size}, ', null);
+  $pos:        if($pos, '#{$pos}, ', null);
+  $pos-spec:   if($pos, 'at #{$pos}', null);
+  $shape-size-spec: if(($shape-size-spec != ' ') and ($pos == null), '#{$shape-size-spec}, ', '#{$shape-size-spec} ');
+
+  background-color:  $fallback-color;
+  background-image: _deprecated-webkit-gradient(radial, $deprecated-pos1, $deprecated-pos2, $full, $deprecated-radius1, $deprecated-radius2); // Safari <= 5.0 && IOS 4
+  background-image: -webkit-radial-gradient(unquote(#{$pos}#{$shape-size}#{$full}));
+  background-image: unquote("radial-gradient(#{$shape-size-spec}#{$pos-spec}#{$full})");
+}
+
+<===> lib/css3/_transform.scss
+@mixin transform($property: none) {
+//  none | <transform-function>
+  @include prefixer(transform, $property, webkit moz ms o spec);
+}
+
+@mixin transform-origin($axes: 50%) {
+// x-axis - left | center | right  | length | %
+// y-axis - top  | center | bottom | length | %
+// z-axis -                          length
+  @include prefixer(transform-origin, $axes, webkit moz ms o spec);
+}
+
+@mixin transform-style ($style: flat) {
+  @include prefixer(transform-style, $style, webkit moz ms o spec);
+}
+
+<===> lib/css3/_transition.scss
+// Shorthand mixin. Supports multiple parentheses-deliminated values for each variable.
+// Example: @include transition (all, 2.0s, ease-in-out);
+//          @include transition ((opacity, width), (1.0s, 2.0s), ease-in, (0, 2s));
+//          @include transition ($property:(opacity, width), $delay: (1.5s, 2.5s));
+
+@mixin transition ($properties...) {
+  @if length($properties) >= 1 {
+    @include prefixer(transition, $properties, webkit moz spec);
+  }
+
+  @else {
+    $properties: all 0.15s ease-out 0;
+    @include prefixer(transition, $properties, webkit moz spec);
+  }
+}
+
+@mixin transition-property ($properties...) {
+   -webkit-transition-property: transition-property-names($properties, 'webkit');
+      -moz-transition-property: transition-property-names($properties, 'moz');
+           transition-property: transition-property-names($properties, false);
+}
+
+@mixin transition-duration ($times...) {
+  @include prefixer(transition-duration, $times, webkit moz spec);
+}
+
+@mixin transition-timing-function ($motions...) {
+// ease | linear | ease-in | ease-out | ease-in-out | cubic-bezier()
+  @include prefixer(transition-timing-function, $motions, webkit moz spec);
+}
+
+@mixin transition-delay ($times...) {
+  @include prefixer(transition-delay, $times, webkit moz spec);
+}
+
+<===> lib/css3/_user-select.scss
+@mixin user-select($arg: none) {
+  @include prefixer(user-select, $arg, webkit moz ms spec);
+}
+
+<===> lib/functions/_compact.scss
+// Remove `false` values from a list
+
+@function compact($vars...) {
+  $list: ();
+  @each $var in $vars {
+    @if $var {
+      $list: append($list, $var, comma);
+    }
+  }
+  @return $list;
+}
+
+<===> lib/functions/_flex-grid.scss
+// Flexible grid
+@function flex-grid($columns, $container-columns: $fg-max-columns) {
+  $width: $columns * $fg-column + ($columns - 1) * $fg-gutter;
+  $container-width: $container-columns * $fg-column + ($container-columns - 1) * $fg-gutter;
+  @return percentage($width / $container-width);
+}
+
+// Flexible gutter
+@function flex-gutter($container-columns: $fg-max-columns, $gutter: $fg-gutter) {
+  $container-width: $container-columns * $fg-column + ($container-columns - 1) * $fg-gutter;
+  @return percentage($gutter / $container-width);
+}
+
+// The $fg-column, $fg-gutter and $fg-max-columns variables must be defined in your base stylesheet to properly use the flex-grid function.
+// This function takes the fluid grid equation (target / context = result) and uses columns to help define each.
+//
+// The calculation presumes that your column structure will be missing the last gutter:
+//
+//   -- column -- gutter -- column -- gutter -- column
+//
+//  $fg-column: 60px;             // Column Width
+//  $fg-gutter: 25px;             // Gutter Width
+//  $fg-max-columns: 12;          // Total Columns For Main Container
+//
+//  div {
+//    width: flex-grid(4);        // returns (315px / 995px) = 31.65829%;
+//    margin-left: flex-gutter(); // returns (25px / 995px) = 2.51256%;
+//
+//    p {
+//      width: flex-grid(2, 4);  // returns (145px / 315px) = 46.031746%;
+//      float: left;
+//      margin: flex-gutter(4);  // returns (25px / 315px) = 7.936508%;
+//    }
+//
+//    blockquote {
+//      float: left;
+//      width: flex-grid(2, 4); // returns (145px / 315px) = 46.031746%;
+//    }
+//  }
+<===> lib/functions/_grid-width.scss
+@function grid-width($n) {
+  @return $n * $gw-column + ($n - 1) * $gw-gutter;
+}
+
+// The $gw-column and $gw-gutter variables must be defined in your base stylesheet to properly use the grid-width function.
+//
+//  $gw-column: 100px;         // Column Width
+//  $gw-gutter: 40px;          // Gutter Width
+//
+//  div {
+//    width: grid-width(4);    // returns 520px;
+//    margin-left: $gw-gutter; // returns 40px;
+//  }
+
+<===> lib/functions/_linear-gradient.scss
+@function linear-gradient($pos, $gradients...) {
+  $type: linear;
+  $pos-type: type-of(nth($pos, 1));
+
+  // if $pos doesn't exist, fix $gradient
+  @if ($pos-type == color) or (nth($pos, 1) == "transparent")  {
+    $gradients: zip($pos $gradients);
+    $pos: false;
+  }
+
+  $type-gradient: $type, $pos, $gradients;
+  @return $type-gradient;
+}
+
+<===> lib/functions/_modular-scale.scss
+@function modular-scale($value, $increment, $ratio) {
+  @if $increment > 0 {
+    @for $i from 1 through $increment {
+      $value: ($value * $ratio);
+    }
+  }
+
+  @if $increment < 0 {
+    $increment: abs($increment);
+    @for $i from 1 through $increment {
+      $value: ($value / $ratio);
+    }
+  }
+
+  @return $value;
+}
+
+//  div {
+//                     Increment Up GR with positive value
+//   font-size:        modular-scale(14px,   1, 1.618); // returns: 22.652px
+//
+//                     Increment Down GR with negative value
+//   font-size:        modular-scale(14px,  -1, 1.618); // returns: 8.653px
+//
+//                     Can be used with ceil(round up) or floor(round down)
+//   font-size: floor( modular-scale(14px, 1, 1.618) ); // returns: 22px
+//   font-size:  ceil( modular-scale(14px, 1, 1.618) ); // returns: 23px
+//  }
+//
+// modularscale.com
+
+@function golden-ratio($value, $increment) {
+  @return modular-scale($value, $increment, 1.618)
+}
+
+//  div {
+//    font-size: golden-ratio(14px, 1); // returns: 22.652px
+//  }
+//
+// goldenratiocalculator.com
+
+<===> lib/functions/_px-to-em.scss
+// Convert pixels to ems
+// eg. for a relational value of 12px write em(12) when the parent is 16px
+// if the parent is another value say 24px write em(12, 24)
+
+@function em($pxval, $base: 16) {
+  @return ($pxval / $base) * 1em;
+}
+
+
+<===> lib/functions/_radial-gradient.scss
+// This function is required and used by the background-image mixin.
+@function radial-gradient($G1,        $G2,
+                       $G3: false, $G4: false,
+                       $G5: false, $G6: false,
+                       $G7: false, $G8: false,
+                       $G9: false, $G10: false,
+                       $pos: null,
+                       $shape-size: null) {
+
+  $data: _radial-arg-parser($G1, $G2, $pos, $shape-size);
+  $G1:  nth($data, 1);
+  $G2:  nth($data, 2);
+  $pos: nth($data, 3);
+  $shape-size: nth($data, 4);
+
+  $type: radial;
+  $gradient: compact($G1, $G2, $G3, $G4, $G5, $G6, $G7, $G8, $G9, $G10);
+
+  $type-gradient: $type, $shape-size $pos, $gradient;
+  @return $type-gradient;
+}
+
+
+
+<===> lib/functions/_tint-shade.scss
+// Add percentage of white to a color
+@function tint($color, $percent){
+  @return mix(white, $color, $percent);
+}
+
+// Add percentage of black to a color
+@function shade($color, $percent){
+  @return mix(black, $color, $percent);
+}
+
+<===> lib/functions/_transition-property-name.scss
+// Return vendor-prefixed property names if appropriate
+// Example: transition-property-names((transform, color, background), moz) -> -moz-transform, color, background
+//************************************************************************//
+@function transition-property-names($props, $vendor: false) {
+	$new-props: ();
+	
+	@each $prop in $props {
+		$new-props: append($new-props, transition-property-name($prop, $vendor), comma);
+	}
+
+	@return $new-props;
+}
+
+@function transition-property-name($prop, $vendor: false) {
+	// put other properties that need to be prefixed here aswell
+	@if $vendor and $prop == transform {
+		@return unquote('-'+$vendor+'-'+$prop);
+	}
+	@else {
+		@return $prop;
+	}
+}
+<===> lib/helpers/_deprecated-webkit-gradient.scss
+// Render Deprecated Webkit Gradient - Linear || Radial
+//************************************************************************//
+@function _deprecated-webkit-gradient($type,
+                                     $deprecated-pos1, $deprecated-pos2,
+                                     $full,
+                                     $deprecated-radius1: false, $deprecated-radius2: false) {
+  $gradient-list: ();
+  $gradient: false;
+  $full-length: length($full);
+  $percentage: false;
+  $gradient-type: $type;
+
+  @for $i from 1 through $full-length {
+    $gradient: nth($full, $i);
+
+    @if length($gradient) == 2 {
+      $color-stop: color-stop(nth($gradient, 2), nth($gradient, 1));
+      $gradient-list: join($gradient-list, $color-stop, comma);
+    }
+    @else if $gradient != null {
+      @if $i == $full-length {
+        $percentage: 100%;
+      }
+      @else {
+        $percentage: ($i - 1) * (100 / ($full-length - 1)) + "%";
+      }
+      $color-stop: color-stop(unquote($percentage), $gradient);
+      $gradient-list: join($gradient-list, $color-stop, comma);
+    }
+  }
+
+  @if $type == radial {
+    $gradient: -webkit-gradient(radial, $deprecated-pos1, $deprecated-radius1, $deprecated-pos2, $deprecated-radius2, $gradient-list);
+  }
+  @else if $type == linear {
+    $gradient: -webkit-gradient(linear, $deprecated-pos1, $deprecated-pos2, $gradient-list);
+  }
+  @return $gradient;
+}
+
+<===> lib/helpers/_gradient-positions-parser.scss
+@function _gradient-positions-parser($gradient-type, $gradient-positions) {
+  @if $gradient-positions
+  and ($gradient-type == linear)
+  and (type-of($gradient-positions) != color) {
+    $gradient-positions: _linear-positions-parser($gradient-positions);
+  }
+  @else if $gradient-positions
+  and ($gradient-type == radial)
+  and (type-of($gradient-positions) != color) {
+    $gradient-positions: _radial-positions-parser($gradient-positions);
+  }
+  @return $gradient-positions;
+}
+
+<===> lib/helpers/_linear-positions-parser.scss
+@function _linear-positions-parser($pos) {
+  $type: type-of(nth($pos, 1));
+  $spec: null;
+  $degree: null;
+  $side: null;
+  $corner: null;
+  $length: length($pos);
+  // Parse Side and corner positions
+  @if ($length > 1) {
+    @if nth($pos, 1) == "to" { // Newer syntax
+      $side: nth($pos, 2);
+
+      @if $length == 2 { // eg. to top
+        // Swap for backwards compatability
+        $degree: _position-flipper(nth($pos, 2));
+      }
+      @else if $length == 3 { // eg. to top left
+        $corner: nth($pos, 3);
+      }
+    }
+    @else if $length == 2 { // Older syntax ("top left")
+      $side: _position-flipper(nth($pos, 1));
+      $corner: _position-flipper(nth($pos, 2));
+    }
+
+    @if ("#{$side} #{$corner}" == "left top") or ("#{$side} #{$corner}" == "top left") {
+      $degree: _position-flipper(#{$side}) _position-flipper(#{$corner});
+    }
+    @else if ("#{$side} #{$corner}" == "right top") or ("#{$side} #{$corner}" == "top right") {
+      $degree: _position-flipper(#{$side}) _position-flipper(#{$corner});
+    }
+    @else if ("#{$side} #{$corner}" == "right bottom") or ("#{$side} #{$corner}" == "bottom right") {
+      $degree: _position-flipper(#{$side}) _position-flipper(#{$corner});
+    }
+    @else if ("#{$side} #{$corner}" == "left bottom") or ("#{$side} #{$corner}" == "bottom left") {
+      $degree: _position-flipper(#{$side}) _position-flipper(#{$corner});
+    }
+    $spec: to $side $corner;
+  }
+  @else if $length == 1 {
+    // Swap for backwards compatability
+    @if $type == string {
+      $degree: $pos;
+      $spec: to _position-flipper($pos);
+    }
+    @else {
+      $degree: -270 - $pos; //rotate the gradient opposite from spec
+      $spec: $pos;
+    }
+  }
+  $degree: unquote($degree + ",");
+  $spec:   unquote($spec + ",");
+  @return $degree $spec;
+}
+
+@function _position-flipper($pos) {
+ @return if($pos == left, right, null)
+         if($pos == right, left, null)
+         if($pos == top, bottom, null)
+         if($pos == bottom, top, null);
+}
+
+<===> lib/helpers/_radial-arg-parser.scss
+@function _radial-arg-parser($G1, $G2, $pos, $shape-size) {
+  @each $value in $G1, $G2 {
+    $first-val: nth($value, 1);
+    $pos-type:  type-of($first-val);
+    $spec-at-index: null;
+
+    // Determine if spec was passed to mixin
+    @if type-of($value) == list {
+      $spec-at-index: if(index($value, at), index($value, at), false);
+    }
+    @if $spec-at-index {
+      @if $spec-at-index > 1 {
+        @for $i from 1 through ($spec-at-index - 1) {
+          $shape-size: $shape-size nth($value, $i);
+        }
+        @for $i from ($spec-at-index + 1) through length($value) {
+          $pos: $pos nth($value, $i);
+        }
+      }
+      @else if $spec-at-index == 1 {
+        @for $i from ($spec-at-index + 1) through length($value) {
+          $pos: $pos nth($value, $i);
+        }
+      }
+      $G1: false;
+    }
+
+    // If not spec calculate correct values
+    @else {
+      @if ($pos-type != color) or ($first-val != "transparent") {
+        @if ($pos-type == number)
+        or ($first-val == "center")
+        or ($first-val == "top")
+        or ($first-val == "right")
+        or ($first-val == "bottom")
+        or ($first-val == "left") {
+
+          $pos: $value;
+
+          @if $pos == $G1 {
+            $G1: false;
+          }
+        }
+
+        @else if
+           ($first-val == "ellipse")
+        or ($first-val == "circle")
+        or ($first-val == "closest-side")
+        or ($first-val == "closest-corner")
+        or ($first-val == "farthest-side")
+        or ($first-val == "farthest-corner")
+        or ($first-val == "contain")
+        or ($first-val == "cover") {
+
+          $shape-size: $value;
+
+          @if $value == $G1 {
+            $G1: false;
+          }
+
+          @else if $value == $G2 {
+            $G2: false;
+          }
+        }
+      }
+    }
+  }
+  @return $G1, $G2, $pos, $shape-size;
+}
+
+<===> lib/helpers/_radial-positions-parser.scss
+@function _radial-positions-parser($gradient-pos) {
+  $shape-size: nth($gradient-pos, 1);
+  $pos:        nth($gradient-pos, 2);
+  $shape-size-spec: _shape-size-stripper($shape-size);
+
+  $pre-spec: unquote(if($pos, "#{$pos}, ", null))
+             unquote(if($shape-size, "#{$shape-size},", null));
+  $pos-spec: if($pos, "at #{$pos}", null);
+
+  $spec: "#{$shape-size-spec} #{$pos-spec}";
+
+  // Add comma
+  @if ($spec != '  ') {
+    $spec: "#{$spec},"
+  }
+
+  @return $pre-spec $spec;
+}
+
+<===> lib/helpers/_render-gradients.scss
+// User for linear and radial gradients within background-image or border-image properties
+
+@function _render-gradients($gradient-positions, $gradients, $gradient-type, $vendor: false) {
+  $pre-spec: null;
+  $spec: null;
+  $vendor-gradients: null;
+  @if $gradient-type == linear {
+    @if $gradient-positions {
+      $pre-spec: nth($gradient-positions, 1);
+      $spec:     nth($gradient-positions, 2);
+    }
+  }
+  @else if $gradient-type == radial {
+    $pre-spec: nth($gradient-positions, 1);
+    $spec:     nth($gradient-positions, 2);
+  }
+
+  @if $vendor {
+    $vendor-gradients: -#{$vendor}-#{$gradient-type}-gradient(#{$pre-spec} $gradients);
+  }
+  @else if $vendor == false {
+    $vendor-gradients: "#{$gradient-type}-gradient(#{$spec} #{$gradients})";
+    $vendor-gradients: unquote($vendor-gradients);
+  }
+  @return $vendor-gradients;
+}
+
+<===> lib/helpers/_shape-size-stripper.scss
+@function _shape-size-stripper($shape-size) {
+  $shape-size-spec: null;
+  @each $value in $shape-size {
+    @if ($value == "cover") or ($value == "contain") {
+      $value: null;
+    }
+    $shape-size-spec: "#{$shape-size-spec} #{$value}";
+  }
+  @return $shape-size-spec;
+}
+
+<===> output.css
+box:hover {
+  -webkit-animation-name: scale, slide;
+  -moz-animation-name: scale, slide;
+  animation-name: scale, slide;
+  -webkit-animation-duration: 2s;
+  -moz-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-timing-function: ease;
+  -moz-animation-timing-function: ease;
+  animation-timing-function: ease;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation: scale 1s ease-in, slide 2s ease;
+  -moz-animation: scale 1s ease-in, slide 2s ease;
+  animation: scale 1s ease-in, slide 2s ease;
+}
+
+div {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  /* boo boo boo */
+  background-image: url("/images/a.png"), url("images/b.png");
+  background-image: url("/images/a.png"), url("images/b.png");
+  background-image: url("/images/a.png"), -webkit-linear-gradient( white 0, yellow 50%, transparent 50%);
+  background-image: url("/images/a.png"), linear-gradient( white 0, yellow 50%, transparent 50%);
+  background-image: -webkit-linear-gradient( rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 50%, transparent 50%), -webkit-linear-gradient( #4e7ba3, #3e6181);
+  background-image: linear-gradient( rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 50%, transparent 50%), linear-gradient( #4e7ba3, #3e6181);
+  background-image: -webkit-url("/images/a.png")-gradient( center), -webkit-url("images/b.png")-gradient( left);
+  background-image: url("/images/a.png")-gradient( center), url("images/b.png")-gradient( left);
+}
+
+<===> output-dart-sass.css
+box:hover {
+  -webkit-animation-name: scale, slide;
+  -moz-animation-name: scale, slide;
+  animation-name: scale, slide;
+  -webkit-animation-duration: 2s;
+  -moz-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-timing-function: ease;
+  -moz-animation-timing-function: ease;
+  animation-timing-function: ease;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation: scale 1s ease-in, slide 2s ease;
+  -moz-animation: scale 1s ease-in, slide 2s ease;
+  animation: scale 1s ease-in, slide 2s ease;
+}
+
+div {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  /* boo boo boo */
+  background-image: url("/images/a.png"), url("images/b.png");
+  background-image: url("/images/a.png"), url("images/b.png");
+  background-image: url("/images/a.png"), -webkit-linear-gradient(white 0, yellow 50%, transparent 50%);
+  background-image: url("/images/a.png"), linear-gradient( white 0, yellow 50%, transparent 50%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 50%, transparent 50%), -webkit-linear-gradient(#4e7ba3, #3e6181);
+  background-image: linear-gradient( rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 50%, transparent 50%), linear-gradient( #4e7ba3, #3e6181);
+  background-image: -webkit-url("/images/a.png")-gradient(center), -webkit-url("images/b.png")-gradient(left);
+  background-image: url("/images/a.png")-gradient( center), url("images/b.png")-gradient( left);
+}

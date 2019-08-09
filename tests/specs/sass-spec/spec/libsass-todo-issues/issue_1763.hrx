@@ -1,0 +1,25 @@
+<===> first.scss
+foo { bar: baz }
+
+<===> input.scss
+@import "first.css", "second.css" (max-width: 400px);
+@import "first.scss", "second.scss" (max-width: 400px);
+
+<===> second.scss
+a { b: c }
+
+<===> output.css
+@import url(first.css);
+@import "second.css" (max-width: 400px);
+@import "second.scss" (max-width: 400px);
+foo {
+  bar: baz;
+}
+
+<===> output-dart-sass.css
+@import "first.css";
+@import "second.css" (max-width: 400px);
+@import "second.scss" (max-width: 400px);
+foo {
+  bar: baz;
+}

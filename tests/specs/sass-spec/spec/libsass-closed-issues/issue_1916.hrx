@@ -1,0 +1,32 @@
+<===> input.scss
+.z-depth-1 {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.z-depth-1-half {
+  box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+}
+
+.btn {
+  @extend .z-depth-1;
+
+  &:hover {
+    @extend .z-depth-half-1;
+  }
+}
+
+<===> error
+Error: ".btn:hover" failed to @extend ".z-depth-half-1".
+       The selector ".z-depth-half-1" was not found.
+       Use "@extend .z-depth-half-1 !optional" if the extend should be able to fail.
+        on line 13 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: The target selector was not found.
+Use "@extend .z-depth-half-1 !optional" to avoid this error.
+   ,
+13 |     @extend .z-depth-half-1;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+   '
+  input.scss 13:5  root stylesheet

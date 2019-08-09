@@ -1,0 +1,40 @@
+<===> input.scss
+.foo {
+  content: #{&};
+}
+
+.bar a {
+  content: #{&};
+}
+
+.bar,
+.baz {
+  content: #{&};
+}
+
+.qux {
+  &.waldo {
+    .where & {
+      .final {
+        content: #{&};
+      }
+    }
+  }
+}
+<===> output.css
+.foo {
+  content: .foo;
+}
+
+.bar a {
+  content: .bar a;
+}
+
+.bar,
+.baz {
+  content: .bar, .baz;
+}
+
+.where .qux.waldo .final {
+  content: .where .qux.waldo .final;
+}

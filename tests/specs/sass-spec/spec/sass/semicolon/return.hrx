@@ -1,0 +1,16 @@
+<===> input.sass
+@function foo()
+  @return value;
+
+<===> error
+Error: Invalid CSS after "value": expected expression (e.g. 1px, bold), was ";"
+        on line 2 of input.sass
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: semicolons aren't allowed in the indented syntax.
+  ,
+2 |   @return value;
+  |                ^
+  '
+  input.sass 2:16  root stylesheet

@@ -1,0 +1,47 @@
+<===> input.scss
+$map: (aaa: 100, bbb: 200, ccc: 300);
+
+a {
+  b: set-nth($map, 2, ddd 220);
+  b: nth($map, 2);
+  b: length(nth($map, 2));
+  b: type-of(nth($map, 2));
+  b: nth(nth($map, 2), 1);
+  b: nth(nth($map, 2), 2);
+
+  c: set-nth($map, 2, (ddd 240));
+  c: nth($map, 2);
+  c: length(nth($map, 2));
+  c: type-of(nth($map, 2));
+  c: nth(nth($map, 2), 1);
+  c: nth(nth($map, 2), 2);
+
+  d: set-nth($map, 2, (ddd, 260));
+  d: nth($map, 2);
+  d: length(nth($map, 2));
+  d: type-of(nth($map, 2));
+  d: nth(nth($map, 2), 1);
+  d: nth(nth($map, 2), 2);
+}
+
+<===> output.css
+a {
+  b: aaa 100, ddd 220, ccc 300;
+  b: bbb 200;
+  b: 2;
+  b: list;
+  b: bbb;
+  b: 200;
+  c: aaa 100, ddd 240, ccc 300;
+  c: bbb 200;
+  c: 2;
+  c: list;
+  c: bbb;
+  c: 200;
+  d: aaa 100, ddd, 260, ccc 300;
+  d: bbb 200;
+  d: 2;
+  d: list;
+  d: bbb;
+  d: 200;
+}

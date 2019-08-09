@@ -1,0 +1,13 @@
+<===> input.scss
+@mixin foo($a, $b...) {
+  a: length($b);
+  b: nth($b, 2);
+}
+
+.foo {@include foo(1, 2, 3, 4)}
+
+<===> output.css
+.foo {
+  a: 3;
+  b: 3;
+}

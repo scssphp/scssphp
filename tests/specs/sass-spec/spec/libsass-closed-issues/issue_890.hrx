@@ -1,0 +1,11 @@
+<===> input.scss
+.foo {
+  border: {
+    right: 10px solid /*here is a comment*/;
+  }
+}
+
+<===> output.css
+.foo {
+  border-right: 10px solid;
+}

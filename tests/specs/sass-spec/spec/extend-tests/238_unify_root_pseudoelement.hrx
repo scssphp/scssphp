@@ -1,0 +1,38 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+// We assume that by default classes don't apply to the :root unless marked explicitly.
+:root .foo-1 { test: 1; }
+.bar-1 .baz-1 { @extend .foo-1; }
+
+// We know the two classes must be the same :root element so we can combine them.
+.foo-2:root .bar-2 { test: 2; }
+.baz-2:root .bang-2 { @extend .bar-2; }
+
+// This extend should not apply because the :root elements are different.
+html:root .bar-3 { test: 3; }
+xml:root .bang-3 { @extend .bar-3}
+
+// We assume that direct descendant of the :root is not the same element as a descendant.
+.foo-4:root > .bar-4 .x-4 { test: 4; }
+.baz-4:root .bang-4 .y-4 {@extend .x-4}
+
+<===> output.css
+:root .foo-1, :root .bar-1 .baz-1 {
+  test: 1;
+}
+
+.foo-2:root .bar-2, .baz-2.foo-2:root .bang-2 {
+  test: 2;
+}
+
+html:root .bar-3 {
+  test: 3;
+}
+
+.foo-4:root > .bar-4 .x-4, .baz-4.foo-4:root > .bar-4 .bang-4 .y-4 {
+  test: 4;
+}

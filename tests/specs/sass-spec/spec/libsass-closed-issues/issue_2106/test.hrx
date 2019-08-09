@@ -1,0 +1,15 @@
+<===> input.scss
+@import "../does-not-exist";
+
+<===> error
+Error: File to import not found or unreadable: ../does-not-exist.
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Can't find stylesheet to import.
+  ,
+1 | @import "../does-not-exist";
+  |         ^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:9  root stylesheet

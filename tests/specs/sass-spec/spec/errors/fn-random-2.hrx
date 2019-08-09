@@ -1,0 +1,16 @@
+<===> input.scss
+foo {
+  test: random(-4);
+}
+<===> error
+Error: $limit -4 must be greater than or equal to 1 for `random'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: $limit: Must be greater than 0, was -4.
+  ,
+2 |   test: random(-4);
+  |         ^^^^^^^^^^
+  '
+  input.scss 2:9  root stylesheet

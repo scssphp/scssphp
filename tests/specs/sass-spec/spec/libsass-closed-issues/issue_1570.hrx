@@ -1,0 +1,17 @@
+<===> input.scss
+a {
+    font: 12px/normal serif;
+}
+
+b {
+    font: normal 12px/normal serif;
+}
+
+<===> output.css
+a {
+  font: 12px/normal serif;
+}
+
+b {
+  font: normal 12px/normal serif;
+}

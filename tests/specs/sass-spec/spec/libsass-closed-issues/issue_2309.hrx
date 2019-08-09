@@ -1,0 +1,39 @@
+<===> input.scss
+$button-sizes: (
+  'xs': (
+    'line-height': 16 / 12,
+  ),
+  's': (
+    'line-height': 18 / 14,
+  ),
+  'm': (
+    'line-height': 18 / 14,
+  ),
+  'l': (
+    'line-height': 22 / 16,
+  )
+);
+
+@each $size in $button-sizes {
+  $size-metrics: nth($size, 2);
+
+  .c-button__icon {
+    min-height: map-get($size-metrics, 'line-height') * 1em;
+  }
+}
+<===> output.css
+.c-button__icon {
+  min-height: 1.3333333333em;
+}
+
+.c-button__icon {
+  min-height: 1.2857142857em;
+}
+
+.c-button__icon {
+  min-height: 1.2857142857em;
+}
+
+.c-button__icon {
+  min-height: 1.375em;
+}

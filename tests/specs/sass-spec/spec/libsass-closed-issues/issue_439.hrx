@@ -1,0 +1,18 @@
+<===> input.scss
+@mixin odd( $selector, $n) {
+  $selector: "& + " + $selector + " + " + $selector;
+  $placeholder: unique_id();
+  %#{$placeholder} { @content; }
+  #{$selector}:first-child {
+    #{$selector} { @extend %#{$placeholder}; }
+  }
+}
+
+ul > {
+  @include odd( li, 5 ) { background: #ccc;  }
+}
+
+<===> output.css
+ul > + li + li:first-child + li + li {
+  background: #ccc;
+}

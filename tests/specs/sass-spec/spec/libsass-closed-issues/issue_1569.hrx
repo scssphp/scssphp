@@ -1,0 +1,23 @@
+<===> input.scss
+$common-border: "foo";
+.nihilo & {
+  .dijitMenu {
+    border: $common-border;
+    .dijitMenuItem {
+      color: getColor('text-dark-main');
+    }
+  }
+}
+
+<===> error
+Error: Base-level rules cannot contain the parent-selector-referencing character '&'.
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Top-level selectors may not contain the parent selector "&".
+  ,
+2 | .nihilo & {
+  | ^^^^^^^^^^
+  '
+  input.scss 2:1  root stylesheet

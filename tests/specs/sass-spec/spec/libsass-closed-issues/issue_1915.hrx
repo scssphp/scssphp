@@ -1,0 +1,18 @@
+<===> input.scss
+@mixin wrapper() {
+  .wrapped {
+    @content;
+  }
+}
+
+%ext {
+  background: #000;
+}
+
+@include wrapper() {
+  @extend %ext;
+}
+<===> output.css
+.wrapped {
+  background: #000;
+}

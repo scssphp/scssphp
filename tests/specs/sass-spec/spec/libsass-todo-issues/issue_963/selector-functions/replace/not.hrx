@@ -1,0 +1,10 @@
+<===> input.scss
+.not {
+  a: selector-replace(':not(.foo)', '.foo', '.bar');
+  b: selector-replace(':not(.foo)', ':not(.foo)', '.bar');
+}
+<===> output.css
+.not {
+  a: :not(.bar);
+  b: .bar;
+}

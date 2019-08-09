@@ -1,0 +1,9 @@
+<===> input.scss
+%x#bar {a: b}
+%y, %y:first-line {@extend %x}
+a {@extend %y}
+
+<===> output.css
+a#bar, a#bar:first-line {
+  a: b;
+}

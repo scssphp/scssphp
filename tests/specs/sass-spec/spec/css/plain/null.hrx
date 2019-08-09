@@ -1,0 +1,12 @@
+<===> input.scss
+@import "plain";
+
+<===> plain.css
+a {
+  x: null;
+}
+
+<===> output.css
+a {
+  x: null;
+}

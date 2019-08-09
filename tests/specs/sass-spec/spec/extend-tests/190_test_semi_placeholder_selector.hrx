@@ -1,0 +1,11 @@
+<===> input.scss
+#context %foo, .bar .baz {color: blue}
+
+.bat {
+  @extend %foo;
+}
+
+<===> output.css
+#context .bat, .bar .baz {
+  color: blue;
+}

@@ -1,0 +1,206 @@
+<===> attribute/dash_dash/input.scss
+// Attribute selector values are allowed to be unquoted as long as they're plain
+// CSS identifiers. However, IE 11 doesn't recognize custom-property-style
+// identifiers like `--foo` as identifiers, so they should always be quoted.
+
+[class="--foo"], [class*="--foo"] {
+  x: y;
+}
+
+<===> attribute/dash_dash/output.css
+[class="--foo"], [class*="--foo"] {
+  x: y;
+}
+
+<===>
+================================================================================
+<===> attribute/modifier/unknown/options.yml
+---
+:todo:
+- libsass # sass/libsass#2886
+
+<===> attribute/modifier/unknown/input.scss
+// At time of writing, only the modifiers "i" and "s" are allowed by the CSS
+// spec. However, for forwards-compatibility with future CSS additions, any
+// single character should be allowed.
+[a=b c] {d: e}
+
+<===> attribute/modifier/unknown/output.css
+[a=b c] {
+  d: e;
+}
+
+<===>
+================================================================================
+<===> attribute/modifier/caps/input.scss
+[a=b I] {c: d}
+
+<===> attribute/modifier/caps/output.css
+[a=b I] {
+  c: d;
+}
+
+<===>
+================================================================================
+<===> attribute/modifier/after_string/input.scss
+[a="b"i] {c: d}
+
+<===> attribute/modifier/after_string/output.css
+[a=b i] {
+  c: d;
+}
+
+<===> attribute/modifier/after_string/output-libsass.css
+[a="b" i] {
+  c: d;
+}
+
+<===>
+================================================================================
+<===> reference_combinator/options.yml
+---
+:todo:
+- libsass
+
+<===> reference_combinator/input.scss
+// Reference combinators used to be supported by Sass when they were part of the
+// CSS spec, but they're no longer supported and should now produce errors.
+.foo /bar/ .baz {
+  a: b;
+}
+
+<===> reference_combinator/error
+Error: expected selector.
+  ,
+3 | .foo /bar/ .baz{
+  |      ^
+  '
+  input.scss 3:6  root stylesheet
+
+<===>
+================================================================================
+<===> slotted/input.scss
+::slotted(.a) {x: y}
+
+::slotted(.c.d) {x: y}
+.e {@extend .c}
+
+::slotted(.f) {x: y}
+::slotted(.g) {@extend .f}
+
+<===> slotted/output.css
+::slotted(.a) {
+  x: y;
+}
+
+::slotted(.c.d, .d.e) {
+  x: y;
+}
+
+::slotted(.f, ::slotted(.g)) {
+  x: y;
+}
+
+<===>
+================================================================================
+<===> error/attribute/modifier/no_operator/input.scss
+[a b] {c: d}
+
+<===> error/attribute/modifier/no_operator/error
+Error: Expected "]".
+  ,
+1 | [a b]{c: d}
+  |    ^
+  '
+  input.scss 1:4  root stylesheet
+
+<===> error/attribute/modifier/no_operator/error-libsass
+Error: invalid operator in attribute selector for a
+        on line 1:2 of input.scss
+>> [a b] {c: d}
+
+   -^
+
+<===>
+================================================================================
+<===> error/attribute/modifier/too_long/input.scss
+// Attribute modifiers must be single characters.
+[a=b cd] {e: f}
+
+<===> error/attribute/modifier/too_long/error
+Error: expected "]".
+  ,
+2 | [a=b cd]{e: f}
+  |       ^
+  '
+  input.scss 2:7  root stylesheet
+
+<===> error/attribute/modifier/too_long/error-libsass
+Error: unterminated attribute selector for a
+        on line 2:4 of input.scss
+>> [a=b cd] {e: f}
+
+   ---^
+
+<===>
+================================================================================
+<===> error/attribute/modifier/underscore/input.scss
+// Attribute modifiers must be ASCII alphabetical characters.
+[a=b _] {c: d}
+
+<===> error/attribute/modifier/underscore/error
+Error: expected "]".
+  ,
+2 | [a=b _]{c: d}
+  |      ^
+  '
+  input.scss 2:6  root stylesheet
+
+<===> error/attribute/modifier/underscore/error-libsass
+Error: unterminated attribute selector for a
+        on line 2:4 of input.scss
+>> [a=b _] {c: d}
+
+   ---^
+
+<===>
+================================================================================
+<===> error/attribute/modifier/digit/input.scss
+// Attribute modifiers must be ASCII alphabetical characters.
+[a=b 1] {c: d}
+
+<===> error/attribute/modifier/digit/error
+Error: expected "]".
+  ,
+2 | [a=b 1]{c: d}
+  |      ^
+  '
+  input.scss 2:6  root stylesheet
+
+<===> error/attribute/modifier/digit/error-libsass
+Error: unterminated attribute selector for a
+        on line 2:4 of input.scss
+>> [a=b 1] {c: d}
+
+   ---^
+
+<===>
+================================================================================
+<===> error/attribute/modifier/unicode/input.scss
+// Attribute modifiers must be ASCII alphabetical characters.
+[a=b ï] {c: d}
+
+<===> error/attribute/modifier/unicode/error
+Error: expected "]".
+  ,
+2 | [a=b ï]{c: d}
+  |      ^
+  '
+  input.scss 2:6  root stylesheet
+
+<===> error/attribute/modifier/unicode/error-libsass
+Error: unterminated attribute selector for a
+        on line 2:4 of input.scss
+>> [a=b ï] {c: d}
+
+   ---^

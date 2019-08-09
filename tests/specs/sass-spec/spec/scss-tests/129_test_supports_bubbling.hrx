@@ -1,0 +1,21 @@
+<===> input.scss
+a {
+  @supports (foo: bar) {
+    b: c;
+    @supports (baz: bang) {
+      d: e;
+    }
+  }
+}
+
+<===> output.css
+@supports (foo: bar) {
+  a {
+    b: c;
+  }
+  @supports (baz: bang) {
+    a {
+      d: e;
+    }
+  }
+}

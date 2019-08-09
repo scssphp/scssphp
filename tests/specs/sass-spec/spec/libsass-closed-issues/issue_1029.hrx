@@ -1,0 +1,31 @@
+<===> input.scss
+@for $i from 1 through 2 {
+  %shift-#{$i - 1} {
+    margin-left: $i * 1px;
+  }
+  .week-start-#{$i} {
+    @for $j from 1 through 2 {
+      .month-start-#{$j} {
+        @extend %shift-#{($j - $i - 1) % 2};
+      }
+    }
+  }
+}
+
+<===> output.css
+.week-start-1 .month-start-2, .week-start-2 .month-start-1 {
+  margin-left: 1px;
+}
+
+.week-start-1 .month-start-1, .week-start-2 .month-start-2 {
+  margin-left: 2px;
+}
+
+<===> output-dart-sass.css
+.week-start-2 .month-start-1, .week-start-1 .month-start-2 {
+  margin-left: 1px;
+}
+
+.week-start-2 .month-start-2, .week-start-1 .month-start-1 {
+  margin-left: 2px;
+}

@@ -1,0 +1,25 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2700
+
+<===> input.scss
+$input: \0_\a_\A;
+.result {
+  output: $input;
+  output: #{$input};
+  output: "[#{$input}]";
+  output: "#{$input}";
+  output: '#{$input}';
+  output: "['#{$input}']";
+}
+
+<===> output.css
+.result {
+  output: \0 _\a _\a ;
+  output: \0 _\a _\a ;
+  output: "[\\0 _\\a _\\a ]";
+  output: "\\0 _\\a _\\a ";
+  output: "\\0 _\\a _\\a ";
+  output: "['\\0 _\\a _\\a ']";
+}

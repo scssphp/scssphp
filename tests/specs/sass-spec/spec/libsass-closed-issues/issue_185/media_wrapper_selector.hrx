@@ -1,0 +1,74 @@
+<===> input.scss
+@media all {
+  .bar { content: baz; }
+
+  @media (min-width: 1337px) {
+    .foo { content: bar; }
+  }
+}
+
+@media all {
+  .bar { content: baz; }
+
+  @media (min-width: 1337px) {
+    .baz { content: foo; }
+
+    @media (max-width: 42em) {
+      .foo { content: bar; }
+    }
+  }
+}
+
+<===> output.css
+@media all {
+  .bar {
+    content: baz;
+  }
+}
+@media all and (min-width: 1337px) {
+  .foo {
+    content: bar;
+  }
+}
+@media all {
+  .bar {
+    content: baz;
+  }
+}
+@media all and (min-width: 1337px) {
+  .baz {
+    content: foo;
+  }
+}
+@media all and (min-width: 1337px) and (max-width: 42em) {
+  .foo {
+    content: bar;
+  }
+}
+
+<===> output-dart-sass.css
+@media all {
+  .bar {
+    content: baz;
+  }
+}
+@media (min-width: 1337px) {
+  .foo {
+    content: bar;
+  }
+}
+@media all {
+  .bar {
+    content: baz;
+  }
+}
+@media (min-width: 1337px) {
+  .baz {
+    content: foo;
+  }
+}
+@media (min-width: 1337px) and (max-width: 42em) {
+  .foo {
+    content: bar;
+  }
+}

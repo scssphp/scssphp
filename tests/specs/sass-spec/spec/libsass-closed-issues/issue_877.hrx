@@ -1,0 +1,91 @@
+<===> input.scss
+@function _test1() {
+  @return 'hello';
+}
+
+@function -test2() {
+  @return 'hello';
+}
+
+@function test() {
+  @return 'world';
+}
+
+@mixin _test1() {
+  mixin: true;
+}
+
+@mixin -test2() {
+  mixin: true;
+}
+
+@mixin test() {
+  mixin: true;
+}
+
+$-test1: true;
+$_test2: true;
+$test: true;
+
+.test {
+  function: function-exists('_test1');
+  function: function-exists('-test1');
+  function: function-exists('_test2');
+  function: function-exists('-test2');
+  function: function-exists('test1');
+  function: function-exists('test2');
+  function: function-exists('test');
+  mixin: mixin-exists('_test1');
+  mixin: mixin-exists('-test1');
+  mixin: mixin-exists('_test2');
+  mixin: mixin-exists('-test2');
+  mixin: mixin-exists('test1');
+  mixin: mixin-exists('test2');
+  mixin: mixin-exists('test');
+  variable: variable-exists('_test1');
+  variable: variable-exists('-test1');
+  variable: variable-exists('_test2');
+  variable: variable-exists('-test2');
+  variable: variable-exists('test1');
+  variable: variable-exists('test2');
+  variable: variable-exists('test');
+  global-variable: global-variable-exists('_test1');
+  global-variable: global-variable-exists('-test1');
+  global-variable: global-variable-exists('_test2');
+  global-variable: global-variable-exists('-test2');
+  global-variable: global-variable-exists('test1');
+  global-variable: global-variable-exists('test2');
+  global-variable: global-variable-exists('test');
+}
+
+<===> output.css
+.test {
+  function: true;
+  function: true;
+  function: true;
+  function: true;
+  function: false;
+  function: false;
+  function: true;
+  mixin: true;
+  mixin: true;
+  mixin: true;
+  mixin: true;
+  mixin: false;
+  mixin: false;
+  mixin: true;
+  variable: true;
+  variable: true;
+  variable: true;
+  variable: true;
+  variable: false;
+  variable: false;
+  variable: true;
+  global-variable: true;
+  global-variable: true;
+  global-variable: true;
+  global-variable: true;
+  global-variable: false;
+  global-variable: false;
+  global-variable: true;
+}

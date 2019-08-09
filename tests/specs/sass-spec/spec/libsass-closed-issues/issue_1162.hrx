@@ -1,0 +1,8 @@
+<===> input.scss
+div {
+  content: #{0/0} a;
+}
+<===> output.css
+div {
+  content: 0/0 a;
+}

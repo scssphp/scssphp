@@ -1,0 +1,20 @@
+<===> input.scss
+$id: inspect((a,b:c)...)
+
+<===> error
+Error: Invalid CSS after "$id: inspect((a,b": expected ")", was ":c)...)"
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected ")".
+  ,
+1 | $id: inspect((a,b:c)...)
+  |                  ^
+  '
+  input.scss 1:18  root stylesheet
+
+<===> error-libsass
+Error: Invalid CSS after "$id: inspect((a,b:": expected ")", was "c)...)"
+        on line 1 of input.scss
+  Use --trace for backtrace.

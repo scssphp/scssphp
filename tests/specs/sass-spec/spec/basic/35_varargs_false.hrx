@@ -1,0 +1,18 @@
+<===> input.scss
+@mixin foo($args...) {
+  @each $arg in $args {
+    @if $arg {
+      thing: $arg;
+    }
+  }
+}
+
+div {
+  @include foo(a, b, false);
+}
+
+<===> output.css
+div {
+  thing: a;
+  thing: b;
+}

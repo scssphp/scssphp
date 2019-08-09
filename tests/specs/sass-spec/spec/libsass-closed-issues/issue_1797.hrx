@@ -1,0 +1,40 @@
+<===> input.scss
+%not {
+  color: red;
+}
+.not {
+  @extend %not;
+}
+div:has(%not) {
+  color: black;
+}
+
+bar {
+  span:not(%not) {
+    color: black;
+  }
+  span:not(&.foo) {
+    color: black;
+  }
+  span:not(&%not) {
+    color: black;
+  }
+}
+<===> output.css
+.not {
+  color: red;
+}
+
+div:has(.not) {
+  color: black;
+}
+
+bar span:not(.not) {
+  color: black;
+}
+span:not(bar.foo) {
+  color: black;
+}
+span:not(bar.not) {
+  color: black;
+}

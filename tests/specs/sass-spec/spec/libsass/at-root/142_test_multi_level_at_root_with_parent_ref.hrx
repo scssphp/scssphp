@@ -1,0 +1,15 @@
+<===> input.scss
+.foo {
+  @at-root & {
+    .bar {
+      @at-root & {
+        a: b;
+      }
+    }
+  }
+}
+
+<===> output.css
+.foo .bar {
+  a: b;
+}

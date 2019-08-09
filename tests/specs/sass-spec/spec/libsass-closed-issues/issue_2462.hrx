@@ -1,0 +1,9 @@
+<===> input.scss
+b {
+    color: lighten(Crimson, 10%);
+}
+
+<===> output.css
+b {
+  color: #ed365b;
+}

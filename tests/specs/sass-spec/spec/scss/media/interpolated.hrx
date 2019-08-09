@@ -1,0 +1,35 @@
+<===> input.scss
+// You can interpolate into a media type.
+@media bar#{12} {x {y: z}}
+
+// Media queries should be reparsed after interpolation is resolved.
+@media #{"only screen"} and
+       #{"(min-width: 700px)"} and
+       #{"(max-width: "+"1920px)"} {
+  x {y: z}
+}
+
+// Queries don't have to fully parse before interpolation is resolved.
+@media scr#{"een, pri"}nt a#{"nd (max-width: 300px)"} {x {y: z}}
+
+
+
+
+<===> output.css
+@media bar12 {
+  x {
+    y: z;
+  }
+}
+
+@media only screen and (min-width: 700px) and (max-width: 1920px) {
+  x {
+    y: z;
+  }
+}
+
+@media screen, print and (max-width: 300px) {
+  x {
+    y: z;
+  }
+}

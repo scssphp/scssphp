@@ -1,0 +1,33 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+.question-mark {
+  one-digit-question-only: U+?;
+  four-digit-question-only: U+????;
+  six-digit-question-only: U+??????;
+  two-digit-half-question: U+A?;
+  six-digit-half-question: U+123???;
+
+  // These are valid CSS, and should parse as a Unicode range followed by an
+  // identifier.
+  followed-by-ident: U+A?BCDE;
+  followed-by-minus: U+A?-BCDE;
+
+  // This should parse as (U+A?) - (1234).
+  followed-by-number: U+A?-1234;
+}
+
+<===> output.css
+.question-mark {
+  one-digit-question-only: U+?;
+  four-digit-question-only: U+????;
+  six-digit-question-only: U+??????;
+  two-digit-half-question: U+A?;
+  six-digit-half-question: U+123???;
+  followed-by-ident: U+A? BCDE;
+  followed-by-minus: U+A? -BCDE;
+  followed-by-number: U+A?-1234;
+}

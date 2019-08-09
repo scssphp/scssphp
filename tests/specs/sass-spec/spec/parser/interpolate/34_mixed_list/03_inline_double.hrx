@@ -1,0 +1,17 @@
+<===> input.scss
+.result {
+  output: #{#{"["',foo   ,   '"]"    "bar"}};
+  output: #{"[#{"["',foo   ,   '"]"    "bar"}]"};
+  output: #{"#{"["',foo   ,   '"]"    "bar"}"};
+  output: #{'#{"["',foo   ,   '"]"    "bar"}'};
+  output: #{"['#{"["',foo   ,   '"]"    "bar"}']"};
+}
+
+<===> output.css
+.result {
+  output: [ ,foo   ,    ] bar;
+  output: [[ ,foo   ,    ] bar];
+  output: [ ,foo   ,    ] bar;
+  output: [ ,foo   ,    ] bar;
+  output: ['[ ,foo   ,    ] bar'];
+}

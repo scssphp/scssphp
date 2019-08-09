@@ -1,0 +1,26 @@
+<===> input.scss
+foo
+bar {
+  baz
+  bang {a: b}
+
+  bip bop {c: d}}
+
+<===> output.css
+foo
+bar baz
+bang {
+  a: b;
+}
+foo
+bar bip bop {
+  c: d;
+}
+
+<===> output-dart-sass.css
+foo bar baz bang {
+  a: b;
+}
+foo bar bip bop {
+  c: d;
+}

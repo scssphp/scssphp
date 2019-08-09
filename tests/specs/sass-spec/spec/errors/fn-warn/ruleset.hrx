@@ -1,0 +1,17 @@
+<===> input.scss
+a {
+  @warn "warn";
+  foo: bar;
+}
+<===> output.css
+a {
+  foo: bar;
+}
+
+<===> warning
+WARNING: warn
+         on line 2 of input.scss
+
+<===> warning-dart-sass
+WARNING: warn
+    input.scss 2:3  root stylesheet

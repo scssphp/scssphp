@@ -1,0 +1,23 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> _plain.css
+plain {partial: true}
+
+<===> input.scss
+@import "plain";
+
+<===> plain.css
+plain {partial: false}
+
+<===> error
+Error: It's not clear which file to import. Found:
+  _plain.css
+  plain.css
+  ,
+1 | @import "plain";
+  |         ^^^^^^^
+  '
+  input.scss 1:9  root stylesheet

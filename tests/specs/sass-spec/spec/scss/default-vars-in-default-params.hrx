@@ -1,0 +1,16 @@
+<===> input.scss
+$y: why;
+
+@mixin foo($x, $y: $y) {
+  stuff: $x $y;
+}
+
+div {
+  why: $y;
+  @include foo(ecks);
+}
+<===> output.css
+div {
+  why: why;
+  stuff: ecks why;
+}

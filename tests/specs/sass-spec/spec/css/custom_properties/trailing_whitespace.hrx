@@ -1,0 +1,34 @@
+<===> input.scss
+.trailing-whitespace {
+  --space: value ;
+  --tab: value	;
+  --newline: value
+;
+  --before-closing-brace: value
+}
+
+<===> output.css
+.trailing-whitespace {
+  --space: value ;
+  --tab: value ;
+  --newline: value ;
+  --before-closing-brace: value ;
+}
+
+<===> output-dart-sass.css
+.trailing-whitespace {
+  --space: value ;
+  --tab: value	;
+  --newline: value ;
+  --before-closing-brace: value ;
+}
+
+<===> output-libsass.css
+.trailing-whitespace {
+  --space: value ;
+  --tab: value	;
+  --newline: value
+;
+  --before-closing-brace: value
+;
+}

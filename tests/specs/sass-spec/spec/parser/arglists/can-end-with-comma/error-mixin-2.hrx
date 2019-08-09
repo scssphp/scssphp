@@ -1,0 +1,17 @@
+<===> input.scss
+// double comma at end of arglist
+@mixin double-comma-error($a,$b,,) {
+}
+
+<===> error
+Error: Invalid CSS after "...ma-error($a,$b,": expected variable (e.g. $foo), was ",) {"
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected ")".
+  ,
+2 | @mixin double-comma-error($a,$b,,) {
+  |                                 ^
+  '
+  input.scss 2:33  root stylesheet

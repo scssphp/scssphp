@@ -1,0 +1,11 @@
+<===> input.scss
+/* precision: 0 */
+$foo: 123px;
+foo {
+  bar: $foo;
+}
+<===> output.css
+/* precision: 0 */
+foo {
+  bar: 123px;
+}

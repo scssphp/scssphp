@@ -1,0 +1,17 @@
+<===> input.scss
+@debug(selector-unify("foo", null));
+
+<===> error
+Error: $selector2: null is not a valid selector: it must be a string,
+       a list of strings, or a list of lists of strings for `selector-unify'
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: $selector2: null is not a valid selector: it must be a string,
+a list of strings, or a list of lists of strings.
+  ,
+1 | @debug(selector-unify("foo", null));
+  |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:8  root stylesheet

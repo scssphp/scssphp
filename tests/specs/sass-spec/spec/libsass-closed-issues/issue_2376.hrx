@@ -1,0 +1,14 @@
+<===> input.scss
+.test {
+	background:url(//img12.360buyimg.com/..);
+	.a{
+		height: 100px;
+	}
+}
+<===> output.css
+.test {
+  background: url(//img12.360buyimg.com/..);
+}
+.test .a {
+  height: 100px;
+}

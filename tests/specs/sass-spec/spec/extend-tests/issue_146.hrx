@@ -1,0 +1,18 @@
+<===> input.scss
+%btn-style-default {
+  background: green;
+  &:hover{
+    background: black;
+  }
+}
+
+button {
+  @extend %btn-style-default;
+}
+<===> output.css
+button {
+  background: green;
+}
+button:hover {
+  background: black;
+}

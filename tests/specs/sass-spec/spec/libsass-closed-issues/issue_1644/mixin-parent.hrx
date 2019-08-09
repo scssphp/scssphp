@@ -1,0 +1,27 @@
+<===> input.scss
+@mixin parent {
+  @content;
+}
+
+@include parent() {
+  body.immobile & {
+    margin-bottom: 0;
+  }
+}
+
+<===> error
+Error: Base-level rules cannot contain the parent-selector-referencing character '&'.
+        on line 6 of input.scss, in `@content'
+        from line 2 of input.scss, in `parent'
+        from line 5 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Top-level selectors may not contain the parent selector "&".
+  ,
+6 |   body.immobile & {
+  |   ^^^^^^^^^^^^^^^^
+  '
+  input.scss 6:3  @content
+  input.scss 2:3  parent()
+  input.scss 5:1  root stylesheet

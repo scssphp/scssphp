@@ -1,0 +1,11 @@
+<===> input.scss
+a, b {
+    &:not(c) {
+        d: e;
+    }
+}
+
+<===> output.css
+a:not(c), b:not(c) {
+  d: e;
+}

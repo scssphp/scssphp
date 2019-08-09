@@ -1,0 +1,17 @@
+<===> input.scss
+a:nth-child() {
+  color: yellowgreen;
+}
+
+<===> error
+Error: Invalid CSS after "a:nth-child(": expected An+B expression, was ")"
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Expected "n".
+  ,
+1 | a:nth-child(){
+  |             ^
+  '
+  input.scss 1:13  root stylesheet

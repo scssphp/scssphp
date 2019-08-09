@@ -1,0 +1,13 @@
+<===> input.scss
+@supports ((foo: bar) or (foo: bar) or (foo: bar)) and (foo: bar) {
+  div {
+    bar: baz;
+  }
+}
+
+<===> output.css
+@supports ((foo: bar) or (foo: bar) or (foo: bar)) and (foo: bar) {
+  div {
+    bar: baz;
+  }
+}

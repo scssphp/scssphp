@@ -1,0 +1,21 @@
+<===> input.scss
+.media-object-section:last-child:not(:nth-child(2)) {
+  color: blue;
+}
+
+%orbit-control {
+  color: red;
+}
+
+.orbit-previous {
+  @extend %orbit-control;
+}
+
+<===> output.css
+.media-object-section:last-child:not(:nth-child(2)) {
+  color: blue;
+}
+
+.orbit-previous {
+  color: red;
+}

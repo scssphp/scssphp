@@ -1,0 +1,18 @@
+<===> foo.scss
+.test-hello {
+  color: red;
+}
+
+.test-world {
+  @extend .test-hello;
+}
+
+<===> input.scss
+.theme {
+  @import "foo.scss";
+}
+
+<===> output.css
+.theme .test-hello, .theme .test-world {
+  color: red;
+}

@@ -1,0 +1,10 @@
+<===> input.scss
+@customAtRule;
+test {
+  content: bar
+}
+<===> output.css
+@customAtRule;
+test {
+  content: bar;
+}

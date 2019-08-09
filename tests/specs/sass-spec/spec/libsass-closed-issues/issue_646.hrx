@@ -1,0 +1,14 @@
+<===> input.scss
+@function foo() {
+  /* $bar: 1; */
+ @return true;
+}
+
+foo {
+  foo: foo();
+}
+
+<===> output.css
+foo {
+  foo: true;
+}

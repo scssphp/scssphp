@@ -1,0 +1,113 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2726
+:ignore_for:
+
+<===> input.scss
+no-alpha {
+  calc-1: hsl(calc(1) 2% 3%);
+  calc-2: hsl(1 calc(2%) 3%);
+  calc-3: hsl(1 2% calc(3%));
+
+  var-1: hsl(var(--foo) 2% 3%);
+  var-2: hsl(1 var(--foo) 3%);
+  var-3: hsl(1 2% var(--foo));
+
+  env-1: hsl(env(--foo) 2% 3%);
+  env-2: hsl(1 env(--foo) 3%);
+  env-3: hsl(1 2% env(--foo));
+
+  min-1: hsl(min(1) 2% 3%);
+  min-2: hsl(1 min(2%) 3%);
+  min-3: hsl(1 2% min(3%));
+
+  max-1: hsl(max(1) 2% 3%);
+  max-2: hsl(1 max(2%) 3%);
+  max-3: hsl(1 2% max(3%));
+
+  // var() is substituted before parsing, so it may contain multiple arguments.
+  multi-argument-var-1-of-2: hsl(var(--foo) 50%);
+  multi-argument-var-2-of-2: hsl(0 var(--foo));
+  multi-argument-var-1-of-1: hsl(var(--foo));
+}
+
+alpha {
+  calc-1: hsl(calc(1) 2% 3% / 0.4);
+  calc-2: hsl(1 calc(2%) 3% / 0.4);
+  calc-3: hsl(1 2% calc(3%) / 0.4);
+  calc-4: hsl(1 2% 3% / calc(0.4));
+
+  var-1: hsl(var(--foo) 2% 3% / 0.4);
+  var-2: hsl(1 var(--foo) 3% / 0.4);
+  var-3: hsl(1 2% var(--foo) / 0.4);
+  var-4: hsl(1 2% 3% / var(--foo));
+
+  env-1: hsl(env(--foo) 2% 3% / 0.4);
+  env-2: hsl(1 env(--foo) 3% / 0.4);
+  env-3: hsl(1 2% env(--foo) / 0.4);
+  env-4: hsl(1 2% 3% / env(--foo));
+
+  min-1: hsl(min(1) 2% 3% / 0.4);
+  min-2: hsl(1 min(2%) 3% / 0.4);
+  min-3: hsl(1 2% min(3%) / 0.4);
+  min-4: hsl(1 2% 3% / min(0.4));
+
+  max-1: hsl(max(1) 2% 3% / 0.4);
+  max-2: hsl(1 max(2%) 3% / 0.4);
+  max-3: hsl(1 2% max(3%) / 0.4);
+  max-4: hsl(1 2% 3% / max(0.4));
+
+  // var() is substituted before parsing, so it may contain multiple arguments.
+  multi-argument-var-1-of-2: hsl(var(--foo) 50% / 0.4);
+  multi-argument-var-2-of-2: hsl(0 var(--foo) / 0.4);
+  multi-argument-var-1-of-1: hsl(var(--foo) / 0.4);
+}
+
+<===> output.css
+no-alpha {
+  calc-1: hsl(calc(1), 2%, 3%);
+  calc-2: hsl(1, calc(2%), 3%);
+  calc-3: hsl(1, 2%, calc(3%));
+  var-1: hsl(var(--foo), 2%, 3%);
+  var-2: hsl(1, var(--foo), 3%);
+  var-3: hsl(1, 2%, var(--foo));
+  env-1: hsl(env(--foo), 2%, 3%);
+  env-2: hsl(1, env(--foo), 3%);
+  env-3: hsl(1, 2%, env(--foo));
+  min-1: hsl(min(1), 2%, 3%);
+  min-2: hsl(1, min(2%), 3%);
+  min-3: hsl(1, 2%, min(3%));
+  max-1: hsl(max(1), 2%, 3%);
+  max-2: hsl(1, max(2%), 3%);
+  max-3: hsl(1, 2%, max(3%));
+  multi-argument-var-1-of-2: hsl(var(--foo) 50%);
+  multi-argument-var-2-of-2: hsl(0 var(--foo));
+  multi-argument-var-1-of-1: hsl(var(--foo));
+}
+
+alpha {
+  calc-1: hsl(calc(1), 2%, 3%, 0.4);
+  calc-2: hsl(1, calc(2%), 3%, 0.4);
+  calc-3: hsl(1 2% calc(3%)/0.4);
+  calc-4: hsl(1 2% 3%/calc(0.4));
+  var-1: hsl(var(--foo), 2%, 3%, 0.4);
+  var-2: hsl(1, var(--foo), 3%, 0.4);
+  var-3: hsl(1 2% var(--foo)/0.4);
+  var-4: hsl(1 2% 3%/var(--foo));
+  env-1: hsl(env(--foo), 2%, 3%, 0.4);
+  env-2: hsl(1, env(--foo), 3%, 0.4);
+  env-3: hsl(1 2% env(--foo)/0.4);
+  env-4: hsl(1 2% 3%/env(--foo));
+  min-1: hsl(min(1), 2%, 3%, 0.4);
+  min-2: hsl(1, min(2%), 3%, 0.4);
+  min-3: hsl(1 2% min(3%)/0.4);
+  min-4: hsl(1 2% 3%/min(0.4));
+  max-1: hsl(max(1), 2%, 3%, 0.4);
+  max-2: hsl(1, max(2%), 3%, 0.4);
+  max-3: hsl(1 2% max(3%)/0.4);
+  max-4: hsl(1 2% 3%/max(0.4));
+  multi-argument-var-1-of-2: hsl(var(--foo) 50%/0.4);
+  multi-argument-var-2-of-2: hsl(0 var(--foo)/0.4);
+  multi-argument-var-1-of-1: hsl(var(--foo)/0.4);
+}

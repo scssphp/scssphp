@@ -1,0 +1,20 @@
+<===> input.scss
+.foo {color: blue}
+.bar {color: red}
+.baz {
+  @extend .foo;
+  color: green;
+}
+
+<===> output.css
+.foo, .baz {
+  color: blue;
+}
+
+.bar {
+  color: red;
+}
+
+.baz {
+  color: green;
+}

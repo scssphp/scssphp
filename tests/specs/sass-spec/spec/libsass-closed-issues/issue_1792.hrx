@@ -1,0 +1,16 @@
+<===> input.scss
+test {
+  test1: (3px*4in) / 1in;
+  test2: ((1px*2in) + (3px*4in)) / 1in;
+}
+<===> output.css
+test {
+  test1: 12px;
+  test2: 14px;
+}
+
+<===> output-dart-sass.css
+test {
+  test1: 0.125in;
+  test2: 0.1458333333in;
+}

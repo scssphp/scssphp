@@ -1,0 +1,31 @@
+<===> input.scss
+$values: ();
+
+foo {
+    $duplicates: 0;
+    $num: random();
+    $is-number: type-of($num) == number;
+    $is-within-range: $num >= 0 and $num < 1;
+    $values: append($values, $num);
+
+    @for $i from 1 through 1000 {
+      $num: random();
+      $is-number: $is-number and type-of($num) == number;
+      $is-within-range: $is-within-range and $num >= 0 and $num < 1;
+      @if (index($values, $num) != null) { $duplicates: $duplicates + 1; }
+      $values: append($values, $num);
+    }
+
+    is-defined: $num != "random()";
+    is-number: $is-number;
+    is-within-range: $is-within-range;
+    is-random: $duplicates < 25;
+}
+
+<===> output.css
+foo {
+  is-defined: true;
+  is-number: true;
+  is-within-range: true;
+  is-random: true;
+}

@@ -1,0 +1,21 @@
+<===> input.scss
+div {
+  a {
+    /**
+     * a
+     * multiline
+     * comment
+     */
+    top: 10px;
+  }
+}
+
+<===> output.css
+div a {
+  /**
+   * a
+   * multiline
+   * comment
+   */
+  top: 10px;
+}

@@ -1,0 +1,23 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2700
+
+<===> input.scss
+$input: \1\2\3\4\5\6\7\8\9;
+.result {
+  output: #{#{$input}};
+  output: #{"[#{$input}]"};
+  output: #{"#{$input}"};
+  output: #{'#{$input}'};
+  output: #{"['#{$input}']"};
+}
+
+<===> output.css
+.result {
+  output: \1 \2 \3 \4 \5 \6 \7 \8 \9 ;
+  output: [\1 \2 \3 \4 \5 \6 \7 \8 \9 ];
+  output: \1 \2 \3 \4 \5 \6 \7 \8 \9 ;
+  output: \1 \2 \3 \4 \5 \6 \7 \8 \9 ;
+  output: ['\1 \2 \3 \4 \5 \6 \7 \8 \9 '];
+}

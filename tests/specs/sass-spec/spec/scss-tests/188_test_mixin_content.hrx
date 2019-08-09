@@ -1,0 +1,25 @@
+<===> input.scss
+$color: blue;
+@mixin context($class, $color: red) {
+  .#{$class} {
+    background-color: $color;
+    @content;
+    border-color: $color;
+  }
+}
+@include context(parent) {
+  @include context(child, $color: yellow) {
+    color: $color;
+  }
+}
+
+<===> output.css
+.parent {
+  background-color: red;
+  border-color: red;
+}
+.parent .child {
+  background-color: yellow;
+  color: blue;
+  border-color: yellow;
+}

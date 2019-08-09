@@ -1,0 +1,23 @@
+<===> input.scss
+foo {
+  test: scale-color(red, $red: 0.5, $hue: 0.2);
+}
+<===> error
+Error: Expected $red to have a unit of % but got 0.5 for `scale-color'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: $red: Expected 0.5 to have unit "%".
+  ,
+2 |   test: scale-color(red, $red: 0.5, $hue: 0.2);
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 2:9  root stylesheet
+
+<===> error-libsass
+Error: Cannot specify HSL and RGB values for a color at the same time for `scale-color'
+        on line 2:9 of input.scss, in function `scale-color`
+        from line 2:9 of input.scss
+>>   test: scale-color(red, $red: 0.5, $hue: 0.2);
+   --------^

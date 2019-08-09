@@ -1,0 +1,28 @@
+<===> input.scss
+div {
+  a: (false and "hey");
+  b: ("hey" and "ho");
+  b: ("hey" or "ho");
+  a: false and "hey";
+  b: "hey" and "ho";
+  b: unquote("hey") or "ho";
+}
+<===> output.css
+div {
+  a: false;
+  b: "ho";
+  b: "hey";
+  a: false and "hey";
+  b: "hey" and "ho";
+  b: hey;
+}
+
+<===> output-dart-sass.css
+div {
+  a: false;
+  b: "ho";
+  b: "hey";
+  a: false;
+  b: "ho";
+  b: hey;
+}

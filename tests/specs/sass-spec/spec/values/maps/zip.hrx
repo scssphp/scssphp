@@ -1,0 +1,74 @@
+<===> input.scss
+$map1: (aaa: 100, bbb: 200, ccc: 300);
+$map2: (ddd: 400, eee: 500, fff: 600);
+
+a {
+  $new-list: zip($map1, $map2);
+  b: $new-list;
+  b: length($new-list);
+  b: type-of($new-list);
+  b: nth($new-list, 1);
+  b: length(nth($new-list, 1));
+  b: nth(nth($new-list, 1), 1);
+  b: nth(nth($new-list, 1), 2);
+  b: nth($new-list, 2);
+  b: length(nth($new-list, 2));
+  b: nth(nth($new-list, 2), 1);
+  b: nth(nth($new-list, 2), 2);
+  b: nth($new-list, 3);
+  b: length(nth($new-list, 3));
+  b: nth(nth($new-list, 3), 1);
+  b: nth(nth($new-list, 3), 2);
+
+
+  $new-list: zip($map2, $map1);
+  c: $new-list;
+  c: length($new-list);
+  c: type-of($new-list);
+  c: nth($new-list, 1);
+  c: length(nth($new-list, 1));
+  c: nth(nth($new-list, 1), 1);
+  c: nth(nth($new-list, 1), 2);
+  c: nth($new-list, 2);
+  c: length(nth($new-list, 2));
+  c: nth(nth($new-list, 2), 1);
+  c: nth(nth($new-list, 2), 2);
+  c: nth($new-list, 3);
+  c: length(nth($new-list, 3));
+  c: nth(nth($new-list, 3), 1);
+  c: nth(nth($new-list, 3), 2);
+}
+
+<===> output.css
+a {
+  b: aaa 100 ddd 400, bbb 200 eee 500, ccc 300 fff 600;
+  b: 3;
+  b: list;
+  b: aaa 100 ddd 400;
+  b: 2;
+  b: aaa 100;
+  b: ddd 400;
+  b: bbb 200 eee 500;
+  b: 2;
+  b: bbb 200;
+  b: eee 500;
+  b: ccc 300 fff 600;
+  b: 2;
+  b: ccc 300;
+  b: fff 600;
+  c: ddd 400 aaa 100, eee 500 bbb 200, fff 600 ccc 300;
+  c: 3;
+  c: list;
+  c: ddd 400 aaa 100;
+  c: 2;
+  c: ddd 400;
+  c: aaa 100;
+  c: eee 500 bbb 200;
+  c: 2;
+  c: eee 500;
+  c: bbb 200;
+  c: fff 600 ccc 300;
+  c: 2;
+  c: fff 600;
+  c: ccc 300;
+}

@@ -1,0 +1,8 @@
+<===> input.scss
+div:lang(nb) {
+  color: red;
+}
+<===> output.css
+div:lang(nb) {
+  color: red;
+}

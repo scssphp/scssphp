@@ -1,0 +1,25 @@
+<===> input.scss
+.exclamation {
+  // `!` is technically not allowed at the top-level of a custom property, but
+  // that's only because `!important` is filtered out before the custom property
+  // is parsed by the CSS parser. As far as Sass is concerned, it's fine.
+  --important: value !important;
+
+  // We even allow constructions like these for forwards-compatibility with
+  // additional flags or syntax CSS might add.
+  --multiple: !important !important;
+  --other-word: !something;
+  --in-identifier: foo!bar;
+  --just-exclam: !;
+  --just-exclams: !!!!!!!;
+}
+
+<===> output.css
+.exclamation {
+  --important: value !important;
+  --multiple: !important !important;
+  --other-word: !something;
+  --in-identifier: foo!bar;
+  --just-exclam: !;
+  --just-exclams: !!!!!!!;
+}

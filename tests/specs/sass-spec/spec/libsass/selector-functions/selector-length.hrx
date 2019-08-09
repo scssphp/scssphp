@@ -1,0 +1,12 @@
+<===> input.scss
+foo.bar.baz asd.qwe xyz, second {
+  length: length(&);
+  length: length(nth(&, 1));
+  length: length(nth(nth(&, 1), 1));
+}
+<===> output.css
+foo.bar.baz asd.qwe xyz, second {
+  length: 2;
+  length: 3;
+  length: 1;
+}

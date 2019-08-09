@@ -1,0 +1,50 @@
+<===> input.scss
+div.colors {
+  background: grayscale(red);
+  background: saturate(red);
+  background: invert(red);
+  background: alpha(red);
+  color: grayscale(#369);
+  color: saturate(#369);
+  color: saturate(#369, 20%);
+  color: invert(#369);
+  color: alpha(#369);
+}
+
+div.numbers {
+  filter: grayscale(30%);
+  filter: saturate(30%);
+  filter: invert(30%);
+  -webkit-filter: grayscale(0.3);
+  -webkit-filter: saturate(0.3);
+  -webkit-filter: invert(0.3);
+}
+<===> error-dart-sass
+Error: $number: red is not a number.
+  ,
+3 |   background: saturate(red);
+  |               ^^^^^^^^^^^^^
+  '
+  input.scss 3:15  root stylesheet
+
+<===> output.css
+div.colors {
+  background: gray;
+  background: saturate(red);
+  background: cyan;
+  background: 1;
+  color: #666666;
+  color: saturate(#369);
+  color: #1f66ad;
+  color: #cc9966;
+  color: 1;
+}
+
+div.numbers {
+  filter: grayscale(30%);
+  filter: saturate(30%);
+  filter: invert(30%);
+  -webkit-filter: grayscale(0.3);
+  -webkit-filter: saturate(0.3);
+  -webkit-filter: invert(0.3);
+}

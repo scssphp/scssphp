@@ -1,0 +1,9 @@
+<===> input.scss
+$var: 2 !default;
+
+foo {a: $var}
+
+<===> output.css
+foo {
+  a: 2;
+}

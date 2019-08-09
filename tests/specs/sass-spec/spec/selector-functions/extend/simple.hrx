@@ -1,0 +1,19 @@
+<===> input.scss
+.simple {
+  a: selector-extend(".a .b", ".b", ".foo .bar");
+  b: selector-extend('.foo .x', '.x', '.a .bar');
+  c: selector-extend('.foo .x, .x.bar', '.x', '.bang');
+  d: selector-extend('.y .x', '.x, .y', '.foo');
+  e: selector-extend('.foo .x', '.x', '.bar, .bang');
+  f: selector-extend('.foo.x', '.x', '.foo');
+}
+
+<===> output.css
+.simple {
+  a: .a .b, .a .foo .bar, .foo .a .bar;
+  b: .foo .x, .foo .a .bar, .a .foo .bar;
+  c: .foo .x, .foo .bang, .x.bar, .bar.bang;
+  d: .y .x, .foo .x, .y .foo, .foo .foo;
+  e: .foo .x, .foo .bar, .foo .bang;
+  f: .foo.x, .foo;
+}

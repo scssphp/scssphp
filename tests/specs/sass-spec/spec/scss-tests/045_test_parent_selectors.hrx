@@ -1,0 +1,12 @@
+<===> input.scss
+foo {
+  &:hover {a: b}
+  bar &.baz {c: d}}
+
+<===> output.css
+foo:hover {
+  a: b;
+}
+bar foo.baz {
+  c: d;
+}

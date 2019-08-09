@@ -1,0 +1,12 @@
+<===> input.scss
+foo {
+  $var: 2;
+  $another-var: 4;
+  a: $var;
+  b: $var + $another-var;}
+
+<===> output.css
+foo {
+  a: 2;
+  b: 6;
+}

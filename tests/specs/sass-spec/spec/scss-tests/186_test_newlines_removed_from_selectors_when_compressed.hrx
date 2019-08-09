@@ -1,0 +1,19 @@
+<===> input.scss
+a
+, b {
+  z & {
+    display: block;
+  }
+}
+
+<===> output.css
+z a
+, z b {
+  display: block;
+}
+
+<===> output-dart-sass.css
+z a,
+z b {
+  display: block;
+}

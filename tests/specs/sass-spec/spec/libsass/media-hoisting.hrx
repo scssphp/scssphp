@@ -1,0 +1,60 @@
+<===> input.scss
+@media screen {
+  a {
+    color: black;
+    height: 8px;
+  }
+}
+
+a {
+  color: red;
+  @media screen {
+    color: blue;
+    height: 10px;
+  }
+}
+
+a {
+  color: beige;
+  b {
+    color: teal;
+    @media screen {
+      color: orange;
+      c {
+        height: 12px;
+      }
+    }
+  }
+}
+
+<===> output.css
+@media screen {
+  a {
+    color: black;
+    height: 8px;
+  }
+}
+a {
+  color: red;
+}
+@media screen {
+  a {
+    color: blue;
+    height: 10px;
+  }
+}
+
+a {
+  color: beige;
+}
+a b {
+  color: teal;
+}
+@media screen {
+  a b {
+    color: orange;
+  }
+  a b c {
+    height: 12px;
+  }
+}

@@ -1,0 +1,15 @@
+<===> input.scss
+foo {
+  foo: percentage(.5);
+  foo: percentage(1);
+  foo: percentage(25px / 100px);
+  foo: percentage($number: 0.5);
+}
+
+<===> output.css
+foo {
+  foo: 50%;
+  foo: 100%;
+  foo: 25%;
+  foo: 50%;
+}

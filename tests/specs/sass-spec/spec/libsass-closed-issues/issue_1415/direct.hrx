@@ -1,0 +1,8 @@
+<===> input.scss
+@if & {
+  foo {
+    foo: bar;
+  }
+}
+
+<===> output.css

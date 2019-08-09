@@ -1,0 +1,41 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+opaque-to {
+  opaque: hsl(#123, 1);
+  partial: hsl(#123, 0.5);
+  transparent: hsl(#123, 0);
+}
+
+partial-to {
+  $color: hsl(0, 0, 255, 0.3);
+  opaque: hsl($color, 1);
+  partial: hsl($color, 0.5);
+  transparent: hsl($color, 0);
+}
+
+transparent-to {
+  opaque: hsl(transparent, 1);
+  partial: hsl(transparent, 0.5);
+  transparent: hsl(transparent, 0);
+}
+
+clamped {
+  opaque: hsl(#123, 1.1);
+  transparent: hsl(#123, -0.1);
+}
+
+named {
+  x: hsl($color: #123, $alpha: 0.5);
+}
+
+<===> error
+Error: Missing argument $lightness.
+  ,
+2 |   opaque: hsl(#123, 1);
+  |           ^^^^^^^^^^^^
+  '
+  input.scss 2:11  root stylesheet

@@ -1,0 +1,16 @@
+<===> input.scss
+$key: 'bar';
+.test11#{'\@#{$key}'} { content: '1.1'; }
+
+<===> error
+Error: Invalid CSS after ".test11": expected selector, was "@bar"
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected selector.
+  ,
+2 | .test11@bar{ content: '1.1'; }
+  |        ^
+  '
+  input.scss 2:8  root stylesheet

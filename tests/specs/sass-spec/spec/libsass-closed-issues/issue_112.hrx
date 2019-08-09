@@ -1,0 +1,18 @@
+<===> input.scss
+@mixin media($var1, $var2) {
+  @media screen and ($var1: $var2) {
+    @content;
+  }
+}
+
+@include media(max-device-width, 500px) {
+  foo {
+    bar: "works";
+  }
+}
+<===> output.css
+@media screen and (max-device-width: 500px) {
+  foo {
+    bar: "works";
+  }
+}

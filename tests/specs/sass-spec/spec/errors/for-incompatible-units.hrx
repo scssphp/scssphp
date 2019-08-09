@@ -1,0 +1,20 @@
+<===> input.scss
+@for $i from 100% through 42px {}
+<===> error
+Error: Incompatible units: 'px' and '%'.
+        on line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Incompatible units % and px.
+  ,
+1 | @for $i from 100% through 42px {}
+  |              ^^^^
+  '
+  input.scss 1:14  root stylesheet
+
+<===> error-libsass
+Error: Incompatible units: '%' and 'px'.
+        on line 1:14 of input.scss
+>> @for $i from 100% through 42px {}
+   -------------^

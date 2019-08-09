@@ -1,0 +1,26 @@
+<===> input.scss
+.a >
+.b
++ x {a: b}
+.c
+> .d +
+y {@extend x}
+
+<===> output.css
+.a >
+.b
++ x, .c.a > .d.b + y {
+  a: b;
+}
+
+<===> output-dart-sass.css
+.a > .b + x, .c.a > .d.b + y {
+  a: b;
+}
+
+<===> output-libsass.css
+.a >
+.b + x, .c.a >
+.d.b + y {
+  a: b;
+}

@@ -1,0 +1,43 @@
+<===> options.yml
+---
+:warning_todo:
+- libsass # sass/libsass#2834
+
+<===> input.scss
+div {
+  $foo: inner !default !global;
+  $foo: lexical;
+  inner { foo: $foo; }
+}
+
+$foo: outer !default !global;
+outer { foo: $foo; }
+
+div {
+  $foo: footer !default !global;
+  $foo: lexical;
+  inner { foo: $foo; }
+}
+
+<===> output.css
+div inner {
+  foo: lexical;
+}
+
+outer {
+  foo: inner;
+}
+
+div inner {
+  foo: lexical;
+}
+
+<===> warning
+DEPRECATION WARNING: As of Dart Sass 2.0.0, !global assignments won't be able to
+declare new variables. Consider adding `$foo: null` at the top level.
+
+  ,
+2 |   $foo: inner !default !global;
+  |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 2:3  root stylesheet

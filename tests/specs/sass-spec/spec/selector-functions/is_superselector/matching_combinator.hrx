@@ -1,0 +1,21 @@
+<===> input.scss
+@import "../assert_helpers";
+
+test {
+  a: assert_strict_superselector('.foo + .bar', '.foo + .bar.baz');
+  b: assert_strict_superselector('.foo + .bar', '.foo.baz + .bar');
+  c: assert_strict_superselector('.foo > .bar', '.foo > .bar.baz');
+  d: assert_strict_superselector('.foo > .bar', '.foo.baz > .bar');
+  e: assert_strict_superselector('.foo ~ .bar', '.foo ~ .bar.baz');
+  f: assert_strict_superselector('.foo ~ .bar', '.foo.baz ~ .bar');
+}
+
+<===> output.css
+test {
+  a: true;
+  b: true;
+  c: true;
+  d: true;
+  e: true;
+  f: true;
+}

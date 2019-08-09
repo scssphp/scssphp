@@ -1,0 +1,15 @@
+<===> input.scss
+#foo #bar,,
+,#baz #boom, {a: b}
+
+#bip #bop, ,, {c: d}
+
+<===> output.css
+#foo #bar,
+#baz #boom {
+  a: b;
+}
+
+#bip #bop {
+  c: d;
+}

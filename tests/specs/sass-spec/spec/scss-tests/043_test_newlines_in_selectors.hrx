@@ -1,0 +1,19 @@
+<===> options.yml
+---
+:ignore_for:
+- dart-sass
+
+<===> input.scss
+foo, bar
+baz {
+  bang, bip
+  bop {a: b}}
+
+<===> output.css
+foo bang, foo bip
+bop, bar
+baz bang, bar
+baz bip
+bop {
+  a: b;
+}

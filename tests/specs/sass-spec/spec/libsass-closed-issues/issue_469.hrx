@@ -1,0 +1,19 @@
+<===> input.scss
+/*!
+*/
+
+@charset "utf-8";
+
+a {
+  color: red;
+}
+
+@import url("x");
+
+<===> output.css
+/*!
+*/
+@import url("x");
+a {
+  color: red;
+}

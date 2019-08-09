@@ -1,0 +1,8 @@
+<===> input.scss
+%-a *|*.foo {a: b}
+ns|a {@extend .foo} -a {@extend %-a}
+
+<===> output.css
+-a *|*.foo, -a ns|a {
+  a: b;
+}

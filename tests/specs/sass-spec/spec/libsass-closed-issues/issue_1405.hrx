@@ -1,0 +1,79 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2700
+
+<===> input.scss
+div {
+  foo: (1a2b3c);
+
+  length-1: length(1a2b3c);
+
+  unit-1: unit(1a2b3c);
+
+  result-1: 1em-.75em;
+  result-2: 2em-1em;
+  result-3: 2em-0.75em;
+  result-4: 1.5em-1em;
+  result-5: 2em-1.5em;
+
+  type-1: type-of(1em-.75em);
+  type-2: type-of(2em-1em);
+  type-3: type-of(2em-0.75em);
+  type-4: type-of(1.5em-1em);
+  type-5: type-of(2em-1.5em);
+  type-6: type-of(1a2b3c);
+
+  test-1: (1-em-2-em);
+  test-1: (1-em - 2-em);
+
+  test-2: (1-0-em-2-0-em);
+  test-2: (1-0-em - 2-0-em);
+
+  test-3: (1-A-em-2-A-em);
+  test-3: (1-A-em - 2-A-em);
+
+  test-4: (1_em--_--e-2_em--_--e);
+  test-4: (1_em--_--e - 2_em--_--e);
+
+  test-5: (1_em--_--e0-2_em--_--e0);
+  test-5: (1_em--_--e0 - 2_em--_--e0);
+
+  test-6: (1_em--_--e0__-2_em--_--e0__);
+  test-6: (1_em--_--e0__ - 2_em--_--e0__);
+
+  test-7: (1\65 _em--_--e0-2\65 _em--_--e0);
+  test-7: (1\65 _em--_--e0 - 2\65 _em--_--e0);
+}
+
+<===> output.css
+div {
+  foo: 1a2b3c;
+  length-1: 1;
+  unit-1: "a2b3c";
+  result-1: 0.25em;
+  result-2: 1em;
+  result-3: 1.25em;
+  result-4: 0.5em;
+  result-5: 0.5em;
+  type-1: number;
+  type-2: number;
+  type-3: number;
+  type-4: number;
+  type-5: number;
+  type-6: number;
+  test-1: -1-em;
+  test-1: -1-em;
+  test-2: -1-em;
+  test-2: -1-em;
+  test-3: -1-A-em;
+  test-3: -1-A-em;
+  test-4: -1_em--_--e;
+  test-4: -1_em--_--e;
+  test-5: -1_em--_--e0;
+  test-5: -1_em--_--e0;
+  test-6: -1_em--_--e0__;
+  test-6: -1_em--_--e0__;
+  test-7: -1e_em--_--e0;
+  test-7: -1e_em--_--e0;
+}

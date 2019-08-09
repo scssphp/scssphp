@@ -1,0 +1,24 @@
+<===> exclam/options.yml
+---
+:todo:
+- libsass # sass/libsass#2880
+
+<===>
+================================================================================
+<===> exclam/only/input.scss
+a {b: url(!)}
+
+<===> exclam/only/output.css
+a {
+  b: url(!);
+}
+
+<===>
+================================================================================
+<===> exclam/middle/input.scss
+a {b: url(http://c.d/e!f)}
+
+<===> exclam/middle/output.css
+a {
+  b: url(http://c.d/e!f);
+}

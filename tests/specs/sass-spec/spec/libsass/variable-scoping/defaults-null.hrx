@@ -1,0 +1,37 @@
+<===> input.scss
+div {
+  $foo: null !default;
+  $foo: inner !default;
+  $foo: null !default;
+  $foo: lexical;
+  inner { foo: $foo; }
+}
+
+// this should error
+// empty { foo: $foo; }
+
+$foo: null !default;
+$foo: outer !default;
+$foo: null !default;
+outer { foo: $foo; }
+
+div {
+  $foo: null !default;
+  $foo: footer !default;
+  $foo: null !default;
+  $foo: lexical;
+  inner { foo: $foo; }
+}
+
+<===> output.css
+div inner {
+  foo: lexical;
+}
+
+outer {
+  foo: outer;
+}
+
+div inner {
+  foo: lexical;
+}

@@ -1,0 +1,10 @@
+<===> input.scss
+$color: 'red';
+
+.-text-#{$color}- {
+  color: $color;
+}
+<===> output.css
+.-text-red- {
+  color: "red";
+}

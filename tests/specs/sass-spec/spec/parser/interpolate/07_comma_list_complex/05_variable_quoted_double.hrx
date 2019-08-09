@@ -1,0 +1,28 @@
+<===> input.scss
+$input: gamma, "'"delta"'";
+.result {
+  dquoted: "#{#{$input}}";
+  dquoted: "#{"[#{$input}]"}";
+  dquoted: "#{"#{$input}"}";
+  dquoted: "#{'#{$input}'}";
+  dquoted: "#{"['#{$input}']"}";
+  squoted: '#{#{$input}}';
+  squoted: '#{"[#{$input}]"}';
+  squoted: '#{"#{$input}"}';
+  squoted: '#{'#{$input}'}';
+  squoted: '#{"['#{$input}']"}';
+}
+
+<===> output.css
+.result {
+  dquoted: "gamma, ' delta '";
+  dquoted: "[gamma, ' delta ']";
+  dquoted: "gamma, ' delta '";
+  dquoted: "gamma, ' delta '";
+  dquoted: "['gamma, ' delta '']";
+  squoted: "gamma, ' delta '";
+  squoted: "[gamma, ' delta ']";
+  squoted: "gamma, ' delta '";
+  squoted: "gamma, ' delta '";
+  squoted: "['gamma, ' delta '']";
+}

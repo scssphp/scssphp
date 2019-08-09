@@ -1,0 +1,28 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+// Unknown directives should support almost any sequence of valid tokens.
+
+// By default, characters are passed through unaltered.
+@asdf .~@#$%^&*()_-+=[]|:<>,.?/;
+
+// Strings are tokenized as strings.
+@asdf "f'o" 'b"r' url(baz) url("qux");
+
+// Comments are preserved.
+@asdf foo //
+      bar;
+@asdf foo /* bar */ baz;
+
+<===> output.css
+@asdf .~@#$%^&*()_-+=[]|:<>,.?/;
+
+@asdf "f'o" 'b"r' url(baz) url("qux");
+
+@asdf foo //
+      bar;
+
+@asdf foo /* bar */ baz;

@@ -1,0 +1,6 @@
+<===> input.scss
+$family: unquote("Droid+Sans");
+@import url("http://fonts.googleapis.com/css?family=#{$family}");
+
+<===> output.css
+@import url("http://fonts.googleapis.com/css?family=Droid+Sans");

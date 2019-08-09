@@ -1,0 +1,46 @@
+<===> options.yml
+---
+:todo:
+- dart-sass
+
+<===> input.scss
+@mixin sprite-arrow() {
+  @extend %hidden-text;
+}
+
+%hidden-text {
+  text-indent: -999em;
+}
+
+// button.scss
+.button-left,
+.button-right,
+.button-plus,
+.button-min {
+  &:after {
+      @include sprite-arrow();
+  }
+}
+
+.banner {
+  &:after {
+      @include sprite-arrow();
+  }
+}
+
+.calculator {
+  .btn-down,
+  .btn-up {
+      &:after {
+          @include sprite-arrow();
+      }
+  }
+}
+<===> output.css
+.button-left:after,
+.button-right:after,
+.button-plus:after,
+.button-min:after, .banner:after, .calculator .btn-down:after,
+.calculator .btn-up:after {
+  text-indent: -999em;
+}

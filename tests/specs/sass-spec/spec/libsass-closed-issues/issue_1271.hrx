@@ -1,0 +1,22 @@
+<===> input.scss
+$character-code: f102;
+
+test {
+
+  /* Expected: "\f102" */
+
+  /* Sass 3.4 */
+  content: unquote("\"\\#{$character-code}\"");
+
+  /* Sass 3.3 */
+  content: str-slice("\x", 1, 1) + $character-code;
+
+}
+<===> output.css
+test {
+  /* Expected: "\f102" */
+  /* Sass 3.4 */
+  content: "\f102";
+  /* Sass 3.3 */
+  content: "xf102";
+}

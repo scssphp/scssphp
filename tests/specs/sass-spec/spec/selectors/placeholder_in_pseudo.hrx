@@ -1,0 +1,30 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+// Style rules with placeholders should only be deleted if they can't match
+// *any* real elements.
+a:matches(%b) {x: y}
+a:matches(%b, c) {x: y}
+a:not(%b) {x: y}
+a:not(%b, c) {x: y}
+:not(%b) {x: y}
+
+<===> output.css
+a:matches(c) {
+  x: y;
+}
+
+a {
+  x: y;
+}
+
+a:not(c) {
+  x: y;
+}
+
+* {
+  x: y;
+}

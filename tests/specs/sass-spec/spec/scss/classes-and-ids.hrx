@@ -1,0 +1,20 @@
+<===> input.scss
+div.foo {
+  color: red;
+  #hux buz {
+    width: auto;
+  }
+  > .mux {
+    text-align: center;
+  }
+}
+<===> output.css
+div.foo {
+  color: red;
+}
+div.foo #hux buz {
+  width: auto;
+}
+div.foo > .mux {
+  text-align: center;
+}

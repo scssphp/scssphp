@@ -1,0 +1,18 @@
+<===> options.yml
+---
+:ignore_for:
+- dart-sass
+
+<===> input.scss
+.selector1{ foo: bar; }
+.selector2{ zapf: dings; }
+
+.selector3{ @extend .selector1, .selector2; }
+<===> output.css
+.selector1, .selector3 {
+  foo: bar;
+}
+
+.selector2, .selector3 {
+  zapf: dings;
+}

@@ -1,0 +1,33 @@
+<===> input.scss
+$empty-list: ();
+
+@function foo($args...) {
+    @return call(bar, $args...);
+}
+
+@function bar($list) {
+    @return length($list);
+}
+
+test {
+  test: foo($empty-list);
+}
+<===> output.css
+test {
+  test: 0;
+}
+
+<===> warning
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(bar)) instead.
+
+<===> warning-dart-sass
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function(bar)) instead.
+
+  ,
+4 |     @return call(bar, $args...);
+  |             ^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 4:13  foo()
+    input.scss 12:9  root stylesheet

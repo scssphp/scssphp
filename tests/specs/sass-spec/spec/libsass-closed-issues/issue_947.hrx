@@ -1,0 +1,14 @@
+<===> input.scss
+@keyframes test {
+  $var: 10%;
+  #{$var} {
+    color: red;
+  }
+}
+
+<===> output.css
+@keyframes test {
+  10% {
+    color: red;
+  }
+}

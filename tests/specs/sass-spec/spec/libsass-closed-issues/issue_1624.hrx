@@ -1,0 +1,19 @@
+<===> input.scss
+@function foo($foo) {
+  @return $foo;
+}
+
+@function data($foo) {
+  @return '[data-' + $foo + ']';
+}
+
+#{foo(foo)} {
+  #{data('bar')} {
+    baz: bam;
+  }
+}
+
+<===> output.css
+foo [data-bar] {
+  baz: bam;
+}

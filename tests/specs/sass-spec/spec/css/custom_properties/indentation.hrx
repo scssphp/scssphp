@@ -1,0 +1,70 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+.indentation {
+  --simple: {
+    foo: bar;
+  };
+
+  --empty-line: {
+    foo: bar;
+
+    baz: bang;
+  };
+
+  --multi-level: {
+   one
+    two
+     three
+      four
+  };
+
+  --all-indented: {
+    foo: bar; };
+
+  --below-base:
+    foo
+ bar
+   baz;
+
+         --deep-base: {
+           foo: bar;
+         };
+
+	--hard-tabs: {
+		foo: bar;
+	};
+}
+
+<===> output.css
+.indentation {
+  --simple: {
+    foo: bar;
+  };
+  --empty-line: {
+    foo: bar;
+
+    baz: bang;
+  };
+  --multi-level: {
+   one
+    two
+     three
+      four
+  };
+  --all-indented: {
+    foo: bar; };
+  --below-base:
+     foo
+  bar
+    baz;
+  --deep-base: {
+    foo: bar;
+  };
+  --hard-tabs: {
+  	foo: bar;
+  };
+}

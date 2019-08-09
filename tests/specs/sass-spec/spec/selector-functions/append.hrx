@@ -1,0 +1,18 @@
+<===> input.scss
+body {
+  a: selector-append(".foo", ".bar", ".baz");
+  b: selector-append(".a .foo", ".b .bar");
+  c: selector-append(".foo", "-suffix");
+  d: selector-append('.foo', '.bar, -suffix');
+  e: selector-append('.foo', '--suffix');
+  f: selector-append('.foo', '.bar, --suffix');
+}
+<===> output.css
+body {
+  a: .foo.bar.baz;
+  b: .a .foo.b .bar;
+  c: .foo-suffix;
+  d: .foo.bar, .foo-suffix;
+  e: .foo--suffix;
+  f: .foo.bar, .foo--suffix;
+}

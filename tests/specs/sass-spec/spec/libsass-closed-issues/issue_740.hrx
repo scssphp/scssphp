@@ -1,0 +1,16 @@
+<===> input.scss
+$foo: null;
+$foo: #fff !default;
+$bar: #000;
+$bar: #f00 !default;
+
+foo {
+  foo: $foo;
+  bar: $bar;
+}
+
+<===> output.css
+foo {
+  foo: #fff;
+  bar: #000;
+}

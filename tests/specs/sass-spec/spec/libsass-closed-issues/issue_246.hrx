@@ -1,0 +1,22 @@
+<===> input.scss
+$content-width: 960px;
+
+/* demo.css: */
+.selector {
+  padding: 0 calc(100%/2 - #{$content-width/2})
+}
+
+
+/* bin/sassc demo.scss */
+.selector {
+  padding: 0 calc(100%/2 - #{$content-width/2}); }
+<===> output.css
+/* demo.css: */
+.selector {
+  padding: 0 calc(100%/2 - 480px);
+}
+
+/* bin/sassc demo.scss */
+.selector {
+  padding: 0 calc(100%/2 - 480px);
+}

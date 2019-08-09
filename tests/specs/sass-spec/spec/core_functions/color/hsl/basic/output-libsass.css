@@ -1,0 +1,220 @@
+hue red {
+  hue-0: red;
+  hue--360: red;
+  hue-260: #5500ff;
+  hue-6120: red;
+}
+
+hue yellow {
+  hue-60: yellow;
+  hue--300: yellow;
+  hue-420: yellow;
+  hue--9660: yellow;
+}
+
+hue green {
+  hue-120: lime;
+  hue--240: lime;
+  hue-480: lime;
+  hue-99840: lime;
+}
+
+hue cyan {
+  hue-180: cyan;
+  hue--180: cyan;
+  hue-540: cyan;
+  hue--900: cyan;
+}
+
+hue blue {
+  hue-240: blue;
+  hue--120: blue;
+  hue-600: blue;
+  hue--104880: blue;
+}
+
+hue purple {
+  hue-300: magenta;
+  hue--60: magenta;
+  hue-660: magenta;
+  hue-2820: magenta;
+}
+
+red-to-green {
+  step-1: red;
+  step-2: #ff3300;
+  step-3: #ff6600;
+  step-4: #ff9900;
+  step-5: #ffcc00;
+  step-6: yellow;
+  step-7: #ccff00;
+  step-8: #99ff00;
+  step-9: #66ff00;
+  step-10: #33ff00;
+  step-11: lime;
+}
+
+green-to-blue {
+  step-1: lime;
+  step-2: #00ff33;
+  step-3: #00ff66;
+  step-4: #00ff99;
+  step-5: #00ffcc;
+  step-6: cyan;
+  step-7: #00ccff;
+  step-8: #0099ff;
+  step-9: #0066ff;
+  step-10: #0033ff;
+  step-11: blue;
+}
+
+blue-to-red {
+  step-1: blue;
+  step-2: #3300ff;
+  step-3: #6600ff;
+  step-4: #9900ff;
+  step-5: #cc00ff;
+  step-6: magenta;
+  step-7: #ff00cc;
+  step-8: #ff0099;
+  step-9: #ff0066;
+  step-10: #ff0033;
+  step-11: red;
+}
+
+gray-to red {
+  step-1: #996666;
+  step-2: #cc3333;
+  step-3: red;
+}
+
+gray-to yellow {
+  step-1: #999966;
+  step-2: #cccc33;
+  step-3: yellow;
+}
+
+gray-to green {
+  step-1: #669966;
+  step-2: #33cc33;
+  step-3: lime;
+}
+
+gray-to cyan {
+  step-1: #669999;
+  step-2: #33cccc;
+  step-3: cyan;
+}
+
+gray-to blue {
+  step-1: #666699;
+  step-2: #3333cc;
+  step-3: blue;
+}
+
+gray-to purple {
+  step-1: #996699;
+  step-2: #cc33cc;
+  step-3: magenta;
+}
+
+black-to-white-through red {
+  step-1: black;
+  step-2: #330000;
+  step-3: #660000;
+  step-4: #990000;
+  step-5: #cc0000;
+  step-6: red;
+  step-7: #ff3333;
+  step-8: #ff6666;
+  step-9: #ff9999;
+  step-10: #ffcccc;
+  step-11: white;
+}
+
+black-to-white-through yellow {
+  step-1: black;
+  step-2: #333300;
+  step-3: #666600;
+  step-4: #999900;
+  step-5: #cccc00;
+  step-6: yellow;
+  step-7: #ffff33;
+  step-8: #ffff66;
+  step-9: #ffff99;
+  step-10: #ffffcc;
+  step-11: white;
+}
+
+black-to-white-through green {
+  step-1: black;
+  step-2: #003300;
+  step-3: #006600;
+  step-4: #009900;
+  step-5: #00cc00;
+  step-6: lime;
+  step-7: #33ff33;
+  step-8: #66ff66;
+  step-9: #99ff99;
+  step-10: #ccffcc;
+  step-11: white;
+}
+
+black-to-white-through cyan {
+  step-1: black;
+  step-2: #003333;
+  step-3: #006666;
+  step-4: #009999;
+  step-5: #00cccc;
+  step-6: cyan;
+  step-7: #33ffff;
+  step-8: #66ffff;
+  step-9: #99ffff;
+  step-10: #ccffff;
+  step-11: white;
+}
+
+black-to-white-through blue {
+  step-1: black;
+  step-2: #000033;
+  step-3: #000066;
+  step-4: #000099;
+  step-5: #0000cc;
+  step-6: blue;
+  step-7: #3333ff;
+  step-8: #6666ff;
+  step-9: #9999ff;
+  step-10: #ccccff;
+  step-11: white;
+}
+
+black-to-white-through purple {
+  step-1: black;
+  step-2: #330033;
+  step-3: #660066;
+  step-4: #990099;
+  step-5: #cc00cc;
+  step-6: magenta;
+  step-7: #ff33ff;
+  step-8: #ff66ff;
+  step-9: #ff99ff;
+  step-10: #ffccff;
+  step-11: white;
+}
+
+clamped {
+  saturation-above: red;
+  saturation-below: gray;
+  lightness-above: white;
+  lightness-below: black;
+}
+
+units {
+  hue-deg: red;
+  saturation-unitless: #bf4040;
+  lightness-unitless: red;
+}
+
+named {
+  x: red;
+}

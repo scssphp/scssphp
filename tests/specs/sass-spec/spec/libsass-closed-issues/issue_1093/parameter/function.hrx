@@ -1,0 +1,19 @@
+<===> input.scss
+@function foo($bar) {
+  @return $bar;
+}
+
+$foo: foo(#{});
+
+<===> error
+Error: Invalid CSS after "$foo: foo(#{": expected expression (e.g. 1px, bold), was "});"
+        on line 5 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Expected expression.
+  ,
+5 | $foo: foo(#{});
+  |           ^^
+  '
+  input.scss 5:11  root stylesheet

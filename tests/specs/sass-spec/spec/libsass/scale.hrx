@@ -1,0 +1,34 @@
+<===> input.scss
+div {
+  color: scale-color(red, $red: -23%);
+  color: scale-color(hsl(120, 70, 80), $lightness: 50%);
+  color: scale-color(rgb(200, 150, 170), $green: -40%, $blue: 70%);
+  color: scale-color(hsl(200, 70, 80), $saturation: -90%, $alpha: 10%);
+  blah: #d4f7d4;
+}
+<===> note.txt
+https://github.com/sass/sass/issues/1690
+
+scale-color(rgb(200, 150, 170), $green: -40%, $blue: 70%);
+
+libsass: #c85ae6
+ruby sass: #c85ae5
+
+difference in the blue channel:
+
+libsass: e6 => 230
+ruby sass: e5 => 229
+
+Actual calculation done:
+
+170 + (255 - 170) * .7 = 229.5
+
+
+<===> output.css
+div {
+  color: #c40000;
+  color: #d4f7d4;
+  color: #c85ae6;
+  color: #c8cdd0;
+  blah: #d4f7d4;
+}

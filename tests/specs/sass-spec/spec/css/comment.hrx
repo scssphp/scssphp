@@ -1,0 +1,115 @@
+<===> multiple/input.scss
+.foo {
+  /* Foo Bar */
+  /* Baz Bang */ }
+
+<===> multiple/output.css
+.foo {
+  /* Foo Bar */
+  /* Baz Bang */
+}
+
+<===>
+================================================================================
+<===> multiple_stars/input.scss
+a /***/ b {x: y}
+a /****/ b {x: y}
+a /* **/ b {x: y}
+a /** */ b {x: y}
+
+<===> multiple_stars/output.css
+a b {
+  x: y;
+}
+a b {
+  x: y;
+}
+a b {
+  x: y;
+}
+a b {
+  x: y;
+}
+
+<===>
+================================================================================
+<===> weird_indentation/input.scss
+.foo {
+    /* Foo
+ Bar
+Baz */
+  a: b; }
+
+<===> weird_indentation/output.css
+.foo {
+  /* Foo
+   Bar
+  Baz */
+  a: b;
+}
+
+<===> weird_indentation/output-libsass.css
+.foo {
+  /* Foo
+ Bar
+Baz */
+  a: b;
+}
+
+<===>
+================================================================================
+<===> converts_newlines/README.md
+Everything CSS considers a newline (including `\r\n`, `\r`, and `\f`) should be
+converted to a newline in a comment's contents.
+
+Note that we don't test CR LF because the spec runner normalizes those itself,
+so we can't usefully verify that they're converted. Individual implementations
+should include their own tests for CR LF newlines.
+
+<===>
+================================================================================
+<===> converts_newlines/scss/cr/input.scss
+/* foo * bar */
+
+<===> converts_newlines/scss/cr/output.css
+/* foo
+ * bar */
+
+<===>
+================================================================================
+<===> converts_newlines/scss/ff/input.scss
+/* foo * bar */
+
+<===> converts_newlines/scss/ff/output.css
+/* foo
+ * bar */
+
+<===>
+================================================================================
+<===> converts_newlines/sass/cr/input.sass
+/*
+  foo  bar
+
+<===> converts_newlines/sass/cr/output.css
+/* foo
+ * bar */
+
+<===> converts_newlines/sass/cr/output-libsass.css
+/*
+  foo
+  bar */
+
+<===>
+================================================================================
+<===> converts_newlines/sass/ff/input.sass
+/*
+  foo  bar
+
+<===> converts_newlines/sass/ff/output.css
+/* foo
+ * bar */
+
+<===> converts_newlines/sass/ff/output-libsass.css
+/*
+  foo
+  bar */

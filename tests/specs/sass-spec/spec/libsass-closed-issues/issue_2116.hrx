@@ -1,0 +1,13 @@
+<===> input.scss
+@function foo() {
+  @return if(& != null, green, red);
+}
+
+test {
+  color: foo();
+}
+
+<===> output.css
+test {
+  color: green;
+}

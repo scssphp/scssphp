@@ -1,0 +1,6 @@
+<===> input.scss
+.class{background-image:url(//foo.bar/favicon.ico)}
+<===> output.css
+.class {
+  background-image: url(//foo.bar/favicon.ico);
+}

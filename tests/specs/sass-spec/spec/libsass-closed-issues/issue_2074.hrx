@@ -1,0 +1,13 @@
+<===> input.scss
+@function calc_foo() {
+  @return "bar";
+}
+foo {
+  test1: calc-foo();
+  test2: calc_foo();
+}
+<===> output.css
+foo {
+  test1: "bar";
+  test2: "bar";
+}

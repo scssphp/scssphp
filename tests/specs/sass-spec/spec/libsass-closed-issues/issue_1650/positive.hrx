@@ -1,0 +1,24 @@
+<===> input.scss
+:nth-of-type(2n+1),
+:nth-of-type(2n+  1),
+:nth-of-type(2n  +1),
+:nth-of-type(2n  +  1),
+:nth-of-type( 2n  +  1 )
+{ color: red; }
+<===> output.css
+:nth-of-type(2n+1),
+:nth-of-type(2n+ 1),
+:nth-of-type(2n +1),
+:nth-of-type(2n + 1),
+:nth-of-type(2n + 1) {
+  color: red;
+}
+
+<===> output-libsass.css
+:nth-of-type(2n+1),
+:nth-of-type(2n+  1),
+:nth-of-type(2n  +1),
+:nth-of-type(2n  +  1),
+:nth-of-type(2n  +  1) {
+  color: red;
+}

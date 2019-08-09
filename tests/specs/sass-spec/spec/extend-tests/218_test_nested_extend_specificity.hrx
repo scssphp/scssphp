@@ -1,0 +1,17 @@
+<===> input.scss
+%foo {a: b}
+
+a {
+:b {@extend %foo}
+:b:c {@extend %foo}
+}
+
+<===> output.css
+a :b, a :b:c {
+  a: b;
+}
+
+<===> output-dart-sass.css
+a :b:c, a :b {
+  a: b;
+}

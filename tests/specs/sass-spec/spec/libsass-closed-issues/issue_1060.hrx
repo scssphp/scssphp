@@ -1,0 +1,33 @@
+<===> input.scss
+foo {
+  @if true {
+    foo: true;
+  } @elseif true {
+    foo: false;
+  } @else {
+    foo: false;
+  }
+
+  @if true {
+    bar: true;
+  } @else if true {
+    bar: false;
+  } @else {
+    bar: false;
+  }
+}
+
+<===> output.css
+foo {
+  foo: true;
+  bar: true;
+}
+
+<===> warning-dart-sass
+DEPRECATION WARNING on line 4, column 5 of input.scss: 
+@elseif is deprecated and will not be supported in future Sass versions.
+Use "@else if" instead.
+  ,
+4 |   } @elseif true {
+  |     ^^^^^^^
+  '

@@ -1,0 +1,17 @@
+<===> input.scss
+$orig: 0.12em;
+$value: (0.12em);
+$score: (item-height: 0.12em);
+foo {
+    tst-1: 0 -#{0.12em};
+    tst-2: 0 -#{$orig};
+    tst-3: 0 -#{$value};
+    tst-4: 0 -#{map-get($score, item-height)};
+}
+<===> output.css
+foo {
+  tst-1: 0 -0.12em;
+  tst-2: 0 -0.12em;
+  tst-3: 0 -0.12em;
+  tst-4: 0 -0.12em;
+}

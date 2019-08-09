@@ -1,0 +1,39 @@
+<===> input.scss
+// ----
+// libsass (v3.3.2)
+// ----
+
+$prefix:(
+	foo: foo,
+	bar: #bar
+);
+
+#{map-get($prefix, foo)} {
+  color: red;
+}
+#{map-get($prefix, bar)} {
+  color: red;
+}
+
+#{map-get($prefix, foo)} .baz {
+  color: red;
+}
+#{map-get($prefix, bar)} .baz {
+  color: red;
+}
+<===> output.css
+foo {
+  color: red;
+}
+
+#bar {
+  color: red;
+}
+
+foo .baz {
+  color: red;
+}
+
+#bar .baz {
+  color: red;
+}

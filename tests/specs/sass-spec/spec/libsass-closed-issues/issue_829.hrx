@@ -1,0 +1,32 @@
+<===> input.scss
+.foo {
+    @media (foo: bar), (bar: baz) {
+        foo: bar;
+
+        @media (foo: bar) {
+            bar: baz;
+        }
+
+        .bar {
+            baz: bam;
+        }
+    }
+ }
+
+
+<===> output.css
+@media (foo: bar), (bar: baz) {
+  .foo {
+    foo: bar;
+  }
+}
+@media (foo: bar) and (foo: bar), (bar: baz) and (foo: bar) {
+  .foo {
+    bar: baz;
+  }
+}
+@media (foo: bar), (bar: baz) {
+  .foo .bar {
+    baz: bam;
+  }
+}

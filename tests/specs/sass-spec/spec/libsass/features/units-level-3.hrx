@@ -1,0 +1,9 @@
+<===> input.scss
+foo {
+  foo: feature-exists('units-level-3');
+}
+
+<===> output.css
+foo {
+  foo: true;
+}

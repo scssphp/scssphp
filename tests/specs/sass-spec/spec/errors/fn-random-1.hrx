@@ -1,0 +1,16 @@
+<===> input.scss
+foo {
+  test: random(1.5);
+}
+<===> error
+Error: Expected $limit to be an integer but got 1.5 for `random'
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: $limit: 1.5 is not an int.
+  ,
+2 |   test: random(1.5);
+  |         ^^^^^^^^^^^
+  '
+  input.scss 2:9  root stylesheet

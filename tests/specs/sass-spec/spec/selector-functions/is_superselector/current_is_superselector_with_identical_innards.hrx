@@ -1,0 +1,10 @@
+<===> input.scss
+@import "../assert_helpers";
+
+test {
+  a: is-superselector(':current(.foo)', ':current(.foo)');
+}
+<===> output.css
+test {
+  a: true;
+}

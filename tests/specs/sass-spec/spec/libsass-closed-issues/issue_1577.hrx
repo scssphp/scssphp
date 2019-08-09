@@ -1,0 +1,17 @@
+<===> input.scss
+$foo: 10%; // line 1
+// line 2
+$error: $foo + 20px; // line 3
+
+<===> error
+Error: Incompatible units: 'px' and '%'.
+        on line 3 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: Incompatible units px and %.
+  ,
+3 | $error: $foo + 20px; // line 3
+  |         ^^^^^^^^^^^
+  '
+  input.scss 3:9  root stylesheet

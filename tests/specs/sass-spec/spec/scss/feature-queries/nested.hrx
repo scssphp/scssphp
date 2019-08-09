@@ -1,0 +1,17 @@
+<===> input.scss
+.foo {
+     display: block;
+     @supports (display: flex) {
+         display: flex;
+     }
+ }
+
+<===> output.css
+.foo {
+  display: block;
+}
+@supports (display: flex) {
+  .foo {
+    display: flex;
+  }
+}

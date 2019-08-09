@@ -1,0 +1,92 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+foo {
+  test-1: 10==10;
+  test-2: 10 ==10;
+  test-3: 10== 10;
+  test-4: 10 == 10;
+  test-5: 10==#{10};
+  test-6: 10 ==#{10};
+  test-7: 10== #{10};
+  test-8: 10 == #{10};
+  test-9: 10==1#{0};
+  test-10: 10 ==1#{0};
+  test-11: 10== 1#{0};
+  test-12: 10 == 1#{0};
+  test-13: 10==#{1}0;
+  test-14: 10 ==#{1}0;
+  test-15: 10== #{1}0;
+  test-16: 10 == #{1}0;
+  test-17: #{10}==#{10};
+  test-18: #{10} ==#{10};
+  test-19: #{10}== #{10};
+  test-20: #{10} == #{10};
+  test-21: #{10}==1#{0};
+  test-22: #{10} ==1#{0};
+  test-23: #{10}== 1#{0};
+  test-24: #{10} == 1#{0};
+  test-25: #{10}==#{1}0;
+  test-26: #{10} ==#{1}0;
+  test-27: #{10}== #{1}0;
+  test-28: #{10} == #{1}0;
+  test-29: 1#{0}==1#{0};
+  test-30: 1#{0} ==1#{0};
+  test-31: 1#{0}== 1#{0};
+  test-32: 1#{0} == 1#{0};
+  test-33: 1#{0}==#{1}0;
+  test-34: 1#{0} ==#{1}0;
+  test-35: 1#{0}== #{1}0;
+  test-36: 1#{0} == #{1}0;
+  test-37: #{1}0==#{1}0;
+  test-38: #{1}0 ==#{1}0;
+  test-39: #{1}0== #{1}0;
+  test-40: #{1}0 == #{1}0;
+}
+
+<===> output.css
+foo {
+  test-1: true;
+  test-2: true;
+  test-3: true;
+  test-4: true;
+  test-5: false;
+  test-6: false;
+  test-7: false;
+  test-8: false;
+  test-9: false 0;
+  test-10: false 0;
+  test-11: false 0;
+  test-12: false 0;
+  test-13: false;
+  test-14: false;
+  test-15: false;
+  test-16: false;
+  test-17: true;
+  test-18: true;
+  test-19: true;
+  test-20: true;
+  test-21: false 0;
+  test-22: false 0;
+  test-23: false 0;
+  test-24: false 0;
+  test-25: true;
+  test-26: true;
+  test-27: true;
+  test-28: true;
+  test-29: 1 false 0;
+  test-30: 1 false 0;
+  test-31: 1 false 0;
+  test-32: 1 false 0;
+  test-33: 1 false;
+  test-34: 1 false;
+  test-35: 1 false;
+  test-36: 1 false;
+  test-37: true;
+  test-38: true;
+  test-39: true;
+  test-40: true;
+}

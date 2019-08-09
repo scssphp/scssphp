@@ -1,0 +1,28 @@
+<===> input.scss
+$input: "l\\ite\ral";
+.result {
+  dquoted: "#{#{$input}}";
+  dquoted: "#{"[#{$input}]"}";
+  dquoted: "#{"#{$input}"}";
+  dquoted: "#{'#{$input}'}";
+  dquoted: "#{"['#{$input}']"}";
+  squoted: '#{#{$input}}';
+  squoted: '#{"[#{$input}]"}';
+  squoted: '#{"#{$input}"}';
+  squoted: '#{'#{$input}'}';
+  squoted: '#{"['#{$input}']"}';
+}
+
+<===> output.css
+.result {
+  dquoted: "l\\iteral";
+  dquoted: "[l\\iteral]";
+  dquoted: "l\\iteral";
+  dquoted: "l\\iteral";
+  dquoted: "['l\\iteral']";
+  squoted: "l\\iteral";
+  squoted: "[l\\iteral]";
+  squoted: "l\\iteral";
+  squoted: "l\\iteral";
+  squoted: "['l\\iteral']";
+}

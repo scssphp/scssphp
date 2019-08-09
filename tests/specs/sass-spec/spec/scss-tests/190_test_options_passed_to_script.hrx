@@ -1,0 +1,7 @@
+<===> input.scss
+foo {color: darken(black, 10%)}
+
+<===> output.css
+foo {
+  color: black;
+}

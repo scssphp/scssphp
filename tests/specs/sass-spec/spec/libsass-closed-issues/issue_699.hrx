@@ -1,0 +1,8 @@
+<===> input.scss
+.selector {
+  color: invert(rebeccapurple);
+}
+<===> output.css
+.selector {
+  color: #99cc66;
+}

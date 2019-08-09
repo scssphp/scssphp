@@ -1,0 +1,25 @@
+<===> input.scss
+@mixin ico-common($imgUrl){
+    display: inline-block;
+    background: url(i/$imgUrl);
+    background-repeat: no-repeat;
+}
+
+@mixin ico-size($width,$height){
+    width: $width;
+    height: $height;
+}
+
+.test{
+    @include ico-common("icon.png");
+
+    @include ico-size(100px, 100px);
+}
+<===> output.css
+.test {
+  display: inline-block;
+  background: url(i/"icon.png");
+  background-repeat: no-repeat;
+  width: 100px;
+  height: 100px;
+}

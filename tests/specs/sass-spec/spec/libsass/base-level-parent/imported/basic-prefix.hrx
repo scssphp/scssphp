@@ -1,0 +1,24 @@
+<===> include.scss
+pre& {
+  foo {
+    bar: baz;
+  }
+}
+<===> input.scss
+@import "include.scss";
+<===> error
+Error: Invalid CSS after "pre": expected "{", was "&"
+       
+       "&" may only be used at the beginning of a compound selector.
+        on line 1 of include.scss
+        from line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: "&" may only used at the beginning of a compound selector.
+  ,
+1 | pre&{
+  |    ^
+  '
+  include.scss 1:4  @import
+  input.scss 1:9    root stylesheet

@@ -1,0 +1,12 @@
+<===> options.yml
+---
+:todo:
+- libsass
+<===> input.scss
+// This shouldn't change the selector.
+.c, .a .b .c, .a .c .b {x: y; @extend .c}
+
+<===> output.css
+.c, .a .b .c, .a .c .b {
+  x: y;
+}

@@ -1,0 +1,12 @@
+<===> input.scss
+@mixin dummy($a, $b, $c, $d, $e: true) {
+  content: $a $b $c $d $e;
+}
+
+.foo {
+  @include dummy( ('a', 'b', 'c', 'e')..., $e: false );
+}
+<===> output.css
+.foo {
+  content: "a" "b" "c" "e" false;
+}

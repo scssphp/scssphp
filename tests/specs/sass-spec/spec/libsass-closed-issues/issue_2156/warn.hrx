@@ -1,0 +1,39 @@
+<===> input.scss
+@warn "\"foo\"" + "";
+@warn "" + "\"foo\"";
+@warn "" + "\"foo";
+@warn "\"foo\"" + "bar";
+@warn unquote("\"foo\" and \"bar\"");
+
+<===> output.css
+<===> warning
+WARNING: "foo"
+         on line 7 of /sass/spec/libsass-issues/issue_2156/input.scss
+
+WARNING: "foo"
+         on line 8 of /sass/spec/libsass-issues/issue_2156/input.scss
+
+WARNING: "foo
+         on line 9 of /sass/spec/libsass-issues/issue_2156/input.scss
+
+WARNING: "foo"bar
+         on line 10 of /sass/spec/libsass-issues/issue_2156/input.scss
+
+WARNING: "foo" and "bar"
+         on line 11 of /sass/spec/libsass-issues/issue_2156/input.scss
+
+<===> warning-dart-sass
+WARNING: "foo"
+    input.scss 1:1  root stylesheet
+
+WARNING: "foo"
+    input.scss 2:1  root stylesheet
+
+WARNING: "foo
+    input.scss 3:1  root stylesheet
+
+WARNING: "foo"bar
+    input.scss 4:1  root stylesheet
+
+WARNING: "foo" and "bar"
+    input.scss 5:1  root stylesheet

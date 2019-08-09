@@ -1,0 +1,86 @@
+<===> input.scss
+.m__exhibit-header--medium {
+    @extend #{&}--plain;
+    &--plain {
+        font-size: 1em;
+    }
+}
+
+foo {
+  bar[baz="#{&}"][str="&"] {
+    asd: qwe;
+  }
+}
+
+A, B, C {
+  #{&}-foo#{&}-bar {
+    color: blue;
+  }
+  #{"A, B, C"}-foo#{"A, B, C"}-bar {
+    color: blue;
+  }
+}
+
+A {
+  B#{&}C {
+    .b, .c, .d {
+      #{&}-foo {
+        parent: &bar;
+        itpl: #{&}bar;
+      }
+      #{"A .b, A .c, A .d"}-foo {
+        parent: &bar;
+        itpl: #{&}bar;
+      }
+    }
+  }
+}
+<===> output.css
+.m__exhibit-header--medium--plain, .m__exhibit-header--medium {
+  font-size: 1em;
+}
+
+foo bar[baz="foo"][str="&"] {
+  asd: qwe;
+}
+
+A A, A B, A C-fooA, A B, A C-bar, B A, B B, B C-fooA, B B, B C-bar, C A, C B, C C-fooA, C B, C C-bar {
+  color: blue;
+}
+A A, A B, A C-fooA, A B, A C-bar, B A, B B, B C-fooA, B B, B C-bar, C A, C B, C C-fooA, C B, C C-bar {
+  color: blue;
+}
+
+A BAC .b A BAC .b, A BAC .b A BAC .c, A BAC .b A BAC .d-foo, A BAC .c A BAC .b, A BAC .c A BAC .c, A BAC .c A BAC .d-foo, A BAC .d A BAC .b, A BAC .d A BAC .c, A BAC .d A BAC .d-foo {
+  parent: A BAC .b A BAC .b, A BAC .b A BAC .c, A BAC .b A BAC .d-foo, A BAC .c A BAC .b, A BAC .c A BAC .c, A BAC .c A BAC .d-foo, A BAC .d A BAC .b, A BAC .d A BAC .c, A BAC .d A BAC .d-foo bar;
+  itpl: A BAC .b A BAC .b, A BAC .b A BAC .c, A BAC .b A BAC .d-foo, A BAC .c A BAC .b, A BAC .c A BAC .c, A BAC .c A BAC .d-foo, A BAC .d A BAC .b, A BAC .d A BAC .c, A BAC .d A BAC .d-foobar;
+}
+A BAC .b A .b, A BAC .b A .c, A BAC .b A .d-foo, A BAC .c A .b, A BAC .c A .c, A BAC .c A .d-foo, A BAC .d A .b, A BAC .d A .c, A BAC .d A .d-foo {
+  parent: A BAC .b A .b, A BAC .b A .c, A BAC .b A .d-foo, A BAC .c A .b, A BAC .c A .c, A BAC .c A .d-foo, A BAC .d A .b, A BAC .d A .c, A BAC .d A .d-foo bar;
+  itpl: A BAC .b A .b, A BAC .b A .c, A BAC .b A .d-foo, A BAC .c A .b, A BAC .c A .c, A BAC .c A .d-foo, A BAC .d A .b, A BAC .d A .c, A BAC .d A .d-foobar;
+}
+
+<===> output-dart-sass.css
+.m__exhibit-header--medium--plain, .m__exhibit-header--medium {
+  font-size: 1em;
+}
+
+foo bar[baz=foo][str="&"] {
+  asd: qwe;
+}
+
+A A, A B, A C-fooA, A B, A C-bar, B A, B B, B C-fooA, B B, B C-bar, C A, C B, C C-fooA, C B, C C-bar {
+  color: blue;
+}
+A A, A B, A C-fooA, A B, A C-bar, B A, B B, B C-fooA, B B, B C-bar, C A, C B, C C-fooA, C B, C C-bar {
+  color: blue;
+}
+
+A BAC .b A BAC .b, A BAC .b A BAC .c, A BAC .b A BAC .d-foo, A BAC .c A BAC .b, A BAC .c A BAC .c, A BAC .c A BAC .d-foo, A BAC .d A BAC .b, A BAC .d A BAC .c, A BAC .d A BAC .d-foo {
+  parent: A BAC .b A BAC .b, A BAC .b A BAC .c, A BAC .b A BAC .d-foo, A BAC .c A BAC .b, A BAC .c A BAC .c, A BAC .c A BAC .d-foo, A BAC .d A BAC .b, A BAC .d A BAC .c, A BAC .d A BAC .d-foo bar;
+  itpl: A BAC .b A BAC .b, A BAC .b A BAC .c, A BAC .b A BAC .d-foo, A BAC .c A BAC .b, A BAC .c A BAC .c, A BAC .c A BAC .d-foo, A BAC .d A BAC .b, A BAC .d A BAC .c, A BAC .d A BAC .d-foobar;
+}
+A BAC .b A .b, A BAC .b A .c, A BAC .b A .d-foo, A BAC .c A .b, A BAC .c A .c, A BAC .c A .d-foo, A BAC .d A .b, A BAC .d A .c, A BAC .d A .d-foo {
+  parent: A BAC .b A .b, A BAC .b A .c, A BAC .b A .d-foo, A BAC .c A .b, A BAC .c A .c, A BAC .c A .d-foo, A BAC .d A .b, A BAC .d A .c, A BAC .d A .d-foo bar;
+  itpl: A BAC .b A .b, A BAC .b A .c, A BAC .b A .d-foo, A BAC .c A .b, A BAC .c A .c, A BAC .c A .d-foo, A BAC .d A .b, A BAC .d A .c, A BAC .d A .d-foobar;
+}

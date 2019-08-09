@@ -1,0 +1,14 @@
+<===> input.scss
+div, span {
+	color: red;
+	\ foo {
+		color: blue;
+	}
+}
+<===> output.css
+div, span {
+  color: red;
+}
+div \ foo, span \ foo {
+  color: blue;
+}

@@ -1,0 +1,21 @@
+<===> input.scss
+a {
+  &:c, & d {
+    hey: ho;
+  }
+}
+
+a b {
+  &:c, & d {
+    hey: ho;
+  }
+}
+
+<===> output.css
+a:c, a d {
+  hey: ho;
+}
+
+a b:c, a b d {
+  hey: ho;
+}

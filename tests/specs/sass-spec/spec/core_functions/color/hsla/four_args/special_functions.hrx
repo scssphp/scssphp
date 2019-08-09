@@ -1,0 +1,56 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2726
+
+<===> input.scss
+a {
+  calc-1: hsla(calc(1), 2%, 3%, 0.4);
+  calc-2: hsla(1, calc(2%), 3%, 0.4);
+  calc-3: hsla(1, 2%, calc(3%), 0.4);
+  calc-4: hsla(1, 2%, 3%, calc(0.4));
+
+  var-1: hsla(var(--foo), 2%, 3%, 0.4);
+  var-2: hsla(1, var(--foo), 3%, 0.4);
+  var-3: hsla(1, 2%, var(--foo), 0.4);
+  var-4: hsla(1, 2%, 3%, var(--foo));
+
+  env-1: hsla(env(--foo), 2%, 3%, 0.4);
+  env-2: hsla(1, env(--foo), 3%, 0.4);
+  env-3: hsla(1, 2%, env(--foo), 0.4);
+  env-4: hsla(1, 2%, 3%, env(--foo));
+
+  min-1: hsla(min(1), 2%, 3%, 0.4);
+  min-2: hsla(1, min(2%), 3%, 0.4);
+  min-3: hsla(1, 2%, min(3%), 0.4);
+  min-4: hsla(1, 2%, 3%, min(0.4));
+
+  max-1: hsla(max(1), 2%, 3%, 0.4);
+  max-2: hsla(1, max(2%), 3%, 0.4);
+  max-3: hsla(1, 2%, max(3%), 0.4);
+  max-4: hsla(1, 2%, 3%, max(0.4));
+}
+
+<===> output.css
+a {
+  calc-1: hsla(calc(1), 2%, 3%, 0.4);
+  calc-2: hsla(1, calc(2%), 3%, 0.4);
+  calc-3: hsla(1, 2%, calc(3%), 0.4);
+  calc-4: hsla(1, 2%, 3%, calc(0.4));
+  var-1: hsla(var(--foo), 2%, 3%, 0.4);
+  var-2: hsla(1, var(--foo), 3%, 0.4);
+  var-3: hsla(1, 2%, var(--foo), 0.4);
+  var-4: hsla(1, 2%, 3%, var(--foo));
+  env-1: hsla(env(--foo), 2%, 3%, 0.4);
+  env-2: hsla(1, env(--foo), 3%, 0.4);
+  env-3: hsla(1, 2%, env(--foo), 0.4);
+  env-4: hsla(1, 2%, 3%, env(--foo));
+  min-1: hsla(min(1), 2%, 3%, 0.4);
+  min-2: hsla(1, min(2%), 3%, 0.4);
+  min-3: hsla(1, 2%, min(3%), 0.4);
+  min-4: hsla(1, 2%, 3%, min(0.4));
+  max-1: hsla(max(1), 2%, 3%, 0.4);
+  max-2: hsla(1, max(2%), 3%, 0.4);
+  max-3: hsla(1, 2%, max(3%), 0.4);
+  max-4: hsla(1, 2%, 3%, max(0.4));
+}

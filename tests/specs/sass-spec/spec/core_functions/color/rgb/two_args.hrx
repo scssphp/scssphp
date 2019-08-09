@@ -1,0 +1,61 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2722
+
+<===> input.scss
+opaque-to {
+  opaque: rgb(#123, 1);
+  partial: rgb(#123, 0.5);
+  transparent: rgb(#123, 0);
+}
+
+partial-to {
+  $color: rgb(0, 0, 255, 0.3);
+  opaque: rgb($color, 1);
+  partial: rgb($color, 0.5);
+  transparent: rgb($color, 0);
+}
+
+transparent-to {
+  opaque: rgb(transparent, 1);
+  partial: rgb(transparent, 0.5);
+  transparent: rgb(transparent, 0);
+}
+
+clamped {
+  opaque: rgb(#123, 1.1);
+  transparent: rgb(#123, -0.1);
+}
+
+named {
+  x: rgb($color: #123, $alpha: 0.5);
+}
+
+<===> output.css
+opaque-to {
+  opaque: #112233;
+  partial: rgba(17, 34, 51, 0.5);
+  transparent: rgba(17, 34, 51, 0);
+}
+
+partial-to {
+  opaque: blue;
+  partial: rgba(0, 0, 255, 0.5);
+  transparent: rgba(0, 0, 255, 0);
+}
+
+transparent-to {
+  opaque: black;
+  partial: rgba(0, 0, 0, 0.5);
+  transparent: rgba(0, 0, 0, 0);
+}
+
+clamped {
+  opaque: #112233;
+  transparent: rgba(17, 34, 51, 0);
+}
+
+named {
+  x: rgba(17, 34, 51, 0.5);
+}

@@ -1,0 +1,115 @@
+<===> input.sass
+// The amount of the column of a single row.
+$columnAmount: 16
+
+// The name of the each column size.
+$columnName  : one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen
+
+=column-generator
+  @for $i from 1 through $columnAmount
+    [class*="#{nth($columnName, $i)} wide"]
+      width: 100% / $columnAmount * $i 
+
+    &[class*="#{nth($columnName, $i)} column"], & .row[class*="#{nth($columnName, $i)} column"]
+      > .column:not(.row)
+        width  : 100% / $columnAmount * $i !important
+
+.grid
+  +column-generator
+<===> output.css
+.grid [class*="one wide"] {
+  width: 6.25%;
+}
+.grid[class*="one column"] > .column:not(.row), .grid .row[class*="one column"] > .column:not(.row) {
+  width: 6.25% !important;
+}
+.grid [class*="two wide"] {
+  width: 12.5%;
+}
+.grid[class*="two column"] > .column:not(.row), .grid .row[class*="two column"] > .column:not(.row) {
+  width: 12.5% !important;
+}
+.grid [class*="three wide"] {
+  width: 18.75%;
+}
+.grid[class*="three column"] > .column:not(.row), .grid .row[class*="three column"] > .column:not(.row) {
+  width: 18.75% !important;
+}
+.grid [class*="four wide"] {
+  width: 25%;
+}
+.grid[class*="four column"] > .column:not(.row), .grid .row[class*="four column"] > .column:not(.row) {
+  width: 25% !important;
+}
+.grid [class*="five wide"] {
+  width: 31.25%;
+}
+.grid[class*="five column"] > .column:not(.row), .grid .row[class*="five column"] > .column:not(.row) {
+  width: 31.25% !important;
+}
+.grid [class*="six wide"] {
+  width: 37.5%;
+}
+.grid[class*="six column"] > .column:not(.row), .grid .row[class*="six column"] > .column:not(.row) {
+  width: 37.5% !important;
+}
+.grid [class*="seven wide"] {
+  width: 43.75%;
+}
+.grid[class*="seven column"] > .column:not(.row), .grid .row[class*="seven column"] > .column:not(.row) {
+  width: 43.75% !important;
+}
+.grid [class*="eight wide"] {
+  width: 50%;
+}
+.grid[class*="eight column"] > .column:not(.row), .grid .row[class*="eight column"] > .column:not(.row) {
+  width: 50% !important;
+}
+.grid [class*="nine wide"] {
+  width: 56.25%;
+}
+.grid[class*="nine column"] > .column:not(.row), .grid .row[class*="nine column"] > .column:not(.row) {
+  width: 56.25% !important;
+}
+.grid [class*="ten wide"] {
+  width: 62.5%;
+}
+.grid[class*="ten column"] > .column:not(.row), .grid .row[class*="ten column"] > .column:not(.row) {
+  width: 62.5% !important;
+}
+.grid [class*="eleven wide"] {
+  width: 68.75%;
+}
+.grid[class*="eleven column"] > .column:not(.row), .grid .row[class*="eleven column"] > .column:not(.row) {
+  width: 68.75% !important;
+}
+.grid [class*="twelve wide"] {
+  width: 75%;
+}
+.grid[class*="twelve column"] > .column:not(.row), .grid .row[class*="twelve column"] > .column:not(.row) {
+  width: 75% !important;
+}
+.grid [class*="thirteen wide"] {
+  width: 81.25%;
+}
+.grid[class*="thirteen column"] > .column:not(.row), .grid .row[class*="thirteen column"] > .column:not(.row) {
+  width: 81.25% !important;
+}
+.grid [class*="fourteen wide"] {
+  width: 87.5%;
+}
+.grid[class*="fourteen column"] > .column:not(.row), .grid .row[class*="fourteen column"] > .column:not(.row) {
+  width: 87.5% !important;
+}
+.grid [class*="fifteen wide"] {
+  width: 93.75%;
+}
+.grid[class*="fifteen column"] > .column:not(.row), .grid .row[class*="fifteen column"] > .column:not(.row) {
+  width: 93.75% !important;
+}
+.grid [class*="sixteen wide"] {
+  width: 100%;
+}
+.grid[class*="sixteen column"] > .column:not(.row), .grid .row[class*="sixteen column"] > .column:not(.row) {
+  width: 100% !important;
+}

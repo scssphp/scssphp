@@ -1,0 +1,26 @@
+<===> input.scss
+$prop: display;
+$val: flow-root;
+
+@mixin supports($prop, $val) {
+  @supports ($prop: $val) {
+    $prop: $val;
+  }
+}
+
+div {
+  @include supports($prop, $val);
+}
+
+div {
+  @supports ($prop: $val) {
+    #{$prop}: $val;
+  }
+}
+
+<===> output.css
+@supports (display: flow-root) {
+  div {
+    display: flow-root;
+  }
+}

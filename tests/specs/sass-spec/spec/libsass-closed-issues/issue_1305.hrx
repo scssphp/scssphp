@@ -1,0 +1,23 @@
+<===> input.scss
+.foo {
+    content: call('unquote', 'foo', ()...);
+}
+
+<===> output.css
+.foo {
+  content: foo;
+}
+
+<===> warning
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(function-reference(unquote)) instead.
+
+<===> warning-dart-sass
+DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal
+in Sass 4.0. Use call(get-function("unquote")) instead.
+
+  ,
+2 |     content: call('unquote', 'foo', ()...);
+  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 2:14  root stylesheet

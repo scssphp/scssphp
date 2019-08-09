@@ -1,0 +1,11 @@
+<===> input.scss
+@if feature-exists(at-error) {
+  div {
+    feature: true;
+  }
+}
+
+<===> output.css
+div {
+  feature: true;
+}

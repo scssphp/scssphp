@@ -1,0 +1,8 @@
+<===> input.scss
+foo {
+  bar: if(0,0<0,0);
+}
+<===> output.css
+foo {
+  bar: false;
+}

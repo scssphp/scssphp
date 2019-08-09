@@ -1,0 +1,13 @@
+<===> input.scss
+@at-root {
+  pre#{&} {
+    foo {
+      bar: baz;
+    }
+  }
+}
+
+<===> output.css
+pre foo {
+  bar: baz;
+}

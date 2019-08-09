@@ -1,0 +1,39 @@
+<===> input.scss
+@mixin main(
+  $param1: param1,
+  $param2: param2,
+  $param3: param3
+) {
+  param1-value: $param1;
+  param2-value: $param2;
+  param3-value: $param3;
+}
+
+@mixin router($args...) {
+  @if (true) { @include main($args...) }
+  @else { @include main2($args...) }
+}
+
+@mixin helper($args...) {
+  @include router($param2: param__2, $args...)
+}
+
+.ordinal-arguments {
+  @include helper(param___1);
+}
+
+.named-arguments {
+  @include helper($param1: param___1);
+}
+<===> output.css
+.ordinal-arguments {
+  param1-value: param___1;
+  param2-value: param__2;
+  param3-value: param3;
+}
+
+.named-arguments {
+  param1-value: param___1;
+  param2-value: param__2;
+  param3-value: param3;
+}

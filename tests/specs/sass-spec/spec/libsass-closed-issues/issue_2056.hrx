@@ -1,0 +1,9 @@
+<===> input.scss
+:foobar(.baz) {
+    color: red;
+}
+
+<===> output.css
+:foobar(.baz) {
+  color: red;
+}

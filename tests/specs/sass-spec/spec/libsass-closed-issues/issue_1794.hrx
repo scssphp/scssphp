@@ -1,0 +1,10 @@
+<===> input.scss
+@media (max-width /*comment*/ : 500px) {
+  foo { bar: baz; }
+}
+<===> output.css
+@media (max-width: 500px) {
+  foo {
+    bar: baz;
+  }
+}

@@ -1,0 +1,41 @@
+<===> input.scss
+@media only screen {
+  .foo {
+    content: bar;
+
+    @media (min-width: 1337px) {
+      content: baz;
+    }
+
+    content: foo;
+  }
+}
+
+$foo: "(min-width: 0) and (max-width: 599px),  (min-width: 600px) and (max-width: 899px)";
+@media #{$foo} {
+  $bar: "(min-width: 0) and (max-width: 599px)";
+  @media #{$bar} {
+    .foo {
+      content: bar;
+    }
+  }
+}
+
+<===> output.css
+@media only screen {
+  .foo {
+    content: bar;
+    content: foo;
+  }
+}
+@media only screen and (min-width: 1337px) {
+  .foo {
+    content: baz;
+  }
+}
+
+@media (min-width: 0) and (max-width: 599px) and (min-width: 0) and (max-width: 599px), (min-width: 600px) and (max-width: 899px) and (min-width: 0) and (max-width: 599px) {
+  .foo {
+    content: bar;
+  }
+}

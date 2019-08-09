@@ -1,0 +1,48 @@
+<===> input.scss
+basic {
+  red: hsla(0 100% 50%);
+  blue: hsla(240 100% 50%);
+  grayish-yellow: hsla(60 60% 50%);
+}
+
+clamped {
+  saturation-above: hsla(0 500% 50%);
+  saturation-below: hsla(0 -100% 50%);
+  lightness-above: hsla(0 100% 500%);
+  lightness-below: hsla(0 100% -100%);
+}
+
+units {
+  hue-deg: hsla(0deg 100% 50%);
+  saturation-unitless: hsla(0 50 50%);
+  lightness-unitless: hsla(0 100% 50);
+}
+
+named {
+  x: hsla($channels: 0 100% 50%);
+}
+
+<===> output.css
+basic {
+  red: red;
+  blue: blue;
+  grayish-yellow: #cccc33;
+}
+
+
+clamped {
+  saturation-above: red;
+  saturation-below: gray;
+  lightness-above: white;
+  lightness-below: black;
+}
+
+units {
+  hue-deg: red;
+  saturation-unitless: #bf4040;
+  lightness-unitless: red;
+}
+
+named {
+  x: red;
+}

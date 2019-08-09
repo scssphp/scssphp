@@ -1,0 +1,38 @@
+<===> input.scss
+test {
+  border-top-color: darken(lighten(desaturate(#ffffff, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#fefefe, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#fdfdfd, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#fcfcfc, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#fbfbfb, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#fafafa, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#f9f9f9, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#f8f8f8, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#f7f7f7, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#f6f6f6, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#f5f5f5, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#f4f4f4, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#f3f3f3, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#f2f2f2, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#f1f1f1, 15.7%), 33.5%), 14.625%);
+  border-top-color: darken(lighten(desaturate(#f0f0f0, 15.7%), 33.5%), 14.625%);
+}
+<===> output.css
+test {
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+  border-top-color: #dadada;
+}

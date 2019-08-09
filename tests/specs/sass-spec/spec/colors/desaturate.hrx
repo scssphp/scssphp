@@ -1,0 +1,16 @@
+<===> input.scss
+p {
+  color: desaturate(#fff, 10%);
+  color: desaturate(#999, 10%);
+  color: desaturate(#000, 10%);
+  color: desaturate(#f00, 10%);
+  color: desaturate(#900, 10%);
+}
+<===> output.css
+p {
+  color: white;
+  color: #999999;
+  color: black;
+  color: #f20d0d;
+  color: #910808;
+}

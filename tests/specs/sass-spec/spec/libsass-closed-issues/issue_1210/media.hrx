@@ -1,0 +1,28 @@
+<===> input.scss
+foo {
+  @at-root {
+    @media print {
+      bar {
+        color: red;
+      }
+    }
+
+    baz {
+      @media speech {
+        color: blue;
+      }
+    }
+  }
+}
+
+<===> output.css
+@media print {
+  bar {
+    color: red;
+  }
+}
+@media speech {
+  baz {
+    color: blue;
+  }
+}

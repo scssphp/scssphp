@@ -1,0 +1,18 @@
+<===> input.scss
+// double comma in middle of arglist
+.error {
+  @include double-comma-error($a,,$b);
+}
+
+<===> error
+Error: Invalid CSS after "...comma-error($a,": expected ")", was ",$b);"
+        on line 3 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected ")".
+  ,
+3 |   @include double-comma-error($a,,$b);
+  |                                  ^
+  '
+  input.scss 3:34  root stylesheet

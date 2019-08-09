@@ -1,0 +1,21 @@
+<===> input.scss
+.theme1, .theme2 {
+  .something {
+    /* nothing */
+  }
+}
+
+$sel: selector-nest('.theme1, .theme2', '.something');
+  
+#{$sel} {
+  /* nothing */
+}
+
+<===> output.css
+.theme1 .something, .theme2 .something {
+  /* nothing */
+}
+
+.theme1 .something, .theme2 .something {
+  /* nothing */
+}

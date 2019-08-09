@@ -1,0 +1,30 @@
+<===> input.scss
+div {
+
+  &_foo {
+    blah: blah;
+  }
+  &--modifier {
+    blach: blah;
+  }
+  &hux {
+    blah: blah;
+  }
+  &div.foo#bar[hux] {
+    blah: blah;
+  }
+
+}
+<===> output.css
+div_foo {
+  blah: blah;
+}
+div--modifier {
+  blach: blah;
+}
+divhux {
+  blah: blah;
+}
+divdiv.foo#bar[hux] {
+  blah: blah;
+}

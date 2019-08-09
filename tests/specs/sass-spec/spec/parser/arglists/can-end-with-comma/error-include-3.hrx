@@ -1,0 +1,18 @@
+<===> input.scss
+// incorectly terminated
+.error {
+  @include incorrectly-terminated($a,$b,;
+}
+
+<===> error
+Error: Invalid CSS after "...rminated($a,$b,": expected ")", was ";"
+        on line 3 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected ")".
+  ,
+3 |   @include incorrectly-terminated($a,$b,;
+  |                                         ^
+  '
+  input.scss 3:41  root stylesheet

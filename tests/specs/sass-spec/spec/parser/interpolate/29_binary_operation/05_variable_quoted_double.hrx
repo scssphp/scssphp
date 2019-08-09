@@ -1,0 +1,28 @@
+<===> input.scss
+$input: "foo#{'ba' + 'r'}baz";
+.result {
+  dquoted: "#{#{$input}}";
+  dquoted: "#{"[#{$input}]"}";
+  dquoted: "#{"#{$input}"}";
+  dquoted: "#{'#{$input}'}";
+  dquoted: "#{"['#{$input}']"}";
+  squoted: '#{#{$input}}';
+  squoted: '#{"[#{$input}]"}';
+  squoted: '#{"#{$input}"}';
+  squoted: '#{'#{$input}'}';
+  squoted: '#{"['#{$input}']"}';
+}
+
+<===> output.css
+.result {
+  dquoted: "foobarbaz";
+  dquoted: "[foobarbaz]";
+  dquoted: "foobarbaz";
+  dquoted: "foobarbaz";
+  dquoted: "['foobarbaz']";
+  squoted: "foobarbaz";
+  squoted: "[foobarbaz]";
+  squoted: "foobarbaz";
+  squoted: "foobarbaz";
+  squoted: "['foobarbaz']";
+}

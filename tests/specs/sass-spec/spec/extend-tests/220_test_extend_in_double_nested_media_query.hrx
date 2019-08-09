@@ -1,0 +1,21 @@
+<===> input.scss
+@media all {
+@media (orientation: landscape) {
+  %foo {color: blue}
+  .bar {@extend %foo}
+}
+}
+
+<===> output.css
+@media all and (orientation: landscape) {
+  .bar {
+    color: blue;
+  }
+}
+
+<===> output-dart-sass.css
+@media (orientation: landscape) {
+  .bar {
+    color: blue;
+  }
+}

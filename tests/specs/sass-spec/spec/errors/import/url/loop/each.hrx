@@ -1,0 +1,7 @@
+<===> input.scss
+@each $i in (1) {
+  @import url("http://www.libsass.org");
+}
+
+<===> output.css
+@import url("http://www.libsass.org");

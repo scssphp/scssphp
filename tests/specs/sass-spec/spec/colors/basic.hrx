@@ -1,0 +1,18 @@
+<===> input.scss
+p {
+  color: rgb(255, 128, 0);
+  color: red green blue;
+  color: (red) (green) (blue);
+  color: red + hux;
+  color: unquote("red") + green;
+  foo: rgb(200, 150%, 170%);
+}
+<===> output.css
+p {
+  color: #ff8000;
+  color: red green blue;
+  color: red green blue;
+  color: redhux;
+  color: redgreen;
+  foo: #c8ffff;
+}

@@ -1,0 +1,63 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+
+@mixin foo($x, $y) {
+  color: $x, $y;
+}
+
+div {
+  color: type-of(red);
+  color: type-of("red");
+  color: type-of(#abc);
+  color: type-of(123);
+  color: type-of(45px);
+  color: type-of(98%);
+  color: type-of(1 2 3);
+  color: type-of(hey);
+  color: type-of("ho");
+  color: type-of(#{1+2}px);
+  color: type-of(true);
+  color: type-of(false);
+  color: type-of(45 or false);
+  color: type-of(#{#abc});
+  color: ty#{pe}-of(red);
+  color: quote(le#{ng}th(a b c d));
+  color: aqua;
+  $x : aqua;
+  color: $x;
+  color: $x;
+  width: #{1+2}+3;
+  thing: url(type-of(3+3));
+  //foo + bar: 3px;
+}
+
+//@import url(type-of(3+3));
+
+<===> output.css
+div {
+  color: color;
+  color: string;
+  color: color;
+  color: number;
+  color: number;
+  color: number;
+  color: list;
+  color: string;
+  color: string;
+  color: string;
+  color: bool;
+  color: bool;
+  color: number;
+  color: string;
+  color: type-of(red);
+  color: "length(a b c d)";
+  color: aqua;
+  color: aqua;
+  color: aqua;
+  width: 33;
+  thing: url(number);
+}

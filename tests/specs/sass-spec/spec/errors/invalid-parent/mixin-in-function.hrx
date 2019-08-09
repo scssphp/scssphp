@@ -1,0 +1,16 @@
+<===> input.scss
+@function foo () {
+  @mixin bar() {}
+}
+<===> error
+Error: Functions can only contain variable declarations and control directives.
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: This at-rule is not allowed here.
+  ,
+2 |   @mixin bar() {}
+  |   ^^^^^^^^^^^^^
+  '
+  input.scss 2:3  root stylesheet

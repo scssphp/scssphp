@@ -1,0 +1,3 @@
+Error: Invalid UTF-8 character "\xF6"
+        on line 1 of input.scss
+  Use --trace for backtrace.

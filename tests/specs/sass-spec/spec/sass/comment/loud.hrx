@@ -1,0 +1,61 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.sass
+/* Single-line
+
+/*
+  Multi
+  line
+
+/* Multiline starting on
+   the first line
+
+/* Preserves
+
+   empty
+
+
+   lines
+
+/* Ignores comment closer */
+
+/*
+  Handles
+         weird
+   indentation
+       gracefully
+
+/* Even
+      when
+     it starts
+         on the
+       first line
+
+/* Allows interpolation: #{1 + 1}
+
+<===> output.css
+/* Single-line */
+/* Multi
+ * line */
+/* Multiline starting on
+ * the first line */
+/* Preserves
+ *
+ * empty
+ *
+ *
+ * lines */
+/* Ignores comment closer */
+/* Handles
+ *       weird
+ * indentation
+ *     gracefully */
+/* Even
+ *    when
+ *   it starts
+ *       on the
+ *     first line */
+/* Allows interpolation: 2 */

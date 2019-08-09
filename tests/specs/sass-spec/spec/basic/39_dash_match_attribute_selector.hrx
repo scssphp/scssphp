@@ -1,0 +1,13 @@
+<===> input.scss
+div[class|="blah"] {
+  color: blue;
+}
+<===> output.css
+div[class|="blah"] {
+  color: blue;
+}
+
+<===> output-dart-sass.css
+div[class|=blah] {
+  color: blue;
+}

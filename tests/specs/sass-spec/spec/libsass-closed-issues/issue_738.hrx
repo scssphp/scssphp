@@ -1,0 +1,13 @@
+<===> input.scss
+.foo {
+  &--bar { color: red; }
+  &--1bar { color: blue;}
+}
+
+<===> output.css
+.foo--bar {
+  color: red;
+}
+.foo--1bar {
+  color: blue;
+}

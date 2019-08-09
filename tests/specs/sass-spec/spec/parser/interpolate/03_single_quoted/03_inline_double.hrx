@@ -1,0 +1,17 @@
+<===> input.scss
+.result {
+  output: #{#{'squoted'}};
+  output: #{"[#{'squoted'}]"};
+  output: #{"#{'squoted'}"};
+  output: #{'#{'squoted'}'};
+  output: #{"['#{'squoted'}']"};
+}
+
+<===> output.css
+.result {
+  output: squoted;
+  output: [squoted];
+  output: squoted;
+  output: squoted;
+  output: ['squoted'];
+}

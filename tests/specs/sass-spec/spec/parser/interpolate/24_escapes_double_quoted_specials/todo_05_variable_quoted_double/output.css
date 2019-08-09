@@ -1,0 +1,13 @@
+@charset "UTF-8";
+.result {
+  dquoted: "�_\a_\a";
+  dquoted: "[�_\a_\a]";
+  dquoted: "�_\a_\a";
+  dquoted: "�_\a_\a";
+  dquoted: "['�_\a_\a']";
+  squoted: "�_\a_\a";
+  squoted: "[�_\a_\a]";
+  squoted: "�_\a_\a";
+  squoted: "�_\a_\a";
+  squoted: "['�_\a_\a']";
+}

@@ -1,0 +1,21 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+@function baz() {
+    @return 'baz';
+}
+
+foo {
+    bar: baz()#{' !important'};
+    bar: baz() #{' !important'};
+}
+
+
+<===> output.css
+foo {
+  bar: "baz"  !important;
+  bar: "baz"  !important;
+}

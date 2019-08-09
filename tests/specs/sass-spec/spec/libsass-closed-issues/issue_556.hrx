@@ -1,0 +1,19 @@
+<===> input.scss
+$test: (
+  one: 1,
+  two: 2,
+);
+
+$expect: (
+  two: 2,
+  one: 1,
+);
+
+.test {
+  equal: $test == $expect;
+}
+
+<===> output.css
+.test {
+  equal: true;
+}

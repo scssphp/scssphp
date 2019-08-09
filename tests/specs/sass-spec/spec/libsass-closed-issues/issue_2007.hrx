@@ -1,0 +1,23 @@
+<===> input.scss
+@mixin foo() {
+  @media (mix-width: 100px) {
+    @extend %bar;
+  }
+}
+
+foo {
+  @media (mix-width: 100px) {
+    %bar {
+      foo: bar;
+    }
+  }
+
+  @include foo;
+}
+
+<===> output.css
+@media (mix-width: 100px) {
+  foo foo {
+    foo: bar;
+  }
+}

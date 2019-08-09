@@ -1,0 +1,17 @@
+<===> input.scss
+foo {
+  // A trailing comma forces the function to be parsed as a Sass function,
+  // rather than a CSS math function.
+  foo: min(1, 2, 3,);
+  foo: min(3px, 2px, 1,);
+  foo: min(4em,);
+  foo: min(10cm, 6in,);
+}
+
+<===> output.css
+foo {
+  foo: 1;
+  foo: 1;
+  foo: 4em;
+  foo: 10cm;
+}

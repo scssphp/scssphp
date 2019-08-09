@@ -1,0 +1,15 @@
+<===> input.scss
+.invert-with-weight {
+  zero-percent: invert(#edc, 0%);
+  ten-percent: invert(#edc, 10%);
+  keyword: invert(#edc, $weight: 10%);
+  one-hundred-percent: invert(#edc, 100%);
+}
+
+<===> output.css
+.invert-with-weight {
+  zero-percent: #eeddcc;
+  ten-percent: #d8cabd;
+  keyword: #d8cabd;
+  one-hundred-percent: #112233;
+}

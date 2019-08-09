@@ -1,0 +1,14 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2700
+
+<===> input.scss
+foo {
+  foo: to-upper-case(ab\63 d);
+}
+
+<===> output.css
+foo {
+  foo: ABCD;
+}

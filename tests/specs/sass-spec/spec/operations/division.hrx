@@ -1,0 +1,52 @@
+<===> slash/with_string/slash_plus_string/input.scss
+a {b: 1 / 2 + foo()}
+
+<===> slash/with_string/slash_plus_string/output.css
+a {
+  b: 0.5foo();
+}
+
+<===>
+================================================================================
+<===> slash/with_string/slash_minus_string/input.scss
+a {b: 1 / 2 - foo()}
+
+<===> slash/with_string/slash_minus_string/output.css
+a {
+  b: 0.5-foo();
+}
+
+<===>
+================================================================================
+<===> slash/with_string/slash_slash_string/options.yml
+---
+:todo:
+- libsass # sass/libsass#2840
+
+<===> slash/with_string/slash_slash_string/input.scss
+a {b: 1 / 2 / foo()}
+
+<===> slash/with_string/slash_slash_string/output.css
+a {
+  b: 1/2/foo();
+}
+
+<===>
+================================================================================
+<===> slash/with_string/string_plus_slash/input.scss
+a {b: foo() + 1 / 2}
+
+<===> slash/with_string/string_plus_slash/output.css
+a {
+  b: foo()0.5;
+}
+
+<===>
+================================================================================
+<===> slash/with_string/string_minus_slash/input.scss
+a {b: foo() - 1 / 2}
+
+<===> slash/with_string/string_minus_slash/output.css
+a {
+  b: foo()-0.5;
+}

@@ -1,0 +1,11 @@
+<===> input.scss
+div {
+  $l: append(a b, c d);
+  foo: nth($l, 3);
+  bar: type-of($l);
+}
+<===> output.css
+div {
+  foo: c d;
+  bar: list;
+}

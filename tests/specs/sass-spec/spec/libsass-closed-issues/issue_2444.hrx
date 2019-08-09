@@ -1,0 +1,11 @@
+<===> input.scss
+a {
+  @at-root (with: rule) {
+    b: c;
+  }
+}
+
+<===> output.css
+a {
+  b: c;
+}

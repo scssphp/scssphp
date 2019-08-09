@@ -1,0 +1,14 @@
+<===> input.scss
+%foo {color: blue}
+.bar {@extend %foo}
+.baz {@extend %foo}
+
+<===> output.css
+.bar, .baz {
+  color: blue;
+}
+
+<===> output-dart-sass.css
+.baz, .bar {
+  color: blue;
+}

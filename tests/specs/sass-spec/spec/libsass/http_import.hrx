@@ -1,0 +1,4 @@
+<===> input.scss
+@import "http://fonts.googleapis.com/css?family=Droid+Sans";
+<===> output.css
+@import "http://fonts.googleapis.com/css?family=Droid+Sans";

@@ -1,0 +1,73 @@
+<===> options.yml
+---
+:warning_todo:
+- libsass # sass/libsass#2834
+
+<===> input.scss
+$root_default: initial;
+$root_implicit: initial;
+$root_explicit: initial !global;
+
+@mixin set_variable_inner() {
+  $root_implicit: inner;
+  $root_explicit: inner !global;
+  $root_default: inner !default;
+  $local_implicit: inner;
+  $local_explicit: inner !global;
+  $local_default: inner !default;
+}
+
+@mixin set_variable_outer() {
+  $root_implicit: outer;
+  $root_explicit: outer !global;
+  $root_default: outer !default;
+  $local_implicit: outer;
+  $local_explicit: outer !global;
+  $local_default: outer !default;
+  @include set_variable_inner();
+}
+
+@include set_variable_outer();
+
+result {
+  root_default: $root_default;
+  root_implicit: $root_implicit;
+  root_explicit: $root_explicit;
+  @if variable-exists(local_default) {
+    local_default: $local_default;
+  }
+  @if variable-exists(local_implicit) {
+    local_implicit: $local_implicit;
+  }
+  @if variable-exists(local_explicit) {
+    local_explicit: $local_explicit;
+  }
+}
+
+<===> output.css
+result {
+  root_default: initial;
+  root_implicit: initial;
+  root_explicit: inner;
+  local_explicit: inner;
+}
+
+<===> warning
+DEPRECATION WARNING: As of Dart Sass 2.0.0, !global assignments won't be able to
+declare new variables. Consider adding `$root_explicit: null` at the top level.
+
+  ,
+3 | $root_explicit: initial !global;
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+    input.scss 3:1  root stylesheet
+
+DEPRECATION WARNING: As of Dart Sass 2.0.0, !global assignments won't be able to
+declare new variables. Consider adding `$local_explicit: null` at the top level.
+
+   ,
+19 |   $local_explicit: outer !global;
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   '
+    input.scss 19:3  set_variable_outer()
+    input.scss 24:1  root stylesheet

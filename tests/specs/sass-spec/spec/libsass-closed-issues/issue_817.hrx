@@ -1,0 +1,18 @@
+<===> input.scss
+foo {
+  foo: url('foo/bar.baz');
+  foo: url("foo/bar.baz");
+  foo: url(foo/bar.baz);
+  foo: foo('foo/bar.baz', "bar", 55);
+  foo: foo("foo/bar.baz", 'bar', 55);
+  foo: foo("foo/bar.baz", bar, 55); }
+
+<===> output.css
+foo {
+  foo: url("foo/bar.baz");
+  foo: url("foo/bar.baz");
+  foo: url(foo/bar.baz);
+  foo: foo("foo/bar.baz", "bar", 55);
+  foo: foo("foo/bar.baz", "bar", 55);
+  foo: foo("foo/bar.baz", bar, 55);
+}

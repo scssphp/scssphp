@@ -1,0 +1,14 @@
+<===> input.scss
+a {
+  display: block
+
+  b {
+    foo: bar;
+  }
+}
+
+<===> output.css
+a {
+  display: block b;
+  display-foo: bar;
+}

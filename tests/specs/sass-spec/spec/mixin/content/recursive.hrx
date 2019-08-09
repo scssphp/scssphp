@@ -1,0 +1,19 @@
+<===> input.scss
+@mixin span($i) {
+  x: y;
+  @content;
+}
+
+.a {
+  @include span(5) {
+    .inner { @include span(2); }
+  }
+}
+
+<===> output.css
+.a {
+  x: y;
+}
+.a .inner {
+  x: y;
+}

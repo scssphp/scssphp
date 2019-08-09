@@ -1,0 +1,8 @@
+<===> input.scss
+foo {a: 1 + // flang }
+  blang }
+
+<===> output.css
+foo {
+  a: 1blang;
+}

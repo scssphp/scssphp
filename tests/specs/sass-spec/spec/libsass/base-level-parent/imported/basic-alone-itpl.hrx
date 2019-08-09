@@ -1,0 +1,23 @@
+<===> include.scss
+#{&} {
+  foo {
+    bar: baz;
+  }
+}
+
+<===> input.scss
+@import "include.scss";
+<===> error
+Error: Invalid CSS after "": expected selector, was ""
+        on line 1 of include.scss
+        from line 1 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected selector.
+  ,
+1 | {
+  | ^
+  '
+  include.scss 1:1  @import
+  input.scss 1:9    root stylesheet

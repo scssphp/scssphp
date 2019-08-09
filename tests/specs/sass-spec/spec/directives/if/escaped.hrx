@@ -1,0 +1,13 @@
+<===> options.yml
+---
+:todo:
+- libsass # sass/libsass#2700
+
+<===> input.scss
+// Escapes should be normalized before directives are parsed.
+@\69 f true {a {b: c}}
+
+<===> output.css
+a {
+  b: c;
+}

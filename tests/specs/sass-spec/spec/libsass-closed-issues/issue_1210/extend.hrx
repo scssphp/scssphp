@@ -1,0 +1,62 @@
+<===> input.scss
+foo {
+  @at-root {
+    %placeholder {
+      color: red;
+    }
+  }
+
+  baz {
+    @at-root {
+      %other-placeholder {
+        color: blue;
+      }
+    }
+  }
+
+  %ampersand-placeholder & {
+    color: green;
+  }
+
+  @at-root {
+    qux {
+      @extend %ampersand-placeholder;
+    }
+  }
+}
+
+bar {
+  @extend %placeholder;
+}
+
+baz {
+  @extend %other-placeholder;
+}
+
+bam {
+  @extend %ampersand-placeholder;
+}
+
+<===> output.css
+bar {
+  color: red;
+}
+baz {
+  color: blue;
+}
+qux foo, bam foo {
+  color: green;
+}
+
+<===> output-dart-sass.css
+bar {
+  color: red;
+}
+
+baz {
+  color: blue;
+}
+
+bam foo, qux foo {
+  color: green;
+}

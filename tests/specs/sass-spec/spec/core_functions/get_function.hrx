@@ -1,0 +1,351 @@
+<===> user_defined/input.scss
+@function add-two($v) {@return $v + 2}
+$add-two-fn: get-function(add-two);
+
+a {b: call($add-two-fn, 10)}
+
+<===> user_defined/output.css
+a {
+  b: 12;
+}
+
+<===>
+================================================================================
+<===> redefined/input.scss
+@function add-two($v) {@return $v + 2}
+$add-two-fn: get-function(add-two);
+
+// The function returned by `get-function()` is locked in place when it's
+// called. Redefining the function after the fact shouldn't affect the stored
+// value.
+@function add-two($v) {@error "Should not be called"}
+
+a {b: call($add-two-fn, 10)}
+
+<===> redefined/output.css
+a {
+  b: 12;
+}
+
+<===>
+================================================================================
+<===> built_in/input.scss
+$lighten-fn: get-function(lighten);
+
+a {b: call($lighten-fn, red, 30%)}
+
+<===> built_in/output.css
+a {
+  b: #ff9999;
+}
+
+<===>
+================================================================================
+<===> through_import/input.scss
+@import "other";
+a {b: call(get-function(add-two), 10)}
+
+<===> through_import/other.scss
+@function add-two($v) {@return $v + 2}
+
+<===> through_import/output.css
+a {
+  b: 12;
+}
+
+<===>
+================================================================================
+<===> plain_css/input.scss
+$sass-fn: get-function(lighten);
+$css-fn: get-function(lighten, $css: true);
+
+a {
+  sass-fn: call($sass-fn, red, 30%);
+  css-fn: call($css-fn, red, 30%);
+}
+
+<===> plain_css/output.css
+a {
+  sass-fn: #ff9999;
+  css-fn: lighten(red, 30%);
+}
+
+<===>
+================================================================================
+<===> scope/stores_local_scope/options.yml
+---
+:todo:
+- libsass # sass/libsass#2830
+
+<===> scope/stores_local_scope/input.scss
+$add-two-fn: null;
+
+.scope {
+  @function add-two($v) {@return $v + 2}
+
+  // This function reference will still refer to this nested `add-two` function
+  // even when it goes out of scope.
+  $add-two-fn: get-function(add-two) !global;
+}
+
+a {b: call($add-two-fn, 10)}
+
+<===> scope/stores_local_scope/output.css
+a {
+  b: 12;
+}
+
+<===>
+================================================================================
+<===> scope/captures_inner_scope/input.scss
+@function add-two($v) {@error "Should not be called"}
+.scope1 {
+  @function add-two($v) {@error "Should not be called"}
+  .scope2 {
+    @function add-two($v) {@error "Should not be called"}
+    .scope3 {
+      @function add-two($v) {@return $v + 2}
+
+      // Like a normal function call, get-function() will always use the
+      // innermost definition of a function.
+      a: call(get-function(add-two), 10);
+    }
+  }
+}
+
+<===> scope/captures_inner_scope/output.css
+.scope1 .scope2 .scope3 {
+  a: 12;
+}
+
+<===>
+================================================================================
+<===> inspect/input.scss
+a {b: inspect(get-function(lighten))};
+
+<===> inspect/output.css
+a {
+  b: get-function("lighten");
+}
+
+<===>
+================================================================================
+<===> type_of/input.scss
+a {b: type-of(get-function(lighten))};
+
+<===> type_of/output.css
+a {
+  b: function;
+}
+
+<===>
+================================================================================
+<===> equality/same_value/input.scss
+$lighten-fn: get-function(lighten);
+a {b: $lighten-fn == $lighten-fn}
+
+<===> equality/same_value/output.css
+a {
+  b: true;
+}
+
+<===>
+================================================================================
+<===> equality/built_in/same/input.scss
+a {b: get-function(lighten) == get-function(lighten)}
+
+<===> equality/built_in/same/output.css
+a {
+  b: true;
+}
+
+<===>
+================================================================================
+<===> equality/built_in/different/input.scss
+a {b: get-function(lighten) == get-function(darken)}
+
+<===> equality/built_in/different/output.css
+a {
+  b: false;
+}
+
+<===>
+================================================================================
+<===> equality/user_defined/same/input.scss
+@function user-defined() {@return null}
+a {b: get-function(user-defined) == get-function(user-defined)}
+
+<===> equality/user_defined/same/output.css
+a {
+  b: true;
+}
+
+<===>
+================================================================================
+<===> equality/user_defined/different/input.scss
+@function user-defined-1() {@return null}
+@function user-defined-2() {@return null}
+a {b: get-function(user-defined-1) == get-function(user-defined-2)}
+
+<===> equality/user_defined/different/output.css
+a {
+  b: false;
+}
+
+<===>
+================================================================================
+<===> equality/user_defined/redefined/input.scss
+@function user-defined() {@return null}
+$first-reference: get-function(user-defined);
+
+@function user-defined() {@return null}
+$second-reference: second-function(user-defined);
+a {b: $first-reference == $second-reference}
+
+<===> equality/user_defined/redefined/output.css
+a {
+  b: false;
+}
+
+<===>
+================================================================================
+<===> error/argument/type/name/input.scss
+a {b: get-function(2px)}
+
+<===> error/argument/type/name/error
+Error: $name: 2px is not a string for `get-function'
+        on line 1 of /sass/spec/core_functions/get-function/errors/illegal-argument/input.scss
+  Use --trace for backtrace.
+
+<===> error/argument/type/name/error-dart-sass
+Error: $name: 2px is not a string.
+  ,
+1 | a {b: get-function(2px)}
+  |       ^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:7  root stylesheet
+
+<===>
+================================================================================
+<===> error/argument/function_ref/input.scss
+@function foo() {
+  @return null;
+}
+
+$foo-ref: get-function(foo);
+a {b: get-function($foo-ref)}
+
+<===> error/argument/function_ref/error
+Error: $name: get-function("foo") is not a string for `get-function'
+        on line 6 of /sass/spec/core_functions/get-function/errors/passed-fn-ref/input.scss
+  Use --trace for backtrace.
+
+<===> error/argument/function_ref/error-dart-sass
+Error: $name: get-function("foo") is not a string.
+  ,
+6 | a {b: get-function($foo-ref)}
+  |       ^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 6:7  root stylesheet
+
+<===>
+================================================================================
+<===> error/argument/too_few/input.scss
+a {b: get-function()}
+
+<===> error/argument/too_few/error
+Error: Missing argument $name.
+  ,
+1 | a {b: get-function()}
+  |       ^^^^^^^^^^^^^^
+  '
+  input.scss 1:7  root stylesheet
+
+<===> error/argument/too_few/error-libsass
+Error: Function get-function is missing argument $name.
+        on line 1 of input.scss
+>> a {b: get-function()}
+
+   ------^
+
+<===>
+================================================================================
+<===> error/argument/too_many/input.scss
+a {b: get-function(lighten, true, lighten)}
+
+<===> error/argument/too_many/error
+Error: Only 2 arguments allowed, but 3 were passed.
+  ,
+1 | a {b: get-function(lighten, true, lighten)}
+  |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:7  root stylesheet
+
+<===> error/argument/too_many/error-libsass
+Error: wrong number of arguments (3 for 2) for `get-function'
+        on line 1:7 of input.scss
+>> a {b: get-function(lighten, true, lighten)}
+
+   ------^
+
+<===>
+================================================================================
+<===> error/non_existent/input.scss
+a {b: get-function(does-not-exist)}
+
+<===> error/non_existent/error
+Error: Function not found: does-not-exist
+        on line 1 of /sass/spec/core_functions/get-function/errors/non-existent/input.scss
+  Use --trace for backtrace.
+
+<===> error/non_existent/error-dart-sass
+Error: Function not found: does-not-exist
+  ,
+1 | a {b: get-function(does-not-exist)}
+  |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:7  root stylesheet
+
+<===>
+================================================================================
+<===> error/division/input.scss
+a {b: get-function(rgb) / get-function(lighten)}
+
+<===> error/division/error
+Error: get-function("rgb") isn't a valid CSS value.
+        on line 3 of /sass/spec/core_functions/get-function/errors/math/division/input.scss
+  Use --trace for backtrace.
+
+<===> error/division/error-dart-sass
+Error: get-function("rgb") isn't a valid CSS value.
+  ,
+1 | a {b: get-function(rgb) / get-function(lighten)}
+  |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 1:7  root stylesheet
+
+<===>
+================================================================================
+<===> error/function_exists/input.scss
+@function add-two($v) {
+  @return $v + 2;
+}
+
+$add-two-fn: get-function(add-two);
+
+.error {
+  error: function-exists($add-two-fn);
+}
+
+<===> error/function_exists/error
+Error: $name: get-function("add-two") is not a string for `function-exists'
+        on line 8 of /sass/spec/core_functions/get-function/errors/function-exists/input.scss
+  Use --trace for backtrace.
+
+<===> error/function_exists/error-dart-sass
+Error: $name: get-function("add-two") is not a string.
+  ,
+8 |   error: function-exists($add-two-fn);
+  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  '
+  input.scss 8:10  root stylesheet

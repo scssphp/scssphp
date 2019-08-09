@@ -1,0 +1,12 @@
+<===> input.scss
+@import "../assert_helpers";
+
+test {
+  a: refute_superselector(':nth-child(2n of .foo, .bar)', ':nth-last-child(2n of .foo, .bar)');
+  b: refute_superselector(':nth-last-child(2n of .foo, .bar)', ':nth-child(2n of .foo, .bar)');
+}
+<===> output.css
+test {
+  a: true;
+  b: true;
+}

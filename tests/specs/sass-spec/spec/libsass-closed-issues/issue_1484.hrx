@@ -1,0 +1,15 @@
+<===> input.scss
+div {
+
+<===> error
+Error: Invalid CSS after "div {": expected "}", was ""
+        on line 2 of input.scss
+  Use --trace for backtrace.
+
+<===> error-dart-sass
+Error: expected "}".
+  ,
+1 | div {
+  |      ^
+  '
+  input.scss 1:6  root stylesheet

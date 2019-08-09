@@ -1,0 +1,18 @@
+<===> input.scss
+a + b, .class {
+  blah: blah;
+  bleh: bleh;
+  d #id, f ~ g.other + h, > i#grar {
+    bloo: bloo;
+    blee: blee;
+  }
+}
+<===> output.css
+a + b, .class {
+  blah: blah;
+  bleh: bleh;
+}
+a + b d #id, a + b f ~ g.other + h, a + b > i#grar, .class d #id, .class f ~ g.other + h, .class > i#grar {
+  bloo: bloo;
+  blee: blee;
+}

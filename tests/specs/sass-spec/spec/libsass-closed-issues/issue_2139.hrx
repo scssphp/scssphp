@@ -1,0 +1,40 @@
+<===> input.scss
+.foo {
+  color: #FFF;
+}
+
+.bar .baz {
+  @extend .foo;
+
+  border: '1px';
+}
+
+*:not(.foo) {
+  display: none;
+}
+
+<===> output.css
+.foo, .bar .baz {
+  color: #FFF;
+}
+
+.bar .baz {
+  border: '1px';
+}
+
+*:not(.foo) {
+  display: none;
+}
+
+<===> output-dart-sass.css
+.foo, .bar .baz {
+  color: #FFF;
+}
+
+.bar .baz {
+  border: "1px";
+}
+
+*:not(.foo) {
+  display: none;
+}

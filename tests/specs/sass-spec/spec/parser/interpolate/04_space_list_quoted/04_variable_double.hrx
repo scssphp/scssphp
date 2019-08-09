@@ -1,0 +1,18 @@
+<===> input.scss
+$input: "alpha" 'beta';
+.result {
+  output: #{#{$input}};
+  output: #{"[#{$input}]"};
+  output: #{"#{$input}"};
+  output: #{'#{$input}'};
+  output: #{"['#{$input}']"};
+}
+
+<===> output.css
+.result {
+  output: alpha beta;
+  output: [alpha beta];
+  output: alpha beta;
+  output: alpha beta;
+  output: ['alpha beta'];
+}

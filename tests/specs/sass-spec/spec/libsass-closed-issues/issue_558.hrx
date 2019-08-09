@@ -1,0 +1,17 @@
+<===> input.scss
+@function is_gold($c) {
+    @if ($c == gold) {
+        @return 'yes';
+    }
+    @return 'no';
+}
+
+div {
+    foo: is_gold(gold);
+    bar: is_gold(white);
+}
+<===> output.css
+div {
+  foo: "yes";
+  bar: "no";
+}

@@ -1,0 +1,25 @@
+<===> options.yml
+---
+:todo:
+- libsass
+
+<===> input.scss
+a {
+  // var() is substituted before parsing, so it may contain multiple arguments.
+  b: rgba(var(--foo), 3, 0.4);
+  b: rgba(1, var(--foo), 0.4);
+  b: rgba(1, 2, var(--foo));
+  b: rgba(var(--foo), 0.4);
+  b: rgba(1, var(--foo));
+  b: rgba(var(--foo));
+}
+
+<===> output.css
+a {
+  b: rgba(var(--foo), 3, 0.4);
+  b: rgba(1, var(--foo), 0.4);
+  b: rgba(1, 2, var(--foo));
+  b: rgba(var(--foo), 0.4);
+  b: rgba(1, var(--foo));
+  b: rgba(var(--foo));
+}
