@@ -3442,8 +3442,7 @@ class Compiler
                     if (!is_numeric($alpha) || $alpha < 1) {
                         if (is_numeric($alpha)) {
                             $a = new Node\Number($alpha, '');
-                        }
-                        else {
+                        } else {
                             $a = $alpha;
                         }
 
@@ -3451,7 +3450,7 @@ class Compiler
                     }
                 }
 
-                if(!is_numeric($r) || !is_numeric($g) || !is_numeric($b)) {
+                if (! is_numeric($r) || ! is_numeric($g) || ! is_numeric($b)) {
                     return 'rgb(' . $r . ', ' . $g . ', ' . $b . ')';
                 }
 
@@ -5035,7 +5034,7 @@ class Compiler
     {
         switch ($value[0]) {
             case Type::T_COLOR:
-                for ($i=1;$i<=3;$i++) {
+                for ($i=1; $i<=3; $i++) {
                     if (!is_numeric($value[$i])) {
                         $cv = $this->compileRGBAValue($value[$i]);
                         if (!is_numeric($cv)) {
@@ -5135,9 +5134,9 @@ class Compiler
      * @param bool $isAlpha
      * @return int|mixed
      */
-    protected function compileRGBAValue($value, $isAlpha = false) {
-        if (!is_numeric($value)) {
-
+    protected function compileRGBAValue($value, $isAlpha = false)
+    {
+        if (! is_numeric($value)) {
             if (is_array($value)) {
                 $reduced = $this->reduce($value);
                 if (is_object($reduced) && $value->type === Type::T_NUMBER) {
@@ -5154,17 +5153,16 @@ class Compiler
                         break;
                 }
                 $value = $num;
-            }
-            else {
+            } else {
                 $value = $this->compileValue($value);
             }
         }
 
         if (is_numeric($value)) {
             if ($isAlpha) {
-                return min(1,max(0,$value));
+                return min(1, max(0, $value));
             }
-            return min(255,max(0,round($value)));
+            return min(255, max(0, round($value)));
         }
 
         return $value;
@@ -5508,12 +5506,11 @@ class Compiler
                     if ($num[0] == Type::T_NUMBER) {
                         $alpha = $num[1];
                         $color[4] = $alpha;
+                    } else {
+                        $color = [Type::T_STRING, '',
+                            ['rgb(', $color[1], ', ', $color[2], ', ', $color[3], ', ', $num, ')']];
                     }
-                    else {
-                        $color = [Type::T_STRING, '', ['rgb(', $color[1], ', ', $color[2], ', ', $color[3], ', ', $num, ')']];
-                    }
-                }
-                else {
+                } else {
                     $color = [Type::T_STRING, '', ['rgb(', $args[0], ')']];
                 }
                 break;
