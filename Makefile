@@ -12,4 +12,4 @@ sass-spec:
 	TEST_SASS_SPEC=1 vendor/bin/phpunit --colors tests 2>&1 | tee /tmp/saas-spec.log | tail -2
 
 standard:
-	vendor/bin/phpcs --standard=PSR2 bin src example tests *.php
+	vendor/bin/phpcs --standard=PSR2 --extensions=php bin src example tests *.php
