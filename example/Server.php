@@ -62,13 +62,16 @@ class Server
      */
     protected function inputName()
     {
-        switch (true) {
-            case isset($_GET['p']):
-                return $_GET['p'];
-            case isset($_SERVER['PATH_INFO']):
-                return $_SERVER['PATH_INFO'];
-            case isset($_SERVER['DOCUMENT_URI']):
-                return substr($_SERVER['DOCUMENT_URI'], strlen($_SERVER['SCRIPT_NAME']));
+        if (isset($_GET['p'])) {
+            return $_GET['p'];
+        }
+
+        if (isset($_SERVER['PATH_INFO'])) {
+            return $_SERVER['PATH_INFO'];
+        }
+
+        if (isset($_SERVER['DOCUMENT_URI'])) {
+            return substr($_SERVER['DOCUMENT_URI'], strlen($_SERVER['SCRIPT_NAME']));
         }
     }
 
@@ -96,6 +99,8 @@ class Server
     /**
      * Get path to cached .css file
      *
+     * @param string $fname
+     *
      * @return string
      */
     protected function cacheName($fname)
@@ -105,6 +110,8 @@ class Server
 
     /**
      * Get path to meta data
+     *
+     * @param string $out
      *
      * @return string
      */

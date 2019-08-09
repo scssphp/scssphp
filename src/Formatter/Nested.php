@@ -63,7 +63,7 @@ class Nested extends Formatter
 
         foreach ($block->lines as $index => $line) {
             if (substr($line, 0, 2) === '/*') {
-                $block->lines[$index] = preg_replace('/(\r|\n)+/', $glue, $line);
+                $block->lines[$index] = preg_replace('/[\r\n]+/', $glue, $line);
             }
         }
 
@@ -98,7 +98,7 @@ class Nested extends Formatter
             array_pop($depths);
             $this->depth--;
 
-            if (!$this->depth && ($block->depth <= 1 || (!$this->indentLevel && $block->type === Type::T_COMMENT)) &&
+            if (! $this->depth && ($block->depth <= 1 || (! $this->indentLevel && $block->type === Type::T_COMMENT)) &&
                 (($block->selectors && ! $isMediaOrDirective) || $previousHasSelector)
             ) {
                 $downLevel = $this->break;
@@ -164,7 +164,7 @@ class Nested extends Formatter
         }
 
         if (! empty($block->children)) {
-            if ($this->depth>0 && ($isMediaOrDirective || ! $this->hasFlatChild($block))) {
+            if ($this->depth > 0 && ($isMediaOrDirective || ! $this->hasFlatChild($block))) {
                 array_pop($depths);
 
                 $this->depth--;

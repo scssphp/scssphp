@@ -218,8 +218,8 @@ class Parser
      *
      * @api
      *
-     * @param string $buffer
-     * @param string $out
+     * @param string       $buffer
+     * @param string|array $out
      *
      * @return boolean
      */
@@ -245,8 +245,8 @@ class Parser
      *
      * @api
      *
-     * @param string $buffer
-     * @param string $out
+     * @param string       $buffer
+     * @param string|array $out
      *
      * @return boolean
      */
@@ -272,10 +272,10 @@ class Parser
      *
      * @api
      *
-     * @param string $buffer
-     * @param string $out
+     * @param string       $buffer
+     * @param string|array $out
      *
-     * @return array
+     * @return boolean
      */
     public function parseMediaQueryList($buffer, &$out)
     {
@@ -286,7 +286,6 @@ class Parser
         $this->buffer          = (string) $buffer;
 
         $this->saveEncoding();
-
 
         $isMediaQuery = $this->mediaQueryList($out);
 
@@ -729,7 +728,7 @@ class Parser
 
             if ($this->eatWhiteDefault) {
                 $this->whitespace();
-                $this->append(null); // collect comments at the begining if needed
+                $this->append(null); // collect comments at the beginning if needed
             }
 
             return true;
@@ -843,7 +842,7 @@ class Parser
 
         $this->env = $b;
 
-        // collect comments at the begining of a block if needed
+        // collect comments at the beginning of a block if needed
         if ($this->eatWhiteDefault) {
             $this->whitespace();
 
@@ -2325,8 +2324,8 @@ class Parser
     /**
      * Parser interpolation
      *
-     * @param array   $out
-     * @param boolean $lookWhite save information about whitespace before and after
+     * @param string|array $out
+     * @param boolean      $lookWhite save information about whitespace before and after
      *
      * @return boolean
      */
@@ -2431,7 +2430,8 @@ class Parser
     /**
      * Parse comma separated selector list
      *
-     * @param array $out
+     * @param array   $out
+     * @param boolean $subSelector
      *
      * @return boolean
      */
@@ -2466,7 +2466,8 @@ class Parser
     /**
      * Parse whitespace separated selector list
      *
-     * @param array $out
+     * @param array   $out
+     * @param boolean $subSelector
      *
      * @return boolean
      */
@@ -2518,7 +2519,8 @@ class Parser
      *     div[yes=no]#something.hello.world:nth-child(-2n+1)%placeholder
      * }}
      *
-     * @param array $out
+     * @param array   $out
+     * @param boolean $subSelector
      *
      * @return boolean
      */
@@ -2795,7 +2797,7 @@ class Parser
     /**
      * Parse a placeholder
      *
-     * @param string $placeholder
+     * @param string|array $placeholder
      *
      * @return boolean
      */
@@ -2937,6 +2939,8 @@ class Parser
         } else {
             $validChars = $allowNewline ? '.' : "[^\n]";
         }
+
+        $m = null;
 
         if (! $this->match('(' . $validChars . '*?)' . $this->pregQuote($what), $m, ! $until)) {
             return false;

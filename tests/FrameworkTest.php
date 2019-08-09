@@ -45,7 +45,7 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
 
         try {
             $scss->compile($input, $inputfiles);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // test fail
         }
 

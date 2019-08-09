@@ -179,7 +179,9 @@ class Colors
 
     /**
      * Convert named color in a [r,g,b[,a]] array
+     *
      * @param string $colorName
+     *
      * @return array|null
      */
     public static function colorNameToRGBa($colorName)
@@ -189,30 +191,34 @@ class Colors
 
             // only case with opacity is transparent, with opacity=0, so we can intval on opacity also
             $rgba = array_map('intval', $rgba);
+
             return $rgba;
         }
+
         return null;
     }
 
     /**
      * Reverse conversion : from RGBA to a color name if possible
-     * @param int $r
-     * @param int $g
-     * @param int $b
-     * @param int $a
+     *
+     * @param integer $r
+     * @param integer $g
+     * @param integer $b
+     * @param integer $a
+     *
      * @return string|null
      */
     public static function RGBaToColorName($r, $g, $b, $a = 1)
     {
         static $reverseColorTable = null;
 
-        if (!is_numeric($r) || !is_numeric($g) || !is_numeric($b) || !is_numeric($a)) {
+        if (! is_numeric($r) || ! is_numeric($g) || ! is_numeric($b) || ! is_numeric($a)) {
             return null;
         }
 
         if ($a < 1) {
             # specific case we dont' revert according to spec
-            #if (! $a && !$r && !$g && !$b) {
+            #if (! $a && ! $r && ! $g && ! $b) {
             #    return 'transparent';
             #}
 
@@ -221,8 +227,10 @@ class Colors
 
         if (is_null($reverseColorTable)) {
             $reverseColorTable = [];
+
             foreach (static::$cssColors as $name => $rgb_str) {
                 $rgb_str = explode(',', $rgb_str);
+
                 if (count($rgb_str) == 3) {
                     $reverseColorTable[intval($rgb_str[0])][intval($rgb_str[1])][intval($rgb_str[2])] = $name;
                 }
@@ -232,6 +240,7 @@ class Colors
         if (isset($reverseColorTable[intval($r)][intval($g)][intval($b)])) {
             return $reverseColorTable[intval($r)][intval($g)][intval($b)];
         }
+
         return null;
     }
 }

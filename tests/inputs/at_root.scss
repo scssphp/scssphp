@@ -172,7 +172,7 @@ $table-padding: 10px !default;
 	@include badge-variant(yellow);
 }
 
-// combine everything in one: several levels of selecors, mixin, at-root and self
+// combine everything in one: several levels of selectors, mixin, at-root and self
 @mixin mixin-hover {
   &:hover { @content; }
   @at-root #{&}.foo {

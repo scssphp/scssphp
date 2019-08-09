@@ -25,7 +25,7 @@ function _quote($str)
 }
 
 /**
- * Input test - runs all the tests in inputs/ and compares their output to ouputs/
+ * Input test - runs all the tests in inputs/ and compares their output to outputs/
  *
  * @author Leaf Corcoran <leafot@gmail.com>
  */
