@@ -5526,7 +5526,7 @@ class Compiler
         ['channels'],
         ['red', 'green', 'blue'],
         ['red', 'green', 'blue', 'alpha'] ];
-    protected function libRgb($args, $kwargs, $funcName='rgb')
+    protected function libRgb($args, $kwargs, $funcName = 'rgb')
     {
         switch (count($args)) {
             case 1:
@@ -5550,8 +5550,7 @@ class Compiler
                         $color = [Type::T_STRING, '',
                             [$funcName . '(', $color[1], ', ', $color[2], ', ', $color[3], ', ', $alpha, ')']];
                     }
-                }
-                else {
+                } else {
                     $color = [Type::T_STRING, '', [$funcName . '(', $args[0], ')']];
                 }
                 break;
@@ -5773,7 +5772,7 @@ class Compiler
         ['channels'],
         ['hue', 'saturation', 'lightness'],
         ['hue', 'saturation', 'lightness', 'alpha'] ];
-    protected function libHsl($args, $kwargs, $funcName='hsl')
+    protected function libHsl($args, $kwargs, $funcName = 'hsl')
     {
         if (count($args) == 1) {
             if ($args[0][0] !== Type::T_LIST || count($args[0][2])<3 || count($args[0][2])>4) {
@@ -5790,7 +5789,8 @@ class Compiler
         if (count($args) === 4) {
             $alpha = $this->compileColorPartValue($args[3], 0, 100, false);
             if (!is_numeric($hue) || !is_numeric($saturation) || !is_numeric($lightness) || !is_numeric($alpha)) {
-                return [Type::T_STRING, '', [$funcName . '(', $args[0], ', ', $args[1], ', ', $args[2], ', ', $args[3], ')']];
+                return [Type::T_STRING, '',
+                    [$funcName . '(', $args[0], ', ', $args[1], ', ', $args[2], ', ', $args[3], ')']];
             }
         } else {
             if (!is_numeric($hue) || !is_numeric($saturation) || !is_numeric($lightness)) {
