@@ -10,8 +10,7 @@
     convertWarningsToExceptions = "true"
     processIsolation            = "false"
     stopOnFailure               = "false"
-    syntaxCheck                 = "false"
-    bootstrap                   = "scss.inc.php">
+    bootstrap                   = "shim.inc.php">
 
     <testsuites>
         <testsuite name="Project Test Suite">

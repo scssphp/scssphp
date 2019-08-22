@@ -40,6 +40,8 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
                 $this->fail('Unexpected exception raised: ' . $e->getMessage() . ' vs ' . $expectedExceptionMessage);
             }
 
+            $this->assertTrue(true);
+
             return;
         }
 
