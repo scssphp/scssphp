@@ -24,11 +24,6 @@ use ScssPhp\ScssPhp\Compiler;
  */
 class FailingTest extends \PHPUnit_Framework_TestCase
 {
-    public function setUp() : void
-    {
-        $this->scss = new Compiler();
-    }
-
     /**
      * @param string $id
      * @param string $scss
@@ -72,6 +67,8 @@ END_OF_EXPECTED
 
     private function compile($str)
     {
-        return trim($this->scss->compile($str));
+        $scss = new Compiler;
+
+        return trim($scss->compile($str));
     }
 }

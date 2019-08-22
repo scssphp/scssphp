@@ -20,11 +20,6 @@ use ScssPhp\ScssPhp\Compiler;
  */
 class ExceptionTest extends \PHPUnit_Framework_TestCase
 {
-    public function setUp() : void
-    {
-        $this->scss = new Compiler();
-    }
-
     /**
      * @param string $scss
      * @param string $expectedExceptionMessage
@@ -146,6 +141,8 @@ END_OF_SCSS
 
     private function compile($str)
     {
-        return trim($this->scss->compile($str));
+        $scss = new Compiler;
+
+        return trim($scss->compile($str));
     }
 }
