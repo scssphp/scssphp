@@ -30,7 +30,7 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "~2.5",
-        "phpunit/phpunit": "~4.6",
+        "phpunit/phpunit": "~4.8.36 || ~5.7.26 || ~6.5.5 || ~8.0.0",
         "twbs/bootstrap": "~4.3",
         "zurb/foundation": "~6.5"
     },
