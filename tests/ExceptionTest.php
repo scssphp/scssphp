@@ -20,7 +20,7 @@ use ScssPhp\ScssPhp\Compiler;
  */
 class ExceptionTest extends \PHPUnit_Framework_TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->scss = new Compiler();
     }
