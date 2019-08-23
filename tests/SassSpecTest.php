@@ -72,26 +72,6 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * {@inheritDoc}
-     */
-    protected function setUp()
-    {
-        if (is_null(static::$scss)) {
-            @ini_set('memory_limit', "256M");
-
-            static::$scss = new Compiler();
-            static::$scss->setFormatter('ScssPhp\ScssPhp\Formatter\Expanded');
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function tearDown()
-    {
-    }
-
-    /**
      * @param string $name
      * @param string $scss
      * @param string $css
@@ -103,7 +83,12 @@ class SassSpecTest extends \PHPUnit_Framework_TestCase
      */
     public function testTests($name, $input, $output)
     {
-        static $init = false;
+        if (is_null(static::$scss)) {
+            @ini_set('memory_limit', "256M");
+
+            static::$scss = new Compiler();
+            static::$scss->setFormatter('ScssPhp\ScssPhp\Formatter\Expanded');
+        }
 
         if (! getenv('TEST_SASS_SPEC') && in_array($name, $this->getExclusionList())) {
             $this->markTestSkipped('Define TEST_SASS_SPEC=1 to enable all sass-spec compatibility tests');

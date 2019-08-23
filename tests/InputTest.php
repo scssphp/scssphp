@@ -35,34 +35,16 @@ class InputTest extends \PHPUnit_Framework_TestCase
     protected static $outputDir = 'outputs';
     protected static $outputNumberedDir = 'outputs_numbered';
 
-    private $saveDir;
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function setUp()
-    {
-        $this->scss = new Compiler();
-        $this->scss->addImportPath(self::$inputDir);
-
-        $this->saveDir = getcwd();
-
-        chdir(__DIR__);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function tearDown()
-    {
-        chdir($this->saveDir);
-    }
-
     /**
      * @dataProvider fileNameProvider
      */
     public function testInputFile($inFname, $outFname)
     {
+        chdir(__DIR__);
+
+        $this->scss = new Compiler();
+        $this->scss->addImportPath(self::$inputDir);
+
         if (getenv('BUILD')) {
             return $this->buildInput($inFname, $outFname);
         }
@@ -84,6 +66,11 @@ class InputTest extends \PHPUnit_Framework_TestCase
      */
     public function testLineNumbering($inFname, $outFname)
     {
+        chdir(__DIR__);
+
+        $this->scss = new Compiler();
+        $this->scss->addImportPath(self::$inputDir);
+
         $this->scss->setLineNumberStyle(Compiler::LINE_COMMENTS);
 
         if (getenv('BUILD')) {

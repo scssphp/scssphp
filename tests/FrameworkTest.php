@@ -28,41 +28,23 @@ class FrameworkTest extends \PHPUnit_Framework_TestCase
         ]
     ];
 
-    private $saveDir;
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function setUp()
-    {
-        $this->scss = new Compiler();
-        $this->saveDir = getcwd();
-
-        chdir(__DIR__);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function tearDown()
-    {
-        chdir($this->saveDir);
-    }
-
     /**
      * @dataProvider frameworkProvider
      */
     public function testFramework($frameworkVersion, $inputdirectory, $inputfiles)
     {
-        $this->scss->addImportPath($inputdirectory);
+        chdir(__DIR__);
 
-        $input = file_get_contents($inputdirectory . $inputfiles);
+        $scss = new Compiler();
+        $scss->addImportPath(__DIR__ . '/' . $inputdirectory);
+
+        $input = file_get_contents(__DIR__ . '/' . $inputdirectory . $inputfiles);
 
         // Test if no exceptions are raised for the given framework
         $e = null;
 
         try {
-            $this->scss->compile($input, $inputfiles);
+            $scss->compile($input, $inputfiles);
         } catch (Exception $e) {
             // test fail
         }
