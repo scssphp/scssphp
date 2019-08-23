@@ -2752,10 +2752,14 @@ class Compiler
      * @param array   $value
      * @param boolean $inExp
      *
-     * @return string|array|\ScssPhp\ScssPhp\Node\Number
+     * @return null|string|array|\ScssPhp\ScssPhp\Node\Number
      */
     protected function reduce($value, $inExp = false)
     {
+        if ($value === null) {
+            return null;
+        }
+
         switch ($value[0]) {
             case Type::T_EXPRESSION:
                 list(, $op, $left, $right, $inParens) = $value;
@@ -4574,9 +4578,6 @@ class Compiler
             }
 
             foreach ($sorted as &$val) {
-                // @todo fix root cause for this php 7.4 hack
-                if ($val === null)  continue;
-
                 $val = $this->reduce($val, $inExp);
             }
         }
