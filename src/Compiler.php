@@ -4574,6 +4574,9 @@ class Compiler
             }
 
             foreach ($sorted as &$val) {
+                // @todo fix root cause for this php 7.4 hack
+                if ($val === null)  continue;
+
                 $val = $this->reduce($val, $inExp);
             }
         }
