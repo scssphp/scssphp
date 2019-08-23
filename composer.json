@@ -23,7 +23,7 @@
         "psr-4": { "ScssPhp\\ScssPhp\\": "src/" }
     },
     "autoload-dev": {
-        "psr-4": { "ScssPhp\\ScssPhp\\Test\\": "tests/" }
+        "psr-4": { "ScssPhp\\ScssPhp\\Tests\\": "tests/" }
     },
     "require": {
         "php": ">=5.6.0"

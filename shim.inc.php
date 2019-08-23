@@ -10,5 +10,5 @@ namespace
         }
     }
 
-    include_once __DIR__ . '/scss.inc.php';
+    include_once __DIR__ . '/vendor/composer/autoload_real.php';
 }
