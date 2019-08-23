@@ -20,6 +20,8 @@ use ScssPhp\ScssPhp\Compiler;
  */
 class ApiTest extends \PHPUnit_Framework_TestCase
 {
+    private $scss;
+
     public function testUserFunction()
     {
         $this->scss = new Compiler;

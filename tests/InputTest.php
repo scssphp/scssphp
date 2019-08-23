@@ -31,6 +31,8 @@ function _quote($str)
  */
 class InputTest extends \PHPUnit_Framework_TestCase
 {
+    private $scss;
+
     protected static $inputDir = 'inputs';
     protected static $outputDir = 'outputs';
     protected static $outputNumberedDir = 'outputs_numbered';
