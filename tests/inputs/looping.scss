@@ -175,3 +175,25 @@ $oc-color-list: (
     }
   }
 }
+
+// loop on map with string as key
+$str-color-list: (
+    "blue": #44e,
+    "green": #8d8,
+    "black": #333
+);
+$str-color-elements: (
+    "a": ("blue", "black"),
+    "div": ("green", "black")
+);
+
+@each $el, $colors in $str-color-elements {
+    @each $color-name, $color in $str-color-list {
+        @if(index($colors, $color-name) != null) {
+            #{$el}.#{$el}-#{$color-name} {
+                color: $color;
+            }
+        }
+    }
+}
+

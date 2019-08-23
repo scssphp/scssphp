@@ -5013,6 +5013,7 @@ class Compiler
                 switch ($key[0]) {
                     case Type::T_LIST:
                     case Type::T_MAP:
+                    case Type::T_STRING:
                         break;
 
                     default:
