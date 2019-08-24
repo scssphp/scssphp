@@ -200,3 +200,8 @@ div.unquote-test {
   transition: value1 value2, value3, value4;
   transition: value1, value2, value3, value4;
   transition: value1, value2, value3, value4; }
+
+/* line 256, inputs/builtins.scss */
+.list-zip-types {
+  zip: 2px solid;
+  zip: 3px "bold" blue; }

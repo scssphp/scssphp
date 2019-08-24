@@ -252,3 +252,8 @@ div.unquote-test {
     transition: join($one, $two, comma);
     transition: join((value1 value2), (value3 value4), comma);
 }
+
+.list-zip-types {
+  zip: zip(2px, (solid dashed));
+  zip: zip(3px, "bold", blue);
+}
