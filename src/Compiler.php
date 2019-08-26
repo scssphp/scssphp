@@ -6375,11 +6375,12 @@ class Compiler
     {
         foreach ($args as $key => $arg) {
             // if the args are not lists, put them into lists of one element each
-            if($arg[0] != Type::T_LIST) {
+            if ($arg[0] !== Type::T_LIST) {
                 // manually convert the type
                 $arg = [Type::T_LIST, '', [$arg]];
                 $args[$key] = $arg;
             }
+
             $this->assertList($arg);
         }
 
