@@ -1046,7 +1046,6 @@
 1963/1980. values/maps/duplicate-keys
 1964/1980. values/maps/errors
 1966/1980. values/maps/invalid-key
-1977/1980. values/maps/zip
 1978/1980. values/numbers/units/multiple
 1979/1980. variables/global/first_declaration/nested
 1980/1980. variables/global/first_declaration/top_level
