@@ -180,3 +180,7 @@ div.unquote-test {
   transition: value1 value2, value3, value4;
   transition: value1, value2, value3, value4;
   transition: value1, value2, value3, value4; }
+
+.list-zip-types {
+  zip: 2px solid;
+  zip: 3px "bold" blue; }
