@@ -2319,26 +2319,26 @@ class Compiler
 
                 $compiledName = $this->compileValue($name);
 
-                // handle shorthand syntax: size / line-height
-                if ($compiledName === 'font' || $compiledName === 'grid-row' || $compiledName === 'grid-column') {
+                // handle shorthand syntaxes : size / line-height...
+                if (in_array($compiledName, ['font', 'grid-row', 'grid-column', 'border-radius'])) {
                     if ($value[0] === Type::T_VARIABLE) {
                         // if the font value comes from variable, the content is already reduced
                         // (i.e., formulas were already calculated), so we need the original unreduced value
                         $value = $this->get($value[1], true, null, true);
                     }
 
-                    $fontValue=&$value;
+                    $shorthandValue=&$value;
 
                     if ($value[0] === Type::T_LIST && $value[1]==',') {
                         // this is the case if more than one font is given: example: "font: 400 1em/1.3 arial,helvetica"
                         // we need to handle the first list element
-                        $fontValue=&$value[2][0];
+                        $shorthandValue=&$value[2][0];
                     }
 
-                    if ($fontValue[0] === Type::T_EXPRESSION && $fontValue[1] === '/') {
-                        $fontValue = $this->expToString($fontValue);
-                    } elseif ($fontValue[0] === Type::T_LIST) {
-                        foreach ($fontValue[2] as &$item) {
+                    if ($shorthandValue[0] === Type::T_EXPRESSION && $shorthandValue[1] === '/') {
+                        $shorthandValue = $this->expToString($shorthandValue);
+                    } elseif ($shorthandValue[0] === Type::T_LIST) {
+                        foreach ($shorthandValue[2] as &$item) {
                             if ($item[0] === Type::T_EXPRESSION && $item[1] === '/') {
                                 $item = $this->expToString($item);
                             }

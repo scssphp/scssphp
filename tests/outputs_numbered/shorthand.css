@@ -36,4 +36,5 @@ div {
   grid-row: 2 / -1;
   grid-row: auto / auto;
   grid-row: span 3 / 6;
-  grid-row: 5 somegridarea span / 2 span; }
+  grid-row: 5 somegridarea span / 2 span;
+  border-radius: 0 0 0 100% / 0 0 0 30px; }
