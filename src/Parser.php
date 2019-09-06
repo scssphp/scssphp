@@ -3041,9 +3041,10 @@ class Parser
             return;
         }
 
-        $iniDirective = 'mbstring' . '.func_overload'; // deprecated in PHP 7.2
+        // deprecated in PHP 7.2
+        $iniDirective = 'mbstring.func_overload';
 
-        if (ini_get($iniDirective) & 2) {
+        if (extension_loaded('mbstring') && ini_get($iniDirective) & 2) {
             $this->encoding = mb_internal_encoding();
 
             mb_internal_encoding('iso-8859-1');
@@ -3055,7 +3056,7 @@ class Parser
      */
     private function restoreEncoding()
     {
-        if ($this->encoding) {
+        if (extension_loaded('mbstring') && $this->encoding) {
             mb_internal_encoding($this->encoding);
         }
     }
