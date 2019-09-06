@@ -98,7 +98,7 @@ class Cache
         $fileCache = self::$cacheDir . self::cacheName($operation, $what, $options);
 
         if ((! self::$forceRefresh || (self::$forceRefresh === 'once' &&
-            isset(self::$refreshed[$fileCache]))) && file_exists($fileCache)
+            isset(self::$refreshed[$fileCache]))) && is_file($fileCache)
         ) {
             $cacheTime = filemtime($fileCache);
 
@@ -176,13 +176,13 @@ class Cache
         self::$cacheDir = str_replace('\\', '/', self::$cacheDir);
         self::$cacheDir = rtrim(self::$cacheDir, '/') . '/';
 
-        if (! file_exists(self::$cacheDir)) {
+        if (! is_dir(self::$cacheDir)) {
             if (! mkdir(self::$cacheDir)) {
                 throw new Exception('Cache directory couldn\'t be created: ' . self::$cacheDir);
             }
-        } elseif (! is_dir(self::$cacheDir)) {
-            throw new Exception('Cache directory doesn\'t exist: ' . self::$cacheDir);
-        } elseif (! is_writable(self::$cacheDir)) {
+        }
+
+        if (! is_writable(self::$cacheDir)) {
             throw new Exception('Cache directory isn\'t writable: ' . self::$cacheDir);
         }
     }

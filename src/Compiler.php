@@ -229,7 +229,7 @@ class Compiler
             if (is_array($cache) && isset($cache['dependencies']) && isset($cache['out'])) {
                 // check if any dependency file changed before accepting the cache
                 foreach ($cache['dependencies'] as $file => $mtime) {
-                    if (! file_exists($file) || filemtime($file) !== $mtime) {
+                    if (! is_file($file) || filemtime($file) !== $mtime) {
                         unset($cache);
                         break;
                     }
@@ -4147,7 +4147,7 @@ class Compiler
      */
     public function addParsedFile($path)
     {
-        if (isset($path) && file_exists($path)) {
+        if (isset($path) && is_file($path)) {
             $this->parsedFiles[realpath($path)] = filemtime($path);
         }
     }
@@ -4350,8 +4350,8 @@ class Compiler
                     ) ? '/' : '';
                     $full = $dir . $separator . $full;
 
-                    if ($this->fileExists($file = $full . '.scss') ||
-                        ($hasExtension && $this->fileExists($file = $full))
+                    if (is_file($file = $full . '.scss') ||
+                        ($hasExtension && is_file($file = $full))
                     ) {
                         return $file;
                     }
@@ -4485,18 +4485,6 @@ class Compiler
                 break;
             }
         }
-    }
-
-    /**
-     * Does file exist?
-     *
-     * @param string $name
-     *
-     * @return boolean
-     */
-    protected function fileExists($name)
-    {
-        return file_exists($name) && is_file($name);
     }
 
     /**
