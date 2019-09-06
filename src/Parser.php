@@ -1154,7 +1154,7 @@ class Parser
     protected function append($statement, $pos = null)
     {
         if (! is_null($statement)) {
-            if ($pos !== null) {
+            if (! is_null($pos)) {
                 list($line, $column) = $this->getSourcePosition($pos);
 
                 $statement[static::SOURCE_LINE]   = $line;

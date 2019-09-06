@@ -291,11 +291,11 @@ class Server
 
         $compiled = $this->scss->compile(file_get_contents($in), $in);
 
-        if ($out !== null) {
-            return file_put_contents($out, $compiled);
+        if (is_null($out)) {
+            return $compiled;
         }
 
-        return $compiled;
+        return file_put_contents($out, $compiled);
     }
 
     /**
@@ -473,19 +473,20 @@ class Server
             return null;
         }
 
-        if ($root !== null) {
-            // If we have a root value which means we should rebuild.
-            $out = [];
-            $out['root'] = $root;
-            $out['compiled'] = $this->compileFile($root);
-            $out['files'] = $this->scss->getParsedFiles();
-            $out['updated'] = time();
-            return $out;
-        } else {
+        if (is_null($root)) {
             // No changes, pass back the structure
             // we were given initially.
             return $in;
         }
+
+        // If we have a root value which means we should rebuild.
+        $out = [];
+        $out['root'] = $root;
+        $out['compiled'] = $this->compileFile($root);
+        $out['files'] = $this->scss->getParsedFiles();
+        $out['updated'] = time();
+
+        return $out;
     }
 
     /**

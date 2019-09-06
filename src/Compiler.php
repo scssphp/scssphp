@@ -2308,7 +2308,7 @@ class Compiler
                     }
 
                     $shouldSet = $isDefault &&
-                        (($result = $this->get($name[1], false)) === null ||
+                        (is_null($result = $this->get($name[1], false)) ||
                         $result === static::$null);
 
                     if (! $isDefault || $shouldSet) {
@@ -2756,7 +2756,7 @@ class Compiler
      */
     protected function reduce($value, $inExp = false)
     {
-        if ($value === null) {
+        if (is_null($value)) {
             return null;
         }
 
@@ -3828,7 +3828,7 @@ class Compiler
 
         list($this->env, $this->storeEnv) = $store;
 
-        if ($childQueries === null) {
+        if (is_null($childQueries)) {
             $childQueries = $parentQueries;
         } else {
             $originalQueries = $childQueries;
@@ -4073,7 +4073,7 @@ class Compiler
      */
     protected function has($name, Environment $env = null)
     {
-        return $this->get($name, false, $env) !== null;
+        return ! is_null($this->get($name, false, $env));
     }
 
     /**
@@ -4360,7 +4360,7 @@ class Compiler
                 // check custom callback for import path
                 $file = call_user_func($dir, $url);
 
-                if ($file !== null) {
+                if (! is_null($file)) {
                     return $file;
                 }
             }
@@ -4458,7 +4458,7 @@ class Compiler
 
                     $callStackMsg[] = $msg;
 
-                    if (! is_null($limit) && $ncall>$limit) {
+                    if (! is_null($limit) && $ncall > $limit) {
                         break;
                     }
                 }
@@ -4936,7 +4936,7 @@ class Compiler
             return $this->toBool($value);
         }
 
-        if ($value === null) {
+        if (is_null($value)) {
             return static::$null;
         }
 
@@ -6088,7 +6088,7 @@ class Compiler
         $min = null;
 
         foreach ($numbers as $key => $number) {
-            if (null === $min || $number[1] <= $min[1]) {
+            if (is_null($min) || $number[1] <= $min[1]) {
                 $min = [$key, $number[1]];
             }
         }
@@ -6102,7 +6102,7 @@ class Compiler
         $max = null;
 
         foreach ($numbers as $key => $number) {
-            if (null === $max || $number[1] >= $max[1]) {
+            if (is_null($max) || $number[1] >= $max[1]) {
                 $max = [$key, $number[1]];
             }
         }
@@ -6131,7 +6131,7 @@ class Compiler
 
             $number = $item->normalize();
 
-            if (null === $unit) {
+            if (is_null($unit)) {
                 $unit = $number[2];
                 $originalUnit = $item->unitStr();
             } elseif ($number[1] && $unit !== $number[2]) {
