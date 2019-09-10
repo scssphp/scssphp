@@ -9,3 +9,4 @@ composer.lock
 /compass/
 /vendor/
 /frameworks/
+.phpunit.result.cache
