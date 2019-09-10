@@ -8,7 +8,6 @@ php:
   - 7.2
   - 7.3
   - 7.4snapshot
-  - nightly
 
 install: composer install
 
@@ -22,4 +21,3 @@ branches:
 matrix:
   allow_failures:
     - php: 7.4snapshot
-    - php: nightly
