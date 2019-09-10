@@ -11,6 +11,7 @@
 
 namespace ScssPhp\ScssPhp\Tests;
 
+use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
 
 /**
@@ -18,7 +19,7 @@ use ScssPhp\ScssPhp\Compiler;
  *
  * @author Leaf Corcoran <leafot@gmail.com>
  */
-class ExceptionTest extends \PHPUnit_Framework_TestCase
+class ExceptionTest extends TestCase
 {
     /**
      * @param string $scss

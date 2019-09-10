@@ -11,6 +11,7 @@
 
 namespace ScssPhp\ScssPhp\Tests;
 
+use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\SourceMap\Base64VLQ;
 
 /**
@@ -18,7 +19,7 @@ use ScssPhp\ScssPhp\SourceMap\Base64VLQ;
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
  */
-class Base64VLQTest extends \PHPUnit_Framework_TestCase
+class Base64VLQTest extends TestCase
 {
     /**
      * Test encode

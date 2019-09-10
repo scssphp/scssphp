@@ -11,8 +11,8 @@
 
 namespace ScssPhp\ScssPhp\Tests;
 
+use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
-use ScssPhp\ScssPhp\LineCommentator;
 
 function _dump($value)
 {
@@ -29,7 +29,7 @@ function _quote($str)
  *
  * @author Leaf Corcoran <leafot@gmail.com>
  */
-class InputTest extends \PHPUnit_Framework_TestCase
+class InputTest extends TestCase
 {
     private $scss;
 

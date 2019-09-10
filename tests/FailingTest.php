@@ -11,6 +11,7 @@
 
 namespace ScssPhp\ScssPhp\Tests;
 
+use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
 
 /**
@@ -22,7 +23,7 @@ use ScssPhp\ScssPhp\Compiler;
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
  */
-class FailingTest extends \PHPUnit_Framework_TestCase
+class FailingTest extends TestCase
 {
     /**
      * @param string $id

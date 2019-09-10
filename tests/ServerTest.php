@@ -11,6 +11,7 @@
 
 namespace ScssPhp\ScssPhp\Tests;
 
+use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Server;
 
 /**
@@ -18,7 +19,7 @@ use ScssPhp\ScssPhp\Server;
  *
  * @author Zimzat <zimzat@zimzat.com>
  */
-class ServerTest extends \PHPUnit_Framework_TestCase
+class ServerTest extends TestCase
 {
     public function testCheckedCachedCompile()
     {
