@@ -11,6 +11,7 @@
 
 namespace ScssPhp\ScssPhp\Tests;
 
+use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
 
 /**
@@ -18,7 +19,7 @@ use ScssPhp\ScssPhp\Compiler;
  *
  * @author Cerdic <cedric@yterium.com>
  */
-class SassSpecTest extends \PHPUnit_Framework_TestCase
+class SassSpecTest extends TestCase
 {
     protected static $scss;
     protected static $exclusionList;

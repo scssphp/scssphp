@@ -10,7 +10,7 @@
     convertWarningsToExceptions = "true"
     processIsolation            = "false"
     stopOnFailure               = "false"
-    bootstrap                   = "shim.inc.php">
+    bootstrap                   = "vendor/autoload.php">
 
     <testsuites>
         <testsuite name="Project Test Suite">

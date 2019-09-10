@@ -11,9 +11,10 @@
 
 namespace ScssPhp\ScssPhp\Tests;
 
+use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
 
-class FrameworkTest extends \PHPUnit_Framework_TestCase
+class FrameworkTest extends TestCase
 {
     protected static $frameworks = [
         [
