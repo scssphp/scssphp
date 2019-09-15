@@ -1074,6 +1074,7 @@ class Parser
             if (isset($m[1]) && empty($this->commentsSeen[$this->count])) {
                 // comment that are kept in the output CSS
                 $comment = [];
+                $startCommentCount = $this->count;
                 $endCommentCount = $this->count + strlen($m[1]);
 
                 // find interpolations in comment
@@ -1116,7 +1117,7 @@ class Parser
                     $this->appendComment([Type::T_COMMENT, [Type::T_STRING, '', $comment]]);
                 }
 
-                $this->commentsSeen[$this->count] = true;
+                $this->commentsSeen[$startCommentCount] = true;
                 $this->count = $endCommentCount;
             } else {
                 // comment that are ignored and not kept in the output css
