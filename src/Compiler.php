@@ -1438,7 +1438,20 @@ class Compiler
     protected function compileComment($block)
     {
         $out = $this->makeOutputBlock(Type::T_COMMENT);
-        $out->lines[] = is_string($block[1]) ? $block[1] : $this->compileValue($block[1]);
+        $lines = $block[1];
+        if (isset($block[2])) {
+            $this->pushEnv();
+            $storeEnv = $this->storeEnv;
+            $this->storeEnv = $this->env;
+            try {
+                $lines = $this->compileValue($block[2]);
+            } catch (\Exception $e) {
+                // ignore error in comment compilation which are only interpolation
+            }
+            $this->storeEnv = $storeEnv;
+            $this->popEnv();
+        }
+        $out->lines[] = $lines;
 
         $this->scope->children[] = $out;
     }

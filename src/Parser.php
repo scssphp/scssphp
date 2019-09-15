@@ -1114,7 +1114,8 @@ class Parser
                     $this->appendComment([Type::T_COMMENT, $c]);
                 } else {
                     $comment[] = $c;
-                    $this->appendComment([Type::T_COMMENT, [Type::T_STRING, '', $comment]]);
+                    $staticComment = substr($this->buffer, $startCommentCount, $endCommentCount - $startCommentCount);
+                    $this->appendComment([Type::T_COMMENT, $staticComment, [Type::T_STRING, '', $comment]]);
                 }
 
                 $this->commentsSeen[$startCommentCount] = true;
@@ -1138,8 +1139,21 @@ class Parser
     protected function appendComment($comment)
     {
         if (! $this->discardComments) {
-            if ($comment[0] === Type::T_COMMENT && is_string($comment[1])) {
-                $comment[1] = substr(preg_replace(['/^\s+/m', '/^(.)/m'], ['', ' \1'], $comment[1]), 1);
+            if ($comment[0] === Type::T_COMMENT) {
+                if (is_string($comment[1])) {
+                    $comment[1] = substr(preg_replace(['/^\s+/m', '/^(.)/m'], ['', ' \1'], $comment[1]), 1);
+                }
+                if (isset($comment[2]) and is_array($comment[2]) and $comment[2][0] === Type::T_STRING) {
+                    foreach ($comment[2][2] as $k => $v) {
+                        if (is_string($v)) {
+                            $p = strpos($v, "\n");
+                            if ($p !== false) {
+                                $comment[2][2][$k] = substr($v, 0, $p + 1)
+                                    . preg_replace(['/^\s+/m', '/^(.)/m'], ['', ' \1'], substr($v, $p+1));
+                            }
+                        }
+                    }
+                }
             }
 
             $this->env->comments[] = $comment;
