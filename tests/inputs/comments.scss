@@ -52,6 +52,7 @@ $radius:2px;
 color:#{$color}
 and a fake #{ doing nothing
 radius:#{$radius}
+   and also a #{$fake} interpolation that should not throw an error
  */
 
 // end
@@ -71,5 +72,6 @@ radius:#{$radius}
   color:#{$color}
   and a fake #{ doing nothing
   radius:#{$radius}
+     and also a #{$fake} interpolation that should not throw an error
   */
 }

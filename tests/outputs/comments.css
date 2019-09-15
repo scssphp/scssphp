@@ -34,6 +34,7 @@ a {
  color:red
  and a fake #{ doing nothing
  radius:2px
+ and also a #{$fake} interpolation that should not throw an error
  */
 .textimage-background-fullheight .background {
   /* @noflip */
@@ -46,4 +47,5 @@ a {
    color:red
    and a fake #{ doing nothing
    radius:2px
+   and also a #{$fake} interpolation that should not throw an error
    */ }
