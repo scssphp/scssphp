@@ -1096,7 +1096,7 @@ class Parser
                             $out[3] = '';
                         }
 
-                        $comment[] = $out;
+                        $comment[] = [Type::T_COMMENT, substr($this->buffer, $p, $this->count - $p), $out];
                     } else {
                         $comment[] = substr($this->buffer, $this->count, 2);
 

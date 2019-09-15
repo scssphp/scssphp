@@ -1430,6 +1430,25 @@ class Compiler
         $this->popEnv();
     }
 
+
+    /**
+     * Compile the value of a comment that can have interpolation
+     * @param $value
+     * @return array|mixed|string
+     */
+    protected function compileCommentValue($value)
+    {
+        $c = $value[1];
+        if (isset($value[2])) {
+            try {
+                $c = $this->compileValue($value[2]);
+            } catch (\Exception $e) {
+                // ignore error in comment compilation which are only interpolation
+            }
+        }
+        return $c;
+    }
+
     /**
      * Compile root level comment
      *
@@ -1443,11 +1462,7 @@ class Compiler
             $this->pushEnv();
             $storeEnv = $this->storeEnv;
             $this->storeEnv = $this->env;
-            try {
-                $lines = $this->compileValue($block[2]);
-            } catch (\Exception $e) {
-                // ignore error in comment compilation which are only interpolation
-            }
+            $lines = $this->compileCommentValue($block);
             $this->storeEnv = $storeEnv;
             $this->popEnv();
         }
@@ -3627,6 +3642,9 @@ class Compiler
 
             case Type::T_NULL:
                 return 'null';
+
+            case Type::T_COMMENT:
+                return $this->compileCommentValue($value);
 
             default:
                 $this->throwError("unknown value type: ".json_encode($value));
