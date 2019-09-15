@@ -1434,16 +1434,26 @@ class Compiler
     /**
      * Compile the value of a comment that can have interpolation
      * @param $value
+     * @param bool $pushEnv
      * @return array|mixed|string
      */
-    protected function compileCommentValue($value)
+    protected function compileCommentValue($value, $pushEnv = false)
     {
         $c = $value[1];
         if (isset($value[2])) {
+            if ($pushEnv) {
+                $this->pushEnv();
+                $storeEnv = $this->storeEnv;
+                $this->storeEnv = $this->env;
+            }
             try {
                 $c = $this->compileValue($value[2]);
             } catch (\Exception $e) {
                 // ignore error in comment compilation which are only interpolation
+            }
+            if ($pushEnv) {
+                $this->storeEnv = $storeEnv;
+                $this->popEnv();
             }
         }
         return $c;
@@ -1457,16 +1467,7 @@ class Compiler
     protected function compileComment($block)
     {
         $out = $this->makeOutputBlock(Type::T_COMMENT);
-        $lines = $block[1];
-        if (isset($block[2])) {
-            $this->pushEnv();
-            $storeEnv = $this->storeEnv;
-            $this->storeEnv = $this->env;
-            $lines = $this->compileCommentValue($block);
-            $this->storeEnv = $storeEnv;
-            $this->popEnv();
-        }
-        $out->lines[] = $lines;
+        $out->lines[] = $this->compileCommentValue($block, true);
 
         $this->scope->children[] = $out;
     }
@@ -2233,10 +2234,6 @@ class Compiler
             if (end($parent->children) !== $out) {
                 $outWrite = &$parent->children[count($parent->children) - 1];
             }
-
-            if (! is_string($line)) {
-                $line = $this->compileValue($line);
-            }
         }
 
         // check if it's a flat output or not
@@ -2399,7 +2396,8 @@ class Compiler
                     break;
                 }
 
-                $this->appendOutputLine($out, Type::T_COMMENT, $child[1]);
+                $line = $this->compileCommentValue($child, true);
+                $this->appendOutputLine($out, Type::T_COMMENT, $line);
                 break;
 
             case Type::T_MIXIN:
