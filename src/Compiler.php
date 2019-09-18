@@ -4507,6 +4507,10 @@ class Compiler
     protected function handleImportLoop($name)
     {
         for ($env = $this->env; $env; $env = $env->parent) {
+            if (! $env->block) {
+                continue;
+            }
+
             $file = $this->sourceNames[$env->block->sourceIndex];
 
             if (realpath($file) === $name) {
