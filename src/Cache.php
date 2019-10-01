@@ -57,12 +57,12 @@ class Cache
     public function __construct($options)
     {
         // check $cacheDir
-        if (isset($options['cache_dir'])) {
-            self::$cacheDir = $options['cache_dir'];
+        if (isset($options['cacheDir'])) {
+            self::$cacheDir = $options['cacheDir'];
         }
 
         if (empty(self::$cacheDir)) {
-            throw new Exception('cache_dir not set');
+            throw new Exception('cacheDir not set');
         }
 
         if (isset($options['prefix'])) {
@@ -74,7 +74,7 @@ class Cache
         }
 
         if (isset($options['forceRefresh'])) {
-            self::$forceRefresh = $options['force_refresh'];
+            self::$forceRefresh = $options['forceRefresh'];
         }
 
         self::checkCacheDir();
@@ -97,8 +97,8 @@ class Cache
     {
         $fileCache = self::$cacheDir . self::cacheName($operation, $what, $options);
 
-        if ((! self::$forceRefresh || (self::$forceRefresh === 'once' &&
-            isset(self::$refreshed[$fileCache]))) && is_file($fileCache)
+        if (((self::$forceRefresh === false) || (self::$forceRefresh === 'once' &&
+            isset(self::$refreshed[$fileCache]))) && file_exists($fileCache)
         ) {
             $cacheTime = filemtime($fileCache);
 
