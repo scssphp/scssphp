@@ -45,5 +45,21 @@ div {
     grid-row: span 3 / 6;
     grid-row: 5 somegridarea span / 2 span;
 
+    /* shorthands */
     border-radius: 0 0 0 100% / 0 0 0 30px;
+    border-radius: 0 / 2px;
+    border-radius: 0 / #{2px};
+    border-radius: 1em / 0;
+    border-radius: 0 0 0 100% / 0 0 0 30px;
+    border-radius: 10px 5% / 20px;
+    border-radius: 10px 5% / 20px 30px;
+    border-radius: 10px 5px 2em / 20px 25px 30%;
+    border-radius: 10px 5% / 20px 25em 30px 35em;
+    /* these are not shorthands! (no unit on the divider) */
+    border-radius: 1em / 2;
+    border-radius: 10px 5% / 2;
+    border-radius: 10px 5% / 2 30px;
+    /* these are shorthands with wrong values (lack of unit but more than 4 values if this is a division)*/
+    border-radius: 10px 5px 2em / 20 25px 30%;
+    border-radius: 10px 5% / 20 25em 30px 35em;
 }

@@ -2354,18 +2354,60 @@ class Compiler
 
                     $shorthandValue=&$value;
 
-                    if ($value[0] === Type::T_LIST && $value[1]==',') {
+                    $shorthandDividerNeedsUnit = false;
+                    $maxListElements = null;
+                    $maxShorthandDividers = 1;
+                    switch ($compiledName) {
+                        case 'border-radius':
+                            $maxListElements = 4;
+                            $shorthandDividerNeedsUnit = true;
+                            break;
+                    }
+
+
+                    if ($compiledName === 'font' and $value[0] === Type::T_LIST && $value[1]==',') {
                         // this is the case if more than one font is given: example: "font: 400 1em/1.3 arial,helvetica"
                         // we need to handle the first list element
                         $shorthandValue=&$value[2][0];
                     }
 
                     if ($shorthandValue[0] === Type::T_EXPRESSION && $shorthandValue[1] === '/') {
-                        $shorthandValue = $this->expToString($shorthandValue);
+                        $revert = true;
+                        if ($shorthandDividerNeedsUnit) {
+                            $divider = $shorthandValue[3];
+                            if (is_array($divider)) {
+                                $divider = $this->reduce($divider, true);
+                            }
+                            if (intval($divider->dimension) and !count($divider->units)) {
+                                $revert = false;
+                            }
+                        }
+                        if ($revert) {
+                            $shorthandValue = $this->expToString($shorthandValue);
+                        }
                     } elseif ($shorthandValue[0] === Type::T_LIST) {
                         foreach ($shorthandValue[2] as &$item) {
                             if ($item[0] === Type::T_EXPRESSION && $item[1] === '/') {
-                                $item = $this->expToString($item);
+                                if ($maxShorthandDividers > 0) {
+                                    $revert = true;
+                                    // if the list of values is too long, this has to be a shorthand,
+                                    // otherwise it could be a real division
+                                    if (is_null($maxListElements) or count($shorthandValue[2]) <= $maxListElements) {
+                                        if ($shorthandDividerNeedsUnit) {
+                                            $divider = $item[3];
+                                            if (is_array($divider)) {
+                                                $divider = $this->reduce($divider, true);
+                                            }
+                                            if (intval($divider->dimension) and !count($divider->units)) {
+                                                $revert = false;
+                                            }
+                                        }
+                                    }
+                                    if ($revert) {
+                                        $item = $this->expToString($item);
+                                        $maxShorthandDividers--;
+                                    }
+                                }
                             }
                         }
                     }
