@@ -132,7 +132,7 @@ class Base64VLQ
         $negate = ($value & 1) === 1;
         $value = ($value >> 1) & ~(1<<(8 * PHP_INT_SIZE - 1)); // unsigned right shift
 
-        if ( ! $negate) {
+        if (! $negate) {
             return $value;
         }
 

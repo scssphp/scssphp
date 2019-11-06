@@ -230,14 +230,16 @@ abstract class Formatter
             foreach ($block->children as $k => &$child) {
                 if (! $this->testEmptyChildren($child)) {
                     $isEmpty = false;
-                } else {
-                    if ($child->type === Type::T_MEDIA || $child->type === Type::T_DIRECTIVE) {
-                        $child->children = [];
-                        $child->selectors = null;
-                    }
+                    continue;
+                }
+
+                if ($child->type === Type::T_MEDIA || $child->type === Type::T_DIRECTIVE) {
+                    $child->children = [];
+                    $child->selectors = null;
                 }
             }
         }
+
         return $isEmpty;
     }
 
