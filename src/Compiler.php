@@ -4435,6 +4435,7 @@ class Compiler
                     $full = $dir . $separator . $full;
 
                     if (is_file($file = $full . '.scss') ||
+                        is_file($file = $full . '.css') ||
                         ($hasExtension && is_file($file = $full))
                     ) {
                         return $file;
