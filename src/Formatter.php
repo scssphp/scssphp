@@ -82,6 +82,11 @@ abstract class Formatter
     protected $sourceMapGenerator;
 
     /**
+     * @var string
+     */
+    protected $stripedSemicolon;
+
+    /**
      * Initialize formatter
      *
      * @api
@@ -111,24 +116,6 @@ abstract class Formatter
     public function property($name, $value)
     {
         return rtrim($name) . $this->assignSeparator . $value . ';';
-    }
-
-    /**
-     * Strip semi-colon appended by property(); it's a separator, not a terminator
-     *
-     * @api
-     *
-     * @param array $lines
-     */
-    public function stripSemicolon(&$lines)
-    {
-        if ($this->keepSemicolons) {
-            return;
-        }
-
-        if (($count = count($lines)) && substr($lines[$count - 1], -1) === ';') {
-            $lines[$count - 1] = substr($lines[$count - 1], 0, -1);
-        }
     }
 
     /**
@@ -206,6 +193,9 @@ abstract class Formatter
 
         if (! empty($block->selectors)) {
             $this->indentLevel--;
+            if (! $this->keepSemicolons) {
+                $this->stripedSemicolon = '';
+            }
 
             if (empty($block->children)) {
                 $this->write($this->break);
@@ -298,6 +288,24 @@ abstract class Formatter
             $lastLine = array_pop($lines);
 
             $this->currentColumn = ($lineCount === 1 ? $this->currentColumn : 0) + strlen($lastLine);
+        }
+
+        if (! empty($this->stripedSemicolon)) {
+            echo $this->stripedSemicolon;
+            $this->stripedSemicolon = '';
+        }
+
+        /*
+         * Maybe Strip semi-colon appended by property(); it's a separator, not a terminator
+         * will be striped for real before a closing, otherwise displayed unchanged starting the next write
+         */
+        if (! $this->keepSemicolons) {
+            if ($str
+                && (strpos($str, ';') !== false)
+                && (substr($str, -1) === ';')) {
+                $str = substr($str, 0, -1);
+                $this->stripedSemicolon = ';';
+            }
         }
 
         echo $str;

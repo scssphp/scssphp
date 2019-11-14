@@ -1425,8 +1425,6 @@ class Compiler
             }
         }
 
-        $this->formatter->stripSemicolon($out->lines);
-
         $this->popEnv();
     }
 
