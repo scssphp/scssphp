@@ -84,7 +84,7 @@ abstract class Formatter
     /**
      * @var string
      */
-    protected $stripedSemicolon;
+    protected $strippedSemicolon;
 
     /**
      * Initialize formatter
@@ -193,8 +193,9 @@ abstract class Formatter
 
         if (! empty($block->selectors)) {
             $this->indentLevel--;
+
             if (! $this->keepSemicolons) {
-                $this->stripedSemicolon = '';
+                $this->strippedSemicolon = '';
             }
 
             if (empty($block->children)) {
@@ -290,22 +291,24 @@ abstract class Formatter
             $this->currentColumn = ($lineCount === 1 ? $this->currentColumn : 0) + strlen($lastLine);
         }
 
-        if (! empty($this->stripedSemicolon)) {
-            echo $this->stripedSemicolon;
-            $this->stripedSemicolon = '';
+        if (! empty($this->strippedSemicolon)) {
+            echo $this->strippedSemicolon;
+
+            $this->strippedSemicolon = '';
         }
 
         /*
          * Maybe Strip semi-colon appended by property(); it's a separator, not a terminator
          * will be striped for real before a closing, otherwise displayed unchanged starting the next write
          */
-        if (! $this->keepSemicolons) {
-            if ($str
-                && (strpos($str, ';') !== false)
-                && (substr($str, -1) === ';')) {
-                $str = substr($str, 0, -1);
-                $this->stripedSemicolon = ';';
-            }
+        if (! $this->keepSemicolons &&
+            $str &&
+            (strpos($str, ';') !== false) &&
+            (substr($str, -1) === ';')
+        ) {
+            $str = substr($str, 0, -1);
+
+            $this->strippedSemicolon = ';';
         }
 
         echo $str;
