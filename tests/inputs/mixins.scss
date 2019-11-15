@@ -273,3 +273,16 @@ div.parameter-name-scope {
     text-align: $align;
   }
 }
+
+.skin {
+  $scopedColor: #ccc;
+
+  @mixin myborder() {
+    border:1px solid $scopedColor;
+    @content;
+  }
+
+  .var-in-class {
+    @include myborder();
+  }
+}

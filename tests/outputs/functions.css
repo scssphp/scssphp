@@ -52,3 +52,6 @@ div {
 
 .test {
   color: rgba(159, 159, 159, 0.625); }
+
+.skin .var-in-class {
+  background-color: #ddd; }

@@ -173,3 +173,15 @@ $b: rgba(#fff, 0.75);
 .test {
     color: mix($a, $b);
 }
+
+.skin {
+  $scopedColor: #ddd;
+
+  @function bgcolor() {
+    @return $scopedColor;
+  }
+
+  .var-in-class {
+    background-color: bgcolor();
+  }
+}

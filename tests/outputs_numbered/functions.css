@@ -65,3 +65,8 @@ div {
 /* line 173, inputs/functions.scss */
 .test {
   color: rgba(159, 159, 159, 0.625); }
+
+/* line 177, inputs/functions.scss */
+/* line 184, inputs/functions.scss */
+.skin .var-in-class {
+  background-color: #ddd; }

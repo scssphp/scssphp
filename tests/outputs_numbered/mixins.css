@@ -183,3 +183,8 @@ div p {
   background-color: white;
   color: red;
   text-align: right; }
+
+/* line 277, inputs/mixins.scss */
+/* line 285, inputs/mixins.scss */
+.skin .var-in-class {
+  border: 1px solid #ccc; }
