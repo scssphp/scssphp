@@ -2456,7 +2456,8 @@ class Compiler
             case Type::T_MIXIN:
             case Type::T_FUNCTION:
                 list(, $block) = $child;
-
+                // the block need to be able to go up to it's parent env to resolve vars
+                $block->parentEnv = $this->getStoreEnv();
                 $this->set(static::$namespaces[$block->type] . $block->name, $block, true);
                 break;
 
@@ -2667,6 +2668,12 @@ class Compiler
                 }
 
                 $this->env->marker = 'mixin';
+
+                if (! empty($mixin->parentEnv)) {
+                    $this->env->declarationScopeParent = $mixin->parentEnv;
+                } else {
+                    $this->throwError("@mixin $name() without parentEnv");
+                }
 
                 $this->compileChildrenNoReturn($mixin->children, $out, $selfParent, $this->env->marker . " " . $name);
 
@@ -4102,7 +4109,6 @@ class Compiler
             $env = $this->getStoreEnv();
         }
 
-        $nextIsRoot = false;
         $hasNamespace = $normalizedName[0] === '^' || $normalizedName[0] === '@' || $normalizedName[0] === '%';
 
         $maxDepth = 10000;
@@ -4121,12 +4127,16 @@ class Compiler
             }
 
             if (! $hasNamespace && isset($env->marker)) {
-                if (! $nextIsRoot && ! empty($env->store[$specialContentKey])) {
+                if (! empty($env->store[$specialContentKey])) {
                     $env = $env->store[$specialContentKey]->scope;
                     continue;
                 }
 
-                $env = $this->rootEnv;
+                if (! empty($env->declarationScopeParent)) {
+                    $env = $env->declarationScopeParent;
+                } else {
+                    $env = $this->rootEnv;
+                }
                 continue;
             }
 
@@ -4606,6 +4616,11 @@ class Compiler
         $tmp->children = [];
 
         $this->env->marker = 'function';
+        if (! empty($func->parentEnv)) {
+            $this->env->declarationScopeParent = $func->parentEnv;
+        } else {
+            $this->throwError("@function $name() without parentEnv");
+        }
 
         $ret = $this->compileChildren($func->children, $tmp, $this->env->marker . " " . $name);
 
