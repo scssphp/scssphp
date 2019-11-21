@@ -920,20 +920,30 @@ class Compiler
     /**
      * Compile directive
      *
-     * @param \ScssPhp\ScssPhp\Block $block
+     * @param \ScssPhp\ScssPhp\Block|array $block
+     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
      */
-    protected function compileDirective(Block $block)
+    protected function compileDirective($directive, OutputBlock $out)
     {
-        $s = '@' . $block->name;
+        if (is_array($directive)) {
+            $s = '@' . $directive[0];
+            if (! empty($directive[1])) {
+                $s .= ' ' . $this->compileValue($directive[1]);
+            }
+            $this->appendRootDirective($s . ';', $out);
 
-        if (! empty($block->value)) {
-            $s .= ' ' . $this->compileValue($block->value);
-        }
-
-        if ($block->name === 'keyframes' || substr($block->name, -10) === '-keyframes') {
-            $this->compileKeyframeBlock($block, [$s]);
         } else {
-            $this->compileNestedBlock($block, [$s]);
+            $s = '@' . $directive->name;
+
+            if (! empty($directive->value)) {
+                $s .= ' ' . $this->compileValue($directive->value);
+            }
+
+            if ($directive->name === 'keyframes' || substr($directive->name, -10) === '-keyframes') {
+                $this->compileKeyframeBlock($directive, [$s]);
+            } else {
+                $this->compileNestedBlock($directive, [$s]);
+            }
         }
     }
 
@@ -2303,7 +2313,7 @@ class Compiler
                 break;
 
             case Type::T_DIRECTIVE:
-                $this->compileDirective($child[1]);
+                $this->compileDirective($child[1], $out);
                 break;
 
             case Type::T_AT_ROOT:

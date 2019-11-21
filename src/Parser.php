@@ -684,6 +684,20 @@ class Parser
 
             $this->seek($s);
 
+            // maybe it's a generic blockless directive
+            if ($this->matchChar('@', false) &&
+                $this->keyword($dirName) &&
+                $this->valueList($dirValue) &&
+                $this->end()
+            ) {
+
+                $this->append([Type::T_DIRECTIVE, [$dirName, $dirValue]], $s);
+
+                return true;
+            }
+
+            $this->seek($s);
+
             return false;
         }
 

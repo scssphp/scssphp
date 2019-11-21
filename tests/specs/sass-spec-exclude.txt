@@ -154,7 +154,6 @@
 241/1980. core_functions/variable_exists/error/argument/too_many
 242/1980. core_functions/variable_exists/error/argument/type
 247/1980. core_functions/variable_exists/through_import
-248/1980. css/blockless_directive_without_semicolon
 250/1980. css/comment/converts_newlines/scss/ff
 252/1980. css/comment/multiple_stars
 253/1980. css/comment/weird_indentation
@@ -173,7 +172,6 @@
 266/1980. css/custom_properties/simple
 268/1980. css/custom_properties/trailing_whitespace
 270/1980. css/custom_properties/without_semicolon
-271/1980. css/directive_with_lots_of_whitespace
 272/1980. css/empty_block_directive
 275/1980. css/min_max/error/plain_css_function
 278/1980. css/moz_document/functions/static
@@ -461,7 +459,6 @@
 724/1980. libsass-closed-issues/issue_1216
 725/1980. libsass-closed-issues/issue_1218
 728/1980. libsass-closed-issues/issue_1240
-729/1980. libsass-closed-issues/issue_1243/at-rule
 731/1980. libsass-closed-issues/issue_1243/debug
 735/1980. libsass-closed-issues/issue_1243/warning
 736/1980. libsass-closed-issues/issue_1248
@@ -570,7 +567,6 @@
 912/1980. libsass-closed-issues/issue_1804/variable
 915/1980. libsass-closed-issues/issue_1819
 916/1980. libsass-closed-issues/issue_1822
-918/1980. libsass-closed-issues/issue_1839
 921/1980. libsass-closed-issues/issue_185/media_wrapper_selector
 923/1980. libsass-closed-issues/issue_185/mixin
 924/1980. libsass-closed-issues/issue_185/selector_wrapper_media
@@ -614,7 +610,6 @@
 1002/1980. libsass-closed-issues/issue_2233
 1003/1980. libsass-closed-issues/issue_2236/floats
 1004/1980. libsass-closed-issues/issue_2236/ints
-1007/1980. libsass-closed-issues/issue_2243/scss
 1012/1980. libsass-closed-issues/issue_2260/no-parent-with-compound
 1014/1980. libsass-closed-issues/issue_2260/outer-parent-with-compound
 1015/1980. libsass-closed-issues/issue_2261
