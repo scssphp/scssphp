@@ -2649,6 +2649,7 @@ class Parser
 
                     if ($nameParts === ['not'] || $nameParts === ['is'] ||
                         $nameParts === ['has'] || $nameParts === ['where'] ||
+                        $nameParts === ['slotted'] ||
                         $nameParts === ['nth-child'] || $nameParts == ['nth-last-child'] ||
                         $nameParts === ['nth-of-type'] || $nameParts == ['nth-last-of-type']
                     ) {
