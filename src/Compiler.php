@@ -786,7 +786,7 @@ class Compiler
     {
         $tag    = [];
         $out    = [];
-        $wasTag = true;
+        $wasTag = false;
 
         foreach ([$base, $other] as $single) {
             foreach ($single as $part) {
@@ -798,8 +798,10 @@ class Compiler
                     $wasTag = true;
                 } elseif ($wasTag) {
                     $tag[count($tag) - 1] .= $part;
-                } else {
+                } elseif (count($out)) {
                     $out[count($out) - 1] .= $part;
+                } else {
+                    $out[] = $part;
                 }
             }
         }
