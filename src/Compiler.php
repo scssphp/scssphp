@@ -543,7 +543,6 @@ class Compiler
     protected function matchExtends($selector, &$out, $from = 0, $initial = true)
     {
         static $partsPile = [];
-
         $selector = $this->glueFunctionSelectors($selector);
 
         if (count($selector) == 1 && in_array(reset($selector), $partsPile)) {
@@ -565,8 +564,8 @@ class Compiler
                 }
             }
 
-            if ($this->matchExtendsSingle($part, $origin)) {
-                $partsPile[] = $part;
+            $partsPile[] = $part;
+            if ($this->matchExtendsSingle($part, $origin, $initial)) {
                 $after       = array_slice($selector, $i + 1);
                 $before      = array_slice($selector, 0, $i);
 
@@ -617,7 +616,7 @@ class Compiler
                         continue;
                     }
 
-                    $out[] = $result;
+                    $this->pushOrMergeExtentedSelector($out, $result);
 
                     // recursively check for more matches
                     $startRecurseFrom = count($before) + min(count($nonBreakableBefore), count($mergedBefore));
@@ -640,13 +639,61 @@ class Compiler
                             $after
                         );
 
-                        $out[] = $result2;
+                        $this->pushOrMergeExtentedSelector($out, $result2);
                     }
                 }
 
-                array_pop($partsPile);
+            }
+            array_pop($partsPile);
+        }
+    }
+
+    /**
+     * Test a part for being a pseudo selector
+     * @param string $part
+     * @param array $matches
+     * @return bool
+     */
+    function isPseudoSelector($part, &$matches) {
+        if (strpos($part, ":") === 0
+            && preg_match(",^::?([\w-]+)\((.+)\)$,", $part, $matches)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Push extended selector except if
+     *  - this is a pseudo selector
+     *  - same as previous
+     *  - in a white list
+     * in this case we merge the pseudo selector content
+     * @param array $out
+     * @param array $extended
+     */
+    function pushOrMergeExtentedSelector(&$out, $extended) {
+        if (count($out) && count($extended) === 1 && count(reset($extended)) === 1) {
+            $single = reset($extended);
+            $part = reset($single);
+            if ($this->isPseudoSelector($part, $matchesExtended)
+              && in_array($matchesExtended[1], [ 'slotted' ])) {
+                $prev = end($out);
+                $prev = $this->glueFunctionSelectors($prev);
+                if (count($prev) === 1 && count(reset($prev)) === 1) {
+                    $single = reset($prev);
+                    $part = reset($single);
+                    if ($this->isPseudoSelector($part, $matchesPrev)
+                      && $matchesPrev[1] === $matchesExtended[1]) {
+                        $extended = explode($matchesExtended[1] . '(', $matchesExtended[0], 2);
+                        $extended[1] = $matchesPrev[2] . ", " . $extended[1];
+                        $extended = implode($matchesExtended[1] . '(', $extended);
+                        $extended = [ [ $extended ]];
+                        array_pop($out);
+                    }
+                }
             }
         }
+        $out[] = $extended;
     }
 
     /**
@@ -654,10 +701,11 @@ class Compiler
      *
      * @param array $rawSingle
      * @param array $outOrigin
+     * @param bool $initial
      *
      * @return boolean
      */
-    protected function matchExtendsSingle($rawSingle, &$outOrigin)
+    protected function matchExtendsSingle($rawSingle, &$outOrigin, $initial = true)
     {
         $counts = [];
         $single = [];
@@ -687,16 +735,40 @@ class Compiler
             $extendingDecoratedTag = preg_match('/^[a-z0-9]+$/i', $single[0], $matches) ? $matches[0] : false;
         }
 
-        foreach ($single as $part) {
+        $outOrigin = [];
+        $found = false;
+
+        foreach ($single as $k => $part) {
             if (isset($this->extendsMap[$part])) {
                 foreach ($this->extendsMap[$part] as $idx) {
                     $counts[$idx] = isset($counts[$idx]) ? $counts[$idx] + 1 : 1;
                 }
             }
+            if ($initial
+                && $this->isPseudoSelector($part, $matches)
+                && ! in_array($matches[1], [ 'not' ])) {
+                $buffer    = $matches[2];
+                $parser    = $this->parserFactory(__METHOD__);
+                if ($parser->parseSelector($buffer, $subSelectors)) {
+                    foreach ($subSelectors as $ksub => $subSelector) {
+                        $subExtended = [];
+                        $this->matchExtends($subSelector, $subExtended, 0, false);
+                        if ($subExtended) {
+                            $subSelectorsExtended = $subSelectors;
+                            $subSelectorsExtended[$ksub] = $subExtended;
+                            foreach ($subSelectorsExtended as $ksse => $sse) {
+                                $subSelectorsExtended[$ksse] = $this->collapseSelectors($sse);
+                            }
+                            $subSelectorsExtended = implode(', ', $subSelectorsExtended);
+                            $singleExtended = $single;
+                            $singleExtended[$k] = str_replace("(".$buffer.")", "($subSelectorsExtended)", $part);
+                            $outOrigin[] = [ $singleExtended ];
+                            $found = true;
+                        }
+                    }
+                }
+            }
         }
-
-        $outOrigin = [];
-        $found = false;
 
         foreach ($counts as $idx => $count) {
             list($target, $origin, /* $block */) = $this->extends[$idx];
