@@ -35,11 +35,11 @@
   content: "dropup + btn + caret"; }
 
 /* line 29, inputs/extends_nesting.scss */
-.dropup.btn, .extend .the-button.dropup {
+.dropup.btn, .extend .dropup.the-button {
   content: "dropupbtn"; }
 
 /* line 31, inputs/extends_nesting.scss */
-.dropup.btn.caret, .extend .the-button.dropup.caret {
+.dropup.btn.caret, .extend .dropup.caret.the-button {
   content: "dropupbtncaret"; }
 
 /* line 36, inputs/extends_nesting.scss */

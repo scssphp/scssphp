@@ -4,7 +4,7 @@
   color: red; }
 
 /* line 5, inputs/extending_compound_selector.scss */
-.foo:hover:after, .bar:hover:after, .bar:before:hover, .baz.bar:before:hover {
+.foo:hover:after, .bar:after:hover, .bar:before:hover, .baz.bar:before:hover {
   color: blue; }
 
 /* line 10, inputs/extending_compound_selector.scss */
@@ -19,5 +19,5 @@ a, a:link, a:visited, a:active, a:hover {
 /* line 33, inputs/extending_compound_selector.scss */
 /* line 37, inputs/extending_compound_selector.scss */
 /* line 41, inputs/extending_compound_selector.scss */
-.nest a.some-class, .nest a:link.some-class, .nest a:visited.some-class, .nest a:active.some-class, .nest a:hover.some-class {
+.nest a.some-class, .nest a.some-class:link, .nest a.some-class:visited, .nest a.some-class:active, .nest a.some-class:hover {
   color: #ccc; }

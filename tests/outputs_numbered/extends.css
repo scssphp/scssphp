@@ -31,7 +31,7 @@ a:hover, .hoverlink, #demo .overview .fakelink:hover {
   text-decoration: underline; }
 
 /* line 40, inputs/extends.scss */
-div.hello.world.hmm, pre div.okay.span.world.hmm, pre #butt .umm div.sure.span.world.hmm, #butt .umm pre div.sure.span.world.hmm, code div.okay.span.world.hmm, code #butt .umm div.sure.span.world.hmm, #butt .umm code div.sure.span.world.hmm {
+div.hello.world.hmm, pre div.world.hmm.okay.span, pre #butt .umm div.world.hmm.span.sure, #butt .umm pre div.world.hmm.span.sure, code div.world.hmm.okay.span, code #butt .umm div.world.hmm.span.sure, #butt .umm code div.world.hmm.span.sure {
   color: blue; }
 
 /* line 44, inputs/extends.scss */
@@ -228,7 +228,7 @@ body .to-extend, body .test {
   margin-left: 0; }
 
 /* line 298, inputs/extends.scss */
-.pagination-bullet.is-active {
+.is-active.pagination-bullet {
   background-color: white; }
 
 /* line 303, inputs/extends.scss */

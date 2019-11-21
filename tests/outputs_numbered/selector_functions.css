@@ -77,7 +77,7 @@ a.disabled {
   content: '.accordion__copy, .slider__copy, .accordion__image, .slider__image'; }
 
 /* line 67, inputs/selector_functions.scss */
-a.disabled, .link.disabled {
+a.disabled, .disabled.link {
   content: "a.disabled, .link.disabled"; }
 
 /* line 70, inputs/selector_functions.scss */
@@ -115,7 +115,7 @@ ul li {
   content: "p"; }
 
 /* line 102, inputs/selector_functions.scss */
-.link.disabled {
+.disabled.link {
   content: ".link.disabled"; }
 
 /* line 105, inputs/selector_functions.scss */

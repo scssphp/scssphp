@@ -22,9 +22,9 @@
   .dropup + .btn + .caret, .extend .dropup + .the-button + .caret {
     content: "dropup + btn + caret"; }
 
-.dropup.btn, .extend .the-button.dropup {
+.dropup.btn, .extend .dropup.the-button {
   content: "dropupbtn"; }
-  .dropup.btn.caret, .extend .the-button.dropup.caret {
+  .dropup.btn.caret, .extend .dropup.caret.the-button {
     content: "dropupbtncaret"; }
 
 .nav-bar, header ul {

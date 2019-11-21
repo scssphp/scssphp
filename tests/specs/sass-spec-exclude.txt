@@ -187,7 +187,6 @@
 291/1980. css/selector/error/attribute/modifier/too_long
 292/1980. css/selector/error/attribute/modifier/underscore
 293/1980. css/selector/error/attribute/modifier/unicode
-294/1980. css/selector/slotted
 295/1980. css/unicode_range/error/ident_minus_space_ident
 296/1980. css/unicode_range/error/minus_ident_minus
 297/1980. css/unicode_range/error/minus_number_minus_ident
@@ -292,9 +291,7 @@
 423/1980. extend-tests/008_test_multiple_extends_with_single_extender_and_single_target
 424/1980. extend-tests/009_test_multiple_extends_with_multiple_extenders_and_single_target
 425/1980. extend-tests/010_test_multiple_extends_with_multiple_extenders_and_single_target
-431/1980. extend-tests/016_test_class_unification
 432/1980. extend-tests/017_test_class_unification
-433/1980. extend-tests/018_test_id_unification
 434/1980. extend-tests/019_test_id_unification
 437/1980. extend-tests/022_test_universal_unification_with_simple_target
 438/1980. extend-tests/023_test_universal_unification_with_simple_target
@@ -344,7 +341,6 @@
 504/1980. extend-tests/088_test_negation_unification
 505/1980. extend-tests/089_test_negation_unification
 507/1980. extend-tests/091_test_redundant_selector_elimination
-508/1980. extend-tests/095_test_long_extender
 509/1980. extend-tests/096_test_long_extender_runs_unification
 514/1980. extend-tests/101_test_nested_extender_unifies_common_substring
 515/1980. extend-tests/102_test_nested_extender_unifies_common_subseq
@@ -398,12 +394,7 @@
 591/1980. extend-tests/183_test_multiple_extender_merges_with_superset_selector
 606/1980. extend-tests/198_test_extend_within_disparate_unknown_directive
 607/1980. extend-tests/199_test_extend_within_disparate_nested_directives
-611/1980. extend-tests/209_test_pseudo_element_superselector
 612/1980. extend-tests/210_test_pseudo_element_superselector
-613/1980. extend-tests/211_test_pseudo_element_superselector
-614/1980. extend-tests/212_test_pseudo_element_superselector
-615/1980. extend-tests/213_test_pseudo_element_superselector
-616/1980. extend-tests/214_test_pseudo_element_superselector
 619/1980. extend-tests/217_test_parent_and_sibling_extend
 621/1980. extend-tests/219_test_nested_double_extend_optimization
 622/1980. extend-tests/220_test_extend_in_double_nested_media_query
@@ -472,7 +463,6 @@
 753/1980. libsass-closed-issues/issue_1285
 754/1980. libsass-closed-issues/issue_1291
 755/1980. libsass-closed-issues/issue_1294
-760/1980. libsass-closed-issues/issue_1303
 762/1980. libsass-closed-issues/issue_1305
 765/1980. libsass-closed-issues/issue_1328
 766/1980. libsass-closed-issues/issue_1331
@@ -1012,7 +1002,6 @@
 1947/1980. selector-functions/is_superselector/selector_list_subset
 1948/1980. selector-functions/is_superselector/sibling_isnt_superselector_of_longer_sibling
 1949/1980. selector-functions/is_superselector/trailing_combinator
-1953/1980. selector-functions/replace
 1954/1980. selector-functions/unify/base
 1955/1980. selector-functions/unify/universal_simple
 1957/1980. values/colors/alpha_hex/initial_digit
