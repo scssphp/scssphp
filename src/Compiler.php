@@ -519,6 +519,9 @@ class Compiler
                 if (count($new) && is_string($new[count($new) - 1]) &&
                     strlen($part) && substr($part, -1) === ')' && strpos($part, '(') === false
                 ) {
+                    while (count($new)>1 && substr($new[count($new) - 1],-1) !== '(') {
+                        $part = array_pop($new) . $part;
+                    }
                     $new[count($new) - 1] .= $part;
                 } else {
                     $new[] = $part;
