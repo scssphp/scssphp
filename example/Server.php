@@ -321,8 +321,9 @@ class Server
      * Compile requested scss and serve css.  Outputs HTTP response.
      *
      * @param string $salt Prefix a string to the filename for creating the cache name hash
+     * @param array  $vars Variables to preset before compiling
      */
-    public function serve($salt = '')
+    public function serve($salt = '', $vars = [])
     {
         $protocol = isset($_SERVER['SERVER_PROTOCOL'])
             ? $_SERVER['SERVER_PROTOCOL']
@@ -334,6 +335,7 @@ class Server
 
             if ($this->needsCompile($output, $etag)) {
                 try {
+										$this->scss->setVariables($vars);
                     list($css, $etag) = $this->compile($input, $output);
 
                     $lastModified = gmdate('r', filemtime($output));
