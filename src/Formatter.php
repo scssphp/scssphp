@@ -272,25 +272,6 @@ abstract class Formatter
      */
     protected function write($str)
     {
-        if ($this->sourceMapGenerator) {
-            $this->sourceMapGenerator->addMapping(
-                $this->currentLine,
-                $this->currentColumn,
-                $this->currentBlock->sourceLine,
-                //columns from parser are off by one
-                $this->currentBlock->sourceColumn > 0 ? $this->currentBlock->sourceColumn - 1 : 0,
-                $this->currentBlock->sourceName
-            );
-
-            $lines = explode("\n", $str);
-            $lineCount = count($lines);
-            $this->currentLine += $lineCount-1;
-
-            $lastLine = array_pop($lines);
-
-            $this->currentColumn = ($lineCount === 1 ? $this->currentColumn : 0) + strlen($lastLine);
-        }
-
         if (! empty($this->strippedSemicolon)) {
             echo $this->strippedSemicolon;
 
@@ -309,6 +290,25 @@ abstract class Formatter
             $str = substr($str, 0, -1);
 
             $this->strippedSemicolon = ';';
+        }
+
+        if ($this->sourceMapGenerator) {
+            $this->sourceMapGenerator->addMapping(
+                $this->currentLine,
+                $this->currentColumn,
+                $this->currentBlock->sourceLine,
+                //columns from parser are off by one
+                $this->currentBlock->sourceColumn > 0 ? $this->currentBlock->sourceColumn - 1 : 0,
+                $this->currentBlock->sourceName
+            );
+
+            $lines = explode("\n", $str);
+            $lineCount = count($lines);
+            $this->currentLine += $lineCount-1;
+
+            $lastLine = array_pop($lines);
+
+            $this->currentColumn = ($lineCount === 1 ? $this->currentColumn : 0) + strlen($lastLine);
         }
 
         echo $str;
