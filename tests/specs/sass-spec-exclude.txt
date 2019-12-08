@@ -287,9 +287,7 @@
 413/1980. errors/loop-for/numeric/lower_expand
 414/1980. errors/loop-for/numeric/upper_eval
 415/1980. errors/loop-for/numeric/upper_expand
-422/1980. extend-tests/007_test_multiple_extends_with_single_extender_and_single_target
 423/1980. extend-tests/008_test_multiple_extends_with_single_extender_and_single_target
-424/1980. extend-tests/009_test_multiple_extends_with_multiple_extenders_and_single_target
 425/1980. extend-tests/010_test_multiple_extends_with_multiple_extenders_and_single_target
 432/1980. extend-tests/017_test_class_unification
 434/1980. extend-tests/019_test_id_unification
@@ -977,7 +975,6 @@
 1914/1980. scss/vars
 1920/1980. scss/while_without_condition
 1922/1980. selector-functions/append
-1924/1980. selector-functions/extend/simple
 1925/1980. selector-functions/is_superselector/any_is_not_superselector_of_different_prefix
 1926/1980. selector-functions/is_superselector/child_isnt_superselector_of_longer_child
 1927/1980. selector-functions/is_superselector/complex_superselector

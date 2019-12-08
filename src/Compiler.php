@@ -549,6 +549,7 @@ class Compiler
             return;
         }
 
+        $outRecurs = [];
         foreach ($selector as $i => $part) {
             if ($i < $from) {
                 continue;
@@ -568,7 +569,6 @@ class Compiler
             if ($this->matchExtendsSingle($part, $origin, $initial)) {
                 $after       = array_slice($selector, $i + 1);
                 $before      = array_slice($selector, 0, $i);
-
                 list($before, $nonBreakableBefore) = $this->extractRelationshipFromFragment($before);
 
                 foreach ($origin as $new) {
@@ -623,7 +623,12 @@ class Compiler
 
                     // recursively check for more matches
                     $startRecurseFrom = count($before) + min(count($nonBreakableBefore), count($mergedBefore));
-                    $this->matchExtends($result, $out, $startRecurseFrom, false);
+                    if (count($origin) > 1) {
+                        $this->matchExtends($result, $out, $startRecurseFrom, false);
+                    }
+                    else {
+                        $this->matchExtends($result, $outRecurs, $startRecurseFrom, false);
+                    }
 
                     // selector sequence merging
                     if (! empty($before) && count($new) > 1) {
@@ -644,10 +649,22 @@ class Compiler
 
                         $this->pushOrMergeExtentedSelector($out, $result2);
                     }
+                    /*
+                    if (count($origin) > 1) {
+                        while (count($outRecurs)) {
+                            $result = array_shift($outRecurs);
+                            $this->pushOrMergeExtentedSelector($out, $result);
+                        }
+                    }
+                    */
                 }
 
             }
             array_pop($partsPile);
+        }
+        while (count($outRecurs)) {
+            $result = array_shift($outRecurs);
+            $this->pushOrMergeExtentedSelector($out, $result);
         }
     }
 

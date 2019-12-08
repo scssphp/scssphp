@@ -29,7 +29,7 @@
 
 .nav-bar, header ul {
   background: #eee; }
-  .nav-bar > .item, header ul > .item, header ul > li, header ul.nav-bar > li {
+  .nav-bar > .item, header ul > .item, header ul.nav-bar > li, header ul > li {
     margin: 0 10px; }
 
 .a .b + .btn-block, .a .b + .b {

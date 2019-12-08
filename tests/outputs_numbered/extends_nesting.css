@@ -50,7 +50,7 @@
   background: #eee; }
 
 /* line 49, inputs/extends_nesting.scss */
-.nav-bar > .item, header ul > .item, header ul > li, header ul.nav-bar > li {
+.nav-bar > .item, header ul > .item, header ul.nav-bar > li, header ul > li {
   margin: 0 10px; }
 
 /* line 54, inputs/extends_nesting.scss */
