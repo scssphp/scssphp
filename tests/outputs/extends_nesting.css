@@ -31,3 +31,6 @@
   background: #eee; }
   .nav-bar > .item, header ul > .item, header ul > li, header ul.nav-bar > li {
     margin: 0 10px; }
+
+.a .b + .btn-block, .a .b + .b {
+  margin-top: 1.5rem; }

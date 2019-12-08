@@ -580,6 +580,9 @@ class Compiler
                             $k++;
                         }
                     }
+                    if (count($nonBreakableBefore) and $k == count($new)) {
+                        $k--;
+                    }
 
                     $replacement = [];
                     $tempReplacement = $k > 0 ? array_slice($new, $k) : $new;

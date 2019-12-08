@@ -55,3 +55,10 @@
 
 /* line 54, inputs/extends_nesting.scss */
 /* line 56, inputs/extends_nesting.scss */
+/* line 61, inputs/extends_nesting.scss */
+/* line 62, inputs/extends_nesting.scss */
+.a .b + .btn-block, .a .b + .b {
+  margin-top: 1.5rem; }
+
+/* line 66, inputs/extends_nesting.scss */
+/* line 67, inputs/extends_nesting.scss */

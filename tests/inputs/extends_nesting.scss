@@ -58,3 +58,13 @@ header ul {
     }
 }
 
+.a .b {
+  + .btn-block {
+    margin-top: 1.5rem;
+  }
+}
+.a {
+    .b {
+        @extend .btn-block;
+    }
+}
