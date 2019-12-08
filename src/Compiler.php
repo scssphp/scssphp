@@ -519,7 +519,7 @@ class Compiler
                 if (count($new) && is_string($new[count($new) - 1]) &&
                     strlen($part) && substr($part, -1) === ')' && strpos($part, '(') === false
                 ) {
-                    while (count($new)>1 && substr($new[count($new) - 1],-1) !== '(') {
+                    while (count($new)>1 && substr($new[count($new) - 1], -1) !== '(') {
                         $part = array_pop($new) . $part;
                     }
                     $new[count($new) - 1] .= $part;
@@ -625,8 +625,7 @@ class Compiler
                     $startRecurseFrom = count($before) + min(count($nonBreakableBefore), count($mergedBefore));
                     if (count($origin) > 1) {
                         $this->matchExtends($result, $out, $startRecurseFrom, false);
-                    }
-                    else {
+                    } else {
                         $this->matchExtends($result, $outRecurs, $startRecurseFrom, false);
                     }
 
@@ -635,13 +634,13 @@ class Compiler
                         $preSharedParts = $k > 0 ? array_slice($before, 0, $k) : [];
                         $postSharedParts = $k > 0 ? array_slice($before, $k) : $before;
 
-                        list($betweenSharedParts, $nonBreakable2) = $this->extractRelationshipFromFragment($afterBefore);
+                        list($betweenSharedParts, $nonBreakabl2) = $this->extractRelationshipFromFragment($afterBefore);
 
                         $result2 = array_merge(
                             $preSharedParts,
                             $betweenSharedParts,
                             $postSharedParts,
-                            $nonBreakable2,
+                            $nonBreakabl2,
                             $nonBreakableBefore,
                             $replacement,
                             $after
@@ -649,16 +648,7 @@ class Compiler
 
                         $this->pushOrMergeExtentedSelector($out, $result2);
                     }
-                    /*
-                    if (count($origin) > 1) {
-                        while (count($outRecurs)) {
-                            $result = array_shift($outRecurs);
-                            $this->pushOrMergeExtentedSelector($out, $result);
-                        }
-                    }
-                    */
                 }
-
             }
             array_pop($partsPile);
         }
@@ -674,7 +664,8 @@ class Compiler
      * @param array $matches
      * @return bool
      */
-    function isPseudoSelector($part, &$matches) {
+    protected function isPseudoSelector($part, &$matches)
+    {
         if (strpos($part, ":") === 0
             && preg_match(",^::?([\w-]+)\((.+)\)$,", $part, $matches)) {
             return true;
@@ -691,7 +682,8 @@ class Compiler
      * @param array $out
      * @param array $extended
      */
-    function pushOrMergeExtentedSelector(&$out, $extended) {
+    protected function pushOrMergeExtentedSelector(&$out, $extended)
+    {
         if (count($out) && count($extended) === 1 && count(reset($extended)) === 1) {
             $single = reset($extended);
             $part = reset($single);
@@ -1027,7 +1019,6 @@ class Compiler
                 $s .= ' ' . $this->compileValue($directive[1]);
             }
             $this->appendRootDirective($s . ';', $out);
-
         } else {
             $s = '@' . $directive->name;
 

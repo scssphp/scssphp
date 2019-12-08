@@ -690,7 +690,6 @@ class Parser
                 $this->valueList($dirValue) &&
                 $this->end()
             ) {
-
                 $this->append([Type::T_DIRECTIVE, [$dirName, $dirValue]], $s);
 
                 return true;
