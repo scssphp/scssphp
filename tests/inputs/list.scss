@@ -15,7 +15,7 @@ p {
 }
 
 $list: [];
-$list: join($list, [red, blue], comma);
+$list: join($list, [red, blue], comma, false);
 
 .bracket-list {
   background: linear-gradient($list);

@@ -3691,6 +3691,11 @@ class Compiler
                 }
 
                 list(, $delim, $items) = $value;
+                $pre = $post = "";
+                if (! empty($value['bracket']) && $value['bracket'] === 'force') {
+                    $pre = "[";
+                    $post = "]";
+                }
 
                 if ($delim !== ' ') {
                     $delim .= ' ';
@@ -3706,7 +3711,7 @@ class Compiler
                     $filtered[] = $this->compileValue($item);
                 }
 
-                return implode("$delim", $filtered);
+                return $pre . implode("$delim", $filtered) . $post;
 
             case Type::T_MAP:
                 $keys     = $value[1];
@@ -6538,6 +6543,18 @@ class Compiler
         return [Type::T_MAP, $keys, $values];
     }
 
+    protected static $libIsBracketed = ['list'];
+    protected function libIsBracketed($args)
+    {
+        $list = $args[0];
+        $this->coerceList($list, ' ');
+        if (! empty($list['bracket']) && $list['bracket']) {
+            return true;
+        }
+        return false;
+    }
+
+
     protected function listSeparatorForJoin($list1, $sep)
     {
         if (! isset($sep)) {
@@ -6556,16 +6573,43 @@ class Compiler
         }
     }
 
-    protected static $libJoin = ['list1', 'list2', 'separator:null'];
+    protected static $libJoin = ['list1', 'list2', 'separator:null', 'bracketed:auto'];
     protected function libJoin($args)
     {
-        list($list1, $list2, $sep) = $args;
+        list($list1, $list2, $sep, $bracketed) = $args;
 
         $list1 = $this->coerceList($list1, ' ');
         $list2 = $this->coerceList($list2, ' ');
         $sep   = $this->listSeparatorForJoin($list1, $sep);
 
-        return [Type::T_LIST, $sep, array_merge($list1[2], $list2[2])];
+        if ($bracketed === static::$true) {
+            $bracketed = 'force';
+        } elseif ($bracketed === static::$false) {
+            $bracketed = false;
+        } elseif ($bracketed === [Type::T_KEYWORD, 'auto']) {
+            $bracketed = 'auto';
+        } elseif ($bracketed === static::$null) {
+            $bracketed = false;
+        } else {
+            $bracketed = $this->compileValue($bracketed);
+            $bracketed = ! ! $bracketed;
+            if ($bracketed === true) {
+                $bracketed = 'force';
+            }
+        }
+
+        if ($bracketed === 'auto') {
+            $bracketed = false;
+            if (! empty($list1['bracket']) && $list1['bracket']) {
+                $bracketed = 'force';
+            }
+        }
+
+        $res = [Type::T_LIST, $sep, array_merge($list1[2], $list2[2])];
+        if ($bracketed) {
+            $res['bracket'] = $bracketed;
+        }
+        return $res;
     }
 
     protected static $libAppend = ['list', 'val', 'separator:null'];
@@ -6875,8 +6919,19 @@ class Compiler
         if ($value === static::$null) {
             $value = [Type::T_KEYWORD, 'null'];
         }
+        $stringValue = [$value];
 
-        return [Type::T_STRING, '', [$value]];
+        if ($value[0] === Type::T_LIST) {
+            if (! empty($value['bracket']) && $value['bracket']) {
+                array_unshift($stringValue, "[");
+                $stringValue[] = "]";
+            } elseif (!count($value[2])) {
+                array_unshift($stringValue, "(");
+                $stringValue[] = ")";
+            }
+        }
+
+        return [Type::T_STRING, '', $stringValue];
     }
 
     /**

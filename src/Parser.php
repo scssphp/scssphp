@@ -1583,7 +1583,10 @@ class Parser
         if ($this->matchChar('[')) {
             if ($this->parenExpression($out, $s, "]", [Type::T_LIST, Type::T_KEYWORD])) {
                 if ($out[0] !== Type::T_LIST && $out[0] !== Type::T_MAP) {
-                    $out = [Type::T_STRING, '', [ '[', $out, ']' ]];
+                    // bracketed list of one element
+                    $out = [Type::T_LIST, '', [$out]];
+                    $out['bracket'] = 'force';
+                    //$out = [Type::T_STRING, '', [ '[', $out, ']' ]];
                 }
 
                 $this->discardComments = $discard;
@@ -1620,11 +1623,16 @@ class Parser
     {
         if ($this->matchChar($closingParen)) {
             $out = [Type::T_LIST, '', []];
-
+            if ($closingParen === "]") {
+                $out['bracket'] = true; // bracketed list
+            }
             return true;
         }
 
         if ($this->valueList($out) && $this->matchChar($closingParen) && in_array($out[0], $allowedTypes)) {
+            if ($out[0] === Type::T_LIST && $closingParen === ']') {
+                $out['bracket'] = true; // bracketed list
+            }
             return true;
         }
 

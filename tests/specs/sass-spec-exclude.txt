@@ -125,13 +125,9 @@
 194/1980. core_functions/global_variable_exists/through_import
 205/1980. core_functions/inspect/error/no_args
 206/1980. core_functions/inspect/error/two_args
-207/1980. core_functions/inspect/list/bracketed
-209/1980. core_functions/inspect/list/empty
-219/1980. core_functions/is_bracketed
 220/1980. core_functions/join/error/named
 221/1980. core_functions/join/error/positional
 222/1980. core_functions/join/error/positional_and_named
-223/1980. core_functions/join/valid
 225/1980. core_functions/mixin_exists/error/argument/too_few
 226/1980. core_functions/mixin_exists/error/argument/too_many
 227/1980. core_functions/mixin_exists/error/argument/type
