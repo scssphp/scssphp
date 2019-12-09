@@ -6174,21 +6174,32 @@ class Compiler
         return $this->adjustHsl($this->assertColor($args[0]), 1, 180);
     }
 
-    protected static $libInvert = ['color'];
+    protected static $libInvert = ['color', 'weight:1'];
     protected function libInvert($args)
     {
-        $value = $args[0];
+        list($value, $weight) = $args;
+
+        if (! isset($weight)) {
+            $weight = 1;
+        } else {
+            $weight = $this->coercePercent($weight);
+        }
 
         if ($value[0] === Type::T_NUMBER) {
             return null;
         }
 
         $color = $this->assertColor($value);
-        $color[1] = 255 - $color[1];
-        $color[2] = 255 - $color[2];
-        $color[3] = 255 - $color[3];
+        $inverted = $color;
+        $inverted[1] = 255 - $inverted[1];
+        $inverted[2] = 255 - $inverted[2];
+        $inverted[3] = 255 - $inverted[3];
 
-        return $color;
+        if ($weight < 1) {
+            return $this->libMix([$inverted, $color, [Type::T_NUMBER, $weight]]);
+        }
+
+        return $inverted;
     }
 
     // increases opacity by amount
