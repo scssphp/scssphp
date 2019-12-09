@@ -547,6 +547,12 @@ class Parser
 
             if ($this->literal('@if', 3) && $this->valueList($cond) && $this->matchChar('{', false)) {
                 $if = $this->pushSpecialBlock(Type::T_IF, $s);
+                while ($cond[0] === Type::T_LIST
+                    && !empty($cond['enclosing'])
+                    && $cond['enclosing'] === 'parent'
+                    && count($cond[2]) == 1) {
+                    $cond = reset($cond[2]);
+                }
                 $if->cond  = $cond;
                 $if->cases = [];
 
@@ -1533,12 +1539,14 @@ class Parser
         $value = null;
 
         while ($this->$parseItem($value)) {
+            $trailing_delim = false;
             $items[] = $value;
 
             if ($delim) {
                 if (! $this->literal($delim, strlen($delim))) {
                     break;
                 }
+                $trailing_delim = true;
             }
         }
 
@@ -1548,6 +1556,9 @@ class Parser
             return false;
         }
 
+        if ($trailing_delim) {
+            $items[] = [Type::T_NULL];
+        }
         if ($flatten && count($items) === 1) {
             $out = $items[0];
         } else {
@@ -1571,7 +1582,7 @@ class Parser
         $this->discardComments = true;
 
         if ($this->matchChar('(')) {
-            if ($this->parenExpression($out, $s, ")")) {
+            if ($this->enclosedExpression($out, $s, ")")) {
                 $this->discardComments = $discard;
 
                 return true;
@@ -1581,14 +1592,7 @@ class Parser
         }
 
         if ($this->matchChar('[')) {
-            if ($this->parenExpression($out, $s, "]", [Type::T_LIST, Type::T_KEYWORD])) {
-                if ($out[0] !== Type::T_LIST && $out[0] !== Type::T_MAP) {
-                    // bracketed list of one element
-                    $out = [Type::T_LIST, '', [$out]];
-                    $out['bracket'] = 'force';
-                    //$out = [Type::T_STRING, '', [ '[', $out, ']' ]];
-                }
-
+            if ($this->enclosedExpression($out, $s, "]", [Type::T_LIST])) {
                 $this->discardComments = $discard;
 
                 return true;
@@ -1619,19 +1623,34 @@ class Parser
      *
      * @return boolean
      */
-    protected function parenExpression(&$out, $s, $closingParen = ")", $allowedTypes = [Type::T_LIST, Type::T_MAP])
+    protected function enclosedExpression(&$out, $s, $closingParen = ")", $allowedTypes = [Type::T_LIST, Type::T_MAP])
     {
-        if ($this->matchChar($closingParen)) {
+        if ($this->matchChar($closingParen) && in_array(Type::T_LIST, $allowedTypes)) {
             $out = [Type::T_LIST, '', []];
-            if ($closingParen === "]") {
-                $out['bracket'] = true; // bracketed list
+            switch ($closingParen) {
+                case ")":
+                    $out['enclosing'] = 'parent'; // parenthesis list
+                    break;
+                case "]":
+                    $out['enclosing'] = 'bracket'; // bracketed list
+                    break;
             }
             return true;
         }
 
-        if ($this->valueList($out) && $this->matchChar($closingParen) && in_array($out[0], $allowedTypes)) {
-            if ($out[0] === Type::T_LIST && $closingParen === ']') {
-                $out['bracket'] = true; // bracketed list
+        if ($this->valueList($out) && $this->matchChar($closingParen)
+            && in_array($out[0], [Type::T_LIST, Type::T_KEYWORD])
+            && in_array(Type::T_LIST, $allowedTypes)) {
+            if ($out[0] !== Type::T_LIST || ! empty($out['enclosing'])) {
+                $out = [Type::T_LIST, '', [$out]];
+            }
+            switch ($closingParen) {
+                case ")":
+                    $out['enclosing'] = 'parent'; // parenthesis list
+                    break;
+                case "]":
+                    $out['enclosing'] = 'bracket'; // bracketed list
+                    break;
             }
             return true;
         }

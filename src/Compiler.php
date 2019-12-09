@@ -3196,6 +3196,10 @@ class Compiler
                     $value[2][$key] = $this->normalizeValue($item);
                 }
 
+                if (! empty($value['enclosing'])) {
+                    unset($value['enclosing']);
+                }
+
                 return $value;
 
             case Type::T_STRING:
@@ -3692,13 +3696,27 @@ class Compiler
 
                 list(, $delim, $items) = $value;
                 $pre = $post = "";
-                if (! empty($value['bracket']) && $value['bracket'] === 'force') {
-                    $pre = "[";
-                    $post = "]";
+                if (! empty($value['enclosing'])) {
+                    switch ($value['enclosing']) {
+                        case 'parent':
+                            //$pre = "(";
+                            //$post = ")";
+                            break;
+                        case 'forced_parent':
+                            $pre = "(";
+                            $post = ")";
+                            break;
+                        case 'bracket':
+                        case 'forced_bracket':
+                            $pre = "[";
+                            $post = "]";
+                            break;
+                    }
                 }
 
+                $prefix_value = '';
                 if ($delim !== ' ') {
-                    $delim .= ' ';
+                    $prefix_value = ' ';
                 }
 
                 $filtered = [];
@@ -3708,10 +3726,14 @@ class Compiler
                         continue;
                     }
 
-                    $filtered[] = $this->compileValue($item);
+                    $compiled = $this->compileValue($item);
+                    if ($prefix_value && strlen($compiled)) {
+                        $compiled = $prefix_value . $compiled;
+                    }
+                    $filtered[] = $compiled;
                 }
 
-                return $pre . implode("$delim", $filtered) . $post;
+                return $pre . substr(implode("$delim", $filtered), strlen($prefix_value)) . $post;
 
             case Type::T_MAP:
                 $keys     = $value[1];
@@ -4963,6 +4985,9 @@ class Compiler
     protected function applyArguments($argDef, $argValues, $storeInEnv = true, $reduce = true)
     {
         $output = [];
+        if (count($argValues) && end($argValues) === static::$null) {
+            array_pop($argValues);
+        }
 
         if ($storeInEnv) {
             $storeEnv = $this->getStoreEnv();
@@ -5185,7 +5210,9 @@ class Compiler
             return $item;
         }
 
-        if ($item === static::$emptyList) {
+        if ($item[0] === static::$emptyList[0]
+            && $item[1] === static::$emptyList[1]
+            && $item[2] === static::$emptyList[2]) {
             return static::$emptyMap;
         }
 
@@ -6548,7 +6575,7 @@ class Compiler
     {
         $list = $args[0];
         $this->coerceList($list, ' ');
-        if (! empty($list['bracket']) && $list['bracket']) {
+        if (! empty($list['enclosing']) && $list['enclosing'] === 'bracket') {
             return true;
         }
         return false;
@@ -6583,7 +6610,7 @@ class Compiler
         $sep   = $this->listSeparatorForJoin($list1, $sep);
 
         if ($bracketed === static::$true) {
-            $bracketed = 'force';
+            $bracketed = true;
         } elseif ($bracketed === static::$false) {
             $bracketed = false;
         } elseif ($bracketed === [Type::T_KEYWORD, 'auto']) {
@@ -6594,20 +6621,23 @@ class Compiler
             $bracketed = $this->compileValue($bracketed);
             $bracketed = ! ! $bracketed;
             if ($bracketed === true) {
-                $bracketed = 'force';
+                $bracketed = true;
             }
         }
 
         if ($bracketed === 'auto') {
             $bracketed = false;
-            if (! empty($list1['bracket']) && $list1['bracket']) {
-                $bracketed = 'force';
+            if (! empty($list1['enclosing']) && $list1['enclosing'] === 'bracket') {
+                $bracketed = true;
             }
         }
 
         $res = [Type::T_LIST, $sep, array_merge($list1[2], $list2[2])];
+        if (isset($list1['enclosing'])) {
+            $res['enlcosing'] = $list1['enclosing'];
+        }
         if ($bracketed) {
-            $res['bracket'] = $bracketed;
+            $res['enclosing'] = 'bracket';
         }
         return $res;
     }
@@ -6620,7 +6650,11 @@ class Compiler
         $list1 = $this->coerceList($list1, ' ');
         $sep = $this->listSeparatorForJoin($list1, $sep);
 
-        return [Type::T_LIST, $sep, array_merge($list1[2], [$value])];
+        $res = [Type::T_LIST, $sep, array_merge($list1[2], [$value])];
+        if (isset($list1['enclosing'])) {
+            $res['enclosing'] = $list1['enclosing'];
+        }
+        return $res;
     }
 
     protected function libZip($args)
@@ -6911,27 +6945,40 @@ class Compiler
         return [Type::T_STRING, '', ['u' . str_pad(base_convert($id, 10, 36), 8, '0', STR_PAD_LEFT)]];
     }
 
-    protected static $libInspect = ['value'];
-    protected function libInspect($args)
+    protected function inspectFormatValue($value, $force_enclosing_display = false)
     {
-        $value = $args[0];
-
         if ($value === static::$null) {
             $value = [Type::T_KEYWORD, 'null'];
         }
         $stringValue = [$value];
-
         if ($value[0] === Type::T_LIST) {
-            if (! empty($value['bracket']) && $value['bracket']) {
-                array_unshift($stringValue, "[");
-                $stringValue[] = "]";
-            } elseif (!count($value[2])) {
-                array_unshift($stringValue, "(");
-                $stringValue[] = ")";
+            if (end($value[2]) === static::$null) {
+                array_pop($value[2]);
+                $value[2][] = [Type::T_STRING, '', ['']];
+                $force_enclosing_display = true;
             }
+            if (! empty($value['enclosing'])) {
+                if ($force_enclosing_display
+                    || ($value['enclosing'] === 'bracket' )
+                    || !count($value[2])) {
+                    $value['enclosing'] = 'forced_'.$value['enclosing'];
+                    $force_enclosing_display = true;
+                }
+            }
+            foreach ($value[2] as $k => $listelement) {
+                $value[2][$k] = $this->inspectFormatValue($listelement, $force_enclosing_display);
+            }
+            $stringValue = [$value];
         }
 
         return [Type::T_STRING, '', $stringValue];
+    }
+
+    protected static $libInspect = ['value'];
+    protected function libInspect($args)
+    {
+        $value = $args[0];
+        return $this->inspectFormatValue($value);
     }
 
     /**
