@@ -4987,18 +4987,27 @@ class Compiler
             if (! empty($arg[0])) {
                 $hasKeywordArgument = true;
 
-                if (! isset($args[$arg[0][1]]) || $args[$arg[0][1]][3]) {
+                $name = $arg[0][1];
+                if (! isset($args[$name])) {
+                    foreach (array_keys($args) as $an) {
+                        if (str_replace("_", "-", $an) === str_replace("_", "-", $name)) {
+                            $name = $an;
+                            break;
+                        }
+                    }
+                }
+                if (! isset($args[$name]) || $args[$name][3]) {
                     if ($hasVariable) {
-                        $deferredKeywordArgs[$arg[0][1]] = $arg[1];
+                        $deferredKeywordArgs[$name] = $arg[1];
                     } else {
                         $this->throwError("Mixin or function doesn't have an argument named $%s.", $arg[0][1]);
                         break;
                     }
-                } elseif ($args[$arg[0][1]][0] < count($remaining)) {
+                } elseif ($args[$name][0] < count($remaining)) {
                     $this->throwError("The argument $%s was passed both by position and by name.", $arg[0][1]);
                     break;
                 } else {
-                    $keywordArgs[$arg[0][1]] = $arg[1];
+                    $keywordArgs[$name] = $arg[1];
                 }
             } elseif ($arg[2] === true) {
                 $val = $this->reduce($arg[1], true);

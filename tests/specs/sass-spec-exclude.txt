@@ -13,7 +13,6 @@
 39/1980. basic/41_slashy_urls
 40/1980. basic/42_css_imports
 45/1980. basic/51_trailing_commas_in_list
-46/1980. basic/52_interchangeable_hyphens_underscores
 47/1980. basic/54_adjacent_identifiers_with_hyphens
 53/1980. basic/60_call
 55/1980. colors/adjust-hue
