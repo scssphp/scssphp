@@ -99,6 +99,8 @@ class SassSpecTest extends TestCase
 
         list($options, $scss, $includes) = $input;
         list($css, $warning, $error) = $output;
+        // short colors are expanded for comparison purpose
+        $css = preg_replace(",#([0-9a-f])([0-9a-f])([0-9a-f])\b,i", "#\\1\\1\\2\\2\\3\\3", $css);
 
         // ignore tests expecting an error for the moment
         if (! strlen($error)) {
@@ -138,6 +140,8 @@ class SassSpecTest extends TestCase
             } else {
                 $actual = static::$scss->compile($scss);
             }
+            // short colors are expanded for comparison purpose
+            $actual = preg_replace(",#([0-9a-f])([0-9a-f])([0-9a-f])\b,i", "#\\1\\1\\2\\2\\3\\3", $actual);
 
             // Get the warnings/errors
             rewind($fp_err_stream);
