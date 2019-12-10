@@ -1572,17 +1572,26 @@ class Parser
      * Parse expression
      *
      * @param array $out
+     * @param bool $listOnly
+     * @param bool $lookForExp
      *
      * @return boolean
      */
-    protected function expression(&$out)
+    protected function expression(&$out, $listOnly = false, $lookForExp = true)
     {
         $s = $this->count;
         $discard = $this->discardComments;
         $this->discardComments = true;
+        $allowedTypes = ($listOnly ? [Type::T_LIST] : [Type::T_LIST, Type::T_MAP]);
 
         if ($this->matchChar('(')) {
-            if ($this->enclosedExpression($out, $s, ")")) {
+            if ($this->enclosedExpression($lhs, $s, ")", $allowedTypes)) {
+                if ($lookForExp) {
+                    $out = $this->expHelper($lhs, 0);
+                } else {
+                    $out = $lhs;
+                }
+
                 $this->discardComments = $discard;
 
                 return true;
@@ -1591,8 +1600,13 @@ class Parser
             $this->seek($s);
         }
 
-        if ($this->matchChar('[')) {
-            if ($this->enclosedExpression($out, $s, "]", [Type::T_LIST])) {
+        if (in_array(Type::T_LIST, $allowedTypes) && $this->matchChar('[')) {
+            if ($this->enclosedExpression($lhs, $s, "]", [Type::T_LIST])) {
+                if ($lookForExp) {
+                    $out = $this->expHelper($lhs, 0);
+                } else {
+                    $out = $lhs;
+                }
                 $this->discardComments = $discard;
 
                 return true;
@@ -1601,8 +1615,12 @@ class Parser
             $this->seek($s);
         }
 
-        if ($this->value($lhs)) {
-            $out = $this->expHelper($lhs, 0);
+        if (!$listOnly && $this->value($lhs)) {
+            if ($lookForExp) {
+                $out = $this->expHelper($lhs, 0);
+            } else {
+                $out = $lhs;
+            }
 
             $this->discardComments = $discard;
 
@@ -1695,7 +1713,7 @@ class Parser
                 break;
             }
 
-            if (! $this->value($rhs)) {
+            if (! $this->value($rhs) && ! $this->expression($rhs, true, false)) {
                 break;
             }
 

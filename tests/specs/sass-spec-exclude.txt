@@ -707,7 +707,6 @@
 1341/1980. libsass/delayed
 1342/1980. libsass/div
 1343/1980. libsass/env
-1344/1980. libsass/eq
 1345/1980. libsass/error-directive-nested/function
 1346/1980. libsass/error-directive-nested/inline
 1347/1980. libsass/error-directive-nested/mixin
@@ -725,7 +724,6 @@
 1368/1980. libsass/parent-selector/missing
 1375/1980. libsass/precision/lower
 1376/1980. libsass/properties-in-media
-1377/1980. libsass/rel
 1379/1980. libsass/selector-functions/is_superselector/has_isnt_superselector_of_contained_selector
 1380/1980. libsass/selector-functions/is_superselector/host_context_isnt_superselector_of_contained_selector
 1381/1980. libsass/selector-functions/is_superselector/host_isnt_superselector_of_contained_selector
@@ -967,7 +965,6 @@
 1957/1980. values/colors/alpha_hex/initial_digit
 1958/1980. values/colors/alpha_hex/initial_letter
 1959/1980. values/ids
-1961/1980. values/lists/equality
 1963/1980. values/maps/duplicate-keys
 1964/1980. values/maps/errors
 1966/1980. values/maps/invalid-key
