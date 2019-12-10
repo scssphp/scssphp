@@ -4985,7 +4985,7 @@ class Compiler
     protected function applyArguments($argDef, $argValues, $storeInEnv = true, $reduce = true)
     {
         $output = [];
-        if (count($argValues) && end($argValues) === static::$null) {
+        if (is_array($argValues) && count($argValues) && end($argValues) === static::$null) {
             array_pop($argValues);
         }
 
