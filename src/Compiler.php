@@ -2600,6 +2600,8 @@ class Compiler
                 $list = $this->coerceList($this->reduce($each->list));
 
                 $this->pushEnv();
+                $storeEnv = $this->storeEnv;
+                $this->storeEnv = $this->env;
 
                 foreach ($list[2] as $item) {
                     if (count($each->vars) === 1) {
@@ -2616,7 +2618,14 @@ class Compiler
 
                     if ($ret) {
                         if ($ret[0] !== Type::T_CONTROL) {
+                            $store = $this->env->store;
+                            $this->storeEnv = $storeEnv;
                             $this->popEnv();
+                            foreach ($store as $key => $value) {
+                                if (!in_array($key, $each->vars)) {
+                                    $this->set($key, $value, true);
+                                }
+                            }
 
                             return $ret;
                         }
@@ -2626,8 +2635,15 @@ class Compiler
                         }
                     }
                 }
-
+                $store = $this->env->store;
+                $this->storeEnv = $storeEnv;
                 $this->popEnv();
+                foreach ($store as $key => $value) {
+                    if (!in_array($key, $each->vars)) {
+                        $this->set($key, $value, true);
+                    }
+                }
+
                 break;
 
             case Type::T_WHILE:
@@ -4169,6 +4185,7 @@ class Compiler
     protected function setExisting($name, $value, Environment $env, $valueUnreduced = null)
     {
         $storeEnv = $env;
+        $specialContentKey = static::$namespaces['special'] . 'content';
 
         $hasNamespace = $name[0] === '^' || $name[0] === '@' || $name[0] === '%';
 

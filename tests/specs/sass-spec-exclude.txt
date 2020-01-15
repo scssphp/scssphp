@@ -529,7 +529,6 @@
 893/1980. libsass-closed-issues/issue_1752
 898/1980. libsass-closed-issues/issue_1768
 902/1980. libsass-closed-issues/issue_1793
-904/1980. libsass-closed-issues/issue_1796
 905/1980. libsass-closed-issues/issue_1797
 906/1980. libsass-closed-issues/issue_1798/1
 907/1980. libsass-closed-issues/issue_1798/2
@@ -918,7 +917,6 @@
 1771/1980. scss-tests/174_test_import_comments_in_imports
 1782/1980. scss-tests/186_test_newlines_removed_from_selectors_when_compressed
 1807/1980. scss/concat
-1808/1980. scss/cons-up
 1812/1980. scss/css_crazy_comments
 1826/1980. scss/directives-in-propsets
 1832/1980. scss/feature-queries/without-query
