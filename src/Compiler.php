@@ -4195,8 +4195,18 @@ class Compiler
             }
 
             if (! $hasNamespace && isset($env->marker)) {
-                $env = $storeEnv;
-                break;
+                if (! empty($env->store[$specialContentKey])) {
+                    $env = $env->store[$specialContentKey]->scope;
+                    continue;
+                }
+
+                if (! empty($env->declarationScopeParent)) {
+                    $env = $env->declarationScopeParent;
+                    continue;
+                } else {
+                    $env = $storeEnv;
+                    break;
+                }
             }
 
             if (! isset($env->parent)) {
