@@ -4,7 +4,7 @@
   color: red; }
 
 /* line 5, inputs/extending_compound_selector.scss */
-.foo:hover:after, .bar:after:hover, .bar:before:hover, .baz.bar:before:hover {
+.foo:hover:after, .bar:hover:after, .bar:before:hover, .baz.bar:before:hover {
   color: blue; }
 
 /* line 10, inputs/extending_compound_selector.scss */

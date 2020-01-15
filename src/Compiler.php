@@ -874,6 +874,11 @@ class Compiler
         $tag    = [];
         $out    = [];
         $wasTag = false;
+        $pseudo = [];
+
+        while (count($other) && strpos(end($other), ':')===0) {
+            array_unshift($pseudo, array_pop($other));
+        }
 
         foreach ([array_reverse($base), array_reverse($other)] as $single) {
             foreach ($single as $part) {
@@ -896,6 +901,9 @@ class Compiler
 
         if (count($tag)) {
             array_unshift($out, $tag[0]);
+        }
+        while (count($pseudo)) {
+            $out[] = array_shift($pseudo);
         }
 
         return $out;
