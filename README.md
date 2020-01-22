@@ -24,7 +24,6 @@ There are several tests in the `tests/` directory:
 * `InputTest.php` compiles every `.scss` file in the `tests/inputs` directory
   then compares to the respective `.css` file in the `tests/outputs` directory.
 * `ScssTest.php` extracts (ruby) `scss` tests from the `tests/scss_test.rb` file.
-* `ServerTest.php` contains functional tests for the `Server` class.
 
 When changing any of the tests in `tests/inputs`, the tests will most likely
 fail because the output has changed. Once you verify that the output is correct
