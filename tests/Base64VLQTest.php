@@ -2,7 +2,7 @@
 /**
  * SCSSPHP
  *
- * @copyright 2018-2019 Anthon Pang
+ * @copyright 2018-2020 Anthon Pang
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
