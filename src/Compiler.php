@@ -4807,6 +4807,7 @@ class Compiler
     {
         // try a lib function
         $name = $this->normalizeName($name);
+        $libName = null;
 
         if (isset($this->userFunctions[$name])) {
             // see if we can find a user function
