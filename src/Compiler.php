@@ -4811,6 +4811,7 @@ class Compiler
         if (isset($this->userFunctions[$name])) {
             // see if we can find a user function
             list($f, $prototype) = $this->userFunctions[$name];
+            $libName = 'lib' . str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
         } elseif (($f = $this->getBuiltinFunction($name)) && is_callable($f)) {
             $libName   = $f[1];
             $prototype = isset(static::$$libName) ? static::$$libName : null;
