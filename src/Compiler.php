@@ -6980,19 +6980,24 @@ class Compiler
         return [Type::T_STRING, '', ['counter(' . implode(',', $list) . ')']];
     }
 
-    protected static $libRandom = ['limit'];
+    protected static $libRandom = ['limit:1'];
     protected function libRandom($args)
     {
         if (isset($args[0])) {
             $n = $this->assertNumber($args[0]);
 
             if ($n < 1) {
-                $this->throwError("limit must be greater than or equal to 1");
+                $this->throwError("\$limit must be greater than or equal to 1");
+
+                return null;
+            }
+            if ($n - intval($n) > 0) {
+                $this->throwError("Expected \$limit to be an integer but got $n for `random`");
 
                 return null;
             }
 
-            return new Node\Number(mt_rand(1, $n), '');
+            return new Node\Number(mt_rand(1, intval($n)), '');
         }
 
         return new Node\Number(mt_rand(1, mt_getrandmax()), '');
