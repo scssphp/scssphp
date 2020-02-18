@@ -718,7 +718,7 @@ class Parser
             $nestingPairs = [ ['(', ')'], ['[', ']'], ['{', '}']];
             foreach ($nestingPairs as $nestingPair) {
                 $this->seek($start);
-                if ($this->openString(";", $value, $nestingPair[0], $nestingPair[1])
+                if ($this->openString(";", $value, $nestingPair[0], $nestingPair[1], false)
                     && $this->end()) {
                     if (is_null($foundValue) || $this->count > $end) {
                         $end = $this->count;
@@ -2418,10 +2418,11 @@ class Parser
      * @param array  $out
      * @param string $nestingOpen
      * @param string $nestingClose
+     * @param bool $trimEnd
      *
      * @return boolean
      */
-    protected function openString($end, &$out, $nestingOpen = null, $nestingClose = null)
+    protected function openString($end, &$out, $nestingOpen = null, $nestingClose = null, $trimEnd=true)
     {
         $oldWhite = $this->eatWhiteDefault;
         $this->eatWhiteDefault = false;
@@ -2481,7 +2482,7 @@ class Parser
         }
 
         // trim the end
-        if (is_string(end($content))) {
+        if ($trimEnd && is_string(end($content))) {
             $content[count($content) - 1] = rtrim(end($content));
         }
 
