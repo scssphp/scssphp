@@ -64,8 +64,8 @@ class Number extends Node implements \ArrayAccess
         ],
         'dpi' => [
             'dpi'  => 1,
-            'dpcm' => 2.54,
-            'dppx' => 96,
+            'dpcm' => 1/2.54,
+            'dppx' => 1/96,
         ],
     ];
 
