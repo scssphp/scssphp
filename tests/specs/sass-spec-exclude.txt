@@ -9,7 +9,6 @@
 19/1980. basic/19_full_mixin_craziness
 24/1980. basic/25_basic_string_interpolation
 25/1980. basic/26_selector_interpolation
-36/1980. basic/38_expressions_in_at_directives
 39/1980. basic/41_slashy_urls
 40/1980. basic/42_css_imports
 45/1980. basic/51_trailing_commas_in_list

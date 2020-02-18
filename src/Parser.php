@@ -65,6 +65,7 @@ class Parser
     private $inParens;
     private $eatWhiteDefault;
     private $discardComments;
+    private $allowVars;
     private $buffer;
     private $utf8;
     private $encoding;
@@ -89,7 +90,8 @@ class Parser
         $this->utf8             = ! $encoding || strtolower($encoding) === 'utf-8';
         $this->patternModifiers = $this->utf8 ? 'Aisu' : 'Ais';
         $this->commentsSeen     = [];
-        $this->discardComments  = false;
+        $this->commentsSeen     = [];
+        $this->allowVars        = true;
 
         if (empty(static::$operatorPattern)) {
             static::$operatorPattern = '([*\/%+-]|[!=]\=|\>\=?|\<\=\>|\<\=?|and|or)';
@@ -671,8 +673,7 @@ class Parser
             // doesn't match built in directive, do generic one
             if ($this->matchChar('@', false) &&
                 $this->keyword($dirName) &&
-                ($this->variable($dirValue) || $this->openString('{', $dirValue) || true) &&
-                $this->matchChar('{', false)
+                $this->directiveValue($dirValue, '{')
             ) {
                 if ($dirName === 'media') {
                     $directive = $this->pushSpecialBlock(Type::T_MEDIA, $s);
@@ -693,7 +694,7 @@ class Parser
             // maybe it's a generic blockless directive
             if ($this->matchChar('@', false) &&
                 $this->keyword($dirName) &&
-                $this->valueList($dirValue) &&
+                $this->directiveValue($dirValue) &&
                 $this->end()
             ) {
                 $this->append([Type::T_DIRECTIVE, [$dirName, $dirValue]], $s);
@@ -1487,6 +1488,58 @@ class Parser
                 $this->seek($s);
             }
 
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Parse directive value list that considers $vars as keyword
+     * @param array $out
+     * @param bool|string $endChar
+     * @return bool
+     */
+    protected function directiveValue(&$out, $endChar = false)
+    {
+        $s = $this->count;
+        if ($this->variable($out)) {
+            if ($endChar && $this->matchChar($endChar, false)) {
+                return true;
+            }
+            if (!$endChar && $this->end()) {
+                return true;
+            }
+        }
+
+        $this->seek($s);
+
+        if ($endChar and $this->openString($endChar, $out)) {
+            if ($this->matchChar($endChar, false)) {
+                return true;
+            }
+        }
+
+        $this->seek($s);
+
+        $allowVars = $this->allowVars;
+        $this->allowVars = false;
+        //$res = $this->valueList($out);
+        $res = $this->genericList($out, 'spaceList', ',');
+        $this->allowVars = $allowVars;
+
+        if ($res) {
+            if ($endChar && $this->matchChar($endChar, false)) {
+                return true;
+            }
+            if (!$endChar && $this->end()) {
+                return true;
+            }
+        }
+
+        $this->seek($s);
+
+        if ($endChar && $this->matchChar($endChar, false)) {
             return true;
         }
 
@@ -2405,6 +2458,8 @@ class Parser
     protected function interpolation(&$out, $lookWhite = true)
     {
         $oldWhite = $this->eatWhiteDefault;
+        $allowVars = $this->allowVars;
+        $this->allowVars = true;
         $this->eatWhiteDefault = true;
 
         $s = $this->count;
@@ -2424,6 +2479,7 @@ class Parser
             }
 
             $this->eatWhiteDefault = $oldWhite;
+            $this->allowVars = $allowVars;
 
             if ($this->eatWhiteDefault) {
                 $this->whitespace();
@@ -2435,6 +2491,7 @@ class Parser
         $this->seek($s);
 
         $this->eatWhiteDefault = $oldWhite;
+        $this->allowVars = $allowVars;
 
         return false;
     }
@@ -2812,7 +2869,11 @@ class Parser
         $s = $this->count;
 
         if ($this->matchChar('$', false) && $this->keyword($name)) {
-            $out = [Type::T_VARIABLE, $name];
+            if ($this->allowVars) {
+                $out = [Type::T_VARIABLE, $name];
+            } else {
+                $out = [Type::T_KEYWORD, '$' . $name];
+            }
 
             return true;
         }
