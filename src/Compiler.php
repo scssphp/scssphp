@@ -101,6 +101,8 @@ class Compiler
 
     static public $true         = [Type::T_KEYWORD, 'true'];
     static public $false        = [Type::T_KEYWORD, 'false'];
+    static public $NaN          = [Type::T_KEYWORD, 'NaN'];
+    static public $Infinity     = [Type::T_KEYWORD, 'Infinity'];
     static public $null         = [Type::T_NULL];
     static public $nullString   = [Type::T_STRING, '', []];
     static public $defaultValue = [Type::T_KEYWORD, ''];
@@ -3290,7 +3292,7 @@ class Compiler
     protected function opDivNumberNumber($left, $right)
     {
         if ($right[1] == 0) {
-            return [Type::T_STRING, '', [$left[1] . $left[2] . '/' . $right[1] . $right[2]]];
+            return ($left[1] == 0) ? static::$NaN : static::$Infinity;
         }
 
         return new Node\Number($left[1] / $right[1], $left[2]);
@@ -3306,6 +3308,10 @@ class Compiler
      */
     protected function opModNumberNumber($left, $right)
     {
+        if ($right[1] == 0) {
+            return static::$NaN;
+        }
+
         return new Node\Number($left[1] % $right[1], $left[2]);
     }
 
