@@ -6403,29 +6403,47 @@ class Compiler
     protected function libMin($args)
     {
         $numbers = $this->getNormalizedNumbers($args);
-        $min = null;
+        $minOriginal = null;
+        $minNormalized = null;
 
-        foreach ($numbers as $key => $number) {
-            if (is_null($min) || $number[1] <= $min[1]) {
-                $min = [$key, $number[1]];
+        foreach ($numbers as $key => $pair) {
+            list($original, $normalized) = $pair;
+            if (is_null($normalized) or is_null($minNormalized)) {
+                if (is_null($minOriginal) || $original[1] <= $minOriginal[1]) {
+                    $minOriginal = $original;
+                    $minNormalized = $normalized;
+                }
+            }
+            elseif ($normalized[1] <= $minNormalized[1]) {
+                $minOriginal = $original;
+                $minNormalized = $normalized;
             }
         }
 
-        return $args[$min[0]];
+        return $minOriginal;
     }
 
     protected function libMax($args)
     {
         $numbers = $this->getNormalizedNumbers($args);
-        $max = null;
+        $maxOriginal = null;
+        $maxNormalized = null;
 
-        foreach ($numbers as $key => $number) {
-            if (is_null($max) || $number[1] >= $max[1]) {
-                $max = [$key, $number[1]];
+        foreach ($numbers as $key => $pair) {
+            list($original, $normalized) = $pair;
+            if (is_null($normalized) or is_null($maxNormalized)) {
+                if (is_null($maxOriginal) || $original[1] >= $maxOriginal[1]) {
+                    $maxOriginal = $original;
+                    $maxNormalized = $normalized;
+                }
+            }
+            elseif ($normalized[1] >= $maxNormalized[1]) {
+                $maxOriginal = $original;
+                $maxNormalized = $normalized;
             }
         }
 
-        return $args[$max[0]];
+        return $maxOriginal;
     }
 
     /**
@@ -6449,15 +6467,15 @@ class Compiler
 
             $number = $item->normalize();
 
-            if (is_null($unit)) {
+            if (empty($unit)) {
                 $unit = $number[2];
                 $originalUnit = $item->unitStr();
-            } elseif ($number[1] && $unit !== $number[2]) {
+            } elseif ($number[1] && $unit !== $number[2] && !empty($number[2])) {
                 $this->throwError('Incompatible units: "%s" and "%s".', $originalUnit, $item->unitStr());
                 break;
             }
 
-            $numbers[$key] = $number;
+            $numbers[$key] = [$args[$key], empty($number[2]) ? null : $number];
         }
 
         return $numbers;
