@@ -6362,13 +6362,13 @@ class Compiler
         return [Type::T_STRING, '"', [$value]];
     }
 
-    protected static $libPercentage = ['value'];
+    protected static $libPercentage = ['number'];
     protected function libPercentage($args)
     {
         return new Node\Number($this->coercePercent($args[0]) * 100, '%');
     }
 
-    protected static $libRound = ['value'];
+    protected static $libRound = ['number'];
     protected function libRound($args)
     {
         $num = $args[0];
@@ -6376,7 +6376,7 @@ class Compiler
         return new Node\Number(round($num[1]), $num[2]);
     }
 
-    protected static $libFloor = ['value'];
+    protected static $libFloor = ['number'];
     protected function libFloor($args)
     {
         $num = $args[0];
@@ -6384,7 +6384,7 @@ class Compiler
         return new Node\Number(floor($num[1]), $num[2]);
     }
 
-    protected static $libCeil = ['value'];
+    protected static $libCeil = ['number'];
     protected function libCeil($args)
     {
         $num = $args[0];
@@ -6392,7 +6392,7 @@ class Compiler
         return new Node\Number(ceil($num[1]), $num[2]);
     }
 
-    protected static $libAbs = ['value'];
+    protected static $libAbs = ['number'];
     protected function libAbs($args)
     {
         $num = $args[0];

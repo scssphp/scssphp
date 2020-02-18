@@ -773,14 +773,9 @@
 1465/1980. mixin/content/arguments/receiving
 1471/1980. mixin/error/no_content
 1472/1980. nesting/not/multiple_parent_selectors_with_trailing_ident
-1473/1980. number-functions/abs
-1474/1980. number-functions/ceil
-1475/1980. number-functions/floor
 1476/1980. number-functions/max
 1477/1980. number-functions/min
-1478/1980. number-functions/percentage
 1479/1980. number-functions/random
-1480/1980. number-functions/round
 1481/1980. operations/division/slash/with_string/slash_minus_string
 1483/1980. operations/division/slash/with_string/string_minus_slash
 1485/1980. parser/and_and
