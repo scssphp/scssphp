@@ -2423,7 +2423,7 @@ class Parser
      *
      * @return boolean
      */
-    protected function openString($end, &$out, $nestingOpen = null, $nestingClose = null, $trimEnd=true)
+    protected function openString($end, &$out, $nestingOpen = null, $nestingClose = null, $trimEnd = true)
     {
         $oldWhite = $this->eatWhiteDefault;
         $this->eatWhiteDefault = false;

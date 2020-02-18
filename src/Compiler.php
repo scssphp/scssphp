@@ -6413,8 +6413,7 @@ class Compiler
                     $minOriginal = $original;
                     $minNormalized = $normalized;
                 }
-            }
-            elseif ($normalized[1] <= $minNormalized[1]) {
+            } elseif ($normalized[1] <= $minNormalized[1]) {
                 $minOriginal = $original;
                 $minNormalized = $normalized;
             }
@@ -6436,8 +6435,7 @@ class Compiler
                     $maxOriginal = $original;
                     $maxNormalized = $normalized;
                 }
-            }
-            elseif ($normalized[1] >= $maxNormalized[1]) {
+            } elseif ($normalized[1] >= $maxNormalized[1]) {
                 $maxOriginal = $original;
                 $maxNormalized = $normalized;
             }
