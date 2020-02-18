@@ -709,7 +709,7 @@ class Parser
 
         // custom properties : right part is static
         if ($this->literal('--', 2) &&
-            ($this->keyword($name, false) || $this->interpolation($name)) &&
+            $this->propertyName($name) &&
             $this->matchChar(':', false)) {
             $start = $this->count;
             $end = $start;
@@ -726,6 +726,7 @@ class Parser
                     }
                 }
             }
+            // TODO: output an error here if nothing found according to sass spec
             if (!is_null($foundValue)) {
                 $name = [Type::T_STRING, '', ['--', $name]];
                 $this->seek($end);
