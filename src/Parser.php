@@ -714,26 +714,27 @@ class Parser
             $start = $this->count;
             $end = $start;
             $foundValue = null;
-            // but can be complex
-            $nestingPairs = [ ['(', ')'], ['[', ']'], ['{', '}']];
-            foreach ($nestingPairs as $nestingPair) {
-                $this->seek($start);
-                if ($this->openString(";", $value, $nestingPair[0], $nestingPair[1], false)
-                    && $this->end()) {
-                    if (is_null($foundValue) || $this->count > $end) {
-                        $end = $this->count;
-                        $foundValue = $value;
+            // but can be complex and finish with ; or }
+            foreach ([';','}'] as $ending) {
+                $nestingPairs = [ ['(', ')'], ['[', ']'], ['{', '}']];
+                foreach ($nestingPairs as $nestingPair) {
+                    $this->seek($start);
+                    if ($this->openString($ending, $value, $nestingPair[0], $nestingPair[1], false)
+                        && $this->end()) {
+                        if (is_null($foundValue) || $this->count > $end) {
+                            $end = $this->count;
+                            $foundValue = $value;
+                        }
                     }
+                }
+                if (!is_null($foundValue)) {
+                    $name = [Type::T_STRING, '', ['--', $name]];
+                    $this->seek($end);
+                    $this->append([Type::T_CUSTOM_PROPERTY, $name, $foundValue], $s);
+                    return true;
                 }
             }
             // TODO: output an error here if nothing found according to sass spec
-            if (!is_null($foundValue)) {
-                $name = [Type::T_STRING, '', ['--', $name]];
-                $this->seek($end);
-                $this->append([Type::T_CUSTOM_PROPERTY, $name, $foundValue], $s);
-
-                return true;
-            }
         }
 
         $this->seek($s);
@@ -2477,7 +2478,7 @@ class Parser
 
         $this->eatWhiteDefault = $oldWhite;
 
-        if (! $content) {
+        if (! $content || $tok !== $end) {
             return false;
         }
 
