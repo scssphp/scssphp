@@ -2432,6 +2432,30 @@ class Compiler
                 }
                 break;
 
+            case Type::T_CUSTOM_PROPERTY:
+                list(, $name, $value) = $child;
+                $compiledName = $this->compileValue($name);
+
+                // if the value reduces to null from something else then
+                // the property should be discarded
+                if ($value[0] !== Type::T_NULL) {
+                    $value = $this->reduce($value);
+
+                    if ($value[0] === Type::T_NULL || $value === static::$nullString) {
+                        break;
+                    }
+                }
+
+                $compiledValue = $this->compileValue($value);
+
+                $line = $this->formatter->customProperty(
+                    $compiledName,
+                    $compiledValue
+                );
+
+                $this->appendOutputLine($out, Type::T_ASSIGN, $line);
+                break;
+
             case Type::T_ASSIGN:
                 list(, $name, $value) = $child;
 

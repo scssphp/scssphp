@@ -150,10 +150,7 @@
 259/1980. css/custom_properties/error/brackets/square_in_paren
 260/1980. css/custom_properties/error/empty
 261/1980. css/custom_properties/error/empty_interpolation
-262/1980. css/custom_properties/exclamation
 263/1980. css/custom_properties/name_interpolation
-264/1980. css/custom_properties/nesting_characters
-265/1980. css/custom_properties/script
 266/1980. css/custom_properties/simple
 268/1980. css/custom_properties/trailing_whitespace
 270/1980. css/custom_properties/without_semicolon

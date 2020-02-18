@@ -707,6 +707,36 @@ class Parser
             return false;
         }
 
+        // custom properties : right part is static
+        if ($this->literal('--', 2) &&
+            ($this->keyword($name, false) || $this->interpolation($name)) &&
+            $this->matchChar(':', false)) {
+            $start = $this->count;
+            $end = $start;
+            $foundValue = null;
+            // but can be complex
+            $nestingPairs = [ ['(', ')'], ['[', ']'], ['{', '}']];
+            foreach ($nestingPairs as $nestingPair) {
+                $this->seek($start);
+                if ($this->openString(";", $value, $nestingPair[0], $nestingPair[1])
+                    && $this->end()) {
+                    if (is_null($foundValue) || $this->count > $end) {
+                        $end = $this->count;
+                        $foundValue = $value;
+                    }
+                }
+            }
+            if (!is_null($foundValue)) {
+                $name = [Type::T_STRING, '', ['--', $name]];
+                $this->seek($end);
+                $this->append([Type::T_CUSTOM_PROPERTY, $name, $foundValue], $s);
+
+                return true;
+            }
+        }
+
+        $this->seek($s);
+
         // property shortcut
         // captures most properties before having to parse a selector
         if ($this->keyword($name, false) &&
@@ -2386,15 +2416,23 @@ class Parser
      * @param string $end
      * @param array  $out
      * @param string $nestingOpen
+     * @param string $nestingClose
      *
      * @return boolean
      */
-    protected function openString($end, &$out, $nestingOpen = null)
+    protected function openString($end, &$out, $nestingOpen = null, $nestingClose = null)
     {
         $oldWhite = $this->eatWhiteDefault;
         $this->eatWhiteDefault = false;
 
-        $patt = '(.*?)([\'"]|#\{|' . $this->pregQuote($end) . '|' . static::$commentPattern . ')';
+        if ($nestingOpen && !$nestingClose) {
+            $nestingClose = $end;
+        }
+
+        $patt = '(.*?)([\'"]|#\{|'
+            . $this->pregQuote($end) . '|'
+            . (($nestingClose && $nestingClose !== $end) ? $this->pregQuote($nestingClose) . '|' : '')
+            . static::$commentPattern . ')';
 
         $nestingLevel = 0;
 
@@ -2413,8 +2451,12 @@ class Parser
 
             $this->count-= strlen($tok);
 
-            if ($tok === $end && ! $nestingLevel--) {
+            if ($tok === $end && ! $nestingLevel) {
                 break;
+            }
+
+            if ($tok === $nestingClose) {
+                $nestingLevel--;
             }
 
             if (($tok === "'" || $tok === '"') && $this->string($str)) {

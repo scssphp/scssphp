@@ -27,6 +27,7 @@ class Type
     const T_COMMENT = 'comment';
     const T_CONTINUE = 'continue';
     const T_CONTROL = 'control';
+    const T_CUSTOM_PROPERTY = 'custom';
     const T_DEBUG = 'debug';
     const T_DIRECTIVE = 'directive';
     const T_EACH = 'each';

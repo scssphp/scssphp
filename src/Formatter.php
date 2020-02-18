@@ -119,6 +119,22 @@ abstract class Formatter
     }
 
     /**
+     * Return custom property assignment
+     * differs in that you have to keep spaces in the value as is
+     *
+     * @api
+     *
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return string
+     */
+    public function customProperty($name, $value)
+    {
+        return rtrim($name) . trim($this->assignSeparator) . $value . ';';
+    }
+
+    /**
      * Output lines inside a block
      *
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
