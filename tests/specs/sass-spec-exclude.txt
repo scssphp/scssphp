@@ -410,7 +410,6 @@
 692/1980. libsass-closed-issues/issue_1133/normal
 693/1980. libsass-closed-issues/issue_1133/vararg
 695/1980. libsass-closed-issues/issue_1162
-697/1980. libsass-closed-issues/issue_1167
 699/1980. libsass-closed-issues/issue_1169/error/color
 700/1980. libsass-closed-issues/issue_1169/error/functioncall
 701/1980. libsass-closed-issues/issue_1169/error/interpolate
@@ -620,7 +619,6 @@
 1146/1980. libsass-closed-issues/issue_657/default
 1150/1980. libsass-closed-issues/issue_659/static
 1151/1980. libsass-closed-issues/issue_660
-1152/1980. libsass-closed-issues/issue_666/angle
 1156/1980. libsass-closed-issues/issue_673
 1157/1980. libsass-closed-issues/issue_674
 1160/1980. libsass-closed-issues/issue_694
@@ -723,10 +721,7 @@
 1391/1980. libsass/selectors/simple
 1398/1980. libsass/test
 1399/1980. libsass/unary-ops
-1401/1980. libsass/units/conversion/angle
-1402/1980. libsass/units/conversion/frequency
 1403/1980. libsass/units/conversion/resolution
-1405/1980. libsass/units/conversion/time
 1406/1980. libsass/units/feature-test
 1407/1980. libsass/units/simple
 1408/1980. libsass/unquote

@@ -3071,7 +3071,9 @@ class Compiler
                                 $targetUnit = $left->unitless() ? $right[2] : $left[2];
                         }
 
-                        if (! $left->unitless() && ! $right->unitless()) {
+                        $baseUnitLeft = $left->isNormalizable();
+                        $baseUnitRight = $right->isNormalizable();
+                        if ($baseUnitLeft && $baseUnitRight && $baseUnitLeft === $baseUnitRight) {
                             $left = $left->normalize();
                             $right = $right->normalize();
                         }
