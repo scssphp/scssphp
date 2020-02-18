@@ -124,12 +124,6 @@ END_OF_SCSS
                 'Undefined variable $bg'
             ),
             array(<<<'END_OF_SCSS'
-div { bottom: (4/2px); }
-END_OF_SCSS
-                ,
-                'isn\'t a valid CSS value'
-            ),
-            array(<<<'END_OF_SCSS'
 a.important {
   @extend .notice;
 }
