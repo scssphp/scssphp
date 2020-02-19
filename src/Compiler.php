@@ -4617,7 +4617,7 @@ class Compiler
         $urls = [];
 
         // for "normal" scss imports (ignore vanilla css and external requests)
-        if (! preg_match('~\.css$|^https?://~', $url)) {
+        if (! preg_match('~\.css$|^https?://|^//~', $url)) {
             // try both normal and the _partial filename
             $urls = [$url, preg_replace('~[^/]+$~', '_\0', $url)];
         }
@@ -4648,6 +4648,12 @@ class Compiler
                 if (! is_null($file)) {
                     return $file;
                 }
+            }
+        }
+
+        if ($urls) {
+            if (!$hasExtension or preg_match('/[.]scss$/', $url)) {
+                $this->throwError("`$url` file not found for @import");
             }
         }
 

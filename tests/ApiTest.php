@@ -70,16 +70,6 @@ class ApiTest extends TestCase
         );
     }
 
-    public function testImportMissing()
-    {
-        $this->scss = new Compiler;
-
-        $this->assertEquals(
-            '@import "missing";',
-            $this->compile('@import "missing";')
-        );
-    }
-
     public function testImportCustomCallback()
     {
         $this->scss = new Compiler;
@@ -133,8 +123,8 @@ class ApiTest extends TestCase
 
         // test that BOM is stripped/ignored
         $this->assertEquals(
-            '@import "main";',
-            $this->compile("\xEF\xBB\xBF@import \"main\";")
+            '@import "main.css";',
+            $this->compile("\xEF\xBB\xBF@import \"main.css\";")
         );
     }
 

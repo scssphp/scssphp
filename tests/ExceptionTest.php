@@ -131,6 +131,12 @@ END_OF_SCSS
                 ,
                 'was not found'
             ),
+            array(<<<'END_OF_SCSS'
+@import "missing";
+END_OF_SCSS
+                ,
+                'file not found for @import'
+            ),
         );
     }
 
