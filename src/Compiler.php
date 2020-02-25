@@ -2578,11 +2578,14 @@ class Compiler
 
                 $compiledValue = $this->compileValue($value);
 
-                $line = $this->formatter->property(
-                    $compiledName,
-                    $compiledValue
-                );
-                $this->appendOutputLine($out, Type::T_ASSIGN, $line);
+                // ignore empty value
+                if (strlen($compiledValue)) {
+                    $line = $this->formatter->property(
+                        $compiledName,
+                        $compiledValue
+                    );
+                    $this->appendOutputLine($out, Type::T_ASSIGN, $line);
+                }
                 break;
 
             case Type::T_COMMENT:

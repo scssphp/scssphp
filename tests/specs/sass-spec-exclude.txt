@@ -450,7 +450,6 @@
 791/1980. libsass-closed-issues/issue_1432/selector-replace
 792/1980. libsass-closed-issues/issue_1432/selector-unify
 793/1980. libsass-closed-issues/issue_1432/simple-selectors
-797/1980. libsass-closed-issues/issue_1440
 802/1980. libsass-closed-issues/issue_1452
 805/1980. libsass-closed-issues/issue_1484
 807/1980. libsass-closed-issues/issue_1487
