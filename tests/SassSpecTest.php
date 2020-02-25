@@ -228,6 +228,7 @@ class SassSpecTest extends TestCase
                 $includes  = [];
                 $hasInput  = false;
                 $hasOutput = false;
+                $baseDir = '';
 
                 $parts = explode('<===>', $subTest);
 
@@ -257,6 +258,7 @@ class SassSpecTest extends TestCase
                             if (! $subNname && $subDir) {
                                 $subNname = '/' . $subDir;
                             }
+                            $baseDir = $subDir;
 
                             $hasInput = true;
                             $input = $part;
@@ -287,11 +289,28 @@ class SassSpecTest extends TestCase
                             break;
 
                         default:
-                            if ($what && substr($what, -5) === '.scss') {
+                            if ($what && (substr($what, -5) === '.scss' || substr($what, -4) === '.css')) {
                                 $includes[$first] = $part;
                             }
                             break;
                     }
+                }
+
+                if ($baseDir and $includes) {
+                    $tempIncludes = $includes;
+                    $includes = array();
+                    foreach ($tempIncludes as $k => $v) {
+                        if (strpos($k, "$baseDir/") === 0) {
+                            $k = substr($k, strlen("$baseDir/"));
+                        }
+                        $includes[$k] = $v;
+                    }
+                }
+
+                // exception : a lot of spec test have an _assert_helpers.scss besides the .hrx
+                // and are using an @import('../assert_helpers') withour any declaration in the hrx
+                if (file_exists($f = $fileDir . '/_assert_helpers.scss')) {
+                    $includes['../_assert_helpers.scss'] = file_get_contents($f);
                 }
 
                 if (!$options && $generalOptions) {
