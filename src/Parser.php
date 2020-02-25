@@ -716,18 +716,24 @@ class Parser
             $foundValue = null;
             // but can be complex and finish with ; or }
             foreach ([';','}'] as $ending) {
-                $nestingPairs = [ ['(', ')'], ['[', ']'], ['{', '}']];
-                foreach ($nestingPairs as $nestingPair) {
-                    $this->seek($start);
-                    if ($this->openString($ending, $value, $nestingPair[0], $nestingPair[1], false)
-                        && $this->end()) {
-                        if (is_null($foundValue) || $this->count > $end) {
-                            $end = $this->count;
-                            $foundValue = $value;
+                if ($this->openString($ending, $value, '(', ')', false)
+                    && $this->end()) {
+                    $end = $this->count;
+                    $foundValue = $value;
+                    // check if we have only a partial value due to nested [] or { } to take in account
+                    $nestingPairs = [['[', ']'], ['{', '}']];
+                    foreach ($nestingPairs as $nestingPair) {
+                        if (strpos($this->buffer, $nestingPair[0], $start) < $end) {
+                            $this->seek($start);
+                            if ($this->openString($ending, $value, $nestingPair[0], $nestingPair[1], false)
+                                && $this->end()) {
+                                if ($this->count > $end) {
+                                    $end = $this->count;
+                                    $foundValue = $value;
+                                }
+                            }
                         }
                     }
-                }
-                if (!is_null($foundValue)) {
                     $name = [Type::T_STRING, '', ['--', $name]];
                     $this->seek($end);
                     $this->append([Type::T_CUSTOM_PROPERTY, $name, $foundValue], $s);
