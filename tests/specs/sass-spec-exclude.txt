@@ -11,7 +11,6 @@
 25/1980. basic/26_selector_interpolation
 39/1980. basic/41_slashy_urls
 40/1980. basic/42_css_imports
-45/1980. basic/51_trailing_commas_in_list
 47/1980. basic/54_adjacent_identifiers_with_hyphens
 53/1980. basic/60_call
 65/1980. core_functions/color/hsl/error/five_args

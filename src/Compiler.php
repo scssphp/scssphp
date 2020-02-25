@@ -5319,6 +5319,10 @@ class Compiler
     protected function coerceList($item, $delim = ',')
     {
         if (isset($item) && $item[0] === Type::T_LIST) {
+            // remove trailing null from the list
+            while (end($item[2]) === static::$null) {
+                array_pop($item[2]);
+            }
             return $item;
         }
 
