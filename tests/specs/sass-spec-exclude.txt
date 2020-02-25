@@ -150,11 +150,6 @@
 275/1980. css/min_max/error/plain_css_function
 278/1980. css/moz_document/functions/static
 279/1980. css/moz_document/multi_function
-281/1980. css/plain/boolean_operations
-282/1980. css/plain/import/css_before_index
-283/1980. css/plain/null
-284/1980. css/plain/single_equals
-285/1980. css/plain/slash
 287/1980. css/selector/attribute/modifier/after_string
 289/1980. css/selector/error/attribute/modifier/digit
 290/1980. css/selector/error/attribute/modifier/no_operator

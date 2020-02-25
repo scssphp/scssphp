@@ -319,7 +319,16 @@ class Compiler
      */
     protected function parserFactory($path)
     {
-        $parser = new Parser($path, count($this->sourceNames), $this->encoding, $this->cache);
+        // https://sass-lang.com/documentation/at-rules/import
+        // CSS files imported by Sass don’t allow any special Sass features.
+        // In order to make sure authors don’t accidentally write Sass in their CSS,
+        // all Sass features that aren’t also valid CSS will produce errors.
+        // Otherwise, the CSS will be rendered as-is. It can even be extended!
+        $cssOnly = false;
+        if (substr($path, '-4') === '.css') {
+            $cssOnly = true;
+        }
+        $parser = new Parser($path, count($this->sourceNames), $this->encoding, $this->cache, $cssOnly);
 
         $this->sourceNames[] = $path;
         $this->addParsedFile($path);
@@ -4635,10 +4644,16 @@ class Compiler
                     ) ? '/' : '';
                     $full = $dir . $separator . $full;
 
-                    if (is_file($file = $full . '.scss') ||
-                        ($hasExtension && is_file($file = $full))
-                    ) {
-                        return $file;
+                    if ($hasExtension) {
+                        if (is_file($file = $full)) {
+                            return $file;
+                        }
+                    } else {
+                        if (is_file($file = $full . '.scss') ||
+                            is_file($file = $full . '.css')
+                        ) {
+                            return $file;
+                        }
                     }
                 }
             } elseif (is_callable($dir)) {
