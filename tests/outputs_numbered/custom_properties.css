@@ -1,0 +1,3 @@
+/* line 3, inputs/custom_properties.scss */
+a {
+  font: var(--theme-font, sans-serif); }

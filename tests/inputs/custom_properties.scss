@@ -1,0 +1,5 @@
+$theme: 'theme';
+$font: sans-serif;
+a {
+  font: var(--#{$theme}-font, $font);
+}

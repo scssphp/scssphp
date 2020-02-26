@@ -765,8 +765,7 @@ class Parser
         }
 
         // custom properties : right part is static
-        if ((($isCustom = $this->literal('--', 2)) || $this->cssOnly) &&
-            $this->propertyName($name) &&
+        if (($this->customProperty($name) || ($this->cssOnly && $this->propertyName($name))) &&
             $this->matchChar(':', false)) {
             $start = $this->count;
             // but can be complex and finish with ; or }
@@ -791,7 +790,6 @@ class Parser
                         }
                     }
                     $this->seek($end);
-                    $name = [Type::T_STRING, '', $isCustom ? ['--', $name] : [$name]];
                     $this->append([Type::T_CUSTOM_PROPERTY, $name, $value], $s);
                     return true;
                 }
@@ -1984,6 +1982,10 @@ class Parser
             }
 
             $this->count--;
+
+            if ($this->customProperty($out)) {
+                return true;
+            }
         }
 
         // paren
@@ -2666,6 +2668,55 @@ class Parser
                 $parts[] = $m[0];
                 $this->count += strlen($m[0]);
             }
+        }
+
+        $this->whitespace(); // get any extra whitespace
+
+        $out = [Type::T_STRING, '', $parts];
+
+        return true;
+    }
+
+    /**
+     * Parse custom property name (as an array of parts or a string)
+     *
+     * @param array $out
+     *
+     * @return boolean
+     */
+    protected function customProperty(&$out)
+    {
+        $s = $this->count;
+
+        if (! $this->literal('--', 2, false)) {
+            return false;
+        }
+
+        $parts = ['--'];
+
+        $oldWhite = $this->eatWhiteDefault;
+        $this->eatWhiteDefault = false;
+
+        for (;;) {
+            if ($this->interpolation($inter)) {
+                $parts[] = $inter;
+                continue;
+            }
+
+            if ($this->keyword($text)) {
+                $parts[] = $text;
+                continue;
+            }
+
+            break;
+        }
+
+        $this->eatWhiteDefault = $oldWhite;
+
+        if (count($parts) == 1) {
+            $this->seek($s);
+
+            return false;
         }
 
         $this->whitespace(); // get any extra whitespace
