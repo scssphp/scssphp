@@ -2667,11 +2667,7 @@ class Compiler
                             $store = $this->env->store;
                             $this->storeEnv = $storeEnv;
                             $this->popEnv();
-                            foreach ($store as $key => $value) {
-                                if (!in_array($key, $each->vars)) {
-                                    $this->set($key, $value, true);
-                                }
-                            }
+                            $this->backPropagateEnv($store, $each->vars);
 
                             return $ret;
                         }
@@ -2684,11 +2680,7 @@ class Compiler
                 $store = $this->env->store;
                 $this->storeEnv = $storeEnv;
                 $this->popEnv();
-                foreach ($store as $key => $value) {
-                    if (!in_array($key, $each->vars)) {
-                        $this->set($key, $value, true);
-                    }
-                }
+                $this->backPropagateEnv($store, $each->vars);
 
                 break;
 
@@ -2728,6 +2720,10 @@ class Compiler
 
                 $d = $start < $end ? 1 : -1;
 
+                $this->pushEnv();
+                $storeEnv = $this->storeEnv;
+                $this->storeEnv = $this->env;
+
                 for (;;) {
                     if ((! $for->until && $start - $d == $end) ||
                         ($for->until && $start == $end)
@@ -2742,6 +2738,10 @@ class Compiler
 
                     if ($ret) {
                         if ($ret[0] !== Type::T_CONTROL) {
+                            $store = $this->env->store;
+                            $this->storeEnv = $storeEnv;
+                            $this->popEnv();
+                            $this->backPropagateEnv($store, [$for->var]);
                             return $ret;
                         }
 
@@ -2750,6 +2750,12 @@ class Compiler
                         }
                     }
                 }
+
+                $store = $this->env->store;
+                $this->storeEnv = $storeEnv;
+                $this->popEnv();
+                $this->backPropagateEnv($store, [$for->var]);
+
                 break;
 
             case Type::T_BREAK:
@@ -4190,6 +4196,20 @@ class Compiler
     protected function popEnv()
     {
         $this->env = $this->env->parent;
+    }
+
+    /**
+     * propagate vars from a just poped Env (used in @each and @for)
+     * @param array $store
+     * @param null|array $excludedVars
+     */
+    protected function backPropagateEnv($store, $excludedVars = null)
+    {
+        foreach ($store as $key => $value) {
+            if (empty($excludedVars) || !in_array($key, $excludedVars)) {
+                $this->set($key, $value, true);
+            }
+        }
     }
 
     /**
