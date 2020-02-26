@@ -2643,7 +2643,7 @@ class Compiler
             case Type::T_EACH:
                 list(, $each) = $child;
 
-                $list = $this->coerceList($this->reduce($each->list));
+                $list = $this->coerceList($this->reduce($each->list), ',', true);
 
                 $this->pushEnv();
                 $storeEnv = $this->storeEnv;
@@ -5316,14 +5316,15 @@ class Compiler
      *
      * @param array  $item
      * @param string $delim
+     * @param bool $removeTrailingNull
      *
      * @return array
      */
-    protected function coerceList($item, $delim = ',')
+    protected function coerceList($item, $delim = ',', $removeTrailingNull = false)
     {
         if (isset($item) && $item[0] === Type::T_LIST) {
             // remove trailing null from the list
-            while (end($item[2]) === static::$null) {
+            if ($removeTrailingNull && end($item[2]) === static::$null) {
                 array_pop($item[2]);
             }
             return $item;
@@ -6512,7 +6513,7 @@ class Compiler
     protected static $libLength = ['list'];
     protected function libLength($args)
     {
-        $list = $this->coerceList($args[0]);
+        $list = $this->coerceList($args[0], ',', true);
 
         return count($list[2]);
     }
@@ -6540,7 +6541,7 @@ class Compiler
     protected static $libNth = ['list', 'n'];
     protected function libNth($args)
     {
-        $list = $this->coerceList($args[0]);
+        $list = $this->coerceList($args[0], ',', false);
         $n = $this->assertNumber($args[1]);
 
         if ($n > 0) {
@@ -6717,8 +6718,8 @@ class Compiler
     {
         list($list1, $list2, $sep, $bracketed) = $args;
 
-        $list1 = $this->coerceList($list1, ' ');
-        $list2 = $this->coerceList($list2, ' ');
+        $list1 = $this->coerceList($list1, ' ', true);
+        $list2 = $this->coerceList($list2, ' ', true);
         $sep   = $this->listSeparatorForJoin($list1, $sep);
 
         if ($bracketed === static::$true) {
@@ -6759,7 +6760,7 @@ class Compiler
     {
         list($list1, $value, $sep) = $args;
 
-        $list1 = $this->coerceList($list1, ' ');
+        $list1 = $this->coerceList($list1, ' ', true);
         $sep = $this->listSeparatorForJoin($list1, $sep);
 
         $res = [Type::T_LIST, $sep, array_merge($list1[2], [$value])];
