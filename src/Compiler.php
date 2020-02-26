@@ -1562,8 +1562,6 @@ class Compiler
         if (isset($value[2])) {
             if ($pushEnv) {
                 $this->pushEnv();
-                $storeEnv = $this->storeEnv;
-                $this->storeEnv = $this->env;
             }
 
             try {
@@ -1573,7 +1571,6 @@ class Compiler
             }
 
             if ($pushEnv) {
-                $this->storeEnv = $storeEnv;
                 $this->popEnv();
             }
         }
@@ -2646,8 +2643,6 @@ class Compiler
                 $list = $this->coerceList($this->reduce($each->list), ',', true);
 
                 $this->pushEnv();
-                $storeEnv = $this->storeEnv;
-                $this->storeEnv = $this->env;
 
                 foreach ($list[2] as $item) {
                     if (count($each->vars) === 1) {
@@ -2665,7 +2660,6 @@ class Compiler
                     if ($ret) {
                         if ($ret[0] !== Type::T_CONTROL) {
                             $store = $this->env->store;
-                            $this->storeEnv = $storeEnv;
                             $this->popEnv();
                             $this->backPropagateEnv($store, $each->vars);
 
@@ -2678,7 +2672,6 @@ class Compiler
                     }
                 }
                 $store = $this->env->store;
-                $this->storeEnv = $storeEnv;
                 $this->popEnv();
                 $this->backPropagateEnv($store, $each->vars);
 
@@ -2721,8 +2714,6 @@ class Compiler
                 $d = $start < $end ? 1 : -1;
 
                 $this->pushEnv();
-                $storeEnv = $this->storeEnv;
-                $this->storeEnv = $this->env;
 
                 for (;;) {
                     if ((! $for->until && $start - $d == $end) ||
@@ -2739,7 +2730,6 @@ class Compiler
                     if ($ret) {
                         if ($ret[0] !== Type::T_CONTROL) {
                             $store = $this->env->store;
-                            $this->storeEnv = $storeEnv;
                             $this->popEnv();
                             $this->backPropagateEnv($store, [$for->var]);
                             return $ret;
@@ -2752,7 +2742,6 @@ class Compiler
                 }
 
                 $store = $this->env->store;
-                $this->storeEnv = $storeEnv;
                 $this->popEnv();
                 $this->backPropagateEnv($store, [$for->var]);
 
@@ -2787,9 +2776,6 @@ class Compiler
                 // push scope, apply args
                 $this->pushEnv();
                 $this->env->depth--;
-
-                $storeEnv = $this->storeEnv;
-                $this->storeEnv = $this->env;
 
                 // Find the parent selectors in the env to be able to know what '&' refers to in the mixin
                 // and assign this fake parent to childs
@@ -2844,8 +2830,6 @@ class Compiler
 
                 $this->compileChildrenNoReturn($mixin->children, $out, $selfParent, $this->env->marker . " " . $name);
 
-                $this->storeEnv = $storeEnv;
-
                 $this->popEnv();
                 break;
 
@@ -2856,9 +2840,6 @@ class Compiler
                 $argContent = $child[1];
 
                 if (! $content) {
-                    $content = new \stdClass();
-                    $content->scope    = new \stdClass();
-                    $content->children = $env->parent->block->children;
                     break;
                 }
 
@@ -2867,7 +2848,7 @@ class Compiler
 
                 if (isset($argUsing) && isset($argContent)) {
                     // Get the arguments provided for the content with the names provided in the "using" argument list
-                    $this->storeEnv = $this->env;
+                    $this->storeEnv = null;
                     $varsUsing = $this->applyArguments($argUsing, $argContent, false);
                 }
 
@@ -4181,11 +4162,13 @@ class Compiler
     {
         $env = new Environment;
         $env->parent = $this->env;
+        $env->parentStore = $this->storeEnv;
         $env->store  = [];
         $env->block  = $block;
         $env->depth  = isset($this->env->depth) ? $this->env->depth + 1 : 0;
 
         $this->env = $env;
+        $this->storeEnv = null;
 
         return $env;
     }
@@ -4195,6 +4178,7 @@ class Compiler
      */
     protected function popEnv()
     {
+        $this->storeEnv = $this->env->parentStore;
         $this->env = $this->env->parent;
     }
 
@@ -4261,7 +4245,13 @@ class Compiler
 
         $hasNamespace = $name[0] === '^' || $name[0] === '@' || $name[0] === '%';
 
+        $maxDepth = 10000;
+
         for (;;) {
+            if ($maxDepth-- <= 0) {
+                break;
+            }
+
             if (array_key_exists($name, $env->store)) {
                 break;
             }
@@ -4281,12 +4271,14 @@ class Compiler
                 }
             }
 
-            if (! isset($env->parent)) {
+            if (isset($env->parentStore)) {
+                $env = $env->parentStore;
+            } elseif (isset($env->parent)) {
+                $env = $env->parent;
+            } else {
                 $env = $storeEnv;
                 break;
             }
-
-            $env = $env->parent;
         }
 
         $env->store[$name] = $value;
@@ -4365,11 +4357,13 @@ class Compiler
                 continue;
             }
 
-            if (! isset($env->parent)) {
+            if (isset($env->parentStore)) {
+                $env = $env->parentStore;
+            } elseif (isset($env->parent)) {
+                $env = $env->parent;
+            } else {
                 break;
             }
-
-            $env = $env->parent;
         }
 
         if ($shouldThrow) {
@@ -4839,9 +4833,6 @@ class Compiler
 
         $this->pushEnv();
 
-        $storeEnv = $this->storeEnv;
-        $this->storeEnv = $this->env;
-
         // set the args
         if (isset($func->args)) {
             $this->applyArguments($func->args, $argValues);
@@ -4860,8 +4851,6 @@ class Compiler
         }
 
         $ret = $this->compileChildren($func->children, $tmp, $this->env->marker . " " . $name);
-
-        $this->storeEnv = $storeEnv;
 
         $this->popEnv();
 

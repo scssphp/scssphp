@@ -125,3 +125,26 @@ A {
   font-weight: bold;
   @include empty_content()
 }
+
+
+$breakpoint-classes: (small, medium);
+$grid-columns: 3;
+
+@mixin breakpoint() {
+  $bp: 1;
+  @content;
+}
+
+.grid {
+  // Output new widths to not include gutters
+  @each $bp in $breakpoint-classes {
+    @include breakpoint() {
+      @for $i from 1 through $grid-columns {
+        // Sizing (percentage)
+        > .#{$bp}-#{$i} {
+          width: percentage($i/$grid-columns);
+        }
+      }
+    }
+  }
+}
