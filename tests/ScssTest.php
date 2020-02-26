@@ -108,6 +108,7 @@ class ScssTest extends TestCase
             if (rtrim($css) !== rtrim($actual)) {
                 $this->appendToExclusionList($name);
             }
+            $this->assertNull(null);
         } else {
             $this->assertEquals(rtrim($css), rtrim($actual), $name);
         }

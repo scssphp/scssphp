@@ -48,7 +48,9 @@ class InputTest extends TestCase
         $this->scss->addImportPath(self::$inputDir);
 
         if (getenv('BUILD')) {
-            return $this->buildInput($inFname, $outFname);
+            $this->buildInput($inFname, $outFname);
+            $this->assertNull(null);
+            return;
         }
 
         if (! is_readable($outFname)) {
@@ -76,7 +78,9 @@ class InputTest extends TestCase
         $this->scss->setLineNumberStyle(Compiler::LINE_COMMENTS);
 
         if (getenv('BUILD')) {
-            return $this->buildInput($inFname, $outFname);
+            $this->buildInput($inFname, $outFname);
+            $this->assertNull(null);
+            return;
         }
 
         if (! is_readable($outFname)) {

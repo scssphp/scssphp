@@ -134,6 +134,7 @@ class SassSpecTest extends TestCase
                 } catch (\Exception $e) {
                     $this->appendToExclusionList($name);
                     fclose($fp_err_stream);
+                    $this->assertNull(null);
                     return;
                     //throwException($e);
                 }
@@ -162,12 +163,14 @@ class SassSpecTest extends TestCase
                 if (rtrim($css) !== rtrim($actual)) {
                     $this->appendToExclusionList($name);
                 }
+                $this->assertNull(null);
             } else {
                 $this->assertEquals(rtrim($css), rtrim($actual), $name);
             }
         } else {
             if (getenv('BUILD')) {
                 $this->appendToExclusionList($name);
+                $this->assertNull(null);
             }
         }
     }
