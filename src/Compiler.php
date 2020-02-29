@@ -5352,6 +5352,7 @@ class Compiler
                     case Type::T_LIST:
                     case Type::T_MAP:
                     case Type::T_STRING:
+                    case Type::T_NULL:
                         break;
 
                     default:
