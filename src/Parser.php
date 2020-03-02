@@ -144,8 +144,12 @@ class Parser
              : "$this->sourceName on line $line, at column $column";
 
         if ($this->peek("(.*?)(\n|$)", $m, $this->count)) {
+            $this->restoreEncoding();
+
             throw new ParserException("$msg: failed at `$m[1]` $loc");
         }
+
+        $this->restoreEncoding();
 
         throw new ParserException("$msg: $loc");
     }
@@ -3341,14 +3345,7 @@ class Parser
      */
     private function saveEncoding()
     {
-        if (version_compare(PHP_VERSION, '7.2.0') >= 0) {
-            return;
-        }
-
-        // deprecated in PHP 7.2
-        $iniDirective = 'mbstring.func_overload';
-
-        if (extension_loaded('mbstring') && ini_get($iniDirective) & 2) {
+        if (extension_loaded('mbstring')) {
             $this->encoding = mb_internal_encoding();
 
             mb_internal_encoding('iso-8859-1');
