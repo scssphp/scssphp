@@ -1,0 +1,5 @@
+/* This is a plain CSS file that should never been @imported by the compiler */
+div.plaincss {
+    height: 200px;
+    color: red;
+}

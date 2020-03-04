@@ -4642,13 +4642,19 @@ class Compiler
     {
         $urls = [];
 
+        $hasExtension = preg_match('/[.]s?css$/', $url);
+
         // for "normal" scss imports (ignore vanilla css and external requests)
         if (! preg_match('~\.css$|^https?://|^//~', $url)) {
             // try both normal and the _partial filename
             $urls = [$url, preg_replace('~[^/]+$~', '_\0', $url)];
+            if (!$hasExtension) {
+                $urls[0] .= ".scss";
+                $urls[1] .= ".scss";
+                // allow to find a plain css file, *if* no scss or partial scss is found
+                $urls[] .= $url . ".css";
+            }
         }
-
-        $hasExtension = preg_match('/[.]s?css$/', $url);
 
         foreach ($this->importPaths as $dir) {
             if (is_string($dir)) {
@@ -4661,16 +4667,8 @@ class Compiler
                     ) ? '/' : '';
                     $full = $dir . $separator . $full;
 
-                    if ($hasExtension) {
-                        if (is_file($file = $full)) {
-                            return $file;
-                        }
-                    } else {
-                        if (is_file($file = $full . '.scss') ||
-                            is_file($file = $full . '.css')
-                        ) {
-                            return $file;
-                        }
+                    if (is_file($file = $full)) {
+                        return $file;
                     }
                 }
             } elseif (is_callable($dir)) {
