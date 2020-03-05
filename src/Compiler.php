@@ -7737,4 +7737,23 @@ class Compiler
 
         return [Type::T_LIST, ',', $listParts];
     }
+
+    protected static $libScssphpGlob = ['pattern'];
+    protected function libScssphpGlob($args)
+    {
+        $string = $this->coerceString($args[0]);
+        $pattern = $this->compileStringContent($string);
+        $matches = glob($pattern);
+        $listParts = [];
+
+        foreach ($matches as $match) {
+            if (! is_file($match)) {
+                continue;
+            }
+
+            $listParts[] = [Type::T_STRING, '"', [$match]];
+        }
+
+        return [Type::T_LIST, ',', $listParts];
+    }
 }
