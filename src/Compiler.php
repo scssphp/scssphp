@@ -4646,11 +4646,15 @@ class Compiler
 
         // for "normal" scss imports (ignore vanilla css and external requests)
         if (! preg_match('~\.css$|^https?://|^//~', $url)) {
+            $isPartial = (strpos(basename($url), '_') === 0);
             // try both normal and the _partial filename
-            $urls = [$url, preg_replace('~[^/]+$~', '_\0', $url)];
+            $urls = [$url . ($hasExtension ? '' : '.scss')];
+            if (! $isPartial) {
+                $urls[] = preg_replace('~[^/]+$~', '_\0', $url) . ($hasExtension ? '' : '.scss');
+            }
             if (!$hasExtension) {
-                $urls[0] .= ".scss";
-                $urls[1] .= ".scss";
+                $urls[] = "$url/index.scss";
+                $urls[] = "$url/_index.scss";
                 // allow to find a plain css file, *if* no scss or partial scss is found
                 $urls[] .= $url . ".css";
             }

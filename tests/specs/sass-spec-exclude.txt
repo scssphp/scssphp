@@ -175,11 +175,8 @@
 315/1980. directives/import/error/conflict/extension
 316/1980. directives/import/error/conflict/partial
 317/1980. directives/import/load/explicit_extension/sass
-319/1980. directives/import/load/index/dir_dot_foo
 320/1980. directives/import/load/index/dir_dot_scss
-321/1980. directives/import/load/index/partial
 322/1980. directives/import/load/index/sass
-323/1980. directives/import/load/index/scss
 327/1980. directives/supports/error/syntax/trailing_or
 328/1980. directives/warn/functions_in_stack
 329/1980. errors/extend/placeholder/missing
