@@ -522,7 +522,6 @@
 934/1980. libsass-closed-issues/issue_1916
 935/1980. libsass-closed-issues/issue_192
 936/1980. libsass-closed-issues/issue_1923
-939/1980. libsass-closed-issues/issue_1940
 940/1980. libsass-closed-issues/issue_1941/function_function
 941/1980. libsass-closed-issues/issue_1941/function_mixin
 942/1980. libsass-closed-issues/issue_1941/mixin_function

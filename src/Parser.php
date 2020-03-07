@@ -2001,6 +2001,12 @@ class Parser
             if ($this->interpolation($out) || $this->color($out)) {
                 return true;
             }
+            $this->count++;
+            if ($this->keyword($keyword)) {
+                $out = [Type::T_KEYWORD, "#" . $keyword];
+                return true;
+            }
+            $this->count--;
         }
 
         if ($this->matchChar('&', true)) {
