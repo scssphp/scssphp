@@ -1964,20 +1964,33 @@ class Parser
         if ($char === '+') {
             $this->count++;
 
+            $follow_white = $this->whitespace();
+
             if ($this->value($inner)) {
                 $out = [Type::T_UNARY, '+', $inner, $this->inParens];
 
                 return true;
             }
 
-            $this->count--;
+            if ($follow_white) {
+                $out = [Type::T_KEYWORD, $char];
+                return  true;
+            }
+
+            $this->seek($s);
 
             return false;
         }
 
         // negation
         if ($char === '-') {
+            if ($this->customProperty($out)) {
+                return true;
+            }
+
             $this->count++;
+
+            $follow_white = $this->whitespace();
 
             if ($this->variable($inner) || $this->unit($inner) || $this->parenValue($inner)) {
                 $out = [Type::T_UNARY, '-', $inner, $this->inParens];
@@ -1985,11 +1998,18 @@ class Parser
                 return true;
             }
 
-            $this->count--;
+            if ($this->keyword($inner) && ! $this->func($inner, $out)) {
+                $out = [Type::T_UNARY, '-', $inner, $this->inParens];
 
-            if ($this->customProperty($out)) {
                 return true;
             }
+
+            if ($follow_white) {
+                $out = [Type::T_KEYWORD, $char];
+                return  true;
+            }
+
+            $this->seek($s);
         }
 
         // paren
@@ -2710,6 +2730,11 @@ class Parser
         for (;;) {
             if ($this->interpolation($inter)) {
                 $parts[] = $inter;
+                continue;
+            }
+
+            if ($this->variable($var)) {
+                $parts[] = $var;
                 continue;
             }
 
