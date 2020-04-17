@@ -173,7 +173,7 @@ class Parser
             ];
             $v = $this->cache->getCache("parse", $cacheKey, $parseOptions);
 
-            if (! is_null($v)) {
+            if (! \is_null($v)) {
                 return $v;
             }
         }
@@ -201,7 +201,7 @@ class Parser
             ;
         }
 
-        if ($this->count !== strlen($this->buffer)) {
+        if ($this->count !== \strlen($this->buffer)) {
             $this->throwParseError();
         }
 
@@ -601,7 +601,7 @@ class Parser
                 while ($cond[0] === Type::T_LIST
                     && !empty($cond['enclosing'])
                     && $cond['enclosing'] === 'parent'
-                    && count($cond[2]) == 1) {
+                    && \count($cond[2]) == 1) {
                     $cond = reset($cond[2]);
                 }
                 $if->cond  = $cond;
@@ -1076,7 +1076,7 @@ class Parser
     {
         $token = null;
 
-        $end = strlen($this->buffer);
+        $end = \strlen($this->buffer);
 
         // look for either ending delim, escape, or string interpolation
         foreach (['#{', '\\', $delim] as $lookahead) {
@@ -1098,7 +1098,7 @@ class Parser
             $match,
             $token
         ];
-        $this->count = $end + strlen($token);
+        $this->count = $end + \strlen($token);
 
         return true;
     }
@@ -1120,7 +1120,7 @@ class Parser
             return false;
         }
 
-        $this->count += strlen($out[0]);
+        $this->count += \strlen($out[0]);
 
         if (! isset($eatWhitespace)) {
             $eatWhitespace = $this->eatWhiteDefault;
@@ -1202,7 +1202,7 @@ class Parser
                 // comment that are kept in the output CSS
                 $comment = [];
                 $startCommentCount = $this->count;
-                $endCommentCount = $this->count + strlen($m[1]);
+                $endCommentCount = $this->count + \strlen($m[1]);
 
                 // find interpolations in comment
                 $p = strpos($this->buffer, '#{', $this->count);
@@ -1249,7 +1249,7 @@ class Parser
                 $this->count = $endCommentCount;
             } else {
                 // comment that are ignored and not kept in the output css
-                $this->count += strlen($m[0]);
+                $this->count += \strlen($m[0]);
             }
 
             $gotWhite = true;
@@ -1267,12 +1267,12 @@ class Parser
     {
         if (! $this->discardComments) {
             if ($comment[0] === Type::T_COMMENT) {
-                if (is_string($comment[1])) {
+                if (\is_string($comment[1])) {
                     $comment[1] = substr(preg_replace(['/^\s+/m', '/^(.)/m'], ['', ' \1'], $comment[1]), 1);
                 }
-                if (isset($comment[2]) and is_array($comment[2]) and $comment[2][0] === Type::T_STRING) {
+                if (isset($comment[2]) and \is_array($comment[2]) and $comment[2][0] === Type::T_STRING) {
                     foreach ($comment[2][2] as $k => $v) {
-                        if (is_string($v)) {
+                        if (\is_string($v)) {
                             $p = strpos($v, "\n");
                             if ($p !== false) {
                                 $comment[2][2][$k] = substr($v, 0, $p + 1)
@@ -1295,8 +1295,8 @@ class Parser
      */
     protected function append($statement, $pos = null)
     {
-        if (! is_null($statement)) {
-            if (! is_null($pos)) {
+        if (! \is_null($statement)) {
+            if (! \is_null($pos)) {
                 list($line, $column) = $this->getSourcePosition($pos);
 
                 $statement[static::SOURCE_LINE]   = $line;
@@ -1322,7 +1322,7 @@ class Parser
      */
     protected function last()
     {
-        $i = count($this->env->children) - 1;
+        $i = \count($this->env->children) - 1;
 
         if (isset($this->env->children[$i])) {
             return $this->env->children[$i];
@@ -1369,7 +1369,7 @@ class Parser
             $media = [Type::T_LIST, '', []];
 
             foreach ((array) $mediaType as $type) {
-                if (is_array($type)) {
+                if (\is_array($type)) {
                     $media[2][] = $type;
                 } else {
                     $media[2][] = [Type::T_KEYWORD, $type];
@@ -1383,7 +1383,7 @@ class Parser
         if (empty($parts) || $this->literal('and', 3)) {
             $this->genericList($expressions, 'mediaExpression', 'and', false);
 
-            if (is_array($expressions)) {
+            if (\is_array($expressions)) {
                 $parts = array_merge($parts, $expressions[2]);
             }
         }
@@ -1459,7 +1459,7 @@ class Parser
                 $compound = [Type::T_STRING, '', []];
 
                 foreach ($sc as $scp) {
-                    if (is_array($scp)) {
+                    if (\is_array($scp)) {
                         $compound[2][] = $scp;
                     } else {
                         $compound[2][] = [Type::T_KEYWORD, $scp];
@@ -1503,7 +1503,7 @@ class Parser
             $this->seek($s);
         }
 
-        if (count($parts)) {
+        if (\count($parts)) {
             if ($this->eatWhiteDefault) {
                 $this->whitespace();
             }
@@ -1703,7 +1703,7 @@ class Parser
             $items[] = $value;
 
             if ($delim) {
-                if (! $this->literal($delim, strlen($delim))) {
+                if (! $this->literal($delim, \strlen($delim))) {
                     break;
                 }
                 $trailing_delim = true;
@@ -1719,7 +1719,7 @@ class Parser
         if ($trailing_delim) {
             $items[] = [Type::T_NULL];
         }
-        if ($flatten && count($items) === 1) {
+        if ($flatten && \count($items) === 1) {
             $out = $items[0];
         } else {
             $out = [Type::T_LIST, $delim, $items];
@@ -1760,7 +1760,7 @@ class Parser
             $this->seek($s);
         }
 
-        if (in_array(Type::T_LIST, $allowedTypes) && $this->matchChar('[')) {
+        if (\in_array(Type::T_LIST, $allowedTypes) && $this->matchChar('[')) {
             if ($this->enclosedExpression($lhs, $s, "]", [Type::T_LIST])) {
                 if ($lookForExp) {
                     $out = $this->expHelper($lhs, 0);
@@ -1803,7 +1803,7 @@ class Parser
      */
     protected function enclosedExpression(&$out, $s, $closingParen = ")", $allowedTypes = [Type::T_LIST, Type::T_MAP])
     {
-        if ($this->matchChar($closingParen) && in_array(Type::T_LIST, $allowedTypes)) {
+        if ($this->matchChar($closingParen) && \in_array(Type::T_LIST, $allowedTypes)) {
             $out = [Type::T_LIST, '', []];
             switch ($closingParen) {
                 case ")":
@@ -1817,8 +1817,8 @@ class Parser
         }
 
         if ($this->valueList($out) && $this->matchChar($closingParen)
-            && in_array($out[0], [Type::T_LIST, Type::T_KEYWORD])
-            && in_array(Type::T_LIST, $allowedTypes)) {
+            && \in_array($out[0], [Type::T_LIST, Type::T_KEYWORD])
+            && \in_array(Type::T_LIST, $allowedTypes)) {
             if ($out[0] !== Type::T_LIST || ! empty($out['enclosing'])) {
                 $out = [Type::T_LIST, '', [$out]];
             }
@@ -1835,7 +1835,7 @@ class Parser
 
         $this->seek($s);
 
-        if (in_array(Type::T_MAP, $allowedTypes) && $this->map($out)) {
+        if (\in_array(Type::T_MAP, $allowedTypes) && $this->map($out)) {
             return true;
         }
 
@@ -2347,7 +2347,7 @@ class Parser
         $s = $this->count;
 
         if ($this->match('(#([0-9a-f]+))', $m)) {
-            if (in_array(strlen($m[2]), [3,4,6,8])) {
+            if (\in_array(\strlen($m[2]), [3,4,6,8])) {
                 $out = [Type::T_KEYWORD, $m[0]];
                 return true;
             }
@@ -2371,7 +2371,7 @@ class Parser
         $s = $this->count;
 
         if ($this->match('([0-9]*(\.)?[0-9]+)([%a-zA-Z]+)?', $m, false)) {
-            if (strlen($this->buffer) === $this->count || ! ctype_digit($this->buffer[$this->count])) {
+            if (\strlen($this->buffer) === $this->count || ! ctype_digit($this->buffer[$this->count])) {
                 $this->whitespace();
 
                 $unit = new Node\Number($m[1], empty($m[3]) ? '' : $m[3]);
@@ -2415,13 +2415,13 @@ class Parser
             }
 
             if ($m[2] === '#{') {
-                $this->count -= strlen($m[2]);
+                $this->count -= \strlen($m[2]);
 
                 if ($this->interpolation($inter, false)) {
                     $content[] = $inter;
                     $hasInterpolation = true;
                 } else {
-                    $this->count += strlen($m[2]);
+                    $this->count += \strlen($m[2]);
                     $content[] = '#{'; // ignore it
                 }
             } elseif ($m[2] === '\\') {
@@ -2441,14 +2441,14 @@ class Parser
                     $content[] = $m[2];
                 }
             } else {
-                $this->count -= strlen($delim);
+                $this->count -= \strlen($delim);
                 break; // delim
             }
         }
 
         $this->eatWhiteDefault = $oldWhite;
 
-        if ($this->literal($delim, strlen($delim))) {
+        if ($this->literal($delim, \strlen($delim))) {
             if ($hasInterpolation) {
                 $delim = '"';
 
@@ -2557,7 +2557,7 @@ class Parser
 
             $tok = $m[2];
 
-            $this->count-= strlen($tok);
+            $this->count-= \strlen($tok);
 
             if ($tok === $end && ! $nestingLevel) {
                 break;
@@ -2578,7 +2578,7 @@ class Parser
             }
 
             $content[] = $tok;
-            $this->count+= strlen($tok);
+            $this->count+= \strlen($tok);
         }
 
         $this->eatWhiteDefault = $oldWhite;
@@ -2588,8 +2588,8 @@ class Parser
         }
 
         // trim the end
-        if ($trimEnd && is_string(end($content))) {
-            $content[count($content) - 1] = rtrim(end($content));
+        if ($trimEnd && \is_string(end($content))) {
+            $content[\count($content) - 1] = rtrim(end($content));
         }
 
         $out = [Type::T_STRING, '', $content];
@@ -2696,7 +2696,7 @@ class Parser
         )) {
             if (! empty($m[0])) {
                 $parts[] = $m[0];
-                $this->count += strlen($m[0]);
+                $this->count += \strlen($m[0]);
             }
         }
 
@@ -2748,7 +2748,7 @@ class Parser
 
         $this->eatWhiteDefault = $oldWhite;
 
-        if (count($parts) == 1) {
+        if (\count($parts) == 1) {
             $this->seek($s);
 
             return false;
@@ -2813,7 +2813,7 @@ class Parser
             $s = $this->count;
 
             if ($this->match('[>+~]+', $m, true)) {
-                if ($subSelector && is_string($subSelector) && strpos($subSelector, 'nth-') === 0 &&
+                if ($subSelector && \is_string($subSelector) && strpos($subSelector, 'nth-') === 0 &&
                     $m[0] === '+' && $this->match("(\d+|n\b)", $counter)
                 ) {
                     $this->seek($s);
@@ -2970,12 +2970,12 @@ class Parser
                                         $parts[] = $p;
                                     }
 
-                                    if (count($sub) && reset($sub)) {
+                                    if (\count($sub) && reset($sub)) {
                                         $parts[] = ' ';
                                     }
                                 }
 
-                                if (count($subs) && reset($subs)) {
+                                if (\count($subs) && reset($subs)) {
                                     $parts[] = ', ';
                                 }
                             }
@@ -3008,7 +3008,7 @@ class Parser
             $this->seek($s);
 
             // 2n+1
-            if ($subSelector && is_string($subSelector) && strpos($subSelector, 'nth-') === 0) {
+            if ($subSelector && \is_string($subSelector) && strpos($subSelector, 'nth-') === 0) {
                 if ($this->match("(\s*(\+\s*|\-\s*)?(\d+|n|\d+n))+", $counter)) {
                     $parts[] = $counter[0];
                     //$parts[] = str_replace(' ', '', $counter[0]);
@@ -3124,7 +3124,7 @@ class Parser
     {
         $s = $this->count;
 
-        if ($this->keyword($word, $eatWhitespace) && (ord($word[0]) > 57 || ord($word[0]) < 48)) {
+        if ($this->keyword($word, $eatWhitespace) && (\ord($word[0]) > 57 || \ord($word[0]) < 48)) {
             return true;
         }
 
@@ -3189,7 +3189,7 @@ class Parser
             return true;
         }
 
-        if ($this->count === strlen($this->buffer) || $this->buffer[$this->count] === '}') {
+        if ($this->count === \strlen($this->buffer) || $this->buffer[$this->count] === '}') {
             // if there is end of file or a closing block next then we don't need a ;
             return true;
         }
@@ -3208,10 +3208,10 @@ class Parser
     {
         $flags = [];
 
-        for ($token = &$value; $token[0] === Type::T_LIST && ($s = count($token[2])); $token = &$lastNode) {
+        for ($token = &$value; $token[0] === Type::T_LIST && ($s = \count($token[2])); $token = &$lastNode) {
             $lastNode = &$token[2][$s - 1];
 
-            while ($lastNode[0] === Type::T_KEYWORD && in_array($lastNode[1], ['!default', '!global'])) {
+            while ($lastNode[0] === Type::T_KEYWORD && \in_array($lastNode[1], ['!default', '!global'])) {
                 array_pop($token[2]);
 
                 $node     = end($token[2]);
@@ -3238,7 +3238,7 @@ class Parser
         $part     = end($selector);
 
         if ($part === ['!optional']) {
-            array_pop($selectors[count($selectors) - 1]);
+            array_pop($selectors[\count($selectors) - 1]);
 
             $optional = true;
         }
@@ -3255,7 +3255,7 @@ class Parser
      */
     protected function flattenList($value)
     {
-        if ($value[0] === Type::T_LIST && count($value[2]) === 1) {
+        if ($value[0] === Type::T_LIST && \count($value[2]) === 1) {
             return $this->flattenList($value[2][0]);
         }
 
@@ -3273,7 +3273,7 @@ class Parser
      */
     protected function to($what, &$out, $until = false, $allowNewline = false)
     {
-        if (is_string($allowNewline)) {
+        if (\is_string($allowNewline)) {
             $validChars = $allowNewline;
         } else {
             $validChars = $allowNewline ? '.' : "[^\n]";
@@ -3286,7 +3286,7 @@ class Parser
         }
 
         if ($until) {
-            $this->count -= strlen($what); // give back $what
+            $this->count -= \strlen($what); // give back $what
         }
 
         $out = $m[1];
@@ -3333,10 +3333,10 @@ class Parser
             $prev = $pos + 1;
         }
 
-        $this->sourcePositions[] = strlen($buffer);
+        $this->sourcePositions[] = \strlen($buffer);
 
         if (substr($buffer, -1) !== "\n") {
-            $this->sourcePositions[] = strlen($buffer) + 1;
+            $this->sourcePositions[] = \strlen($buffer) + 1;
         }
     }
 
@@ -3350,7 +3350,7 @@ class Parser
     private function getSourcePosition($pos)
     {
         $low = 0;
-        $high = count($this->sourcePositions);
+        $high = \count($this->sourcePositions);
 
         while ($low < $high) {
             $mid = (int) (($high + $low) / 2);
@@ -3376,7 +3376,7 @@ class Parser
      */
     private function saveEncoding()
     {
-        if (extension_loaded('mbstring')) {
+        if (\extension_loaded('mbstring')) {
             $this->encoding = mb_internal_encoding();
 
             mb_internal_encoding('iso-8859-1');
@@ -3388,7 +3388,7 @@ class Parser
      */
     private function restoreEncoding()
     {
-        if (extension_loaded('mbstring') && $this->encoding) {
+        if (\extension_loaded('mbstring') && $this->encoding) {
             mb_internal_encoding($this->encoding);
         }
     }

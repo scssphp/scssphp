@@ -186,7 +186,7 @@ class Colors
      */
     public static function colorNameToRGBa($colorName)
     {
-        if (is_string($colorName) && isset(static::$cssColors[$colorName])) {
+        if (\is_string($colorName) && isset(static::$cssColors[$colorName])) {
             $rgba = explode(',', static::$cssColors[$colorName]);
 
             // only case with opacity is transparent, with opacity=0, so we can intval on opacity also
@@ -225,20 +225,20 @@ class Colors
             return null;
         }
 
-        if (is_null($reverseColorTable)) {
+        if (\is_null($reverseColorTable)) {
             $reverseColorTable = [];
 
             foreach (static::$cssColors as $name => $rgb_str) {
                 $rgb_str = explode(',', $rgb_str);
 
-                if (count($rgb_str) == 3) {
-                    $reverseColorTable[intval($rgb_str[0])][intval($rgb_str[1])][intval($rgb_str[2])] = $name;
+                if (\count($rgb_str) == 3) {
+                    $reverseColorTable[\intval($rgb_str[0])][\intval($rgb_str[1])][\intval($rgb_str[2])] = $name;
                 }
             }
         }
 
-        if (isset($reverseColorTable[intval($r)][intval($g)][intval($b)])) {
-            return $reverseColorTable[intval($r)][intval($g)][intval($b)];
+        if (isset($reverseColorTable[\intval($r)][\intval($g)][\intval($b)])) {
+            return $reverseColorTable[\intval($r)][\intval($g)][\intval($b)];
         }
 
         return null;

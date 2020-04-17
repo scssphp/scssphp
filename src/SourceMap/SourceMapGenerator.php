@@ -132,7 +132,7 @@ class SourceMapGenerator
     public function saveMap($content)
     {
         $file = $this->options['sourceMapWriteTo'];
-        $dir  = dirname($file);
+        $dir  = \dirname($file);
 
         // directory does not exist
         if (! is_dir($dir)) {
@@ -201,7 +201,7 @@ class SourceMapGenerator
         }
 
         // less.js compat fixes
-        if (count($sourceMap['sources']) && empty($sourceMap['sourceRoot'])) {
+        if (\count($sourceMap['sources']) && empty($sourceMap['sourceRoot'])) {
             unset($sourceMap['sourceRoot']);
         }
 
@@ -235,7 +235,7 @@ class SourceMapGenerator
      */
     public function generateMappings()
     {
-        if (! count($this->mappings)) {
+        if (! \count($this->mappings)) {
             return '';
         }
 
@@ -313,8 +313,8 @@ class SourceMapGenerator
         $basePath = $this->options['sourceMapBasepath'];
 
         // "Trim" the 'sourceMapBasepath' from the output filename.
-        if (strlen($basePath) && strpos($filename, $basePath) === 0) {
-            $filename = substr($filename, strlen($basePath));
+        if (\strlen($basePath) && strpos($filename, $basePath) === 0) {
+            $filename = substr($filename, \strlen($basePath));
         }
 
         // Remove extra leading path separators.

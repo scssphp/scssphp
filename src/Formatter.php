@@ -319,12 +319,12 @@ abstract class Formatter
             );
 
             $lines = explode("\n", $str);
-            $lineCount = count($lines);
+            $lineCount = \count($lines);
             $this->currentLine += $lineCount-1;
 
             $lastLine = array_pop($lines);
 
-            $this->currentColumn = ($lineCount === 1 ? $this->currentColumn : 0) + strlen($lastLine);
+            $this->currentColumn = ($lineCount === 1 ? $this->currentColumn : 0) + \strlen($lastLine);
         }
 
         echo $str;
