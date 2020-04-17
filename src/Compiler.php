@@ -161,6 +161,7 @@ class Compiler
     protected $stderr;
     protected $shouldEvaluate;
     protected $ignoreErrors;
+    protected $ignoreCallStackMessage = false;
 
     protected $callStack = [];
 
@@ -255,6 +256,7 @@ class Compiler
         $this->storeEnv       = null;
         $this->charsetSeen    = null;
         $this->shouldEvaluate = null;
+        $this->ignoreCallStackMessage = false;
 
         $this->parser = $this->parserFactory($path);
         $tree         = $this->parser->parse($code);
@@ -1564,11 +1566,14 @@ class Compiler
                 $this->pushEnv();
             }
 
+            $ignoreCallStackMessage = $this->ignoreCallStackMessage;
+            $this->ignoreCallStackMessage = true;
             try {
                 $c = $this->compileValue($value[2]);
             } catch (\Exception $e) {
                 // ignore error in comment compilation which are only interpolation
             }
+            $this->ignoreCallStackMessage = $ignoreCallStackMessage;
 
             if ($pushEnv) {
                 $this->popEnv();
@@ -4737,23 +4742,25 @@ class Compiler
             return;
         }
 
-        $line   = $this->sourceLine;
-        $column = $this->sourceColumn;
-
-        $loc = isset($this->sourceNames[$this->sourceIndex])
-             ? $this->sourceNames[$this->sourceIndex] . " on line $line, at column $column"
-             : "line: $line, column: $column";
-
         if (func_num_args() > 1) {
             $msg = call_user_func_array('sprintf', func_get_args());
         }
 
-        $msg = "$msg: $loc";
+        if (!$this->ignoreCallStackMessage) {
+            $line   = $this->sourceLine;
+            $column = $this->sourceColumn;
 
-        $callStackMsg = $this->callStackMessage();
+            $loc = isset($this->sourceNames[$this->sourceIndex])
+                ? $this->sourceNames[$this->sourceIndex] . " on line $line, at column $column"
+                : "line: $line, column: $column";
 
-        if ($callStackMsg) {
-            $msg .= "\nCall Stack:\n" . $callStackMsg;
+            $msg = "$msg: $loc";
+
+            $callStackMsg = $this->callStackMessage();
+
+            if ($callStackMsg) {
+                $msg .= "\nCall Stack:\n" . $callStackMsg;
+            }
         }
 
         throw new CompilerException($msg);
@@ -5026,6 +5033,9 @@ class Compiler
                 $argDef[] = [$name, $default, $isVariable];
             }
 
+            $ignoreCallStackMessage = $this->ignoreCallStackMessage;
+            $this->ignoreCallStackMessage = true;
+
             try {
                 $vars = $this->applyArguments($argDef, $args, false, false);
 
@@ -5063,6 +5073,7 @@ class Compiler
             } catch (CompilerException $e) {
                 $exceptionMessage = $e->getMessage();
             }
+            $this->ignoreCallStackMessage = $ignoreCallStackMessage;
         }
 
         if ($exceptionMessage && ! $prototypeHasMatch) {
