@@ -1891,6 +1891,7 @@ class Compiler
             $ret = $this->compileChild($stm, $out);
 
             if (isset($ret)) {
+                $this->popCallStack();
                 return $ret;
             }
         }
@@ -1929,6 +1930,7 @@ class Compiler
 
             if (isset($ret)) {
                 $this->throwError('@return may only be used within a function');
+                $this->popCallStack();
 
                 return;
             }
