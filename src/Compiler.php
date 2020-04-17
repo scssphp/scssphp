@@ -4607,6 +4607,7 @@ class Compiler
      */
     protected function importFile($path, OutputBlock $out)
     {
+        $this->pushCallStack('import '.$path);
         // see if tree is cached
         $realPath = realpath($path);
 
@@ -4627,6 +4628,7 @@ class Compiler
         array_unshift($this->importPaths, $pi['dirname']);
         $this->compileChildrenNoReturn($tree->children, $out);
         array_shift($this->importPaths);
+        $this->popCallStack();
     }
 
     /**
