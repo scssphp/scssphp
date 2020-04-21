@@ -3316,50 +3316,6 @@ class Parser
     }
 
     /**
-     * @deprecated
-     *
-     * {@internal
-     *     advance counter to next occurrence of $what
-     *     $until - don't include $what in advance
-     *     $allowNewline, if string, will be used as valid char set
-     * }}
-     */
-    protected function to($what, &$out, $until = false, $allowNewline = false)
-    {
-        if (\is_string($allowNewline)) {
-            $validChars = $allowNewline;
-        } else {
-            $validChars = $allowNewline ? '.' : "[^\n]";
-        }
-
-        $m = null;
-
-        if (! $this->match('(' . $validChars . '*?)' . $this->pregQuote($what), $m, ! $until)) {
-            return false;
-        }
-
-        if ($until) {
-            $this->count -= \strlen($what); // give back $what
-        }
-
-        $out = $m[1];
-
-        return true;
-    }
-
-    /**
-     * @deprecated
-     */
-    protected function show()
-    {
-        if ($this->peek("(.*?)(\n|$)", $m, $this->count)) {
-            return $m[1];
-        }
-
-        return '';
-    }
-
-    /**
      * Quote regular expression
      *
      * @param string $what
