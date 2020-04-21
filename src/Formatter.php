@@ -142,8 +142,7 @@ abstract class Formatter
     protected function blockLines(OutputBlock $block)
     {
         $inner = $this->indentStr();
-
-        $glue = $this->break . $inner;
+        $glue  = $this->break . $inner;
 
         $this->write($inner . implode($glue, $block->lines));
 

@@ -31,14 +31,14 @@ class Number extends Node implements \ArrayAccess
     /**
      * @var integer
      */
-    static public $precision = 10;
+    public static $precision = 10;
 
     /**
      * @see http://www.w3.org/TR/2012/WD-css3-values-20120308/
      *
      * @var array
      */
-    static protected $unitTable = [
+    protected static $unitTable = [
         'in' => [
             'in' => 1,
             'pc' => 6,
@@ -239,9 +239,10 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * Test if a number can be normalized in a baseunit
-     * ie if it's units are homogeneous
-     * @return bool
+     * Test if a number can be normalized in a base unit
+     * ie if its units are homogeneous
+     *
+     * @return boolean
      */
     public function isNormalizable()
     {
@@ -250,15 +251,19 @@ class Number extends Node implements \ArrayAccess
         }
 
         $baseUnit = null;
+
         foreach ($this->units as $unit => $exp) {
             $b = $this->findBaseUnit($unit);
+
             if (\is_null($baseUnit)) {
                 $baseUnit = $b;
             }
+
             if (\is_null($b) or $b !== $baseUnit) {
                 return false;
             }
         }
+
         return $baseUnit;
     }
 
@@ -350,9 +355,10 @@ class Number extends Node implements \ArrayAccess
         $units     = [];
 
         foreach ($this->units as $unit => $exp) {
-            if (!$baseUnit) {
+            if (! $baseUnit) {
                 $baseUnit = $this->findBaseUnit($unit);
             }
+
             if ($baseUnit && isset(static::$unitTable[$baseUnit][$unit])) {
                 $factor = pow(static::$unitTable[$baseUnit][$unit], $exp);
 
@@ -366,7 +372,9 @@ class Number extends Node implements \ArrayAccess
 
     /**
      * Find the base unit family for a given unit
-     * @param $unit
+     *
+     * @param string $unit
+     *
      * @return string|null
      */
     private function findBaseUnit($unit)
@@ -376,6 +384,7 @@ class Number extends Node implements \ArrayAccess
                 return $baseUnit;
             }
         }
+
         return null;
     }
 }

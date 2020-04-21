@@ -58,8 +58,7 @@ class Nested extends Formatter
     protected function blockLines(OutputBlock $block)
     {
         $inner = $this->indentStr();
-
-        $glue = $this->break . $inner;
+        $glue  = $this->break . $inner;
 
         foreach ($block->lines as $index => $line) {
             if (substr($line, 0, 2) === '/*') {
@@ -119,10 +118,12 @@ class Nested extends Formatter
             if ($block->depth > end($depths)) {
                 if (! $previousEmpty || $this->depth < 1) {
                     $this->depth++;
+
                     $depths[] = $block->depth;
                 } else {
                     // keep the current depth unchanged but take the block depth as a new reference for following blocks
                     array_pop($depths);
+
                     $depths[] = $block->depth;
                 }
             }

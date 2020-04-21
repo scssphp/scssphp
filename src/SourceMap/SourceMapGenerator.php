@@ -249,6 +249,7 @@ class SourceMapGenerator
         }
 
         ksort($groupedMap);
+
         $lastGeneratedLine = $lastOriginalIndex = $lastOriginalLine = $lastOriginalColumn = 0;
 
         foreach ($groupedMap as $lineNumber => $lineMap) {

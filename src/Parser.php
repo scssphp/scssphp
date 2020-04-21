@@ -359,6 +359,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $atRoot = $this->pushSpecialBlock(Type::T_AT_ROOT, $s);
                 $atRoot->selector = $selector;
                 $atRoot->with     = $with;
@@ -385,6 +386,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $mixin = $this->pushSpecialBlock(Type::T_MIXIN, $s);
                 $mixin->name = $mixinName;
                 $mixin->args = $args;
@@ -408,6 +410,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $child = [
                     Type::T_INCLUDE,
                     $mixinName,
@@ -435,6 +438,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $this->append([Type::T_SCSSPHP_IMPORT_ONCE, $importPath], $s);
 
                 return true;
@@ -460,6 +464,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $this->append([Type::T_IMPORT, $importPath], $s);
 
                 return true;
@@ -474,6 +479,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 // check for '!flag'
                 $optional = $this->stripOptionalFlag($selectors);
                 $this->append([Type::T_EXTEND, $selectors, $optional], $s);
@@ -491,6 +497,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $func = $this->pushSpecialBlock(Type::T_FUNCTION, $s);
                 $func->name = $fnName;
                 $func->args = $args;
@@ -504,6 +511,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $this->append([Type::T_BREAK], $s);
 
                 return true;
@@ -515,6 +523,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $this->append([Type::T_CONTINUE], $s);
 
                 return true;
@@ -526,6 +535,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $this->append([Type::T_RETURN, isset($retVal) ? $retVal : [Type::T_NULL]], $s);
 
                 return true;
@@ -542,6 +552,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $each = $this->pushSpecialBlock(Type::T_EACH, $s);
 
                 foreach ($varNames[2] as $varName) {
@@ -562,6 +573,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $while = $this->pushSpecialBlock(Type::T_WHILE, $s);
                 $while->cond = $cond;
 
@@ -582,6 +594,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $for = $this->pushSpecialBlock(Type::T_FOR, $s);
                 $for->var   = $varName[1];
                 $for->start = $start;
@@ -597,13 +610,16 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $if = $this->pushSpecialBlock(Type::T_IF, $s);
+
                 while ($cond[0] === Type::T_LIST
-                    && !empty($cond['enclosing'])
+                    && ! empty($cond['enclosing'])
                     && $cond['enclosing'] === 'parent'
                     && \count($cond[2]) == 1) {
                     $cond = reset($cond[2]);
                 }
+
                 $if->cond  = $cond;
                 $if->cases = [];
 
@@ -619,6 +635,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $this->append([Type::T_DEBUG, $value], $s);
 
                 return true;
@@ -633,6 +650,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $this->append([Type::T_WARN, $value], $s);
 
                 return true;
@@ -647,6 +665,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $this->append([Type::T_ERROR, $value], $s);
 
                 return true;
@@ -654,17 +673,17 @@ class Parser
 
             $this->seek($s);
 
-            #if ($this->literal('@content', 8))
-
             if ($this->literal('@content', 8) &&
                 ($this->end() ||
                     $this->matchChar('(') &&
-                        $this->argValues($argContent) &&
-                        $this->matchChar(')') &&
-                    $this->end())) {
+                    $this->argValues($argContent) &&
+                    $this->matchChar(')') &&
+                    $this->end())
+            ) {
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $this->append([Type::T_MIXIN_CONTENT, isset($argContent) ? $argContent : null], $s);
 
                 return true;
@@ -770,34 +789,44 @@ class Parser
 
         // custom properties : right part is static
         if (($this->customProperty($name) || ($this->cssOnly && $this->propertyName($name))) &&
-            $this->matchChar(':', false)) {
+            $this->matchChar(':', false)
+        ) {
             $start = $this->count;
+
             // but can be complex and finish with ; or }
             foreach ([';','}'] as $ending) {
-                if ($this->openString($ending, $stringValue, '(', ')', false)
-                    && $this->end()) {
+                if ($this->openString($ending, $stringValue, '(', ')', false) &&
+                    $this->end()
+                ) {
                     $end = $this->count;
                     $value = $stringValue;
+
                     // check if we have only a partial value due to nested [] or { } to take in account
                     $nestingPairs = [['[', ']'], ['{', '}']];
+
                     foreach ($nestingPairs as $nestingPair) {
                         $p = strpos($this->buffer, $nestingPair[0], $start);
+
                         if ($p && $p < $end) {
                             $this->seek($start);
-                            if ($this->openString($ending, $stringValue, $nestingPair[0], $nestingPair[1], false)
-                                && $this->end()) {
-                                if ($this->count > $end) {
-                                    $end = $this->count;
-                                    $value = $stringValue;
-                                }
+
+                            if ($this->openString($ending, $stringValue, $nestingPair[0], $nestingPair[1], false) &&
+                                $this->end() &&
+                                $this->count > $end
+                            ) {
+                                $end = $this->count;
+                                $value = $stringValue;
                             }
                         }
                     }
+
                     $this->seek($end);
                     $this->append([Type::T_CUSTOM_PROPERTY, $name, $value], $s);
+
                     return true;
                 }
             }
+
             // TODO: output an error here if nothing found according to sass spec
         }
 
@@ -827,6 +856,7 @@ class Parser
             if ($this->cssOnly) {
                 $this->throwParseError("SCSS syntax not allowed in CSS file");
             }
+
             // check for '!flag'
             $assignmentFlags = $this->stripAssignmentFlags($value);
             $this->append([Type::T_ASSIGN, $name, $value, $assignmentFlags], $s);
@@ -844,10 +874,11 @@ class Parser
         // opening css block
         if ($this->selectors($selectors) && $this->matchChar('{', false)) {
             if ($this->cssOnly) {
-                if (!empty($this->env->parent)) {
+                if (! empty($this->env->parent)) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
             }
+
             $this->pushBlock($selectors, $s);
 
             if ($this->eatWhiteDefault) {
@@ -877,6 +908,7 @@ class Parser
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
+
                 $propBlock = $this->pushSpecialBlock(Type::T_NESTED_PROPERTY, $s);
                 $propBlock->prefix = $name;
                 $propBlock->hasValue = $foundSomething;
@@ -1270,10 +1302,12 @@ class Parser
                 if (\is_string($comment[1])) {
                     $comment[1] = substr(preg_replace(['/^\s+/m', '/^(.)/m'], ['', ' \1'], $comment[1]), 1);
                 }
+
                 if (isset($comment[2]) and \is_array($comment[2]) and $comment[2][0] === Type::T_STRING) {
                     foreach ($comment[2][2] as $k => $v) {
                         if (\is_string($v)) {
                             $p = strpos($v, "\n");
+
                             if ($p !== false) {
                                 $comment[2][2][$k] = substr($v, 0, $p + 1)
                                     . preg_replace(['/^\s+/m', '/^(.)/m'], ['', ' \1'], substr($v, $p+1));
@@ -1415,7 +1449,7 @@ class Parser
             $this->literal(': ', 2) &&
             $this->valueList($value) &&
             $this->matchChar(')')
-         ) {
+        ) {
             $support = [Type::T_STRING, '', [[Type::T_KEYWORD, ($not ? 'not ' : '') . '(']]];
             $support[2][] = $property;
             $support[2][] = [Type::T_KEYWORD, ': '];
@@ -1468,6 +1502,7 @@ class Parser
 
                 $selectorList[2][] = $compound;
             }
+
             $support[2][] = $selectorList;
             $support[2][] = [Type::T_KEYWORD, ')'];
             $parts[] = $support;
@@ -1603,18 +1638,22 @@ class Parser
 
     /**
      * Parse directive value list that considers $vars as keyword
-     * @param array $out
-     * @param bool|string $endChar
-     * @return bool
+     *
+     * @param array          $out
+     * @param boolean|string $endChar
+     *
+     * @return boolean
      */
     protected function directiveValue(&$out, $endChar = false)
     {
         $s = $this->count;
+
         if ($this->variable($out)) {
             if ($endChar && $this->matchChar($endChar, false)) {
                 return true;
             }
-            if (!$endChar && $this->end()) {
+
+            if (! $endChar && $this->end()) {
                 return true;
             }
         }
@@ -1631,7 +1670,7 @@ class Parser
 
         $allowVars = $this->allowVars;
         $this->allowVars = false;
-        //$res = $this->valueList($out);
+
         $res = $this->genericList($out, 'spaceList', ',');
         $this->allowVars = $allowVars;
 
@@ -1639,7 +1678,8 @@ class Parser
             if ($endChar && $this->matchChar($endChar, false)) {
                 return true;
             }
-            if (!$endChar && $this->end()) {
+
+            if (! $endChar && $this->end()) {
                 return true;
             }
         }
@@ -1706,6 +1746,7 @@ class Parser
                 if (! $this->literal($delim, \strlen($delim))) {
                     break;
                 }
+
                 $trailing_delim = true;
             }
         }
@@ -1719,6 +1760,7 @@ class Parser
         if ($trailing_delim) {
             $items[] = [Type::T_NULL];
         }
+
         if ($flatten && \count($items) === 1) {
             $out = $items[0];
         } else {
@@ -1731,9 +1773,9 @@ class Parser
     /**
      * Parse expression
      *
-     * @param array $out
-     * @param bool $listOnly
-     * @param bool $lookForExp
+     * @param array   $out
+     * @param boolean $listOnly
+     * @param boolean $lookForExp
      *
      * @return boolean
      */
@@ -1767,6 +1809,7 @@ class Parser
                 } else {
                     $out = $lhs;
                 }
+
                 $this->discardComments = $discard;
 
                 return true;
@@ -1775,7 +1818,7 @@ class Parser
             $this->seek($s);
         }
 
-        if (!$listOnly && $this->value($lhs)) {
+        if (! $listOnly && $this->value($lhs)) {
             if ($lookForExp) {
                 $out = $this->expHelper($lhs, 0);
             } else {
@@ -1788,6 +1831,7 @@ class Parser
         }
 
         $this->discardComments = $discard;
+
         return false;
     }
 
@@ -1805,31 +1849,38 @@ class Parser
     {
         if ($this->matchChar($closingParen) && \in_array(Type::T_LIST, $allowedTypes)) {
             $out = [Type::T_LIST, '', []];
+
             switch ($closingParen) {
                 case ")":
                     $out['enclosing'] = 'parent'; // parenthesis list
                     break;
+
                 case "]":
                     $out['enclosing'] = 'bracket'; // bracketed list
                     break;
             }
+
             return true;
         }
 
-        if ($this->valueList($out) && $this->matchChar($closingParen)
-            && \in_array($out[0], [Type::T_LIST, Type::T_KEYWORD])
-            && \in_array(Type::T_LIST, $allowedTypes)) {
+        if ($this->valueList($out) && $this->matchChar($closingParen) &&
+            \in_array($out[0], [Type::T_LIST, Type::T_KEYWORD]) &&
+            \in_array(Type::T_LIST, $allowedTypes)
+        ) {
             if ($out[0] !== Type::T_LIST || ! empty($out['enclosing'])) {
                 $out = [Type::T_LIST, '', [$out]];
             }
+
             switch ($closingParen) {
                 case ")":
                     $out['enclosing'] = 'parent'; // parenthesis list
                     break;
+
                 case "]":
                     $out['enclosing'] = 'bracket'; // bracketed list
                     break;
             }
+
             return true;
         }
 
@@ -2006,6 +2057,7 @@ class Parser
 
             if ($follow_white) {
                 $out = [Type::T_KEYWORD, $char];
+
                 return  true;
             }
 
@@ -2021,11 +2073,15 @@ class Parser
             if ($this->interpolation($out) || $this->color($out)) {
                 return true;
             }
+
             $this->count++;
+
             if ($this->keyword($keyword)) {
                 $out = [Type::T_KEYWORD, "#" . $keyword];
+
                 return true;
             }
+
             $this->count--;
         }
 
@@ -2272,6 +2328,7 @@ class Parser
                 }
 
                 $arg[2] = true;
+
                 $this->seek($sss);
             } else {
                 $this->seek($ss);
@@ -2349,10 +2406,12 @@ class Parser
         if ($this->match('(#([0-9a-f]+))', $m)) {
             if (\in_array(\strlen($m[2]), [3,4,6,8])) {
                 $out = [Type::T_KEYWORD, $m[0]];
+
                 return true;
             }
 
             $this->seek($s);
+
             return false;
         }
 
@@ -2432,9 +2491,9 @@ class Parser
                 } elseif ($this->literal("\\", 1, false)) {
                     $content[] = $m[2] . "\\";
                 } elseif ($this->literal("\r\n", 2, false) ||
-                  $this->matchChar("\r", false) ||
-                  $this->matchChar("\n", false) ||
-                  $this->matchChar("\f", false)
+                    $this->matchChar("\r", false) ||
+                    $this->matchChar("\n", false) ||
+                    $this->matchChar("\f", false)
                 ) {
                     // this is a continuation escaping, to be ignored
                 } else {
@@ -2520,11 +2579,11 @@ class Parser
     /**
      * Parse an unbounded string stopped by $end
      *
-     * @param string $end
-     * @param array  $out
-     * @param string $nestingOpen
-     * @param string $nestingClose
-     * @param bool $trimEnd
+     * @param string  $end
+     * @param array   $out
+     * @param string  $nestingOpen
+     * @param string  $nestingClose
+     * @param boolean $trimEnd
      *
      * @return boolean
      */
@@ -2533,7 +2592,7 @@ class Parser
         $oldWhite = $this->eatWhiteDefault;
         $this->eatWhiteDefault = false;
 
-        if ($nestingOpen && !$nestingClose) {
+        if ($nestingOpen && ! $nestingClose) {
             $nestingClose = $end;
         }
 
@@ -2687,13 +2746,7 @@ class Parser
         }
 
         // match comment hack
-        if (preg_match(
-            static::$whitePattern,
-            $this->buffer,
-            $m,
-            null,
-            $this->count
-        )) {
+        if (preg_match(static::$whitePattern, $this->buffer, $m, null, $this->count)) {
             if (! empty($m[0])) {
                 $parts[] = $m[0];
                 $this->count += \strlen($m[0]);
@@ -2959,8 +3012,8 @@ class Parser
                         $nameParts === ['nth-of-type'] || $nameParts == ['nth-last-of-type']
                     ) {
                         if ($this->matchChar('(', true) &&
-                          ($this->selectors($subs, reset($nameParts)) || true) &&
-                          $this->matchChar(')')
+                            ($this->selectors($subs, reset($nameParts)) || true) &&
+                            $this->matchChar(')')
                         ) {
                             $parts[] = '(';
 
@@ -2986,8 +3039,8 @@ class Parser
                         }
                     } else {
                         if ($this->matchChar('(') &&
-                          ($this->openString(')', $str, '(') || true) &&
-                          $this->matchChar(')')
+                            ($this->openString(')', $str, '(') || true) &&
+                            $this->matchChar(')')
                         ) {
                             $parts[] = '(';
 
