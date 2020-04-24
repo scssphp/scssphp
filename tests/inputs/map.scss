@@ -54,3 +54,9 @@ div {
     @include output($args);
     @include output-varargs($args...);
 }
+
+$list: (('a': 1), ('b': 2), ('c': 3));
+
+div {
+x: index($list, ('b': 2));
+}

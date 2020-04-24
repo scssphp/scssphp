@@ -31,3 +31,7 @@ div {
   b: 2;
   color: 1;
   background-color: 2; }
+
+/* line 60, inputs/map.scss */
+div {
+  x: 2; }
