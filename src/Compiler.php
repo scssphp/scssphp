@@ -5931,10 +5931,6 @@ class Compiler
     {
         list($list, $value) = $args;
 
-        if ($value[0] === Type::T_MAP) {
-            return static::$null;
-        }
-
         if ($list[0] === Type::T_MAP ||
             $list[0] === Type::T_STRING ||
             $list[0] === Type::T_KEYWORD ||
