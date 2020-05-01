@@ -61,7 +61,9 @@ class Base64VLQ
 
         do {
             $digit = $vlq & self::VLQ_BASE_MASK;
-            $vlq >>= self::VLQ_BASE_SHIFT;
+
+            //$vlq >>>= self::VLQ_BASE_SHIFT; // unsigned right shift
+            $vlq = (($vlq >> 1) & PHP_INT_MAX) >> (self::VLQ_BASE_SHIFT - 1);
 
             if ($vlq > 0) {
                 $digit |= self::VLQ_CONTINUATION_BIT;
@@ -130,7 +132,9 @@ class Base64VLQ
     private static function fromVLQSigned($value)
     {
         $negate = ($value & 1) === 1;
-        $value = ($value >> 1) & ~(1<<(8 * PHP_INT_SIZE - 1)); // unsigned right shift
+
+        //$value >>>= 1; // unsigned right shift
+        $value = ($value >> 1) & PHP_INT_MAX;
 
         if (! $negate) {
             return $value;

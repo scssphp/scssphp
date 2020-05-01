@@ -7132,7 +7132,9 @@ class Compiler
         static $id;
 
         if (! isset($id)) {
-            $id = mt_rand(0, pow(36, 8));
+            $id = PHP_INT_SIZE === 4
+                ? mt_rand(0, pow(36, 5)) . str_pad(mt_rand(0, pow(36, 5)) % 10000000, 7, '0', STR_PAD_LEFT)
+                : mt_rand(0, pow(36, 8));
         }
 
         $id += mt_rand(0, 10) + 1;
