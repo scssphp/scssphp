@@ -225,3 +225,8 @@ $or6: null or one;     // one
   r: $or5;
   s: $or6;
 }
+
+a {
+  width: 14px / 1440px * 100vw;
+  height: (14px * 100vw) / 1440px;
+}

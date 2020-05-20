@@ -3116,6 +3116,11 @@ class Compiler
                             $left = $left->normalize();
                             $right = $right->normalize();
                         }
+                        else {
+                            if ($coerceUnit) {
+                                $left = new Node\Number($left[1], []);
+                            }
+                        }
                     }
 
                     $shouldEval = $inParens || $inExp;

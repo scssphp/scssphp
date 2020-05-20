@@ -183,3 +183,7 @@ div {
   p: false;
   r: one;
   s: one; }
+
+a {
+  width: 0.9722222222vw;
+  height: 0.9722222222vw; }
