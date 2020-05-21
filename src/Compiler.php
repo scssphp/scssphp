@@ -368,10 +368,6 @@ class Compiler
      */
     protected function pushExtends($target, $origin, $block)
     {
-        if ($this->isSelfExtend($target, $origin)) {
-            return;
-        }
-
         $i = \count($this->extends);
         $this->extends[] = [$target, $origin, $block];
 
@@ -834,7 +830,7 @@ class Compiler
 
             foreach ($origin as $j => $new) {
                 // prevent infinite loop when target extends itself
-                if ($this->isSelfExtend($single, $origin)) {
+                if ($this->isSelfExtend($single, $origin) and !$initial) {
                     return false;
                 }
 

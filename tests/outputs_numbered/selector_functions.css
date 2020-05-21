@@ -162,3 +162,7 @@ main.warning a.disabled {
 /* line 146, inputs/selector_functions.scss */
 main .warning a {
   content: "main .warning a"; }
+
+/* line 150, inputs/selector_functions.scss */
+.class .par1 {
+  content: .class .par1 .test .test2, .par1 .test .class .test2; }

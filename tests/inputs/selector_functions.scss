@@ -146,3 +146,7 @@
 #{selector-unify("main .warning a", "main a")} {
 	content: "main .warning a";
 }
+
+.class .par1 {
+  content: selector-replace(& , ".par1", ".par1 .test .test2");
+}

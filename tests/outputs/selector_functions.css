@@ -124,3 +124,6 @@ main.warning a.disabled {
 
 main .warning a {
   content: "main .warning a"; }
+
+.class .par1 {
+  content: .class .par1 .test .test2, .par1 .test .class .test2; }
