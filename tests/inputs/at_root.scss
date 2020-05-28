@@ -232,3 +232,10 @@ $test1: 'foo';
     }
   }
 }
+
+// self + selector functin + at-root
+.class .par1 {
+  @at-root #{selector-replace(&, ".par1", ".test")} {
+    color: red;
+  }
+}

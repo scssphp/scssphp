@@ -109,3 +109,6 @@ a.badge {
 .other {
   content: "bar";
   content: "foo"; }
+
+.class .test {
+  color: red; }

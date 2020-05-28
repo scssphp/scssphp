@@ -3211,7 +3211,7 @@ class Compiler
                 return $this->fncall($value[1], $value[2]);
 
             case Type::T_SELF:
-                $selfSelector = $this->multiplySelectors($this->env);
+                $selfSelector = $this->multiplySelectors($this->env,!empty($this->env->block->selfParent) ? $this->env->block->selfParent : null);
                 $selfSelector = $this->collapseSelectors($selfSelector, true);
 
                 return $selfSelector;
@@ -4041,6 +4041,11 @@ class Compiler
         }
 
         $selectors = array_values($selectors);
+
+        // case we are just starting a at-root : nothing to multiply but parentSelectors
+        if (!$selectors and $selfParentSelectors) {
+            $selectors = $selfParentSelectors;
+        }
 
         return $selectors;
     }

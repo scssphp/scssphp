@@ -176,3 +176,8 @@ a.badge:hover, a.badge:focus {
 .other {
   content: "bar";
   content: "foo"; }
+
+/* line 237, inputs/at_root.scss */
+/* line 238, inputs/at_root.scss */
+.class .test {
+  color: red; }
