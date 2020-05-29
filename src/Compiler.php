@@ -913,6 +913,7 @@ class Compiler
         }
 
         foreach ([array_reverse($base), array_reverse($other)] as $single) {
+            $rang = count($single);
             foreach ($single as $part) {
                 if (preg_match('/^[\[:]/', $part)) {
                     $out[] = $part;
@@ -920,14 +921,15 @@ class Compiler
                 } elseif (preg_match('/^[\.#]/', $part)) {
                     array_unshift($out, $part);
                     $wasTag = false;
-                } elseif (preg_match('/^[^_-]/', $part)) {
+                } elseif (preg_match('/^[^_-]/', $part) and $rang==1) {
                     $tag[] = $part;
                     $wasTag = true;
                 } elseif ($wasTag) {
                     $tag[\count($tag) - 1] .= $part;
                 } else {
-                    $out[] = $part;
+                    array_unshift($out, $part);
                 }
+                $rang--;
             }
         }
 
