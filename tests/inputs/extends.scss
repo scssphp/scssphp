@@ -58,7 +58,7 @@ code {
 }
 
 
-// chained 
+// chained
 
 .alpha {
     color: red;
@@ -171,7 +171,7 @@ wassup {
     float: right;
     @extend .btn;
   }
-}  
+}
 .edit {
   .new {
    .actions {
@@ -243,7 +243,7 @@ body{
     font-weight: bold;
     text-shadow: none;
     color: #fff;
-    
+
     &:hover {
       @extend .navbar-brand;
     }
@@ -413,3 +413,26 @@ $placeholdername: 'myplaceholder';
 .foo3 {a: b; @extend .bar3}
 .bar3 {c: d; @extend .baz3}
 .baz3 {e: f; @extend .foo3}
+
+
+%tc111 {
+  &:before {
+    display: inline-block;
+  }
+}
+
+.parent {
+  &sub {
+    &:hover {
+      @extend %tc111;
+    }
+  }
+}
+
+.parent {
+  &-sub {
+    &:hover {
+      @extend %tc111;
+    }
+  }
+}

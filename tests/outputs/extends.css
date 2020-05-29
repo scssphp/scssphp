@@ -184,3 +184,6 @@ div.popup, .prepend div.foo {
 
 .baz3, .bar3, .foo3 {
   e: f; }
+
+.parentsub:hover:before, .parent-sub:hover:before {
+  display: inline-block; }

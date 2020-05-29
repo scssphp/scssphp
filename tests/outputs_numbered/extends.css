@@ -306,3 +306,15 @@ div.popup, .prepend div.foo {
 /* line 415, inputs/extends.scss */
 .baz3, .bar3, .foo3 {
   e: f; }
+
+/* line 418, inputs/extends.scss */
+/* line 419, inputs/extends.scss */
+.parentsub:hover:before, .parent-sub:hover:before {
+  display: inline-block; }
+
+/* line 424, inputs/extends.scss */
+/* line 425, inputs/extends.scss */
+/* line 426, inputs/extends.scss */
+/* line 432, inputs/extends.scss */
+/* line 433, inputs/extends.scss */
+/* line 434, inputs/extends.scss */
