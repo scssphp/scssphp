@@ -61,7 +61,7 @@ class ApiTest extends TestCase
             function ($args, $kwargs) {
                 return $kwargs['dividend'][1] / $kwargs['divisor'][1];
             },
-            array('dividend', 'divisor')
+            ['dividend', 'divisor']
         );
 
         $this->assertEquals(
@@ -98,23 +98,23 @@ class ApiTest extends TestCase
 
     public function provideSetVariables()
     {
-        return array(
-            array(
+        return [
+            [
                 ".magic {\n  color: red;\n  width: 760px; }",
                 '.magic { color: $color; width: $base - 200; }',
-                array(
+                [
                     'color' => 'red',
                     'base'  => '960px',
-                ),
-            ),
-            array(
+                ],
+            ],
+            [
                 ".logo {\n  color: grey; }",
                 '.logo { color: desaturate($primary, 100%); }',
-                array(
+                [
                     'primary' => '#ff0000',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     public function testCompileByteOrderMarker()

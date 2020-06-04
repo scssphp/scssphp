@@ -26,7 +26,7 @@ class FrameworkTest extends TestCase
             "frameworkVersion" => "zurb/foundation6.5",
             "inputdirectory" => "../vendor/zurb/foundation/assets/",
             "inputfiles" => "foundation.scss",
-        ]
+        ],
     ];
 
     /**

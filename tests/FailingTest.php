@@ -53,16 +53,16 @@ class FailingTest extends TestCase
     public function provideFailing()
     {
         // @codingStandardsIgnoreStart
-        return array(
+        return [
 /*************************************************************
-            array(
+            [
                 '', <<<'END_OF_SCSS'
 END_OF_SCSS
                 , <<<END_OF_EXPECTED
 END_OF_EXPECTED
-            ),
+            ],
 *************************************************************/
-        );
+        ];
         // @codingStandardsIgnoreEnd
     }
 

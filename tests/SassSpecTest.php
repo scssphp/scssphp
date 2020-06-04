@@ -141,6 +141,7 @@ class SassSpecTest extends TestCase
             } else {
                 $actual = static::$scss->compile($scss);
             }
+
             // short colors are expanded for comparison purpose
             $actual = preg_replace(",#([0-9a-f])([0-9a-f])([0-9a-f])\b,i", "#\\1\\1\\2\\2\\3\\3", $actual);
 
@@ -196,7 +197,6 @@ class SassSpecTest extends TestCase
             $this->resetExclusionList();
         }
 
-
         for ($depth = 0; $depth < 7; $depth++) {
             $specs = array_merge($specs, glob($dir . $subdir . '/*.hrx'));
             $subdir .= '/*';
@@ -216,10 +216,10 @@ class SassSpecTest extends TestCase
             );
 
             $generalOptions = '';
+
             if (file_exists($f = $fileDir . '/options.yml') || file_exists($f = dirname($fileDir) . '/options.yml')) {
                 $generalOptions = file_get_contents($f);
             }
-
 
             foreach ($subTests as $subTest) {
                 $subNname  = '';
@@ -238,7 +238,7 @@ class SassSpecTest extends TestCase
                 foreach ($parts as $part) {
                     $part   = explode("\n", $part);
                     $first  = array_shift($part);
-                    $first   = ltrim($first, ' ');
+                    $first  = ltrim($first, ' ');
                     $part   = implode("\n", $part);
                     $subDir = dirname($first);
 
@@ -261,8 +261,8 @@ class SassSpecTest extends TestCase
                             if (! $subNname && $subDir) {
                                 $subNname = '/' . $subDir;
                             }
-                            $baseDir = $subDir;
 
+                            $baseDir = $subDir;
                             $hasInput = true;
                             $input = $part;
                             break;
@@ -301,11 +301,13 @@ class SassSpecTest extends TestCase
 
                 if ($baseDir and $includes) {
                     $tempIncludes = $includes;
-                    $includes = array();
+                    $includes = [];
+
                     foreach ($tempIncludes as $k => $v) {
                         if (strpos($k, "$baseDir/") === 0) {
                             $k = substr($k, strlen("$baseDir/"));
                         }
+
                         $includes[$k] = $v;
                     }
                 }
@@ -322,6 +324,7 @@ class SassSpecTest extends TestCase
 
                 $sizeLimit = 1024 * 1024;
                 $test = [$baseTestName . $subNname, [$options, $input, $includes], [$output, $warning, $error]];
+
                 if (! $hasInput ||
                     (!$hasOutput && ! $error) ||
                     strpos($options, ':todo:') !== false ||

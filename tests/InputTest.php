@@ -97,7 +97,7 @@ class InputTest extends TestCase
     {
         return array_map(
             function ($a) {
-                return array($a, InputTest::outputNameFor($a));
+                return [$a, InputTest::outputNameFor($a)];
             },
             self::findInputNames()
         );
@@ -107,7 +107,7 @@ class InputTest extends TestCase
     {
         return array_map(
             function ($a) {
-                return array($a, InputTest::outputNumberedNameFor($a));
+                return [$a, InputTest::outputNumberedNameFor($a)];
             },
             self::findInputNames()
         );

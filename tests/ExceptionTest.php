@@ -49,36 +49,36 @@ class ExceptionTest extends TestCase
      */
     public function provideScss()
     {
-        return array(
-            array(<<<'END_OF_SCSS'
+        return [
+            [<<<'END_OF_SCSS'
 .test {
   foo : bar;
 END_OF_SCSS
                 ,
                 'unclosed block'
-            ),
-            array(<<<'END_OF_SCSS'
+            ],
+            [<<<'END_OF_SCSS'
 .test {
 }}
 END_OF_SCSS
                 ,
                 'unexpected }'
-            ),
-            array(<<<'END_OF_SCSS'
+            ],
+            [<<<'END_OF_SCSS'
 .test { color: #fff / 0; }
 END_OF_SCSS
                 ,
                 'color: Can\'t divide by zero'
-            ),
-            array(<<<'END_OF_SCSS'
+            ],
+            [<<<'END_OF_SCSS'
 .test {
   @include foo();
 }
 END_OF_SCSS
                 ,
                 'Undefined mixin foo'
-            ),
-            array(<<<'END_OF_SCSS'
+            ],
+            [<<<'END_OF_SCSS'
 @mixin do-nothing() {
 }
 
@@ -88,7 +88,7 @@ END_OF_SCSS
 END_OF_SCSS
                 ,
                 'Mixin or function doesn\'t have an argument named $a.'
-            ),
+            ],
             array(<<<'END_OF_SCSS'
 div {
   color: darken(cobaltgreen, 10%);
@@ -97,7 +97,7 @@ END_OF_SCSS
                 ,
                 'expecting color'
             ),
-            array(<<<'END_OF_SCSS'
+            [<<<'END_OF_SCSS'
 BODY {
     DIV {
         $bg: red;
@@ -108,8 +108,8 @@ BODY {
 END_OF_SCSS
                 ,
                 'Undefined variable $bg'
-            ),
-            array(<<<'END_OF_SCSS'
+            ],
+            [<<<'END_OF_SCSS'
 @mixin example {
     background: $bg;
 }
@@ -122,22 +122,22 @@ P {
 END_OF_SCSS
                 ,
                 'Undefined variable $bg'
-            ),
-            array(<<<'END_OF_SCSS'
+            ],
+            [<<<'END_OF_SCSS'
 a.important {
   @extend .notice;
 }
 END_OF_SCSS
                 ,
                 'was not found'
-            ),
-            array(<<<'END_OF_SCSS'
+            ],
+            [<<<'END_OF_SCSS'
 @import "missing";
 END_OF_SCSS
                 ,
                 'file not found for @import'
-            ),
-        );
+            ],
+        ];
     }
 
     private function compile($str)
