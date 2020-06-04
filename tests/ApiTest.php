@@ -114,6 +114,29 @@ class ApiTest extends TestCase
                     'primary' => '#ff0000',
                 ],
             ],
+            // !default
+            [
+                ".default {\n  color: red; }",
+                '$color: red !default;' . "\n" . '.default { color: $color; }',
+                [
+                ],
+            ],
+            // no !default
+            [
+                ".default {\n  color: red; }",
+                '$color: red;' . "\n" . '.default { color: $color; }',
+                [
+                ],
+                    'color' => 'blue',
+            ],
+            // override !default
+            [
+                ".default {\n  color: blue; }",
+                '$color: red !default;' . "\n" . '.default { color: $color; }',
+                [
+                    'color' => 'blue',
+                ],
+            ],
         ];
     }
 
