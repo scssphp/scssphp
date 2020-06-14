@@ -4958,7 +4958,7 @@ class Compiler
             }
         }
 
-        $returnValue = \call_user_func($f, $sorted, $kwargs, $this->sourceNames[$this->sourceIndex]));
+        $returnValue = \call_user_func($f, $sorted, $kwargs, $this->sourceNames[$this->sourceIndex]);
 
         if (! isset($returnValue)) {
             return false;
