@@ -979,7 +979,7 @@ class Parser
     {
         list($line, $column) = $this->getSourcePosition($pos);
 
-        $b = new Block;
+        $b = new Block();
         $b->sourceName   = $this->sourceName;
         $b->sourceLine   = $line;
         $b->sourceColumn = $column;

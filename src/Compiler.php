@@ -390,7 +390,7 @@ class Compiler
      */
     protected function makeOutputBlock($type, $selectors = null)
     {
-        $out = new OutputBlock;
+        $out = new OutputBlock();
         $out->type      = $type;
         $out->lines     = [];
         $out->children  = [];
@@ -983,7 +983,7 @@ class Compiler
             }
 
             if ($needsWrap) {
-                $wrapped = new Block;
+                $wrapped = new Block();
                 $wrapped->sourceName   = $media->sourceName;
                 $wrapped->sourceIndex  = $media->sourceIndex;
                 $wrapped->sourceLine   = $media->sourceLine;
@@ -1092,7 +1092,7 @@ class Compiler
 
         // wrap inline selector
         if ($block->selector) {
-            $wrapped = new Block;
+            $wrapped = new Block();
             $wrapped->sourceName   = $block->sourceName;
             $wrapped->sourceIndex  = $block->sourceIndex;
             $wrapped->sourceLine   = $block->sourceLine;
@@ -1477,7 +1477,7 @@ class Compiler
             }
 
             if ($needWrapping) {
-                $wrapped = new Block;
+                $wrapped = new Block();
                 $wrapped->sourceName   = $block->sourceName;
                 $wrapped->sourceIndex  = $block->sourceIndex;
                 $wrapped->sourceLine   = $block->sourceLine;
@@ -3113,11 +3113,8 @@ class Compiler
                         if ($baseUnitLeft && $baseUnitRight && $baseUnitLeft === $baseUnitRight) {
                             $left = $left->normalize();
                             $right = $right->normalize();
-                        }
-                        else {
-                            if ($coerceUnit) {
-                                $left = new Node\Number($left[1], []);
-                            }
+                        } elseif ($coerceUnit) {
+                            $left = new Node\Number($left[1], []);
                         }
                     }
 
@@ -3213,7 +3210,8 @@ class Compiler
                 return $this->fncall($value[1], $value[2]);
 
             case Type::T_SELF:
-                $selfSelector = $this->multiplySelectors($this->env,!empty($this->env->block->selfParent) ? $this->env->block->selfParent : null);
+                $selfParent = ! empty($this->env->block->selfParent) ? $this->env->block->selfParent : null;
+                $selfSelector = $this->multiplySelectors($this->env, $selfParent);
                 $selfSelector = $this->collapseSelectors($selfSelector, true);
 
                 return $selfSelector;
@@ -4209,7 +4207,7 @@ class Compiler
      */
     protected function pushEnv(Block $block = null)
     {
-        $env = new Environment;
+        $env = new Environment();
         $env->parent = $this->env;
         $env->parentStore = $this->storeEnv;
         $env->store  = [];
@@ -4898,7 +4896,7 @@ class Compiler
         }
 
         // throw away lines and children
-        $tmp = new OutputBlock;
+        $tmp = new OutputBlock();
         $tmp->lines    = [];
         $tmp->children = [];
 
@@ -5158,7 +5156,7 @@ class Compiler
         if ($storeInEnv) {
             $storeEnv = $this->getStoreEnv();
 
-            $env = new Environment;
+            $env = new Environment();
             $env->store = $storeEnv->store;
         }
 
