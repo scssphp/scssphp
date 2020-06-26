@@ -11,6 +11,8 @@
 
 namespace ScssPhp\ScssPhp\Exception;
 
+use Exception;
+
 /**
  * Parser Exception
  *
@@ -18,4 +20,36 @@ namespace ScssPhp\ScssPhp\Exception;
  */
 class ParserException extends \Exception
 {
+    /**
+     * Style exception line.
+     *
+     * @var integer
+     */
+    protected $styleLine = 0;
+
+    /**
+     * Create new FieldException instance.
+     *
+     * @param string $message
+     * @param string $file
+     * @param int $line
+     * @param integer $code
+     * @param Exception $previous
+     */
+    public function __construct($message = null, int $styleLine = 0, $code = 0, Exception $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+
+        $this->styleLine = $styleLine;
+    }
+
+    /**
+     * Get style line.
+     *
+     * @return integer
+     */
+    public function getStyleLine()
+    {
+        return $this->styleLine;
+    }
 }
