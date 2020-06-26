@@ -146,12 +146,12 @@ class Parser
         if ($this->peek("(.*?)(\n|$)", $m, $this->count)) {
             $this->restoreEncoding();
 
-            throw new ParserException("$msg: failed at `$m[1]` $loc");
+            throw new ParserException("$msg: failed at `$m[1]` $loc", $line);
         }
 
         $this->restoreEncoding();
 
-        throw new ParserException("$msg: $loc");
+        throw new ParserException("$msg: $loc", $line);
     }
 
     /**
