@@ -5204,7 +5204,7 @@ class Compiler
                 } else {
                     $keywordArgs[$name] = $arg[1];
                 }
-            } elseif ($arg[2] === true) {
+            } elseif (! empty($arg[2])) {
                 $val = $this->reduce($arg[1], true);
 
                 if ($val[0] === Type::T_LIST) {
