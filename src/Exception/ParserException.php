@@ -18,4 +18,30 @@ namespace ScssPhp\ScssPhp\Exception;
  */
 class ParserException extends \Exception
 {
+    /**
+     * @var array
+     */
+    private $sourcePosition;
+
+    /**
+     * Get source position
+     *
+     * @api
+     */
+    public function getSourcePosition()
+    {
+        return $this->sourcePosition;
+    }
+
+    /**
+     * Set source position
+     *
+     * @api
+     *
+     * @param array $sourcePosition
+     */
+    public function setSourcePosition($sourcePosition)
+    {
+        $this->sourcePosition = $sourcePosition;
+    }
 }
