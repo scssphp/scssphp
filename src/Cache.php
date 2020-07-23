@@ -177,9 +177,7 @@ class Cache
         self::$cacheDir = rtrim(self::$cacheDir, '/') . '/';
 
         if (! is_dir(self::$cacheDir)) {
-            if (! mkdir(self::$cacheDir)) {
-                throw new Exception('Cache directory couldn\'t be created: ' . self::$cacheDir);
-            }
+            throw new Exception('Cache directory doesn\'t exist: ' . self::$cacheDir);
         }
 
         if (! is_writable(self::$cacheDir)) {
