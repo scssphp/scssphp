@@ -4776,6 +4776,20 @@ class Compiler
     }
 
     /**
+     * Get source position
+     *
+     * @api
+     *
+     * @return array
+     */
+    public function getSourcePosition()
+    {
+        $sourceFile = isset($this->sourceNames[$this->sourceIndex]) ? $this->sourceNames[$this->sourceIndex] : '';
+
+        return [$sourceFile, $this->sourceLine, $this->sourceColumn];
+    }
+
+    /**
      * Throw error (exception)
      *
      * @api
