@@ -198,10 +198,6 @@ class SassSpecTest extends TestCase
             $output = stream_get_contents($fp_err_stream);
             fclose($fp_err_stream);
 
-            if ($output) {
-                $actual = "STDERR::\n" . trim($output) . "\n----------\n" . $actual;
-            }
-
             // clean after the test
             if ($includes) {
                 static::$scss->setImportPaths([]);
