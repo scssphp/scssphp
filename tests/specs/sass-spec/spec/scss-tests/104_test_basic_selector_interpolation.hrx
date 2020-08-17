@@ -1,7 +1,0 @@
-<===> input.scss
-foo#{1 + 2} baz {a: b}
-
-<===> output.css
-foo3 baz {
-  a: b;
-}

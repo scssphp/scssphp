@@ -1,8 +1,0 @@
-<===> input.scss
-sel {
-  p: v; }
-
-<===> output.css
-sel {
-  p: v;
-}

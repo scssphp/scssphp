@@ -1,5 +1,0 @@
-<===> input.scss
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul")
-
-<===> output.css
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");

@@ -1,8 +1,0 @@
-<===> input.scss
-div,, , span, ,, {
-  color: red;
-}
-<===> output.css
-div, span {
-  color: red;
-}

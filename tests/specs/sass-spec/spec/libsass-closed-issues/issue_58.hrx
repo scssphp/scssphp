@@ -1,8 +1,0 @@
-<===> input.scss
-test {
-  background: url(/static_loc/img/beta.png);
-}
-<===> output.css
-test {
-  background: url(/static_loc/img/beta.png);
-}

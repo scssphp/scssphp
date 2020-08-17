@@ -1,8 +1,0 @@
-<===> input.scss
-div {
-  blah: say-something();
-}
-<===> output.css
-div {
-  blah: say-something();
-}

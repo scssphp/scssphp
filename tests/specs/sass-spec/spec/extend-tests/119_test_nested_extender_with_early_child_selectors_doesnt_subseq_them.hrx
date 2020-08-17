@@ -1,8 +1,0 @@
-<===> input.scss
-.bap > .bip .foo {a: b}
-.bap > .grip .bar {@extend .foo}
-
-<===> output.css
-.bap > .bip .foo, .bap > .bip .bap > .grip .bar, .bap > .grip .bap > .bip .bar {
-  a: b;
-}

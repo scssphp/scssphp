@@ -1,5 +1,0 @@
-<===> input.scss
-@warning "foo"
-
-<===> output.css
-@warning "foo";

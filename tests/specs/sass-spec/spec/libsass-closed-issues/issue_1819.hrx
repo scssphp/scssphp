@@ -1,8 +1,0 @@
-<===> input.scss
-foo {
-  bar: type-of(selector-unify('p', 'a'));
-}
-<===> output.css
-foo {
-  bar: null;
-}

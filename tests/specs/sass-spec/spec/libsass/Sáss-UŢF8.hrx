@@ -1,9 +1,0 @@
-<===> input.scss
-span.utf8-in-path {
-  margin: auto;
-}
-
-<===> output.css
-span.utf8-in-path {
-  margin: auto;
-}

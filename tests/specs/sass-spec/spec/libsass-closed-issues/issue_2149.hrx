@@ -1,9 +1,0 @@
-<===> input.scss
-.foo {
-  background: url('background.png') -10px -10px/110% no-repeat
-}
-
-<===> output.css
-.foo {
-  background: url("background.png") -10px -10px/110% no-repeat;
-}

@@ -1,7 +1,0 @@
-<===> input.scss
-foo {*+html & {a: b}}
-
-<===> output.css
-* + html foo {
-  a: b;
-}

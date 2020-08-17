@@ -1,9 +1,0 @@
-@charset "UTF-8";
-.result {
-  output: "�_\a_\a";
-  output: �_ _ ;
-  output: "[�_\a_\a]";
-  output: "�_\a_\a";
-  output: "�_\a_\a";
-  output: "['�_\a_\a']";
-}

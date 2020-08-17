@@ -265,7 +265,7 @@ class SassSpecTest extends TestCase
      */
     public function provideTests()
     {
-        $dir    = __DIR__ . '/specs/sass-spec/spec';
+        $dir    = dirname(__DIR__) . '/vendor/sass/sass-spec/spec';
         $specs  = [];
         $subdir = '';
 

@@ -1,8 +1,0 @@
-// Makes sure that a 'is-superselector' call is not true, when the parameters are reversed
-@function assert_strict_superselector($a, $b) {
-  @return is_superselector($a, $b) and not is_superselector($b, $a);
-}
-
-@function refute_superselector($a, $b) {
-  @return not is_superselector($a, $b);
-}
