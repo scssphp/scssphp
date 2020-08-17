@@ -2413,7 +2413,7 @@ class Parser
     {
         $s = $this->count;
 
-        if ($this->match('(#([0-9a-f]+))', $m)) {
+        if ($this->match('(#([0-9a-f]+)\b)', $m)) {
             if (\in_array(\strlen($m[2]), [3,4,6,8])) {
                 $out = [Type::T_KEYWORD, $m[0]];
 

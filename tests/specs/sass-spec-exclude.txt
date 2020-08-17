@@ -854,7 +854,6 @@
 1949/1980. selector-functions/is_superselector/trailing_combinator
 1954/1980. selector-functions/unify/base
 1955/1980. selector-functions/unify/universal_simple
-1959/1980. values/ids
 1963/1980. values/maps/duplicate-keys
 1964/1980. values/maps/errors
 1966/1980. values/maps/invalid-key
