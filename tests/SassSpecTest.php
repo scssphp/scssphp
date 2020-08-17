@@ -23,8 +23,10 @@ class SassSpecTest extends TestCase
 {
     protected static $scss;
     protected static $exclusionList;
+    protected static $warningExclusionList;
 
     protected static $fileExclusionList = __DIR__ . '/specs/sass-spec-exclude.txt';
+    protected static $fileWarningExclusionList = __DIR__ . '/specs/sass-spec-exclude-warning.txt';
 
     /**
      * List of excluded tests if not in TEST_SCSS_COMPAT mode
@@ -47,6 +49,26 @@ class SassSpecTest extends TestCase
     }
 
     /**
+     * List of tests excluding the assertion on warnings if not in TEST_SCSS_COMPAT mode
+     *
+     * @return array
+     */
+    protected function getWarningExclusionList()
+    {
+        if (is_null(static::$warningExclusionList)) {
+            if (!file_exists(static::$fileWarningExclusionList)) {
+                static::$warningExclusionList = [];
+            } else {
+                static::$warningExclusionList = file(static::$fileWarningExclusionList);
+                static::$warningExclusionList = array_map('trim', static::$warningExclusionList);
+                static::$warningExclusionList = array_filter(static::$warningExclusionList);
+            }
+        }
+
+        return static::$warningExclusionList;
+    }
+
+    /**
      * RAZ the file that lists excluded tests
      *
      * @return array
@@ -54,7 +76,9 @@ class SassSpecTest extends TestCase
     protected function resetExclusionList()
     {
         static::$exclusionList = [];
+        static::$warningExclusionList = [];
         file_put_contents(static::$fileExclusionList, '');
+        file_put_contents(static::$fileWarningExclusionList, '');
 
         return static::$exclusionList;
     }
@@ -70,6 +94,19 @@ class SassSpecTest extends TestCase
         file_put_contents(static::$fileExclusionList, implode("\n", static::$exclusionList) . "\n");
 
         return static::$exclusionList;
+    }
+
+    /**
+     * Append a test name to the list of excluded tests
+     *
+     * @return array
+     */
+    protected function appendToWarningExclusionList($testName)
+    {
+        static::$warningExclusionList[] = $testName;
+        file_put_contents(static::$fileWarningExclusionList, implode("\n", static::$warningExclusionList) . "\n");
+
+        return static::$warningExclusionList;
     }
 
     /**
@@ -106,10 +143,6 @@ class SassSpecTest extends TestCase
         if (! strlen($error)) {
             $fp_err_stream = fopen("php://memory", 'r+');
             static::$scss->setErrorOuput($fp_err_stream);
-
-            if ($warning) {
-                $css = "STDERR::\n" . trim($warning) . "\n----------\n" . $css;
-            }
 
             // this test needs @import of includes files, build a dir with files and set the ImportPaths
             if ($includes) {
@@ -163,10 +196,18 @@ class SassSpecTest extends TestCase
             if (getenv('BUILD')) {
                 if (rtrim($css) !== rtrim($actual)) {
                     $this->appendToExclusionList($name);
+                } elseif ($warning && rtrim($output) !== rtrim($warning)) {
+                    $this->appendToWarningExclusionList($name);
                 }
                 $this->assertNull(null);
             } else {
                 $this->assertEquals(rtrim($css), rtrim($actual), $name);
+
+                if ($warning) {
+                    if (getenv('TEST_SASS_SPEC') || !in_array($name, $this->getWarningExclusionList())) {
+                        $this->assertEquals(rtrim($warning), rtrim($output));
+                    }
+                }
             }
         } else {
             if (getenv('BUILD')) {
