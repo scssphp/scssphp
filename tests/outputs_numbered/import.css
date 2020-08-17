@@ -39,3 +39,16 @@ body {
 /* line 1, inputs/imports/plain.css */
 a:before {
   content: ''; }
+
+/* line 5, inputs/imports/plain.css */
+div::before {
+  content: ':)'; }
+
+@keyframes spin {
+/* line 10, inputs/imports/plain.css */
+  0% {
+    transform: rotate(0deg); }
+
+/* line 13, inputs/imports/plain.css */
+  100% {
+    transform: rotate(359deg); } }
