@@ -48,8 +48,14 @@ class SassSpecTest extends TestCase
         return static::$exclusionList;
     }
 
-    protected function matchExclusionList($testName) {
-        $exclusionListString = implode("\n", $this->getExclusionList()) . "\n";
+    /**
+     * Check the presence of a test in an exclusion list
+     * @param $testName
+     * @param $exclusionList
+     * @return bool
+     */
+    protected function matchExclusionList($testName, $exclusionList) {
+        $exclusionListString = implode("\n", $exclusionList) . "\n";
         $testName = preg_replace(",^\d+/\d+\.\s*,", "", $testName);
         if (strpos($exclusionListString, ". $testName\n")) {
             return true;
@@ -137,7 +143,7 @@ class SassSpecTest extends TestCase
             static::$scss->setFormatter('ScssPhp\ScssPhp\Formatter\Expanded');
         }
 
-        if (! getenv('TEST_SASS_SPEC') && $this->matchExclusionList($name)) {
+        if (! getenv('TEST_SASS_SPEC') && $this->matchExclusionList($name, $this->getExclusionList())) {
             $this->markTestSkipped('Define TEST_SASS_SPEC=1 to enable all sass-spec compatibility tests');
 
             return;
@@ -213,7 +219,7 @@ class SassSpecTest extends TestCase
                 $this->assertEquals(rtrim($css), rtrim($actual), $name);
 
                 if ($warning) {
-                    if (getenv('TEST_SASS_SPEC') || !in_array($name, $this->getWarningExclusionList())) {
+                    if (getenv('TEST_SASS_SPEC') || !$this->matchExclusionList($name, $this->getWarningExclusionList())) {
                         $this->assertEquals(rtrim($warning), rtrim($output));
                     }
                 }
