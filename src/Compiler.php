@@ -4021,8 +4021,8 @@ class Compiler
                 $prevSelectors = $selectors;
                 $selectors     = [];
 
-                foreach ($prevSelectors as $selector) {
-                    foreach ($parentSelectors as $parent) {
+                foreach ($parentSelectors as $parent) {
+                    foreach ($prevSelectors as $selector) {
                         if ($selfParentSelectors) {
                             foreach ($selfParentSelectors as $selfParent) {
                                 // if no '&' in the selector, each call will give same result, only add once

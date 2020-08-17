@@ -1,14 +1,9 @@
 7/1980. basic/06_nesting_and_comments
-8/1980. basic/07_nested_simple_selector_groups
-10/1980. basic/09_selector_groups_and_combinators
-11/1980. basic/10_classes_and_ids
 12/1980. basic/11_attribute_selectors
-14/1980. basic/13_back_references
 16/1980. basic/15_arithmetic_and_lists
 17/1980. basic/17_basic_mixins
 19/1980. basic/19_full_mixin_craziness
 24/1980. basic/25_basic_string_interpolation
-25/1980. basic/26_selector_interpolation
 39/1980. basic/41_slashy_urls
 40/1980. basic/42_css_imports
 47/1980. basic/54_adjacent_identifiers_with_hyphens
@@ -477,7 +472,6 @@
 864/1980. libsass-closed-issues/issue_1669
 866/1980. libsass-closed-issues/issue_1670
 876/1980. libsass-closed-issues/issue_1706
-877/1980. libsass-closed-issues/issue_1710
 878/1980. libsass-closed-issues/issue_1715
 883/1980. libsass-closed-issues/issue_1732/invalid/mixin-def
 891/1980. libsass-closed-issues/issue_1739/basic
@@ -835,7 +829,6 @@
 1680/1980. scss-tests/019_test_css_import_directive
 1681/1980. scss-tests/020_test_css_import_directive
 1700/1980. scss-tests/040_test_newlines_in_selectors
-1701/1980. scss-tests/041_test_newlines_in_selectors
 1702/1980. scss-tests/042_test_newlines_in_selectors
 1703/1980. scss-tests/043_test_newlines_in_selectors
 1763/1980. scss-tests/130_test_random_directive_interpolation

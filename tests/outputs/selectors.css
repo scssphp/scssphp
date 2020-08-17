@@ -368,7 +368,7 @@ span a, p a, div a {
 .parent + .parent {
   content: "should match .parent + .parent"; }
 
-ul ul, ul ol, ol ul, ol ol {
+ul ul, ol ul, ul ol, ol ol {
   display: block; }
 
 .👤 {
