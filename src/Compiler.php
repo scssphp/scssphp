@@ -5564,7 +5564,7 @@ class Compiler
                             if ($color[3] === 255) {
                                 $color[3] = 1; // fully opaque
                             } else {
-                                $color[3] = round($color[3] / 255, 3);
+                                $color[3] = round($color[3] / 255, Node\Number::$precision);
                             }
                         }
 
