@@ -793,8 +793,12 @@ class Parser
             return false;
         }
 
+        $inCssSelector = null;
+        if ($this->cssOnly) {
+            $inCssSelector = (! empty($this->env->parent) and !in_array($this->env->type, [Type::T_DIRECTIVE, Type::T_MEDIA]));
+        }
         // custom properties : right part is static
-        if (($this->customProperty($name) || ($this->cssOnly && ! empty($this->env->parent) && $this->propertyName($name))) &&
+        if (($this->customProperty($name) || ($inCssSelector && $this->propertyName($name))) &&
             $this->matchChar(':', false)
         ) {
             $start = $this->count;
@@ -880,7 +884,7 @@ class Parser
         // opening css block
         if ($this->selectors($selectors) && $this->matchChar('{', false)) {
             if ($this->cssOnly) {
-                if (! empty($this->env->parent)) {
+                if ($inCssSelector) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
             }
