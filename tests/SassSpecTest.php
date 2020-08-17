@@ -172,6 +172,8 @@ class SassSpecTest extends TestCase
             if (getenv('BUILD')) {
                 $this->appendToExclusionList($name);
                 $this->assertNull(null);
+            } else {
+                $this->markTestSkipped('Specs expecting an error are not supported for now.');
             }
         }
     }
