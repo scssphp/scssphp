@@ -1,7 +1,9 @@
 /** what the heck **/
 /**
- Here is a block comment
- **/
+
+Here is a block comment
+
+**/
 /*hello*/
 div {
   /*yeah*/
@@ -31,10 +33,10 @@ a {
 /* comment 7 */
 /* коммент */
 /* This is a comment with vars references:
- color:red
- and a fake #{ doing nothing
- radius:2px
- and also a #{$fake} interpolation that should not throw an error
+color:red
+and a fake #{ doing nothing
+radius:2px
+   and also a #{$fake} interpolation that should not throw an error
  */
 .textimage-background-fullheight .background {
   /* @noflip */
@@ -44,8 +46,8 @@ a {
 
 .class {
   /* This is a comment with vars references not on root level
-   color:red
-   and a fake #{ doing nothing
-   radius:2px
-   and also a #{$fake} interpolation that should not throw an error
-   */ }
+  color:red
+  and a fake #{ doing nothing
+  radius:2px
+     and also a #{$fake} interpolation that should not throw an error
+  */ }

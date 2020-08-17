@@ -1,8 +1,5 @@
-basic/06_nesting_and_comments
 basic/11_attribute_selectors
 basic/15_arithmetic_and_lists
-basic/17_basic_mixins
-basic/19_full_mixin_craziness
 basic/25_basic_string_interpolation
 basic/41_slashy_urls
 basic/42_css_imports
@@ -128,9 +125,7 @@ core_functions/string/quote/quoted_single
 core_functions/variable_exists/error/argument/too_few
 core_functions/variable_exists/error/argument/too_many
 core_functions/variable_exists/error/argument/type
-css/comment/converts_newlines/scss/ff
 css/comment/multiple_stars
-css/comment/weird_indentation
 css/custom_properties/error/brackets/curly
 css/custom_properties/error/brackets/curly_in_square
 css/custom_properties/error/brackets/paren
@@ -403,7 +398,6 @@ libsass-closed-issues/issue_1266/max
 libsass-closed-issues/issue_1266/min
 libsass-closed-issues/issue_1271
 libsass-closed-issues/issue_1279
-libsass-closed-issues/issue_1294
 libsass-closed-issues/issue_1328
 libsass-closed-issues/issue_1355
 libsass-closed-issues/issue_1398
@@ -553,7 +547,6 @@ libsass-closed-issues/issue_558
 libsass-closed-issues/issue_575
 libsass-closed-issues/issue_590
 libsass-closed-issues/issue_628
-libsass-closed-issues/issue_646
 libsass-closed-issues/issue_657/default
 libsass-closed-issues/issue_659/static
 libsass-closed-issues/issue_660
@@ -818,7 +811,6 @@ scss-tests/130_test_random_directive_interpolation
 scss-tests/174_test_import_comments_in_imports
 scss-tests/186_test_newlines_removed_from_selectors_when_compressed
 scss/concat
-scss/css_crazy_comments
 scss/directives-in-propsets
 scss/feature-queries/without-query
 scss/ie-functions

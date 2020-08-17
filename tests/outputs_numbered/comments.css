@@ -1,7 +1,9 @@
 /** what the heck **/
 /**
- Here is a block comment
- **/
+
+Here is a block comment
+
+**/
 /*hello*/
 /* line 16, inputs/comments.scss */
 div {
@@ -34,10 +36,10 @@ a {
 /* comment 7 */
 /* коммент */
 /* This is a comment with vars references:
- color:red
- and a fake #{ doing nothing
- radius:2px
- and also a #{$fake} interpolation that should not throw an error
+color:red
+and a fake #{ doing nothing
+radius:2px
+   and also a #{$fake} interpolation that should not throw an error
  */
 /* line 61, inputs/comments.scss */
 /* line 62, inputs/comments.scss */
@@ -50,8 +52,8 @@ a {
 /* line 70, inputs/comments.scss */
 .class {
   /* This is a comment with vars references not on root level
-   color:red
-   and a fake #{ doing nothing
-   radius:2px
-   and also a #{$fake} interpolation that should not throw an error
-   */ }
+  color:red
+  and a fake #{ doing nothing
+  radius:2px
+     and also a #{$fake} interpolation that should not throw an error
+  */ }
