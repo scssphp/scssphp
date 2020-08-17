@@ -794,7 +794,7 @@ class Parser
         }
 
         // custom properties : right part is static
-        if (($this->customProperty($name) || ($this->cssOnly && $this->propertyName($name))) &&
+        if (($this->customProperty($name) || ($this->cssOnly && ! empty($this->env->parent) && $this->propertyName($name))) &&
             $this->matchChar(':', false)
         ) {
             $start = $this->count;
