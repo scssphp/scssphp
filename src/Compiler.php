@@ -5219,6 +5219,7 @@ class Compiler
                     $keywordArgs[$name] = $arg[1];
                 }
             } elseif (! empty($arg[2])) {
+                // $arg[2] means a var followed by ... in the arg ($list... )
                 $val = $this->reduce($arg[1], true);
 
                 if ($val[0] === Type::T_LIST) {
