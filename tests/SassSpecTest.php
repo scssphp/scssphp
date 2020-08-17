@@ -29,7 +29,7 @@ class SassSpecTest extends TestCase
     /**
      * List of excluded tests if not in TEST_SCSS_COMPAT mode
      *
-     * @return array
+     * @return string
      */
     protected function getExclusionList()
     {
@@ -44,6 +44,15 @@ class SassSpecTest extends TestCase
         }
 
         return static::$exclusionList;
+    }
+
+    protected function matchExclusionList($testName) {
+        $exclusionListString = implode("\n", $this->getExclusionList()) . "\n";
+        $testName = preg_replace(",^\d+/\d+\.\s*,", "", $testName);
+        if (strpos($exclusionListString, ". $testName\n")) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -91,7 +100,7 @@ class SassSpecTest extends TestCase
             static::$scss->setFormatter('ScssPhp\ScssPhp\Formatter\Expanded');
         }
 
-        if (! getenv('TEST_SASS_SPEC') && in_array($name, $this->getExclusionList())) {
+        if (! getenv('TEST_SASS_SPEC') && $this->matchExclusionList($name)) {
             $this->markTestSkipped('Define TEST_SASS_SPEC=1 to enable all sass-spec compatibility tests');
 
             return;
