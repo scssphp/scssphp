@@ -44,14 +44,14 @@ sel {
 
 .foo {
   /* Foo
-   Bar
-   Baz */
+Bar
+  Baz */
   a: b; }
 
 .foo {
   /* Foo
-   Bar
-   Baz */
+Bar
+  Baz */
   a: b; }
 
 .foo {
@@ -62,7 +62,7 @@ sel {
 .foo {
   /* Foo
    Bar
-   Baz */
+  Baz */
   a: b; }
 
 @foo {
@@ -111,13 +111,13 @@ E > F, G > H {
 
 /* Another comment */
 /* The following should not be used:
- .two {color: red;} */
+.two {color: red;} */
 .three {
   color: green;
   /* color: red; */ }
 
 /**
- .four {color: red;} */
+.four {color: red;} */
 .five {
   color: green; }
 
@@ -603,8 +603,8 @@ E, F G, H {
 
 body {
   /*
-   //comment here
-   */ }
+  //comment here
+  */ }
 
 E > F {
   a: b; }

@@ -53,15 +53,15 @@ sel {
 /* line 39, inputs/scss_css.scss */
 .foo {
   /* Foo
-   Bar
-   Baz */
+Bar
+  Baz */
   a: b; }
 
 /* line 46, inputs/scss_css.scss */
 .foo {
   /* Foo
-   Bar
-   Baz */
+Bar
+  Baz */
   a: b; }
 
 /* line 53, inputs/scss_css.scss */
@@ -74,7 +74,7 @@ sel {
 .foo {
   /* Foo
    Bar
-   Baz */
+  Baz */
   a: b; }
 
 @foo {
@@ -131,14 +131,14 @@ E > F, G > H {
 
 /* Another comment */
 /* The following should not be used:
- .two {color: red;} */
+.two {color: red;} */
 /* line 113, inputs/scss_css.scss */
 .three {
   color: green;
   /* color: red; */ }
 
 /**
- .four {color: red;} */
+.four {color: red;} */
 /* line 116, inputs/scss_css.scss */
 .five {
   color: green; }
@@ -751,8 +751,8 @@ E, F G, H {
 /* line 771, inputs/scss_css.scss */
 body {
   /*
-   //comment here
-   */ }
+  //comment here
+  */ }
 
 /* line 778, inputs/scss_css.scss */
 E > F {

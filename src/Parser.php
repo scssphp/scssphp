@@ -1308,25 +1308,6 @@ class Parser
     protected function appendComment($comment)
     {
         if (! $this->discardComments) {
-            if ($comment[0] === Type::T_COMMENT) {
-                if (\is_string($comment[1])) {
-                    $comment[1] = substr(preg_replace(['/^\s+/m', '/^(.)/m'], ['', ' \1'], $comment[1]), 1);
-                }
-
-                if (isset($comment[2]) and \is_array($comment[2]) and $comment[2][0] === Type::T_STRING) {
-                    foreach ($comment[2][2] as $k => $v) {
-                        if (\is_string($v)) {
-                            $p = strpos($v, "\n");
-
-                            if ($p !== false) {
-                                $comment[2][2][$k] = substr($v, 0, $p + 1)
-                                    . preg_replace(['/^\s+/m', '/^(.)/m'], ['', ' \1'], substr($v, $p+1));
-                            }
-                        }
-                    }
-                }
-            }
-
             $this->env->comments[] = $comment;
         }
     }
