@@ -1602,11 +1602,18 @@ class Parser
      */
     protected function argValues(&$out)
     {
+        $discardComments = $this->discardComments;
+        $this->discardComments = true;
+
         if ($this->genericList($list, 'argValue', ',', false)) {
             $out = $list[2];
 
+            $this->discardComments = $discardComments;
+
             return true;
         }
+
+        $this->discardComments = $discardComments;
 
         return false;
     }
