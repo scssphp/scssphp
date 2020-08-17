@@ -1,7 +1,0 @@
-<===> expected_output.scss
-<===> input.scss
-@media all {
-  @mixin foo() {}
-}
-
-<===> output.css

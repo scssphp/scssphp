@@ -1,8 +1,0 @@
-<===> input.scss
-a.foo:bar {a: b}
-.baz {@extend .foo}
-
-<===> output.css
-a.foo:bar, a.baz:bar {
-  a: b;
-}

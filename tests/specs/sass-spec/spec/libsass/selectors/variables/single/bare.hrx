@@ -1,9 +1,0 @@
-<===> input.scss
-.foo {
-  $bar: &;
-  content: $bar;
-}
-<===> output.css
-.foo {
-  content: .foo;
-}

@@ -1,8 +1,0 @@
-<===> input.scss
-@mixin foo() {
-  @import "https://foo";
-}
-@include foo;
-
-<===> output.css
-@import "https://foo";

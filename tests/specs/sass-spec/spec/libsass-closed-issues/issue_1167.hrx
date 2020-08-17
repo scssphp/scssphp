@@ -1,8 +1,0 @@
-<===> input.scss
-a {
-  b: 3s + 101ms;
-}
-<===> output.css
-a {
-  b: 3.101s;
-}

@@ -1,9 +1,0 @@
-<===> input.scss
-a  {
-  content: "#{ a /*#{"}*/ }";
-}
-
-<===> output.css
-a {
-  content: "a";
-}

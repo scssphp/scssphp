@@ -247,7 +247,7 @@ class SassSpecTest extends TestCase
      */
     public function provideTests()
     {
-        $dir    = __DIR__ . '/specs/sass-spec/spec';
+        $dir    = dirname(__DIR__) . '/vendor/sass/sass-spec/spec';
         $specs  = [];
         $subdir = '';
 
@@ -371,7 +371,7 @@ class SassSpecTest extends TestCase
                 }
 
                 // exception : a lot of spec test have an _assert_helpers.scss besides the .hrx
-                // and are using an @import('../assert_helpers') withour any declaration in the hrx
+                // and are using an @import('../assert_helpers') without any declaration in the hrx
                 if (file_exists($f = $fileDir . '/_assert_helpers.scss')) {
                     $includes['../_assert_helpers.scss'] = file_get_contents($f);
                 }

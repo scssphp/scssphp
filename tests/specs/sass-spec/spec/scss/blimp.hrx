@@ -1,7 +1,0 @@
-<===> input.scss
-blimp { color: green }
-
-<===> output.css
-blimp {
-  color: green;
-}

@@ -1,6 +1,0 @@
-<===> input.scss
-@mixin a {
-  b: c;
-}
-
-<===> output.css

@@ -1,8 +1,0 @@
-<===> input.scss
-.selector {
-  color: invert(transparent);
-}
-<===> output.css
-.selector {
-  color: rgba(255, 255, 255, 0);
-}

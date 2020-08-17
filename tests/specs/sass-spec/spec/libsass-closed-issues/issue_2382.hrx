@@ -1,8 +1,0 @@
-<===> input.scss
-.test {
-  font: normal normal 400 16px/calc(16px * 1.4) Oxygen;
-}
-<===> output.css
-.test {
-  font: normal normal 400 16px/calc(16px * 1.4) Oxygen;
-}

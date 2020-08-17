@@ -1,8 +1,0 @@
-<===> input.scss
-.foo::bar {a: b}
-.baz:not(.bang) {@extend .foo}
-
-<===> output.css
-.foo::bar, .baz:not(.bang)::bar {
-  a: b;
-}

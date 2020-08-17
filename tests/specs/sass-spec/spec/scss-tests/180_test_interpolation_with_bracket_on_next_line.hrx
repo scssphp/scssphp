@@ -1,8 +1,0 @@
-<===> input.scss
-a.#{"foo"} b
-{color: red}
-
-<===> output.css
-a.foo b {
-  color: red;
-}

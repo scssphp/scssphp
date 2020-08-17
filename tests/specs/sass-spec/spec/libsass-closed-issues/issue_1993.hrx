@@ -1,5 +1,0 @@
-<===> input.scss
-.test {
-  @extend #{'%test'} !optional
-}
-<===> output.css

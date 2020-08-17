@@ -1,8 +1,0 @@
-<===> input.scss
-test {
-  src: url(test.eot#{if(true, '?#{42}', '')});
-}
-<===> output.css
-test {
-  src: url(test.eot?42);
-}

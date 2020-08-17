@@ -1,5 +1,0 @@
-<===> input.scss
-@foo {}
-
-<===> output.css
-@foo {}

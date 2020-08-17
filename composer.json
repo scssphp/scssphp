@@ -31,11 +31,32 @@
         "ext-ctype": "*"
     },
     "require-dev": {
+        "sass/sass-spec": "3.6.0",
         "squizlabs/php_codesniffer": "~3.5",
         "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.3",
         "twbs/bootstrap": "~4.3",
         "zurb/foundation": "~6.5"
     },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "sass/sass-spec",
+                "version": "3.6.0",
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/sass/sass-spec.git",
+                    "reference": "eb1d9a1f3f478bfaf76ec0d66fc73e30e9ea5d22"
+                },
+                "dist": {
+                    "type": "zip",
+                    "url": "https://api.github.com/repos/sass/sass-spec/zipball/eb1d9a1f3f478bfaf76ec0d66fc73e30e9ea5d22",
+                    "reference": "eb1d9a1f3f478bfaf76ec0d66fc73e30e9ea5d22",
+                    "shasum": ""
+                }
+            }
+        }
+    ],
     "minimum-stability": "dev",
     "bin": ["bin/pscss"],
     "archive": {

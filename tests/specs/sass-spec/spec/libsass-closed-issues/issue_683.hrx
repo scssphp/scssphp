@@ -1,9 +1,0 @@
-<===> input.scss
-foo {
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="data:image/png;base64,ABCD",sizingMethod=crop);
-}
-
-<===> output.css
-foo {
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="data:image/png;base64,ABCD",sizingMethod=crop);
-}

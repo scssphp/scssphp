@@ -1,9 +1,0 @@
-<===> input.scss
-$a : a;
-$b : b;
-div { -foo-#{$a}-#{$b}-foo: foo }
-
-<===> output.css
-div {
-  -foo-a-b-foo: foo;
-}

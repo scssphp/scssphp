@@ -1,7 +1,0 @@
-$input: '\0_\a_\A';
-.result {
-  output: "[\#{'\0_\a_\A'}]";
-  output: "\#{'\0_\a_\A'}";
-  output: '\#{'\0_\a_\A'}';
-  output: "['\#{'\0_\a_\A'}']";
-}

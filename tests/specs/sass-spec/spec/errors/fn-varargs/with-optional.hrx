@@ -1,3 +1,0 @@
-<===> input.scss
-@function test($param:"default",$rest...) {}
-<===> output.css
