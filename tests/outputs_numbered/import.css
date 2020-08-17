@@ -35,3 +35,7 @@ code div {
 body {
   color: #7C2;
   background: gray; }
+
+/* line 1, inputs/imports/plain.css */
+a:before {
+  content: ''; }

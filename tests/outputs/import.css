@@ -25,3 +25,6 @@ code div {
 body {
   color: #7C2;
   background: gray; }
+
+a:before {
+  content: ''; }
