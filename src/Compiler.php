@@ -4657,7 +4657,8 @@ class Compiler
      */
     public function setNumberPrecision($numberPrecision)
     {
-        @trigger_error('The number precision is not configurable anymore. The default is enough for all browsers.', E_USER_DEPRECATED);
+        @trigger_error('The number precision is not configurable anymore. '
+            . 'The default is enough for all browsers.', E_USER_DEPRECATED);
     }
 
     /**
@@ -6003,7 +6004,8 @@ class Compiler
 
         if (in_array($functionReference[0], [Type::T_STRING, Type::T_KEYWORD])) {
             $name = $this->compileStringContent($this->coerceString($this->reduce($functionReference, true)));
-            $warning = "DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal\nin Sass 4.0. Use call(function-reference($name)) instead.";
+            $warning = "DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal\n"
+                . "in Sass 4.0. Use call(function-reference($name)) instead.";
             fwrite($this->stderr, "$warning\n\n");
             $functionReference = $this->libGetFunction([$functionReference]);
         }

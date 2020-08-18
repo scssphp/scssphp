@@ -802,7 +802,8 @@ class Parser
 
         $inCssSelector = null;
         if ($this->cssOnly) {
-            $inCssSelector = (! empty($this->env->parent) and !in_array($this->env->type, [Type::T_DIRECTIVE, Type::T_MEDIA]));
+            $inCssSelector = (! empty($this->env->parent)
+                && !in_array($this->env->type, [Type::T_DIRECTIVE, Type::T_MEDIA]));
         }
         // custom properties : right part is static
         if (($this->customProperty($name) || ($inCssSelector && $this->propertyName($name))) &&

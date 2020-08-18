@@ -54,7 +54,8 @@ class SassSpecTest extends TestCase
      * Remove order/total. prefix from testName
      * @param $testName
      */
-    protected function canonicalTestName($testName) {
+    protected function canonicalTestName($testName)
+    {
         $testName = preg_replace(",^\d+/\d+\.\s*,", "", $testName);
         return trim($testName);
     }
@@ -65,7 +66,8 @@ class SassSpecTest extends TestCase
      * @param $exclusionList
      * @return bool
      */
-    protected function matchExclusionList($testName, $exclusionList) {
+    protected function matchExclusionList($testName, $exclusionList)
+    {
         if (in_array($this->canonicalTestName($testName), $exclusionList)) {
             return true;
         }
@@ -138,7 +140,8 @@ class SassSpecTest extends TestCase
      * @param $css
      * @return string|string[]|null
      */
-    protected function normalizeCssOutput($css) {
+    protected function normalizeCssOutput($css)
+    {
         // short colors are expanded for comparison purpose
         $css = preg_replace(",#([0-9a-f])([0-9a-f])([0-9a-f])\b,i", "#\\1\\1\\2\\2\\3\\3", $css);
         return rtrim($css);
@@ -197,7 +200,6 @@ class SassSpecTest extends TestCase
         static::$scss->setErrorOuput($fp_err_stream);
 
         if (! strlen($error)) {
-
             if (getenv('BUILD')) {
                 try {
                     $actual = static::$scss->compile($scss, 'input.scss');
@@ -248,7 +250,8 @@ class SassSpecTest extends TestCase
                 $this->assertEquals($css, $actual, $name);
 
                 if ($warning) {
-                    if (getenv('TEST_SASS_SPEC') || !$this->matchExclusionList($name, $this->getWarningExclusionList())) {
+                    if (getenv('TEST_SASS_SPEC')
+                        || !$this->matchExclusionList($name, $this->getWarningExclusionList())) {
                         $this->assertEquals(rtrim($warning), rtrim($output));
                     }
                 }
@@ -438,16 +441,29 @@ class SassSpecTest extends TestCase
                     $options = $generalOptions;
                 }
 
-                // Remove normalized absolute paths present in some warnings and errors due to https://github.com/sass/libsass/issues/2861
+                // Remove normalized absolute paths present in some warnings and errors
+                // due to https://github.com/sass/libsass/issues/2861
                 // Our own implementation always uses the expected relative path.
                 if ($warning) {
                     $baseTestDir = dirname($baseTestName);
-                    $baseTestDir = preg_replace('/(^|\/)libsass-[a-z]+-issues(\/|$)/', '$1libsass-issues$2', $baseTestDir);
-                    $warning = str_replace(rtrim("/sass/spec/$baseTestDir/$baseDir", '/').'/', '', $warning);
+                    $baseTestDir = preg_replace(
+                        '/(^|\/)libsass-[a-z]+-issues(\/|$)/',
+                        '$1libsass-issues$2',
+                        $baseTestDir
+                    );
+                    $warning = str_replace(
+                        rtrim("/sass/spec/$baseTestDir/$baseDir", '/').'/',
+                        '',
+                        $warning
+                    );
                 }
 
                 $sizeLimit = 1024 * 1024;
-                $test = [$baseTestName . $subNname, [$options, $input, $includes], [$output, $warning, $error, $alternativeOutputs]];
+                $test = [
+                    $baseTestName . $subNname,
+                    [$options, $input, $includes],
+                    [$output, $warning, $error, $alternativeOutputs]
+                ];
 
                 if (! $hasInput ||
                     (!$hasOutput && ! $error) ||

@@ -226,7 +226,8 @@ class Colors
             foreach (static::$cssColors as $name => $rgb_str) {
                 $rgb_str = explode(',', $rgb_str);
 
-                if (\count($rgb_str) == 3 && !isset($reverseColorTable[\intval($rgb_str[0])][\intval($rgb_str[1])][\intval($rgb_str[2])])) {
+                if (\count($rgb_str) == 3
+                    && !isset($reverseColorTable[\intval($rgb_str[0])][\intval($rgb_str[1])][\intval($rgb_str[2])])) {
                     $reverseColorTable[\intval($rgb_str[0])][\intval($rgb_str[1])][\intval($rgb_str[2])] = $name;
                 }
             }
