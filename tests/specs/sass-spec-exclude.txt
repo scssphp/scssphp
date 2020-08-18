@@ -89,13 +89,11 @@ core_functions/feature_exists
 core_functions/function_exists/error/argument/too_many
 core_functions/function_exists/error/argument/type
 core_functions/get_function/error/argument/function_ref
-core_functions/get_function/error/argument/too_few
 core_functions/get_function/error/argument/too_many
 core_functions/get_function/error/argument/type/name
 core_functions/get_function/error/division
 core_functions/get_function/error/function_exists
 core_functions/get_function/error/non_existent
-core_functions/global_variable_exists/error/argument/too_few
 core_functions/global_variable_exists/error/argument/too_many
 core_functions/global_variable_exists/error/argument/type
 core_functions/inspect/error/two_args
