@@ -160,7 +160,28 @@ class SassSpecTest extends TestCase
     public function testTests($name, $input, $output)
     {
         if (is_null(static::$scss)) {
-            @ini_set('memory_limit', "256M");
+            // Increase the memory_limit to at least 256M to run these tests.
+            // This code takes care of not lowering it.
+            $memoryLimit = trim(ini_get('memory_limit'));
+            if ($memoryLimit != -1) {
+                $unit = strtolower(substr($memoryLimit, -1, 1));
+                $memoryInBytes = (int) $memoryLimit;
+
+                switch ($unit) {
+                    case 'g':
+                        $memoryInBytes *= 1024;
+                        // no break (cumulative multiplier)
+                    case 'm':
+                        $memoryInBytes *= 1024;
+                        // no break (cumulative multiplier)
+                    case 'k':
+                        $memoryInBytes *= 1024;
+                }
+
+                if ($memoryInBytes < 256*1024*1024) {
+                    @ini_set('memory_limit', "256M");
+                }
+            }
 
             static::$scss = new Compiler();
             static::$scss->setFormatter('ScssPhp\ScssPhp\Formatter\Expanded');
