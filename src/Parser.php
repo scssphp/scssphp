@@ -580,6 +580,13 @@ class Parser
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
 
+                while ($cond[0] === Type::T_LIST
+                    && ! empty($cond['enclosing'])
+                    && $cond['enclosing'] === 'parent'
+                    && \count($cond[2]) == 1) {
+                    $cond = reset($cond[2]);
+                }
+
                 $while = $this->pushSpecialBlock(Type::T_WHILE, $s);
                 $while->cond = $cond;
 
