@@ -16,6 +16,6 @@ namespace ScssPhp\ScssPhp\Exception;
  *
  * @author Oleksandr Savchenko <traveltino@gmail.com>
  */
-class CompilerException extends \Exception
+class CompilerException extends \Exception implements SassException
 {
 }
