@@ -2907,9 +2907,9 @@ class Compiler
 
                 $fname = $this->sourceNames[$this->sourceIndex];
                 $line  = $this->sourceLine;
-                $value = $this->compileValue($this->reduce($value, true));
+                $value = $this->compileDebugValue($value);
 
-                fwrite($this->stderr, "File $fname on line $line DEBUG: $value\n");
+                fwrite($this->stderr, "$fname:$line DEBUG: $value\n");
                 break;
 
             case Type::T_WARN:
@@ -2917,9 +2917,9 @@ class Compiler
 
                 $fname = $this->sourceNames[$this->sourceIndex];
                 $line  = $this->sourceLine;
-                $value = $this->compileValue($this->reduce($value, true));
+                $value = $this->compileDebugValue($value);
 
-                fwrite($this->stderr, "File $fname on line $line WARN: $value\n");
+                fwrite($this->stderr, "WARNING: $value\n         on line $line of $fname\n\n");
                 break;
 
             case Type::T_ERROR:
@@ -3929,6 +3929,24 @@ class Compiler
 
             default:
                 $this->throwError("unknown value type: ".json_encode($value));
+        }
+    }
+
+    /**
+     * @param array $value
+     *
+     * @return array|string
+     */
+    protected function compileDebugValue($value)
+    {
+        $value = $this->reduce($value, true);
+
+        switch ($value[0]) {
+            case Type::T_STRING:
+                return $this->compileStringContent($value);
+
+            default:
+                return $this->compileValue($value);
         }
     }
 
