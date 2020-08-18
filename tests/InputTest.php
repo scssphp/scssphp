@@ -47,6 +47,9 @@ class InputTest extends TestCase
         $this->scss = new Compiler();
         $this->scss->addImportPath(self::$inputDir);
 
+        $fp_err_stream = fopen("php://memory", 'r+');
+        $this->scss->setErrorOuput($fp_err_stream);
+
         if (getenv('BUILD')) {
             $this->buildInput($inFname, $outFname);
             $this->assertNull(null);
@@ -60,7 +63,9 @@ class InputTest extends TestCase
         $input = file_get_contents($inFname);
         $output = file_get_contents($outFname);
 
-        $this->assertEquals($output, $this->scss->compile($input, substr($inFname, strlen(__DIR__) + 1)));
+        $css = $this->scss->compile($input, substr($inFname, strlen(__DIR__) + 1));
+        fclose($fp_err_stream);
+        $this->assertEquals($output, $css);
     }
 
     /**
@@ -74,6 +79,9 @@ class InputTest extends TestCase
 
         $this->scss = new Compiler();
         $this->scss->addImportPath(self::$inputDir);
+
+        $fp_err_stream = fopen("php://memory", 'r+');
+        $this->scss->setErrorOuput($fp_err_stream);
 
         $this->scss->setLineNumberStyle(Compiler::LINE_COMMENTS);
 
@@ -90,7 +98,9 @@ class InputTest extends TestCase
         $input = file_get_contents($inFname);
         $output = file_get_contents($outFname);
 
-        $this->assertEquals($output, $this->scss->compile($input, substr($inFname, strlen(__DIR__) + 1)));
+        $css = $this->scss->compile($input, substr($inFname, strlen(__DIR__) + 1));
+        fclose($fp_err_stream);
+        $this->assertEquals($output, $css);
     }
 
     public function fileNameProvider()
