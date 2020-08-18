@@ -24,7 +24,6 @@ core_functions/color/hsl/error/three_args/saturation/type
 core_functions/color/hsl/error/two_args/alpha/type
 core_functions/color/hsl/error/two_args/alpha/unit
 core_functions/color/hsl/error/two_args/color/type
-core_functions/color/hsl/three_args/basic
 core_functions/color/hsla/error/five_args
 core_functions/color/hsla/error/four_args/hue/type
 core_functions/color/hsla/error/four_args/lightness/type
@@ -596,16 +595,10 @@ libsass/base-level-parent/root/basic-postfix
 libsass/base-level-parent/root/basic-prefix
 libsass/basic/44_not_number_expression
 libsass/bourbon
-libsass/color-functions/hsl/darken
 libsass/color-functions/hsl/desaturate
 libsass/color-functions/hsl/hue
-libsass/color-functions/hsl/lighten
 libsass/color-functions/other/adjust-color/h
-libsass/color-functions/other/adjust-color/s
 libsass/color-functions/other/change-color/h
-libsass/color-functions/other/change-color/s
-libsass/color-functions/other/scale-color/s
-libsass/color-functions/rgb/mix
 libsass/color-functions/saturate
 libsass/conversions
 libsass/debug-directive-nested/inline

@@ -108,7 +108,7 @@ class ApiTest extends TestCase
                 ],
             ],
             [
-                ".logo {\n  color: grey; }",
+                ".logo {\n  color: gray; }",
                 '.logo { color: desaturate($primary, 100%); }',
                 [
                     'primary' => '#ff0000',
