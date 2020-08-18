@@ -64,15 +64,22 @@ class SassSpecTest extends TestCase
     }
 
     /**
+     * Remove order/total. prefix from testName
+     * @param $testName
+     */
+    protected function canonicalTestName($testName) {
+        $testName = preg_replace(",^\d+/\d+\.\s*,", "", $testName);
+        return trim($testName);
+    }
+
+    /**
      * Check the presence of a test in an exclusion list
      * @param $testName
      * @param $exclusionList
      * @return bool
      */
     protected function matchExclusionList($testName, $exclusionList) {
-        $exclusionListString = implode("\n", $exclusionList) . "\n";
-        $testName = preg_replace(",^\d+/\d+\.\s*,", "", $testName);
-        if (strpos($exclusionListString, ". $testName\n")) {
+        if (in_array($this->canonicalTestName($testName), $exclusionList)) {
             return true;
         }
         return false;
@@ -120,7 +127,7 @@ class SassSpecTest extends TestCase
      */
     protected function appendToExclusionList($testName)
     {
-        static::$exclusionList[] = $testName;
+        static::$exclusionList[] = $this->canonicalTestName($testName);
         file_put_contents(static::$fileExclusionList, implode("\n", static::$exclusionList) . "\n");
 
         return static::$exclusionList;
@@ -133,7 +140,7 @@ class SassSpecTest extends TestCase
      */
     protected function appendToWarningExclusionList($testName)
     {
-        static::$warningExclusionList[] = $testName;
+        static::$warningExclusionList[] = $this->canonicalTestName($testName);
         file_put_contents(static::$fileWarningExclusionList, implode("\n", static::$warningExclusionList) . "\n");
 
         return static::$warningExclusionList;
