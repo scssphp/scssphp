@@ -193,9 +193,10 @@ class SassSpecTest extends TestCase
             static::$scss->setImportPaths([]);
         }
 
+        $fp_err_stream = fopen("php://memory", 'r+');
+        static::$scss->setErrorOuput($fp_err_stream);
+
         if (! strlen($error)) {
-            $fp_err_stream = fopen("php://memory", 'r+');
-            static::$scss->setErrorOuput($fp_err_stream);
 
             if (getenv('BUILD')) {
                 try {
@@ -267,6 +268,7 @@ class SassSpecTest extends TestCase
             if (getenv('BUILD')) {
                 try {
                     static::$scss->compile($scss, 'input.scss');
+                    fclose($fp_err_stream);
                     throw new \Exception('Expecting a SassException for error tests');
                 } catch (SassException $e) {
                     // TODO assert the error message ?
@@ -274,10 +276,12 @@ class SassSpecTest extends TestCase
                 } catch (\Exception $e) {
                     $this->appendToExclusionList($name);
                 }
+                fclose($fp_err_stream);
                 $this->assertNull(null);
             } else {
                 $this->expectException(SassException::class);
                 static::$scss->compile($scss, 'input.scss');
+                fclose($fp_err_stream);
                 // TODO assert the error message ?
             }
         }
