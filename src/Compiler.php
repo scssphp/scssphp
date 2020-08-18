@@ -3570,6 +3570,11 @@ class Compiler
                     break;
 
                 case '%':
+                    if ($rval == 0) {
+                        $this->throwError("color: Can't take modulo by zero");
+                        break 2;
+                    }
+
                     $out[] = $lval % $rval;
                     break;
 
