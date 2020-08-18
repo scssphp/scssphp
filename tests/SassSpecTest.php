@@ -13,6 +13,7 @@ namespace ScssPhp\ScssPhp\Tests;
 
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Node\Number;
 
 /**
@@ -173,27 +174,28 @@ class SassSpecTest extends TestCase
         // normalize css for comparison purpose
         $css = $this->normalizeCssOutput($css);
 
-        // ignore tests expecting an error for the moment
+        // this test needs @import of includes files, build a dir with files and set the ImportPaths
+        if ($includes) {
+            $basedir = sys_get_temp_dir() . '/sass-spec/' . preg_replace(",^\d+/\d+\.\s*,", "", $name);
+
+            foreach ($includes as $f => $c) {
+                $f = $basedir . '/' . $f;
+
+                if (! is_dir(dirname($f))) {
+                    passthru("mkdir -p " . dirname($f));
+                }
+
+                file_put_contents($f, $c);
+            }
+
+            static::$scss->setImportPaths([$basedir]);
+        } else {
+            static::$scss->setImportPaths([]);
+        }
+
         if (! strlen($error)) {
             $fp_err_stream = fopen("php://memory", 'r+');
             static::$scss->setErrorOuput($fp_err_stream);
-
-            // this test needs @import of includes files, build a dir with files and set the ImportPaths
-            if ($includes) {
-                $basedir = sys_get_temp_dir() . '/sass-spec/' . preg_replace(",^\d+/\d+\.\s*,", "", $name);
-
-                foreach ($includes as $f => $c) {
-                    $f = $basedir . '/' . $f;
-
-                    if (! is_dir(dirname($f))) {
-                        passthru("mkdir -p " . dirname($f));
-                    }
-
-                    file_put_contents($f, $c);
-                }
-
-                static::$scss->setImportPaths([$basedir]);
-            }
 
             if (getenv('BUILD')) {
                 try {
@@ -251,11 +253,32 @@ class SassSpecTest extends TestCase
                 }
             }
         } else {
+            // seem to cause an infinite loop
+            if (strpos($name, 'libsass-closed-issues/issue_1801/import-cycle')) {
+                if (getenv('BUILD')) {
+                    $this->appendToExclusionList($name);
+                    $this->assertNull(null);
+                    return;
+                } else {
+                    $this->markTestIncomplete('This test seems to cause an infinite loop.');
+                }
+            }
+
             if (getenv('BUILD')) {
-                $this->appendToExclusionList($name);
+                try {
+                    static::$scss->compile($scss, 'input.scss');
+                    throw new \Exception('Expecting a SassException for error tests');
+                } catch (SassException $e) {
+                    // TODO assert the error message ?
+                    // Keep the test
+                } catch (\Exception $e) {
+                    $this->appendToExclusionList($name);
+                }
                 $this->assertNull(null);
             } else {
-                $this->markTestSkipped('Specs expecting an error are not supported for now.');
+                $this->expectException(SassException::class);
+                static::$scss->compile($scss, 'input.scss');
+                // TODO assert the error message ?
             }
         }
     }
