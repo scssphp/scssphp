@@ -31,7 +31,7 @@
         "ext-ctype": "*"
     },
     "require-dev": {
-        "sass/sass-spec": "3.6.0",
+        "sass/sass-spec": "2020.08.10",
         "squizlabs/php_codesniffer": "~3.5",
         "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.3",
         "twbs/bootstrap": "~4.3",
@@ -42,16 +42,16 @@
             "type": "package",
             "package": {
                 "name": "sass/sass-spec",
-                "version": "3.6.0",
+                "version": "2020.08.10",
                 "source": {
                     "type": "git",
                     "url": "https://github.com/sass/sass-spec.git",
-                    "reference": "eb1d9a1f3f478bfaf76ec0d66fc73e30e9ea5d22"
+                    "reference": "73222792c42a516d62e2e25c3f5d9e35f5567030"
                 },
                 "dist": {
                     "type": "zip",
-                    "url": "https://api.github.com/repos/sass/sass-spec/zipball/eb1d9a1f3f478bfaf76ec0d66fc73e30e9ea5d22",
-                    "reference": "eb1d9a1f3f478bfaf76ec0d66fc73e30e9ea5d22",
+                    "url": "https://api.github.com/repos/sass/sass-spec/zipball/73222792c42a516d62e2e25c3f5d9e35f5567030",
+                    "reference": "73222792c42a516d62e2e25c3f5d9e35f5567030",
                     "shasum": ""
                 }
             }

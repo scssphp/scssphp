@@ -1,3 +1,5 @@
+core_functions/meta/call/string/built_in
+core_functions/meta/call/string/local
 css/moz_document/functions/static
 directives/warn/functions_in_stack
 libsass-closed-issues/issue_1106
@@ -23,7 +25,12 @@ libsass/variable-scoping/blead-global/expanding/at-root
 libsass/variable-scoping/blead-global/expanding/function
 libsass/variable-scoping/blead-global/expanding/mixin
 libsass/variable-scoping/blead-global/expanding/ruleset
-parser/and_and
-sass/var-args/error
-variables/global/first_declaration/nested
-variables/global/first_declaration/top_level
+non_conformant/extend-tests/subject-operator/202_test_extend_with_subject_retains_subject_on_target
+non_conformant/extend-tests/subject-operator/203_test_extend_with_subject_transfers_subject_to_target
+non_conformant/extend-tests/subject-operator/204_test_extend_with_subject_retains_subject_on_extender
+non_conformant/parser/and_and
+non_conformant/sass/var-args/error
+non_conformant/scss-tests/046_test_parent_selector_with_subject
+non_conformant/scss-tests/118_test_parent_selector_with_parent_and_subject
+non_conformant/variables/global/first_declaration/nested
+non_conformant/variables/global/first_declaration/top_level
