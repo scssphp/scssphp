@@ -90,7 +90,6 @@ core_functions/feature_exists
 core_functions/function_exists/error/argument/too_few
 core_functions/function_exists/error/argument/too_many
 core_functions/function_exists/error/argument/type
-core_functions/get_function/built_in
 core_functions/get_function/error/argument/function_ref
 core_functions/get_function/error/argument/too_few
 core_functions/get_function/error/argument/too_many
@@ -98,13 +97,6 @@ core_functions/get_function/error/argument/type/name
 core_functions/get_function/error/division
 core_functions/get_function/error/function_exists
 core_functions/get_function/error/non_existent
-core_functions/get_function/inspect
-core_functions/get_function/plain_css
-core_functions/get_function/redefined
-core_functions/get_function/scope/captures_inner_scope
-core_functions/get_function/through_import
-core_functions/get_function/type_of
-core_functions/get_function/user_defined
 core_functions/global_variable_exists/error/argument/too_few
 core_functions/global_variable_exists/error/argument/too_many
 core_functions/global_variable_exists/error/argument/type
