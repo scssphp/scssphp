@@ -427,7 +427,7 @@ class SassSpecTest extends TestCase
         $tests = array_values($tests);
 
         foreach ($tests as $k => $test) {
-            $rang = ($k+1) . "/" . $nb_tests . '. ';
+            $rang = $k . "/" . $nb_tests . '. ';
             $tests[$k][0] = $rang . $tests[$k][0];
         }
 
