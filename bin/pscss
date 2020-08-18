@@ -24,7 +24,6 @@ use ScssPhp\ScssPhp\Version;
 
 $style = null;
 $loadPaths = null;
-$precision = null;
 $dumpTree = false;
 $inputFile = null;
 $changeDir = false;
@@ -77,7 +76,7 @@ Options include:
     --iso8859-1         Use iso8859-1 encoding instead of default utf-8
     --line-numbers      Annotate selectors with comments referring to the source file and line number [--line-comments]
     --load-path=PATH    Set import path [-I]
-    --precision=N       Set decimal number precision (default 10) [-p]
+    --precision=N       [deprecated] Set decimal number precision. Ignored. (default 10) [-p]
     --sourcemap         Create source map file
     --style=FORMAT      Set the output format (compact, compressed, crunched, expanded, or nested) [-s, -t]
     --version           Print the version [-v]
@@ -134,10 +133,11 @@ EOT;
         continue;
     }
 
+    // Keep parsing --precision to avoid BC breaks for scripts using it
     $value = parseArgument($i, array('-p', '--precision'));
 
     if (isset($value)) {
-        $precision = $value;
+        // TODO report it as a warning ?
         continue;
     }
 
@@ -190,10 +190,6 @@ if ($ignoreErrors) {
 
 if ($loadPaths) {
     $scss->setImportPaths(explode(PATH_SEPARATOR, $loadPaths));
-}
-
-if ($precision) {
-    $scss->setNumberPrecision($precision);
 }
 
 if ($style) {
