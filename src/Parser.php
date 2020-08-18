@@ -2792,6 +2792,11 @@ class Parser
                 continue;
             }
 
+            if ($this->matchChar('&', false)) {
+                $parts[] = [Type::T_SELF];
+                continue;
+            }
+
             if ($this->variable($var)) {
                 $parts[] = $var;
                 continue;

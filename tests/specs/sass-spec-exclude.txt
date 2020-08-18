@@ -402,7 +402,6 @@ libsass-closed-issues/issue_1941/mixin_function
 libsass-closed-issues/issue_1941/mixin_mixin
 libsass-closed-issues/issue_1945
 libsass-closed-issues/issue_1960
-libsass-closed-issues/issue_2000
 libsass-closed-issues/issue_2017
 libsass-closed-issues/issue_2031/extended-not
 libsass-closed-issues/issue_2034
