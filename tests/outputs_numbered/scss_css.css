@@ -168,11 +168,11 @@ foo {
 
 /* line 133, inputs/scss_css.scss */
 foo {
-  a: "\foo bar";
-  b: "foo\ bar";
-  c: "\2022 \0020";
+  a: "oo bar";
+  b: "foo bar";
+  c: "  ";
   d: "foo\\bar";
-  e: "foo\"'bar"; }
+  e: "foo\\"'bar"; }
 
 /* line 141, inputs/scss_css.scss */
 foo {

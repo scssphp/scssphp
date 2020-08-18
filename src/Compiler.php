@@ -3842,7 +3842,13 @@ class Compiler
                 return $value->output($this);
 
             case Type::T_STRING:
-                return $value[1] . $this->compileStringContent($value) . $value[1];
+                $content = $this->compileStringContent($value);
+
+                if ($value[1]) {
+                    $content = str_replace(array($value[1], '\\', "\n", "\f"), array('\\' . $value[1], '\\\\', '\\n', '\\f'), $content);
+                }
+
+                return $value[1] . $content . $value[1];
 
             case Type::T_FUNCTION:
                 $args = ! empty($value[2]) ? $this->compileValue($value[2]) : '';
