@@ -193,7 +193,7 @@ class SassSpecTest extends TestCase
 
             if (getenv('BUILD')) {
                 try {
-                    $actual = static::$scss->compile($scss);
+                    $actual = static::$scss->compile($scss, 'input.scss');
                 } catch (\Exception $e) {
                     $this->appendToExclusionList($name);
                     fclose($fp_err_stream);
@@ -202,7 +202,7 @@ class SassSpecTest extends TestCase
                     //throwException($e);
                 }
             } else {
-                $actual = static::$scss->compile($scss);
+                $actual = static::$scss->compile($scss, 'input.scss');
             }
 
             // short colors are expanded for comparison purpose
@@ -382,13 +382,21 @@ class SassSpecTest extends TestCase
                 }
 
                 // exception : a lot of spec test have an _assert_helpers.scss besides the .hrx
-                // and are using an @import('../assert_helpers') withour any declaration in the hrx
+                // and are using an @import('../assert_helpers') without any declaration in the hrx
                 if (file_exists($f = $fileDir . '/_assert_helpers.scss')) {
                     $includes['../_assert_helpers.scss'] = file_get_contents($f);
                 }
 
                 if (!$options && $generalOptions) {
                     $options = $generalOptions;
+                }
+
+                // Remove normalized absolute paths present in some warnings and errors due to https://github.com/sass/libsass/issues/2861
+                // Our own implementation always uses the expected relative path.
+                if ($warning) {
+                    $baseTestDir = dirname($baseTestName);
+                    $baseTestDir = preg_replace('/(^|\/)libsass-[a-z]+-issues(\/|$)/', '$1libsass-issues$2', $baseTestDir);
+                    $warning = str_replace(rtrim("/sass/spec/$baseTestDir/$baseDir", '/').'/', '', $warning);
                 }
 
                 $sizeLimit = 1024 * 1024;
