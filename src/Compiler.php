@@ -2730,6 +2730,16 @@ class Compiler
                 $start = $this->reduce($for->start, true);
                 $end   = $this->reduce($for->end, true);
 
+                if (!$start instanceof Node\Number) {
+                    $this->throwError('%s is not a number', $start[0]);
+                    break;
+                }
+
+                if (!$end instanceof Node\Number) {
+                    $this->throwError('%s is not a number', $end[0]);
+                    break;
+                }
+
                 if (! ($start[2] == $end[2] || $end->unitless())) {
                     $this->throwError('Incompatible units: "%s" and "%s".', $start->unitStr(), $end->unitStr());
 
