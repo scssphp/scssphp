@@ -1637,7 +1637,7 @@ class Compiler
 
         // after evaluating interpolates, we might need a second pass
         if ($this->shouldEvaluate) {
-            $selectors = $this->revertSelfSelector($selectors);
+            $selectors = $this->replaceSelfSelector($selectors, '&');
             $buffer    = $this->collapseSelectors($selectors);
             $parser    = $this->parserFactory(__METHOD__);
 
@@ -1762,14 +1762,18 @@ class Compiler
      *
      * @return array
      */
-    protected function revertSelfSelector($selectors)
+    protected function replaceSelfSelector($selectors, $replace=null)
     {
         foreach ($selectors as &$part) {
             if (\is_array($part)) {
                 if ($part === [Type::T_SELF]) {
-                    $part = '&';
+                    if (\is_null($replace)) {
+                        $replace = $this->reduce([Type::T_SELF]);
+                        $replace = $this->compileValue($replace);
+                    }
+                    $part = $replace;
                 } else {
-                    $part = $this->revertSelfSelector($part);
+                    $part = $this->replaceSelfSelector($part, $replace);
                 }
             }
         }
@@ -2634,6 +2638,7 @@ class Compiler
 
             case Type::T_EXTEND:
                 foreach ($child[1] as $sel) {
+                    $sel = $this->replaceSelfSelector($sel);
                     $results = $this->evalSelectors([$sel]);
 
                     foreach ($results as $result) {
