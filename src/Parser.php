@@ -1120,7 +1120,7 @@ class Parser
      * {@internal This is a workaround for preg_match's 250K string match limit. }}
      *
      * @param array  $m     Matches (passed by reference)
-     * @param string $delim Delimeter
+     * @param string $delim Delimiter
      *
      * @return boolean True if match; false otherwise
      */
@@ -2524,20 +2524,16 @@ class Parser
                     $content[] = '#{'; // ignore it
                 }
             } elseif ($m[2] === '\\') {
-                if ($this->matchChar('"', false)) {
-                    $content[] = $m[2] . '"';
-                } elseif ($this->matchChar("'", false)) {
-                    $content[] = $m[2] . "'";
-                } elseif ($this->literal("\\", 1, false)) {
-                    $content[] = $m[2] . "\\";
-                } elseif ($this->literal("\r\n", 2, false) ||
+                if ($this->literal("\r\n", 2, false) ||
                     $this->matchChar("\r", false) ||
                     $this->matchChar("\n", false) ||
                     $this->matchChar("\f", false)
                 ) {
                     // this is a continuation escaping, to be ignored
+                } elseif ($this->matchEscapeCharacter($c)) {
+                    $content[] = $c;
                 } else {
-                    $content[] = $m[2];
+                    $this->throwParseError('Unterminated escape sequence');
                 }
             } else {
                 $this->count -= \strlen($delim);
@@ -2550,16 +2546,6 @@ class Parser
         if ($this->literal($delim, \strlen($delim))) {
             if ($hasInterpolation) {
                 $delim = '"';
-
-                foreach ($content as &$string) {
-                    if ($string === "\\\\") {
-                        $string = "\\";
-                    } elseif ($string === "\\'") {
-                        $string = "'";
-                    } elseif ($string === '\\"') {
-                        $string = '"';
-                    }
-                }
             }
 
             $out = [Type::T_STRING, $delim, $content];
@@ -2568,6 +2554,39 @@ class Parser
         }
 
         $this->seek($s);
+
+        return false;
+    }
+
+    protected function matchEscapeCharacter(&$out)
+    {
+        if ($this->match('[a-f0-9]', $m, false)) {
+            $hex = $m[0];
+
+            for ($i = 5; $i--;) {
+                if ($this->match('[a-f0-9]', $m, false)) {
+                    $hex .= $m[0];
+                } else {
+                    break;
+                }
+            }
+
+            $value = hexdec($hex);
+
+            if ($value == 0 || ($value >= 0xD800 && $value <= 0xDFFF) || $value >= 0x10FFFF) {
+                $out = "\u{FFFD}";
+            } else {
+                $out = mb_chr($value);
+            }
+
+            return true;
+        }
+
+        if ($this->match('.', $m, false)) {
+            $out = $m[0];
+
+            return true;
+        }
 
         return false;
     }

@@ -15,7 +15,6 @@ libsass-closed-issues/issue_1683/function
 libsass-closed-issues/issue_1683/mixin
 libsass-closed-issues/issue_1752
 libsass-closed-issues/issue_1768
-libsass-closed-issues/issue_2156/debug
 libsass-closed-issues/issue_2156/warn
 libsass-closed-issues/issue_2374
 libsass-closed-issues/issue_2472

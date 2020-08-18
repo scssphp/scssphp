@@ -141,11 +141,11 @@ foo {
   e: foo\"\'bar; }
 
 foo {
-  a: "\foo bar";
-  b: "foo\ bar";
-  c: "\2022 \0020";
+  a: "oo bar";
+  b: "foo bar";
+  c: "  ";
   d: "foo\\bar";
-  e: "foo\"'bar"; }
+  e: "foo\\"'bar"; }
 
 foo {
   _name: val;
