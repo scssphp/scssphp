@@ -3221,29 +3221,96 @@ class Compiler
      *
      * @return array|null
      */
-    protected function fncall($name, $argValues)
+    protected function fncall($functionReference, $argValues)
     {
-        // SCSS @function
-        if ($this->callScssFunction($name, $argValues, $returnValue)) {
-            return $returnValue;
-        }
+        // a string means this is a static hard reference coming from the parsing
+        if (is_string($functionReference)) {
+            $name = $functionReference;
 
-        // native PHP functions
-        if ($this->callNativeFunction($name, $argValues, $returnValue)) {
-            return $returnValue;
-        }
-
-        // for CSS functions, simply flatten the arguments into a list
-        $listArgs = [];
-
-        foreach ((array) $argValues as $arg) {
-            if (empty($arg[0])) {
-                $listArgs[] = $this->reduce($arg[1]);
+            $functionReference = $this->getFunctionReference($name);
+            if ($functionReference === static::$null || $functionReference[0] !== Type::T_FUNCTION_REFERENCE) {
+                $functionReference = [Type::T_FUNCTION, $name, [Type::T_LIST, ',', []]];
             }
         }
 
-        return [Type::T_FUNCTION, $name, [Type::T_LIST, ',', $listArgs]];
+        // a function type means we just want a plain css function call
+        if ($functionReference[0] === Type::T_FUNCTION) {
+            // for CSS functions, simply flatten the arguments into a list
+            $listArgs = [];
+
+            foreach ((array) $argValues as $arg) {
+                if (empty($arg[0])) {
+                    $listArgs[] = $this->reduce($arg[1]);
+                }
+            }
+
+            return [Type::T_FUNCTION, $functionReference[1], [Type::T_LIST, ',', $listArgs]];
+        }
+
+        if ($functionReference === static::$null || $functionReference[0] !== Type::T_FUNCTION_REFERENCE) {
+            return static::$defaultValue;
+        }
+
+
+        switch ($functionReference[1]) {
+            // SCSS @function
+            case 'scss':
+                return $this->callScssFunction($functionReference[3], $argValues);
+
+            // native PHP functions
+            case 'user':
+            case 'native':
+                list(,,$name, $fn, $prototype) = $functionReference;
+                $returnValue = $this->callNativeFunction($name, $fn, $prototype, $argValues);
+                if (! isset($returnValue)) {
+                    return $this->fncall([Type::T_FUNCTION, $name, [Type::T_LIST, ',', []]], $argValues);
+                }
+                return $returnValue;
+
+            default:
+                return static::$defaultValue;
+        }
     }
+
+    /**
+     * Find a function reference
+     * @param string $name
+     * @param bool $safeCopy
+     * @return array
+     */
+    protected function getFunctionReference($name, $safeCopy = false)
+    {
+        // SCSS @function
+        if ($func = $this->get(static::$namespaces['function'] . $name, false)) {
+            if ($safeCopy) {
+                $func = clone $func;
+            }
+
+            return [Type::T_FUNCTION_REFERENCE, 'scss', $name, $func];
+        }
+
+        // native PHP functions
+
+        // try to find a native lib function
+        $normalizedName = $this->normalizeName($name);
+        $libName = null;
+
+        if (isset($this->userFunctions[$normalizedName])) {
+            // see if we can find a user function
+            list($f, $prototype) = $this->userFunctions[$normalizedName];
+            return [Type::T_FUNCTION_REFERENCE, 'user', $name, $f, $prototype];
+        }
+
+        if (($f = $this->getBuiltinFunction($normalizedName)) && \is_callable($f)) {
+            $libName   = $f[1];
+            $prototype = isset(static::$$libName) ? static::$$libName : null;
+            return [Type::T_FUNCTION_REFERENCE, 'native', $name, $f, $prototype];
+        }
+
+
+        return static::$null;
+    }
+
 
     /**
      * Normalize name
@@ -3774,6 +3841,11 @@ class Compiler
                 $args = ! empty($value[2]) ? $this->compileValue($value[2]) : '';
 
                 return "$value[1]($args)";
+
+            case Type::T_FUNCTION_REFERENCE:
+                $name = ! empty($value[2]) ? $value[2] : '';
+
+                return "get-function(\"$name\")";
 
             case Type::T_LIST:
                 $value = $this->extractInterpolation($value);
@@ -4898,19 +4970,17 @@ class Compiler
     /**
      * Call SCSS @function
      *
-     * @param string $name
+     * @param Object $func
      * @param array  $argValues
-     * @param array  $returnValue
      *
-     * @return boolean Returns true if returnValue is set; otherwise, false
+     * @return array $returnValue
      */
-    protected function callScssFunction($name, $argValues, &$returnValue)
+    protected function callScssFunction($func, $argValues)
     {
-        $func = $this->get(static::$namespaces['function'] . $name, false);
-
         if (! $func) {
-            return false;
+            return static::$defaultValue;
         }
+        $name = $func->name;
 
         $this->pushEnv();
 
@@ -4936,36 +5006,22 @@ class Compiler
 
         $this->popEnv();
 
-        $returnValue = ! isset($ret) ? static::$defaultValue : $ret;
-
-        return true;
+        return ! isset($ret) ? static::$defaultValue : $ret;
     }
 
     /**
      * Call built-in and registered (PHP) functions
      *
      * @param string $name
+     * @param string|array $function
+     * @param array  $prototype
      * @param array  $args
-     * @param array  $returnValue
      *
-     * @return boolean Returns true if returnValue is set; otherwise, false
+     * @return array
      */
-    protected function callNativeFunction($name, $args, &$returnValue)
+    protected function callNativeFunction($name, $function, $prototype, $args)
     {
-        // try a lib function
-        $name = $this->normalizeName($name);
-        $libName = null;
-
-        if (isset($this->userFunctions[$name])) {
-            // see if we can find a user function
-            list($f, $prototype) = $this->userFunctions[$name];
-        } elseif (($f = $this->getBuiltinFunction($name)) && \is_callable($f)) {
-            $libName   = $f[1];
-            $prototype = isset(static::$$libName) ? static::$$libName : null;
-        } else {
-            return false;
-        }
-
+        $libName = (is_array($function) ? end($function) : null);
         @list($sorted, $kwargs) = $this->sortNativeFunctionArgs($libName, $prototype, $args);
 
         if ($name !== 'if' && $name !== 'call') {
@@ -4980,15 +5036,13 @@ class Compiler
             }
         }
 
-        $returnValue = \call_user_func($f, $sorted, $kwargs);
+        $returnValue = \call_user_func($function, $sorted, $kwargs);
 
         if (! isset($returnValue)) {
-            return false;
+            return null;
         }
 
-        $returnValue = $this->coerceValue($returnValue);
-
-        return true;
+        return $this->coerceValue($returnValue);
     }
 
     /**
@@ -5928,9 +5982,22 @@ class Compiler
     protected static $libCall = ['name', 'args...'];
     protected function libCall($args, $kwargs)
     {
-        $name = $this->compileStringContent($this->coerceString($this->reduce(array_shift($args), true)));
-        $callArgs = [];
+        $functionReference = $this->reduce(array_shift($args), true);
 
+        if (in_array($functionReference[0], [Type::T_STRING, Type::T_KEYWORD])) {
+            // TODO Warning
+            $functionReference = $this->libGetFunction([$functionReference]);
+        }
+
+        if ($functionReference === static::$null) {
+            return static::$null;
+        }
+
+        if (!in_array($functionReference[0], [Type::T_FUNCTION_REFERENCE, Type::T_FUNCTION])) {
+            $this->throwError("Function reference expected, got ".$functionReference[0]);
+        }
+
+        $callArgs = [];
         // $kwargs['args'] is [Type::T_LIST, ',', [..]]
         foreach ($kwargs['args'][2] as $varname => $arg) {
             if (is_numeric($varname)) {
@@ -5942,7 +6009,28 @@ class Compiler
             $callArgs[] = [$varname, $arg, false];
         }
 
-        return $this->reduce([Type::T_FUNCTION_CALL, $name, $callArgs]);
+        return $this->reduce([Type::T_FUNCTION_CALL, $functionReference, $callArgs]);
+    }
+
+
+    protected static $libGetFunction = [
+        ['name'],
+        ['name', 'css']
+    ];
+    protected function libGetFunction($args)
+    {
+        $name = $this->compileStringContent($this->coerceString($this->reduce(array_shift($args), true)));
+        $isCss = false;
+        if (count($args)) {
+            $isCss = $this->reduce(array_shift($args), true);
+            $isCss = (($isCss === static::$true) ? true : false);
+        }
+
+        if ($isCss) {
+            return [Type::T_FUNCTION, $name, [Type::T_LIST, ',', []]];
+        }
+
+        return $this->getFunctionReference($name, true);
     }
 
     protected static $libIf = ['condition', 'if-true', 'if-false:'];
@@ -6921,6 +7009,9 @@ class Compiler
                 // fall-thru
             case Type::T_FUNCTION:
                 return 'string';
+
+            case Type::T_FUNCTION_REFERENCE:
+                return 'function';
 
             case Type::T_LIST:
                 if (isset($value[3]) && $value[3]) {

@@ -38,6 +38,7 @@ class Type
     const T_EXTEND = 'extend';
     const T_FOR = 'for';
     const T_FUNCTION = 'function';
+    const T_FUNCTION_REFERENCE = 'function-reference';
     const T_FUNCTION_CALL = 'fncall';
     const T_HSL = 'hsl';
     const T_IF = 'if';
