@@ -453,12 +453,15 @@ class SassSpecTest extends TestCase
         ksort($tests);
         $tests = array_values($tests);
 
+        $testCases = array();
+
         foreach ($tests as $k => $test) {
-            $rang = $k . "/" . $nb_tests . '. ';
-            $tests[$k][0] = $rang . $tests[$k][0];
+            $testName = ($k+1) . '/' . $nb_tests . '. ' . $test[0];
+            $test[0] = $testName;
+            $testCases[$testName] = $test;
         }
 
         //var_dump($skippedTests);
-        return $tests;
+        return $testCases;
     }
 }
