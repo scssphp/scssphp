@@ -147,6 +147,17 @@ class SassSpecTest extends TestCase
     }
 
     /**
+     * Do some normalization on css output, for comparison purpose
+     * @param $css
+     * @return string|string[]|null
+     */
+    protected function normalizeCssOutput($css) {
+        // short colors are expanded for comparison purpose
+        $css = preg_replace(",#([0-9a-f])([0-9a-f])([0-9a-f])\b,i", "#\\1\\1\\2\\2\\3\\3", $css);
+        return rtrim($css);
+    }
+
+    /**
      * @param string $name
      * @param string $scss
      * @param string $css
@@ -172,9 +183,9 @@ class SassSpecTest extends TestCase
         }
 
         list($options, $scss, $includes) = $input;
-        list($css, $warning, $error) = $output;
-        // short colors are expanded for comparison purpose
-        $css = preg_replace(",#([0-9a-f])([0-9a-f])([0-9a-f])\b,i", "#\\1\\1\\2\\2\\3\\3", $css);
+        list($css, $warning, $error, $alternativeCssOutputs) = $output;
+        // normalize css for comparison purpose
+        $css = $this->normalizeCssOutput($css);
 
         // ignore tests expecting an error for the moment
         if (! strlen($error)) {
@@ -212,8 +223,8 @@ class SassSpecTest extends TestCase
                 $actual = static::$scss->compile($scss, 'input.scss');
             }
 
-            // short colors are expanded for comparison purpose
-            $actual = preg_replace(",#([0-9a-f])([0-9a-f])([0-9a-f])\b,i", "#\\1\\1\\2\\2\\3\\3", $actual);
+            // normalize css for comparison purpose
+            $actual = $this->normalizeCssOutput($actual);
 
             // Get the warnings/errors
             rewind($fp_err_stream);
@@ -226,15 +237,26 @@ class SassSpecTest extends TestCase
                 passthru("rm -fR $basedir");
             }
 
+            // if several outputs check if we match one alternative if not the first
+            if ($css !== $actual and $alternativeCssOutputs) {
+                foreach ($alternativeCssOutputs as $acss) {
+                    $acss = $this->normalizeCssOutput($acss);
+                    if ($acss === $actual) {
+                        $css = $acss;
+                        break;
+                    }
+                }
+            }
+
             if (getenv('BUILD')) {
-                if (rtrim($css) !== rtrim($actual)) {
+                if ($css !== $actual) {
                     $this->appendToExclusionList($name);
                 } elseif ($warning && rtrim($output) !== rtrim($warning)) {
                     $this->appendToWarningExclusionList($name);
                 }
                 $this->assertNull(null);
             } else {
-                $this->assertEquals(rtrim($css), rtrim($actual), $name);
+                $this->assertEquals($css, $actual, $name);
 
                 if ($warning) {
                     if (getenv('TEST_SASS_SPEC') || !$this->matchExclusionList($name, $this->getWarningExclusionList())) {
@@ -301,6 +323,7 @@ class SassSpecTest extends TestCase
                 $subNname  = '';
                 $input     = '';
                 $output    = '';
+                $alternativeOutputs = [];
                 $options   = '';
                 $error     = '';
                 $warning   = '';
@@ -351,12 +374,11 @@ class SassSpecTest extends TestCase
                             break;
 
                         case 'output-libsass.css':
-                            $output = $this->reformatOutput($part);
-                            $hasOutput = true;
+                            $alternativeOutputs['libsass'] = $this->reformatOutput($part);
                             break;
 
                         case 'output-dart-sass.css':
-                            // ignore output-dart-sass
+                            $alternativeOutputs['dart-sass'] = $this->reformatOutput($part);
                             break;
 
                         case 'error':
@@ -373,6 +395,11 @@ class SassSpecTest extends TestCase
                             }
                             break;
                     }
+                }
+
+                if (!$hasOutput and count($alternativeOutputs)) {
+                    $output = array_shift($alternativeOutputs);
+                    $hasOutput = true;
                 }
 
                 if ($baseDir and $includes) {
@@ -407,7 +434,7 @@ class SassSpecTest extends TestCase
                 }
 
                 $sizeLimit = 1024 * 1024;
-                $test = [$baseTestName . $subNname, [$options, $input, $includes], [$output, $warning, $error]];
+                $test = [$baseTestName . $subNname, [$options, $input, $includes], [$output, $warning, $error, $alternativeOutputs]];
 
                 if (! $hasInput ||
                     (!$hasOutput && ! $error) ||
