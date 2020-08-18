@@ -29,20 +29,6 @@ class SassSpecTest extends TestCase
     protected static $fileExclusionList = __DIR__ . '/specs/sass-spec-exclude.txt';
     protected static $fileWarningExclusionList = __DIR__ . '/specs/sass-spec-exclude-warning.txt';
 
-    private $precisionBackup;
-
-    /** @before */
-    protected function saveState()
-    {
-        $this->precisionBackup = Number::$precision;
-    }
-
-    /** @after */
-    protected function restoreState()
-    {
-        Number::$precision = $this->precisionBackup;
-    }
-
     /**
      * List of excluded tests if not in TEST_SCSS_COMPAT mode
      *

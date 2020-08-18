@@ -4637,10 +4637,12 @@ class Compiler
      * @api
      *
      * @param integer $numberPrecision
+     *
+     * @deprecated The number precision is not configurable anymore. The default is enough for all browsers.
      */
     public function setNumberPrecision($numberPrecision)
     {
-        Node\Number::$precision = $numberPrecision;
+        @trigger_error('The number precision is not configurable anymore. The default is enough for all browsers.', E_USER_DEPRECATED);
     }
 
     /**
@@ -5628,7 +5630,7 @@ class Compiler
                             if ($color[3] === 255) {
                                 $color[3] = 1; // fully opaque
                             } else {
-                                $color[3] = round($color[3] / 255, Node\Number::$precision);
+                                $color[3] = round($color[3] / 255, Node\Number::PRECISION);
                             }
                         }
 

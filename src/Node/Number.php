@@ -28,10 +28,13 @@ use ScssPhp\ScssPhp\Type;
  */
 class Number extends Node implements \ArrayAccess
 {
+    const PRECISION = 10;
+
     /**
      * @var integer
+     * @deprecated use {Number::PRECISION} instead to read the precision. Configuring it is not supported anymore.
      */
-    public static $precision = 10;
+    public static $precision = self::PRECISION;
 
     /**
      * @see http://www.w3.org/TR/2012/WD-css3-values-20120308/
@@ -301,7 +304,7 @@ class Number extends Node implements \ArrayAccess
      */
     public function output(Compiler $compiler = null)
     {
-        $dimension = round($this->dimension, static::$precision);
+        $dimension = round($this->dimension, self::PRECISION);
 
         $units = array_filter($this->units, function ($unitSize) {
             return $unitSize;
@@ -313,7 +316,7 @@ class Number extends Node implements \ArrayAccess
 
             $this->normalizeUnits($dimension, $units);
 
-            $dimension = round($dimension, static::$precision);
+            $dimension = round($dimension, self::PRECISION);
             $units     = array_filter($units, function ($unitSize) {
                 return $unitSize;
             });
@@ -329,9 +332,9 @@ class Number extends Node implements \ArrayAccess
             $unit = key($units);
         }
 
-        $dimension = number_format($dimension, static::$precision, '.', '');
+        $dimension = number_format($dimension, self::PRECISION, '.', '');
 
-        return (static::$precision ? rtrim(rtrim($dimension, '0'), '.') : $dimension) . $unit;
+        return (self::PRECISION ? rtrim(rtrim($dimension, '0'), '.') : $dimension) . $unit;
     }
 
     /**
