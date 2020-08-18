@@ -271,7 +271,6 @@ class SassSpecTest extends TestCase
             if (getenv('BUILD')) {
                 try {
                     static::$scss->compile($scss, 'input.scss');
-                    fclose($fp_err_stream);
                     throw new \Exception('Expecting a SassException for error tests');
                 } catch (SassException $e) {
                     // TODO assert the error message ?
