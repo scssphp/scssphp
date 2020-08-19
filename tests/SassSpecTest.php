@@ -29,6 +29,11 @@ class SassSpecTest extends TestCase
     protected static $fileExclusionList = __DIR__ . '/specs/sass-spec-exclude.txt';
     protected static $fileWarningExclusionList = __DIR__ . '/specs/sass-spec-exclude-warning.txt';
 
+    protected function sassSpecDir()
+    {
+        return dirname(__DIR__) . '/vendor/sass/sass-spec/spec';
+    }
+
     /**
      * List of excluded tests if not in TEST_SCSS_COMPAT mode
      *
@@ -222,9 +227,11 @@ class SassSpecTest extends TestCase
                 file_put_contents($f, $c);
             }
 
-            static::$scss->setImportPaths([$basedir]);
+            // SassSpec use @import "core_functions/.../..."
+            static::$scss->setImportPaths([$basedir, $this->sassSpecDir()]);
         } else {
-            static::$scss->setImportPaths([]);
+            // SassSpec use @import "core_functions/.../..."
+            static::$scss->setImportPaths([$this->sassSpecDir()]);
         }
 
         $fp_err_stream = fopen("php://memory", 'r+');
@@ -322,7 +329,7 @@ class SassSpecTest extends TestCase
      */
     public function provideTests()
     {
-        $dir    = dirname(__DIR__) . '/vendor/sass/sass-spec/spec';
+        $dir    = $this->sassSpecDir();
         $specs  = [];
         $subdir = '';
 
