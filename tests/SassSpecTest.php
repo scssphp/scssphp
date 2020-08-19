@@ -205,8 +205,6 @@ class SassSpecTest extends TestCase
             $this->markTestSkipped('This test seems to cause an infinite loop.');
         }
 
-        list($options, $scss, $includes) = $input;
-        list($css, $warning, $error, $alternativeCssOutputs) = $output;
         // normalize css for comparison purpose
         $css = $this->normalizeCssOutput($css);
 
