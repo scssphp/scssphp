@@ -184,7 +184,7 @@ class SassSpecTest extends TestCase
             static::$scss->setFormatter('ScssPhp\ScssPhp\Formatter\Expanded');
         }
 
-        list($options, $scss, $includes) = $input;
+        list($options, $scss, $includes, $inputDir) = $input;
         list($css, $warning, $error, $alternativeCssOutputs) = $output;
 
         $fullInputs = $scss."\n".implode("\n", $includes);
@@ -225,6 +225,10 @@ class SassSpecTest extends TestCase
                 }
 
                 file_put_contents($f, $c);
+            }
+            if ($inputDir){
+                $basedir .= '/' . $inputDir;
+                passthru("mkdir -p $basedir");
             }
 
             // SassSpec use @import "core_functions/.../..."
@@ -360,6 +364,7 @@ class SassSpecTest extends TestCase
             if (file_exists($f = $fileDir . '/options.yml') || file_exists($f = dirname($fileDir) . '/options.yml')) {
                 $generalOptions = file_get_contents($f);
             }
+            $includes  = [];
 
             foreach ($subTests as $subTest) {
                 $subNname  = '';
@@ -369,7 +374,6 @@ class SassSpecTest extends TestCase
                 $options   = '';
                 $error     = '';
                 $warning   = '';
-                $includes  = [];
                 $hasInput  = false;
                 $hasOutput = false;
                 $baseDir = '';
@@ -444,25 +448,6 @@ class SassSpecTest extends TestCase
                     $hasOutput = true;
                 }
 
-                if ($baseDir and $includes) {
-                    $tempIncludes = $includes;
-                    $includes = [];
-
-                    foreach ($tempIncludes as $k => $v) {
-                        if (strpos($k, "$baseDir/") === 0) {
-                            $k = substr($k, strlen("$baseDir/"));
-                        }
-
-                        $includes[$k] = $v;
-                    }
-                }
-
-                // exception : a lot of spec test have an _assert_helpers.scss besides the .hrx
-                // and are using an @import('../assert_helpers') without any declaration in the hrx
-                if (file_exists($f = $fileDir . '/_assert_helpers.scss')) {
-                    $includes['../_assert_helpers.scss'] = file_get_contents($f);
-                }
-
                 if (!$options && $generalOptions) {
                     $options = $generalOptions;
                 }
@@ -487,7 +472,7 @@ class SassSpecTest extends TestCase
                 $sizeLimit = 1024 * 1024;
                 $test = [
                     $baseTestName . $subNname,
-                    [$options, $input, $includes],
+                    [$options, $input, $includes, $baseDir],
                     [$output, $warning, $error, $alternativeOutputs]
                 ];
 
