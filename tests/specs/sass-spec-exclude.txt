@@ -22,7 +22,6 @@ core_functions/color/alpha/error/unquoted_string/no_equals
 core_functions/color/alpha/error/unquoted_string/non_identifier_before_equals
 core_functions/color/alpha/filter/one_arg
 core_functions/color/blue/error/too_many_args
-core_functions/color/blue/error/type
 core_functions/color/change_color/error/args/too_many
 core_functions/color/change_color/error/bounds/alpha/too_high
 core_functions/color/change_color/error/bounds/alpha/too_low
@@ -56,7 +55,6 @@ core_functions/color/fade_out/error/too_many_args
 core_functions/color/fade_out/error/type/alpha
 core_functions/color/grayscale/error/too_many_args
 core_functions/color/green/error/too_many_args
-core_functions/color/green/error/type
 core_functions/color/hsl/error/five_args
 core_functions/color/hsl/error/four_args/alpha/unit
 core_functions/color/hsl/error/four_args/hue/type
@@ -183,7 +181,6 @@ core_functions/color/hue/middle
 core_functions/color/hue/named
 core_functions/color/hue/negative
 core_functions/color/ie_hex_str/error/too_many_args
-core_functions/color/ie_hex_str/error/type
 core_functions/color/invert/error/bounds/too_high
 core_functions/color/invert/error/bounds/too_low
 core_functions/color/invert/error/number_with_weight
@@ -198,7 +195,6 @@ core_functions/color/mix/error/too_many_args
 core_functions/color/mix/error/type/weight
 core_functions/color/mix/named
 core_functions/color/red/error/too_many_args
-core_functions/color/red/error/type
 core_functions/color/rgb/error/five_args
 core_functions/color/rgb/error/four_args/alpha/unit
 core_functions/color/rgb/error/four_args/blue/type
