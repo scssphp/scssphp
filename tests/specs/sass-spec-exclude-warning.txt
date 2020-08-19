@@ -1,5 +1,6 @@
 core_functions/meta/call/string/built_in
 core_functions/meta/call/string/local
+css/moz_document/functions/interpolated
 css/moz_document/functions/static
 directives/warn/functions_in_stack
 libsass-closed-issues/issue_1106
