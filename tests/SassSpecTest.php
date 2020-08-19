@@ -187,9 +187,7 @@ class SassSpecTest extends TestCase
         list($options, $scss, $includes, $inputDir) = $input;
         list($css, $warning, $error, $alternativeCssOutputs) = $output;
 
-        $fullInputs = $scss."\n".implode("\n", $includes);
-
-        if (false !== strpos($fullInputs, '@forward ') || false !== strpos($fullInputs, '@use ')) {
+        if (false !== strpos($scss, '@forward ') || false !== strpos($scss, '@use ')) {
             $this->markTestSkipped('Sass modules are not supported.');
         }
 
