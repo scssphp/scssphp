@@ -29,7 +29,6 @@ $inputFile = null;
 $changeDir = false;
 $debugInfo = false;
 $lineNumbers = false;
-$ignoreErrors = false;
 $encoding = false;
 $sourceMap = false;
 
@@ -70,13 +69,13 @@ Usage: $exe [options] [input-file]
 Options include:
 
     --help              Show this message [-h, -?]
-    --continue-on-error Continue compilation (as best as possible) when error encountered
+    --continue-on-error [deprecated] Ignored
     --debug-info        Annotate selectors with CSS referring to the source file and line number [-g]
     --dump-tree         Dump formatted parse tree [-T]
     --iso8859-1         Use iso8859-1 encoding instead of default utf-8
     --line-numbers      Annotate selectors with comments referring to the source file and line number [--line-comments]
     --load-path=PATH    Set import path [-I]
-    --precision=N       [deprecated] Set decimal number precision. Ignored. (default 10) [-p]
+    --precision=N       [deprecated] Ignored. (default 10) [-p]
     --sourcemap         Create source map file
     --style=FORMAT      Set the output format (compact, compressed, crunched, expanded, or nested) [-s, -t]
     --version           Print the version [-v]
@@ -89,8 +88,9 @@ EOT;
         exit(Version::VERSION . "\n");
     }
 
+    // Keep parsing --continue-on-error to avoid BC breaks for scripts using it
     if ($argv[$i] === '--continue-on-error') {
-        $ignoreErrors = true;
+        // TODO report it as a warning ?
         continue;
     }
 
@@ -182,10 +182,6 @@ if ($debugInfo) {
 
 if ($lineNumbers) {
     $scss->setLineNumberStyle(Compiler::LINE_COMMENTS);
-}
-
-if ($ignoreErrors) {
-    $scss->setIgnoreErrors($ignoreErrors);
 }
 
 if ($loadPaths) {

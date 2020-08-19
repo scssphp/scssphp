@@ -4872,10 +4872,12 @@ class Compiler
      * @param boolean $ignoreErrors
      *
      * @return \ScssPhp\ScssPhp\Compiler
+     *
+     * @deprecated Ignoring Sass errors is not longer supported.
      */
     public function setIgnoreErrors($ignoreErrors)
     {
-        $this->ignoreErrors = $ignoreErrors;
+        @trigger_error('Ignoring Sass errors is not longer supported.', E_USER_DEPRECATED);
 
         return $this;
     }
@@ -4905,10 +4907,6 @@ class Compiler
      */
     public function throwError($msg)
     {
-        if ($this->ignoreErrors) {
-            return;
-        }
-
         if (\func_num_args() > 1) {
             $msg = \call_user_func_array('sprintf', \func_get_args());
         }
