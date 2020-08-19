@@ -148,13 +148,6 @@ class SassSpecTest extends TestCase
     }
 
     /**
-     * @param string $name
-     * @param string $scss
-     * @param string $css
-     * @param string $options
-     * @param string $error
-     * @param string $warning
-     *
      * @dataProvider provideTests
      */
     public function testTests($name, $input, $output)
@@ -166,14 +159,21 @@ class SassSpecTest extends TestCase
             static::$scss->setFormatter('ScssPhp\ScssPhp\Formatter\Expanded');
         }
 
+        list($options, $scss, $includes) = $input;
+        list($css, $warning, $error, $alternativeCssOutputs) = $output;
+
+        $fullInputs = $scss."\n".implode("\n", $includes);
+
+        if (false !== strpos($fullInputs, '@forward ') || false !== strpos($fullInputs, '@use ')) {
+            $this->markTestSkipped('Sass modules are not supported.');
+        }
+
         if (! getenv('TEST_SASS_SPEC') && $this->matchExclusionList($name, $this->getExclusionList())) {
             $this->markTestSkipped('Define TEST_SASS_SPEC=1 to enable all sass-spec compatibility tests');
 
             return;
         }
 
-        list($options, $scss, $includes) = $input;
-        list($css, $warning, $error, $alternativeCssOutputs) = $output;
         // normalize css for comparison purpose
         $css = $this->normalizeCssOutput($css);
 
