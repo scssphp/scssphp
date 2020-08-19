@@ -14,7 +14,6 @@ namespace ScssPhp\ScssPhp\Tests;
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Exception\SassException;
-use ScssPhp\ScssPhp\Node\Number;
 
 /**
  * Sass Spec Test - extracts tests from https://github.com/sass/sass-spec
@@ -195,6 +194,19 @@ class SassSpecTest extends TestCase
             return;
         }
 
+        if (strpos($name, 'libsass-closed-issues/issue_1801/import-cycle') ||
+            strpos($name, 'libsass-todo-issues/issue_1801/simple-import-loop') ||
+            // The loop in issue_221260 is not technically infinite, but we go over the xdebug
+            // max nesting level in our CI setup before detecting the Sass error.
+            strpos($name, 'libsass-todo-issues/issue_221260') ||
+            strpos($name, 'libsass-todo-issues/issue_221262') ||
+            strpos($name, 'libsass-todo-issues/issue_221292')
+        ) {
+            $this->markTestSkipped('This test seems to cause an infinite loop.');
+        }
+
+        list($options, $scss, $includes) = $input;
+        list($css, $warning, $error, $alternativeCssOutputs) = $output;
         // normalize css for comparison purpose
         $css = $this->normalizeCssOutput($css);
 
@@ -278,17 +290,6 @@ class SassSpecTest extends TestCase
                 }
             }
         } else {
-            // seem to cause an infinite loop
-            if (strpos($name, 'libsass-closed-issues/issue_1801/import-cycle')) {
-                if (getenv('BUILD')) {
-                    $this->appendToExclusionList($name);
-                    $this->assertNull(null);
-                    return;
-                } else {
-                    $this->markTestIncomplete('This test seems to cause an infinite loop.');
-                }
-            }
-
             if (getenv('BUILD')) {
                 try {
                     static::$scss->compile($scss, 'input.scss');
@@ -487,8 +488,6 @@ class SassSpecTest extends TestCase
 
                 if (! $hasInput ||
                     (!$hasOutput && ! $error) ||
-                    strpos($options, ':todo:') !== false ||
-                    strpos($baseTestName, 'libsass-todo-tests') !== false ||
                     strlen($input) > $sizeLimit
                 ) {
                     $skippedTests[] = $test;
