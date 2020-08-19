@@ -446,7 +446,7 @@ class Compiler
             $origin = $this->collapseSelectors($origin);
 
             $this->sourceLine = $block[Parser::SOURCE_LINE];
-            $this->throwError("\"$origin\" failed to @extend \"$target\". The selector \"$target\" was not found.");
+            throw $this->error("\"$origin\" failed to @extend \"$target\". The selector \"$target\" was not found.");
         }
     }
 
@@ -1900,7 +1900,7 @@ class Compiler
             $msg = $this->callStackMessage(true, 100);
             $msg = "Infinite calling loop";
 
-            $this->throwError($msg);
+            throw $this->error($msg);
         }
     }
 
@@ -1965,10 +1965,7 @@ class Compiler
             }
 
             if (isset($ret)) {
-                $this->throwError('@return may only be used within a function');
-                $this->popCallStack();
-
-                return;
+                throw $this->error('@return may only be used within a function');
             }
         }
 
@@ -2736,19 +2733,15 @@ class Compiler
                 $end   = $this->reduce($for->end, true);
 
                 if (!$start instanceof Node\Number) {
-                    $this->throwError('%s is not a number', $start[0]);
-                    break;
+                    throw $this->error('%s is not a number', $start[0]);
                 }
 
                 if (!$end instanceof Node\Number) {
-                    $this->throwError('%s is not a number', $end[0]);
-                    break;
+                    throw $this->error('%s is not a number', $end[0]);
                 }
 
                 if (! ($start[2] == $end[2] || $end->unitless())) {
-                    $this->throwError('Incompatible units: "%s" and "%s".', $start->unitStr(), $end->unitStr());
-
-                    break;
+                    throw $this->error('Incompatible units: "%s" and "%s".', $start->unitStr(), $end->unitStr());
                 }
 
                 $unit  = $start[2];
@@ -2811,8 +2804,7 @@ class Compiler
                 $mixin = $this->get(static::$namespaces['mixin'] . $name, false);
 
                 if (! $mixin) {
-                    $this->throwError("Undefined mixin $name");
-                    break;
+                    throw $this->error("Undefined mixin $name");
                 }
 
                 $callingScope = $this->getStoreEnv();
@@ -2869,7 +2861,7 @@ class Compiler
                 if (! empty($mixin->parentEnv)) {
                     $this->env->declarationScopeParent = $mixin->parentEnv;
                 } else {
-                    $this->throwError("@mixin $name() without parentEnv");
+                    throw $this->error("@mixin $name() without parentEnv");
                 }
 
                 $this->compileChildrenNoReturn($mixin->children, $out, $selfParent, $this->env->marker . " " . $name);
@@ -2936,15 +2928,13 @@ class Compiler
                 $line  = $this->sourceLine;
                 $value = $this->compileValue($this->reduce($value, true));
 
-                $this->throwError("File $fname on line $line ERROR: $value\n");
-                break;
+                throw $this->error("File $fname on line $line ERROR: $value\n");
 
             case Type::T_CONTROL:
-                $this->throwError('@break/@continue not permitted in this scope');
-                break;
+                throw $this->error('@break/@continue not permitted in this scope');
 
             default:
-                $this->throwError("unknown child type: $child[0]");
+                throw $this->error("unknown child type: $child[0]");
         }
     }
 
@@ -3576,8 +3566,7 @@ class Compiler
 
                 case '%':
                     if ($rval == 0) {
-                        $this->throwError("color: Can't take modulo by zero");
-                        break 2;
+                        throw $this->error("color: Can't take modulo by zero");
                     }
 
                     $out[] = $lval % $rval;
@@ -3585,8 +3574,7 @@ class Compiler
 
                 case '/':
                     if ($rval == 0) {
-                        $this->throwError("color: Can't divide by zero");
-                        break 2;
+                        throw $this->error("color: Can't divide by zero");
                     }
 
                     $out[] = (int) ($lval / $rval);
@@ -3599,8 +3587,7 @@ class Compiler
                     return $this->opNeq($left, $right);
 
                 default:
-                    $this->throwError("color: unknown op $op");
-                    break 2;
+                    throw $this->error("color: unknown op $op");
             }
         }
 
@@ -4012,7 +3999,7 @@ class Compiler
                 return $this->compileCommentValue($value);
 
             default:
-                $this->throwError("unknown value type: ".json_encode($value));
+                throw $this->error("unknown value type: ".json_encode($value));
         }
     }
 
@@ -4517,7 +4504,7 @@ class Compiler
         }
 
         if ($shouldThrow) {
-            $this->throwError("Undefined variable \$$name" . ($maxDepth <= 0 ? " (infinite recursion)" : ""));
+            throw $this->error("Undefined variable \$$name" . ($maxDepth <= 0 ? " (infinite recursion)" : ""));
         }
 
         // found nothing
@@ -4845,7 +4832,7 @@ class Compiler
 
         if ($urls) {
             if (! $hasExtension or preg_match('/[.]scss$/', $url)) {
-                $this->throwError("`$url` file not found for @import");
+                throw $this->error("`$url` file not found for @import");
             }
         }
 
@@ -4904,11 +4891,29 @@ class Compiler
      * @param string $msg Message with optional sprintf()-style vararg parameters
      *
      * @throws \ScssPhp\ScssPhp\Exception\CompilerException
+     *
+     * @deprecated use "error" and throw the exception in the caller instead.
      */
     public function throwError($msg)
     {
-        if (\func_num_args() > 1) {
-            $msg = \call_user_func_array('sprintf', \func_get_args());
+        @trigger_error('The method "throwError" is deprecated. Use "error" and throw the exception in the caller instead', E_USER_DEPRECATED);
+
+        throw $this->error(...func_get_args());
+    }
+
+    /**
+     * Build an error (exception)
+     *
+     * @api
+     *
+     * @param string $msg Message with optional sprintf()-style vararg parameters
+     *
+     * @return CompilerException
+     */
+    public function error($msg, ...$args)
+    {
+        if ($args) {
+            $msg = sprintf($msg, ...$args);
         }
 
         if (! $this->ignoreCallStackMessage) {
@@ -4982,8 +4987,7 @@ class Compiler
             $file = $this->sourceNames[$env->block->sourceIndex];
 
             if (realpath($file) === $name) {
-                $this->throwError('An @import loop has been found: %s imports %s', $file, basename($file));
-                break;
+                throw $this->error('An @import loop has been found: %s imports %s', $file, basename($file));
             }
         }
     }
@@ -5020,7 +5024,7 @@ class Compiler
         if (! empty($func->parentEnv)) {
             $this->env->declarationScopeParent = $func->parentEnv;
         } else {
-            $this->throwError("@function $name() without parentEnv");
+            throw $this->error("@function $name() without parentEnv");
         }
 
         $ret = $this->compileChildren($func->children, $tmp, $this->env->marker . " " . $name);
@@ -5225,7 +5229,7 @@ class Compiler
         }
 
         if ($exceptionMessage && ! $prototypeHasMatch) {
-            $this->throwError($exceptionMessage);
+            throw $this->error($exceptionMessage);
         }
 
         return [$finalArgs, $keyArgs];
@@ -5294,12 +5298,10 @@ class Compiler
                     if ($hasVariable) {
                         $deferredKeywordArgs[$name] = $arg[1];
                     } else {
-                        $this->throwError("Mixin or function doesn't have an argument named $%s.", $arg[0][1]);
-                        break;
+                        throw $this->error("Mixin or function doesn't have an argument named $%s.", $arg[0][1]);
                     }
                 } elseif ($args[$name][0] < \count($remaining)) {
-                    $this->throwError("The argument $%s was passed both by position and by name.", $arg[0][1]);
-                    break;
+                    throw $this->error("The argument $%s was passed both by position and by name.", $arg[0][1]);
                 } else {
                     $keywordArgs[$name] = $arg[1];
                 }
@@ -5364,8 +5366,7 @@ class Compiler
                     $remaining[] = $val;
                 }
             } elseif ($hasKeywordArgument) {
-                $this->throwError('Positional arguments must come before keyword arguments.');
-                break;
+                throw $this->error('Positional arguments must come before keyword arguments.');
             } else {
                 $remaining[] = $arg[1];
             }
@@ -5391,8 +5392,7 @@ class Compiler
             } elseif (! empty($default)) {
                 continue;
             } else {
-                $this->throwError("Missing argument $name");
-                break;
+                throw $this->error("Missing argument $name");
             }
 
             if ($storeInEnv) {
@@ -5805,7 +5805,7 @@ class Compiler
         $value = $this->coerceMap($value);
 
         if ($value[0] !== Type::T_MAP) {
-            $this->throwError('expecting map, %s received', $value[0]);
+            throw $this->error('expecting map, %s received', $value[0]);
         }
 
         return $value;
@@ -5825,7 +5825,7 @@ class Compiler
     public function assertList($value)
     {
         if ($value[0] !== Type::T_LIST) {
-            $this->throwError('expecting list, %s received', $value[0]);
+            throw $this->error('expecting list, %s received', $value[0]);
         }
 
         return $value;
@@ -5848,7 +5848,7 @@ class Compiler
             return $color;
         }
 
-        $this->throwError('expecting color, %s received', $value[0]);
+        throw $this->error('expecting color, %s received', $value[0]);
     }
 
     /**
@@ -5865,7 +5865,7 @@ class Compiler
     public function assertNumber($value)
     {
         if ($value[0] !== Type::T_NUMBER) {
-            $this->throwError('expecting number, %s received', $value[0]);
+            throw $this->error('expecting number, %s received', $value[0]);
         }
 
         return $value[1];
@@ -6018,7 +6018,7 @@ class Compiler
         }
 
         if (!in_array($functionReference[0], [Type::T_FUNCTION_REFERENCE, Type::T_FUNCTION])) {
-            $this->throwError("Function reference expected, got ".$functionReference[0]);
+            throw $this->error("Function reference expected, got ".$functionReference[0]);
         }
 
         $callArgs = [];
@@ -6702,8 +6702,7 @@ class Compiler
 
         foreach ($args as $key => $item) {
             if ($item[0] !== Type::T_NUMBER) {
-                $this->throwError('%s is not a number', $item[0]);
-                break;
+                throw $this->error('%s is not a number', $item[0]);
             }
 
             $number = $item->normalize();
@@ -6712,8 +6711,7 @@ class Compiler
                 $unit = $number[2];
                 $originalUnit = $item->unitStr();
             } elseif ($number[1] && $unit !== $number[2] && ! empty($number[2])) {
-                $this->throwError('Incompatible units: "%s" and "%s".', $originalUnit, $item->unitStr());
-                break;
+                throw $this->error('Incompatible units: "%s" and "%s".', $originalUnit, $item->unitStr());
             }
 
             $numbers[$key] = [$args[$key], empty($number[2]) ? null : $number];
@@ -6778,9 +6776,7 @@ class Compiler
         }
 
         if (! isset($list[2][$n])) {
-            $this->throwError('Invalid argument for "n"');
-
-            return null;
+            throw $this->error('Invalid argument for "n"');
         }
 
         $list[2][$n] = $args[2];
@@ -7076,9 +7072,7 @@ class Compiler
         if (! isset($number1[0]) || $number1[0] !== Type::T_NUMBER ||
             ! isset($number2[0]) || $number2[0] !== Type::T_NUMBER
         ) {
-            $this->throwError('Invalid argument(s) for "comparable"');
-
-            return null;
+            throw $this->error('Invalid argument(s) for "comparable"');
         }
 
         $number1 = $number1->normalize();
@@ -7256,15 +7250,11 @@ class Compiler
             $n = $this->assertNumber($args[0]);
 
             if ($n < 1) {
-                $this->throwError("\$limit must be greater than or equal to 1");
-
-                return null;
+                throw $this->error("\$limit must be greater than or equal to 1");
             }
 
             if ($n - \intval($n) > 0) {
-                $this->throwError("Expected \$limit to be an integer but got $n for `random`");
-
-                return null;
+                throw $this->error("Expected \$limit to be an integer but got $n for `random`");
             }
 
             return new Node\Number(mt_rand(1, \intval($n)), '');
@@ -7397,11 +7387,11 @@ class Compiler
     {
         // one and only one selector for each arg
         if (! $super || \count($super) !== 1) {
-            $this->throwError("Invalid super selector for isSuperSelector()");
+            throw $this->error("Invalid super selector for isSuperSelector()");
         }
 
         if (! $sub || \count($sub) !== 1) {
-            $this->throwError("Invalid sub selector for isSuperSelector()");
+            throw $this->error("Invalid sub selector for isSuperSelector()");
         }
 
         $super = reset($super);
@@ -7483,7 +7473,7 @@ class Compiler
         $args = $args[2];
 
         if (\count($args) < 1) {
-            $this->throwError("selector-append() needs at least 1 argument");
+            throw $this->error("selector-append() needs at least 1 argument");
         }
 
         $selectors = array_map([$this, 'getSelectorArg'], $args);
@@ -7505,14 +7495,14 @@ class Compiler
         $lastSelectors = array_pop($selectors);
 
         if (! $lastSelectors) {
-            $this->throwError("Invalid selector list in selector-append()");
+            throw $this->error("Invalid selector list in selector-append()");
         }
 
         while (\count($selectors)) {
             $previousSelectors = array_pop($selectors);
 
             if (! $previousSelectors) {
-                $this->throwError("Invalid selector list in selector-append()");
+                throw $this->error("Invalid selector list in selector-append()");
             }
 
             // do the trick, happening $lastSelector to $previousSelector
@@ -7552,7 +7542,7 @@ class Compiler
         $extender  = $this->getSelectorArg($extender);
 
         if (! $selectors || ! $extendee || ! $extender) {
-            $this->throwError("selector-extend() invalid arguments");
+            throw $this->error("selector-extend() invalid arguments");
         }
 
         $extended = $this->extendOrReplaceSelectors($selectors, $extendee, $extender);
@@ -7570,7 +7560,7 @@ class Compiler
         $replacement = $this->getSelectorArg($replacement);
 
         if (! $selectors || ! $original || ! $replacement) {
-            $this->throwError("selector-replace() invalid arguments");
+            throw $this->error("selector-replace() invalid arguments");
         }
 
         $replaced = $this->extendOrReplaceSelectors($selectors, $original, $replacement, true);
@@ -7633,7 +7623,7 @@ class Compiler
         $args = $args[2];
 
         if (\count($args) < 1) {
-            $this->throwError("selector-nest() needs at least 1 argument");
+            throw $this->error("selector-nest() needs at least 1 argument");
         }
 
         $selectorsMap = array_map([$this, 'getSelectorArg'], $args);
@@ -7671,7 +7661,7 @@ class Compiler
         $selectors2 = $this->getSelectorArg($selectors2);
 
         if (! $selectors1 || ! $selectors2) {
-            $this->throwError("selector-unify() invalid arguments");
+            throw $this->error("selector-unify() invalid arguments");
         }
 
         // only consider the first compound of each
