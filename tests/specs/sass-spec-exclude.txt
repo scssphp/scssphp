@@ -346,7 +346,6 @@ core_functions/color/rgba/three_args/special_functions/max/arg_3
 core_functions/color/rgba/three_args/special_functions/min/arg_1
 core_functions/color/rgba/three_args/special_functions/min/arg_2
 core_functions/color/rgba/three_args/special_functions/min/arg_3
-core_functions/color/saturate/error/one_arg/type
 core_functions/color/saturate/error/too_many_args
 core_functions/color/saturate/error/two_args/bounds/too_high
 core_functions/color/saturate/error/two_args/bounds/too_low
@@ -1119,7 +1118,6 @@ libsass-closed-issues/issue_1432/simple-selectors
 libsass-closed-issues/issue_1452
 libsass-closed-issues/issue_1482
 libsass-closed-issues/issue_1487
-libsass-closed-issues/issue_151
 libsass-closed-issues/issue_152
 libsass-closed-issues/issue_1526
 libsass-closed-issues/issue_1527/extend

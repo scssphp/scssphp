@@ -6503,6 +6503,11 @@ class Compiler
             return null;
         }
 
+        if (count($args) === 1) {
+            $val = $this->compileValue($value);
+            throw $this->error("\$amount: $val is not a number");
+        }
+
         $color = $this->assertColor($value);
         $amount = 100 * $this->coercePercent($args[1]);
 
