@@ -368,11 +368,12 @@ class SassSpecTest extends TestCase
             if (file_exists($f = $fileDir . '/options.yml') || file_exists($f = dirname($fileDir) . '/options.yml')) {
                 $generalOptions = file_get_contents($f);
             }
-            $includes  = [];
+            $globalIncludes  = [];
 
             foreach ($subTests as $subTest) {
                 $subNname  = '';
                 $input     = '';
+                $includes  = [];
                 $output    = '';
                 $alternativeOutputs = [];
                 $options   = '';
@@ -441,11 +442,18 @@ class SassSpecTest extends TestCase
 
                         default:
                             if ($what && (substr($what, -5) === '.scss' || substr($what, -4) === '.css')) {
-                                $includes[$first] = $part;
+                                if (strpos($first, '/') !== false) {
+                                    $includes[$first] = $part;
+                                }
+                                else {
+                                    $globalIncludes[$first] = $part;
+                                }
                             }
                             break;
                     }
                 }
+
+                $includes = array_merge($globalIncludes, $includes);
 
                 if (!$hasOutput and count($alternativeOutputs)) {
                     $output = array_shift($alternativeOutputs);
@@ -485,6 +493,8 @@ class SassSpecTest extends TestCase
                     strlen($input) > $sizeLimit
                 ) {
                     $skippedTests[] = $test;
+                    // this is probably a include only section, so move them all to globalIncludes
+                    $globalIncludes = $includes;
                 } else {
                     $tests[$baseTestName . $subNname] = $test;
                 }
