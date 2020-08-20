@@ -386,7 +386,6 @@ core_functions/list/append/error/too_many_args
 core_functions/list/append/error/type/separator
 core_functions/list/append/error/unknown_separator
 core_functions/list/index/error/too_many_args
-core_functions/list/is_bracketed/bracketed/single
 core_functions/list/is_bracketed/error/too_many_args
 core_functions/list/join/empty/both/comma/first
 core_functions/list/join/empty/both/comma/last
@@ -401,16 +400,9 @@ core_functions/list/join/error/too_many_args
 core_functions/list/join/error/type/separator
 core_functions/list/join/error/unknown_separator
 core_functions/list/join/multi/map/second/space
-core_functions/list/join/single/both/comma/first
 core_functions/list/join/single/both/comma/last
-core_functions/list/join/single/both/space/first
-core_functions/list/join/single/both/space/last
-core_functions/list/join/single/both/undecided
 core_functions/list/join/single/first/undecided/and_comma
-core_functions/list/join/single/first/undecided/and_space
 core_functions/list/join/single/non_list/first/comma
-core_functions/list/join/single/second/undecided/comma
-core_functions/list/join/single/second/undecided/space
 core_functions/list/length/error/too_many_args
 core_functions/list/nth/error/index/0
 core_functions/list/nth/error/index/too_high

@@ -1870,7 +1870,7 @@ class Parser
         }
 
         if ($this->valueList($out) && $this->matchChar($closingParen) &&
-            \in_array($out[0], [Type::T_LIST, Type::T_KEYWORD]) &&
+            \in_array($out[0], [Type::T_LIST, Type::T_KEYWORD, Type::T_NUMBER, Type::T_COLOR, Type::T_VARIABLE]) &&
             \in_array(Type::T_LIST, $allowedTypes)
         ) {
             if ($out[0] !== Type::T_LIST || ! empty($out['enclosing'])) {
