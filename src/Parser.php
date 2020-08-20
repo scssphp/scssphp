@@ -1626,7 +1626,7 @@ class Parser
             $keyword = null;
         }
 
-        if ($this->genericList($value, 'expression')) {
+        if ($this->genericList($value, 'expression', '', true)) {
             $out = [$keyword, $value, false];
             $s = $this->count;
 
@@ -2318,7 +2318,7 @@ class Parser
 
             $ss = $this->count;
 
-            if ($this->matchChar(':') && $this->genericList($defaultVal, 'expression')) {
+            if ($this->matchChar(':') && $this->genericList($defaultVal, 'expression', '', true)) {
                 $arg[1] = $defaultVal;
             } else {
                 $this->seek($ss);
@@ -2376,8 +2376,8 @@ class Parser
         $keys = [];
         $values = [];
 
-        while ($this->genericList($key, 'expression') && $this->matchChar(':') &&
-            $this->genericList($value, 'expression')
+        while ($this->genericList($key, 'expression', '', true) && $this->matchChar(':') &&
+            $this->genericList($value, 'expression', '', true)
         ) {
             $keys[] = $key;
             $values[] = $value;
