@@ -191,7 +191,6 @@ core_functions/color/mix/error/bounds/too_high
 core_functions/color/mix/error/bounds/too_low
 core_functions/color/mix/error/too_many_args
 core_functions/color/mix/error/type/weight
-core_functions/color/mix/named
 core_functions/color/red/error/too_many_args
 core_functions/color/rgb/error/five_args
 core_functions/color/rgb/error/four_args/alpha/unit
@@ -353,7 +352,6 @@ core_functions/color/saturate/error/two_args/bounds/too_high
 core_functions/color/saturate/error/two_args/bounds/too_low
 core_functions/color/saturate/error/two_args/type/color
 core_functions/color/saturate/error/two_args/type/lightness
-core_functions/color/saturate/one_arg/named
 core_functions/color/saturation/error/too_many_args
 core_functions/color/saturation/fraction
 core_functions/color/saturation/max
@@ -446,7 +444,6 @@ core_functions/map/keys/single
 core_functions/map/merge/error/too_many_args
 core_functions/map/merge/error/type/map1
 core_functions/map/merge/error/type/map2
-core_functions/map/merge/named
 core_functions/map/remove/found/multiple/all
 core_functions/map/remove/found/multiple/some
 core_functions/map/remove/not_found/no_keys
@@ -459,7 +456,6 @@ core_functions/math/abs/error/type
 core_functions/math/ceil/error/too_many_args
 core_functions/math/ceil/error/type
 core_functions/math/comparable/error/too_many_args
-core_functions/math/comparable/named
 core_functions/math/floor/error/too_many_args
 core_functions/math/floor/error/type
 core_functions/math/max/error/too_few_args
@@ -713,7 +709,6 @@ core_functions/selector/parse/error/parse/invalid
 core_functions/selector/parse/error/too_many_args
 core_functions/selector/parse/error/too_nested
 core_functions/selector/parse/error/type
-core_functions/selector/parse/named
 core_functions/selector/parse/selector/complex/adjacent_sibling
 core_functions/selector/parse/selector/complex/child
 core_functions/selector/parse/selector/complex/sibling

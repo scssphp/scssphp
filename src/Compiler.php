@@ -3244,7 +3244,7 @@ class Compiler
             $listArgs = [];
 
             foreach ((array) $argValues as $arg) {
-                if (empty($arg[0])) {
+                if (empty($arg[0]) or count($argValues)==1) {
                     $listArgs[] = $this->reduce($arg[1]);
                 }
             }
@@ -6338,7 +6338,10 @@ class Compiler
     }
 
     // mix two colors
-    protected static $libMix = ['color-1', 'color-2', 'weight:0.5'];
+    protected static $libMix = [
+        ['color1', 'color2', 'weight:0.5'],
+        ['color-1', 'color-2', 'weight:0.5']
+        ];
     protected function libMix($args)
     {
         list($first, $second, $weight) = $args;
@@ -6491,7 +6494,7 @@ class Compiler
         return $this->adjustHsl($color, 3, -$amount);
     }
 
-    protected static $libSaturate = [['color', 'amount'], ['number']];
+    protected static $libSaturate = [['color', 'amount'], ['amount']];
     protected function libSaturate($args)
     {
         $value = $args[0];
@@ -6872,7 +6875,10 @@ class Compiler
         return false;
     }
 
-    protected static $libMapMerge = ['map-1', 'map-2'];
+    protected static $libMapMerge = [
+        ['map1', 'map2'],
+        ['map-1', 'map-2']
+    ];
     protected function libMapMerge($args)
     {
         $map1 = $this->assertMap($args[0]);
@@ -7084,7 +7090,10 @@ class Compiler
         return $value[0] === Type::T_NUMBER && $value->unitless();
     }
 
-    protected static $libComparable = ['number-1', 'number-2'];
+    protected static $libComparable = [
+        ['number1', 'number2'],
+        ['number-1', 'number-2']
+    ];
     protected function libComparable($args)
     {
         list($number1, $number2) = $args;
@@ -7552,7 +7561,10 @@ class Compiler
         return $lastSelectors;
     }
 
-    protected static $libSelectorExtend = ['selectors', 'extendee', 'extender'];
+    protected static $libSelectorExtend = [
+        ['selector', 'extendee', 'extender'],
+        ['selectors', 'extendee', 'extender']
+    ];
     protected function libSelectorExtend($args)
     {
         list($selectors, $extendee, $extender) = $args;
@@ -7570,7 +7582,10 @@ class Compiler
         return $this->formatOutputSelector($extended);
     }
 
-    protected static $libSelectorReplace = ['selectors', 'original', 'replacement'];
+    protected static $libSelectorReplace = [
+        ['selector', 'original', 'replacement'],
+        ['selectors', 'original', 'replacement']
+    ];
     protected function libSelectorReplace($args)
     {
         list($selectors, $original, $replacement) = $args;
@@ -7663,7 +7678,10 @@ class Compiler
         return $this->formatOutputSelector($outputSelectors);
     }
 
-    protected static $libSelectorParse = ['selectors'];
+    protected static $libSelectorParse = [
+        ['selector'],
+        ['selectors']
+    ];
     protected function libSelectorParse($args)
     {
         $selectors = reset($args);
