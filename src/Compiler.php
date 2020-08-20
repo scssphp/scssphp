@@ -1762,7 +1762,7 @@ class Compiler
      *
      * @return array
      */
-    protected function replaceSelfSelector($selectors, $replace=null)
+    protected function replaceSelfSelector($selectors, $replace = null)
     {
         foreach ($selectors as &$part) {
             if (\is_array($part)) {
@@ -4896,7 +4896,10 @@ class Compiler
      */
     public function throwError($msg)
     {
-        @trigger_error('The method "throwError" is deprecated. Use "error" and throw the exception in the caller instead', E_USER_DEPRECATED);
+        @trigger_error(
+            'The method "throwError" is deprecated. Use "error" and throw the exception in the caller instead',
+            E_USER_DEPRECATED
+        );
 
         throw $this->error(...func_get_args());
     }

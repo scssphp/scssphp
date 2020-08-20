@@ -227,7 +227,7 @@ class SassSpecTest extends TestCase
 
                 file_put_contents($f, $c);
             }
-            if ($inputDir){
+            if ($inputDir) {
                 $basedir .= '/' . $inputDir;
                 passthru("mkdir -p $basedir");
             }
@@ -444,8 +444,7 @@ class SassSpecTest extends TestCase
                             if ($what && (substr($what, -5) === '.scss' || substr($what, -4) === '.css')) {
                                 if (strpos($first, '/') !== false) {
                                     $includes[$first] = $part;
-                                }
-                                else {
+                                } else {
                                     $globalIncludes[$first] = $part;
                                 }
                             }
