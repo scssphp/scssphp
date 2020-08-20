@@ -40,7 +40,6 @@ core_functions/color/change_color/error/hsl_and_rgb/green_and_saturation
 core_functions/color/change_color/error/hsl_and_rgb/red_and_hue
 core_functions/color/complement/error/too_many_args
 core_functions/color/darken/error/too_many_args
-core_functions/color/darken/error/type/lightness
 core_functions/color/desaturate/error/bounds/too_high
 core_functions/color/desaturate/error/bounds/too_low
 core_functions/color/desaturate/error/too_many_args
@@ -187,7 +186,6 @@ core_functions/color/invert/error/number_with_weight
 core_functions/color/invert/error/too_many_args
 core_functions/color/invert/error/type/weight
 core_functions/color/lighten/error/too_many_args
-core_functions/color/lighten/error/type/lightness
 core_functions/color/lightness/error/too_many_args
 core_functions/color/mix/error/bounds/too_high
 core_functions/color/mix/error/bounds/too_low
