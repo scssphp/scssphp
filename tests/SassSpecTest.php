@@ -216,6 +216,7 @@ class SassSpecTest extends TestCase
         // this test needs @import of includes files, build a dir with files and set the ImportPaths
         if ($includes) {
             $basedir = sys_get_temp_dir() . '/sass-spec/' . preg_replace(",^\d+/\d+\.\s*,", "", $name);
+            $dirToClean = $basedir;
 
             foreach ($includes as $f => $c) {
                 $f = $basedir . '/' . $f;
@@ -266,8 +267,7 @@ class SassSpecTest extends TestCase
 
             // clean after the test
             if ($includes) {
-                static::$scss->setImportPaths([]);
-                passthru("rm -fR $basedir");
+                passthru("rm -fR $dirToClean");
             }
 
             // if several outputs check if we match one alternative if not the first
@@ -309,13 +309,17 @@ class SassSpecTest extends TestCase
                 } catch (\Exception $e) {
                     $this->appendToExclusionList($name);
                 }
-                fclose($fp_err_stream);
                 $this->assertNull(null);
             } else {
                 $this->expectException(SassException::class);
                 static::$scss->compile($scss, 'input.scss');
-                fclose($fp_err_stream);
                 // TODO assert the error message ?
+            }
+
+            fclose($fp_err_stream);
+            // clean after the test
+            if ($includes) {
+                passthru("rm -fR $dirToClean");
             }
         }
     }
