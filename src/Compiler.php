@@ -4949,6 +4949,27 @@ class Compiler
     }
 
     /**
+     * @param string $functionName
+     * @param array $ExpectedArgs
+     * @param int $nbActual
+     * @return CompilerException
+     */
+    public function errorArgsNumber($functionName, $ExpectedArgs, $nbActual)
+    {
+        $nbExpected = \count($ExpectedArgs);
+        if ($nbActual > $nbExpected) {
+            return $this->error("Error: Only %d arguments allowed in %s(), but %d were passed.", $nbExpected, $functionName, $nbActual);
+        }
+        else {
+            $missing = [];
+            while (count($ExpectedArgs) and count($ExpectedArgs) > $nbActual) {
+                array_unshift($missing, array_pop($ExpectedArgs));
+            }
+            return $this->error("Error: %s() argument%s %s missing.", $functionName, count($missing) > 1 ? 's' : '', implode(', ', $missing));
+        }
+    }
+
+    /**
      * Beautify call stack for output
      *
      * @param boolean $all
@@ -5201,6 +5222,13 @@ class Compiler
             $this->ignoreCallStackMessage = true;
 
             try {
+                if (\count($args) > \count($argDef)) {
+                    $lastDef = end($argDef);
+                    // check that last arg is not a ...
+                    if (empty($lastDef[2])) {
+                        throw $this->errorArgsNumber($functionName, $argDef, \count($args));
+                    }
+                }
                 $vars = $this->applyArguments($argDef, $args, false, false);
 
                 // ensure all args are populated
