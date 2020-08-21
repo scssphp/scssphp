@@ -135,8 +135,29 @@ class Parser
      * @param string $msg
      *
      * @throws \ScssPhp\ScssPhp\Exception\ParserException
+     *
+     * @deprecated use "parseError" and throw the exception in the caller instead.
      */
     public function throwParseError($msg = 'parse error')
+    {
+        @trigger_error(
+            'The method "throwParseError" is deprecated. Use "parseError" and throw the exception in the caller instead',
+            E_USER_DEPRECATED
+        );
+
+        throw $this->parseError($msg);
+    }
+
+    /**
+     * Creates a parser error
+     *
+     * @api
+     *
+     * @param string $msg
+     *
+     * @return ParserException
+     */
+    public function parseError($msg = 'parse error')
     {
         list($line, $column) = $this->getSourcePosition($this->count);
 
@@ -150,7 +171,7 @@ class Parser
             $e = new ParserException("$msg: failed at `$m[1]` $loc");
             $e->setSourcePosition([$this->sourceName, $line, $column]);
 
-            throw $e;
+            return $e;
         }
 
         $this->restoreEncoding();
@@ -158,7 +179,7 @@ class Parser
         $e = new ParserException("$msg: $loc");
         $e->setSourcePosition([$this->sourceName, $line, $column]);
 
-        throw $e;
+        return $e;
     }
 
     /**
@@ -209,11 +230,11 @@ class Parser
         }
 
         if ($this->count !== \strlen($this->buffer)) {
-            $this->throwParseError();
+            throw $this->parseError();
         }
 
         if (! empty($this->env->parent)) {
-            $this->throwParseError('unclosed block');
+            throw $this->parseError('unclosed block');
         }
 
         if ($this->charset) {
@@ -284,7 +305,7 @@ class Parser
         $this->restoreEncoding();
 
         if ($shouldValidate && $this->count !== strlen($buffer)) {
-            $this->throwParseError("`" . substr($buffer, $this->count) . "` is not a valid Selector in `$buffer`");
+            throw $this->parseError("`" . substr($buffer, $this->count) . "` is not a valid Selector in `$buffer`");
         }
 
         return $selector;
@@ -831,7 +852,7 @@ class Parser
                     ! \in_array($this->env->type, [Type::T_DIRECTIVE, Type::T_MEDIA])
                 ) {
                     $plain = \trim(\substr($this->buffer, $s, $this->count - $s));
-                    $this->throwParseError(
+                    throw $this->parseError(
                         "Unknown directive `{$plain}` not allowed in `" . $this->env->type . "` block"
                     );
                 }
@@ -972,7 +993,7 @@ class Parser
 
             if ($this->valueList($value)) {
                 if (empty($this->env->parent)) {
-                    $this->throwParseError('expected "{"');
+                    throw $this->parseError('expected "{"');
                 }
 
                 $this->append([Type::T_ASSIGN, $name, $value], $s);
@@ -1122,7 +1143,7 @@ class Parser
         $block = $this->env;
 
         if (empty($block->parent)) {
-            $this->throwParseError('unexpected }');
+            throw $this->parseError('unexpected }');
         }
 
         if ($block->type == Type::T_AT_ROOT) {
@@ -1192,7 +1213,7 @@ class Parser
             if ($type) {
                 $message .= " ($type)";
             }
-            $this->throwParseError($message);
+            throw $this->parseError($message);
         }
 
         return $parsed;
@@ -2790,7 +2811,7 @@ class Parser
                 $sss = $this->count;
 
                 if (! $this->matchChar(')')) {
-                    $this->throwParseError('... has to be after the final argument');
+                    throw $this->parseError('... has to be after the final argument');
                 }
 
                 $arg[2] = true;
@@ -2971,7 +2992,7 @@ class Parser
                 } elseif ($this->matchEscapeCharacter($c)) {
                     $content[] = $c;
                 } else {
-                    $this->throwParseError('Unterminated escape sequence');
+                    throw $this->parseError('Unterminated escape sequence');
                 }
             } else {
                 $this->count -= \strlen($delim);
