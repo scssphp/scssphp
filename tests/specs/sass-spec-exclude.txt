@@ -70,8 +70,6 @@ core_functions/color/hsl/four_args/special_functions/min/arg_1
 core_functions/color/hsl/four_args/special_functions/min/arg_2
 core_functions/color/hsl/four_args/special_functions/min/arg_3
 core_functions/color/hsl/four_args/special_functions/min/arg_4
-core_functions/color/hsl/multi_argument_var/1_of_2
-core_functions/color/hsl/multi_argument_var/2_of_2
 core_functions/color/hsl/one_arg/special_functions/alpha/calc/arg_3
 core_functions/color/hsl/one_arg/special_functions/alpha/calc/arg_4
 core_functions/color/hsl/one_arg/special_functions/alpha/env/arg_3
@@ -122,11 +120,6 @@ core_functions/color/hsla/four_args/special_functions/min/arg_1
 core_functions/color/hsla/four_args/special_functions/min/arg_2
 core_functions/color/hsla/four_args/special_functions/min/arg_3
 core_functions/color/hsla/four_args/special_functions/min/arg_4
-core_functions/color/hsla/multi_argument_var/1_of_2
-core_functions/color/hsla/multi_argument_var/1_of_3
-core_functions/color/hsla/multi_argument_var/2_of_2
-core_functions/color/hsla/multi_argument_var/2_of_3
-core_functions/color/hsla/multi_argument_var/3_of_3
 core_functions/color/hsla/one_arg/special_functions/alpha/calc/arg_3
 core_functions/color/hsla/one_arg/special_functions/alpha/calc/arg_4
 core_functions/color/hsla/one_arg/special_functions/alpha/env/arg_3

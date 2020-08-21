@@ -5080,7 +5080,11 @@ class Compiler
     protected function callNativeFunction($name, $function, $prototype, $args)
     {
         $libName = (is_array($function) ? end($function) : null);
-        @list($sorted, $kwargs) = $this->sortNativeFunctionArgs($libName, $prototype, $args);
+        $sorted_kwargs = $this->sortNativeFunctionArgs($libName, $prototype, $args);
+        if (\is_null($sorted_kwargs)) {
+            return null;
+        }
+        @list($sorted, $kwargs) = $sorted_kwargs;
 
         if ($name !== 'if' && $name !== 'call') {
             $inExp = true;
@@ -5130,7 +5134,7 @@ class Compiler
      * @param array  $prototypes
      * @param array  $args
      *
-     * @return array
+     * @return array|null
      */
     protected function sortNativeFunctionArgs($functionName, $prototypes, $args)
     {
@@ -5139,6 +5143,10 @@ class Compiler
         if (! isset($prototypes)) {
             $keyArgs = [];
             $posArgs = [];
+
+            if (\is_array($args) && \count($args) && end($args) === static::$null) {
+                array_pop($args);
+            }
 
             // separate positional and keyword arguments
             foreach ($args as $arg) {
@@ -5269,6 +5277,14 @@ class Compiler
         }
 
         if ($exceptionMessage && ! $prototypeHasMatch) {
+            if (\in_array($functionName, ['libRgb', 'libRgba', 'libHsl', 'libHsla'])) {
+                // if var() or calc() is used as an argument, return as a css function
+                foreach ($args as $arg) {
+                    if ($arg[1][0] === Type::T_FUNCTION_CALL && in_array($arg[1][1], ['var'])) {
+                        return null;
+                    }
+                }
+            }
             throw $this->error($exceptionMessage);
         }
 
@@ -6471,7 +6487,8 @@ class Compiler
 
     protected static $libHsla = [
             ['channels'],
-            ['hue', 'saturation', 'lightness', 'alpha:1'] ];
+            ['hue', 'saturation', 'lightness'],
+            ['hue', 'saturation', 'lightness', 'alpha']];
     protected function libHsla($args, $kwargs)
     {
         return $this->libHsl($args, $kwargs, 'hsla');
