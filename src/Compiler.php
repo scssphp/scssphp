@@ -5279,6 +5279,7 @@ class Compiler
         $splatSeparator      = null;
         $keywordArgs         = [];
         $deferredKeywordArgs = [];
+        $deferredNamedKeywordArgs = [];
         $remaining           = [];
         $hasKeywordArgument  = false;
 
@@ -5299,7 +5300,7 @@ class Compiler
 
                 if (! isset($args[$name]) || $args[$name][3]) {
                     if ($hasVariable) {
-                        $deferredKeywordArgs[$name] = $arg[1];
+                        $deferredNamedKeywordArgs[$name] = $arg[1];
                     } else {
                         throw $this->error("Mixin or function doesn't have an argument named $%s.", $arg[0][1]);
                     }
@@ -5379,6 +5380,14 @@ class Compiler
             list($i, $name, $default, $isVariable) = $arg;
 
             if ($isVariable) {
+                // only if more than one arg : can not be passed as position and value
+                // see https://github.com/sass/libsass/issues/2927
+                if (count($args)>1) {
+                    if (isset($remaining[$i]) && isset($deferredNamedKeywordArgs[$name])) {
+                        throw $this->error("The argument $%s was passed both by position and by name.", $name);
+                    }
+                }
+
                 $val = [Type::T_LIST, \is_null($splatSeparator) ? ',' : $splatSeparator , [], $isVariable];
 
                 for ($count = \count($remaining); $i < $count; $i++) {
@@ -5386,6 +5395,10 @@ class Compiler
                 }
 
                 foreach ($deferredKeywordArgs as $itemName => $item) {
+                    $val[2][$itemName] = $item;
+                }
+
+                foreach ($deferredNamedKeywordArgs as $itemName => $item) {
                     $val[2][$itemName] = $item;
                 }
             } elseif (isset($remaining[$i])) {
