@@ -5507,7 +5507,7 @@ class Compiler
             return static::$emptyMap;
         }
 
-        return [Type::T_MAP, [$item], [static::$null]];
+        return $item;
     }
 
     /**
