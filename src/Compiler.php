@@ -1266,6 +1266,15 @@ class Compiler
         $without = ['rule' => true];
 
         if ($withCondition) {
+            if ($withCondition[0] === Type::T_INTERPOLATE) {
+                $w = $this->compileValue($withCondition);
+
+                $buffer = "($w)";
+                $parser = $this->parserFactory(__METHOD__);
+                if ($parser->parseValue($buffer, $reParsedWith)) {
+                    $withCondition = $reParsedWith;
+                }
+            }
             if ($this->libMapHasKey([$withCondition, static::$with])) {
                 $without = []; // cancel the default
                 $list = $this->coerceList($this->libMapGet([$withCondition, static::$with]));
