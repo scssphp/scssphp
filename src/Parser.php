@@ -619,7 +619,9 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@if', 3) && $this->valueList($cond) && $this->matchChar('{', false)) {
+            if ($this->literal('@if', 3)
+                && $this->functionCallArgumentsList($cond, false)
+                && $this->matchChar('{', false)) {
                 if ($this->cssOnly) {
                     $this->throwParseError("SCSS syntax not allowed in CSS file");
                 }
@@ -642,7 +644,7 @@ class Parser
             $this->seek($s);
 
             if ($this->literal('@debug', 6) &&
-                $this->valueList($value) &&
+                $this->functionCallArgumentsList($value, false) &&
                 $this->end()
             ) {
                 if ($this->cssOnly) {
@@ -657,7 +659,7 @@ class Parser
             $this->seek($s);
 
             if ($this->literal('@warn', 5) &&
-                $this->valueList($value) &&
+                $this->functionCallArgumentsList($value, false) &&
                 $this->end()
             ) {
                 if ($this->cssOnly) {
@@ -672,7 +674,7 @@ class Parser
             $this->seek($s);
 
             if ($this->literal('@error', 6) &&
-                $this->valueList($value) &&
+                $this->functionCallArgumentsList($value, false) &&
                 $this->end()
             ) {
                 if ($this->cssOnly) {
@@ -1717,6 +1719,38 @@ class Parser
     }
 
     /**
+     * Parse a function call, where externals () are part of the call
+     * and not of the value list
+     *
+     * @param $out
+     * @param bool $mandatoryParenthesis
+     * @return bool
+     */
+    protected function functionCallArgumentsList(&$out, $mandatoryParenthesis = true)
+    {
+        $s = $this->count;
+
+        if ($this->matchChar('(')
+            && $this->valueList($out)
+            && $this->matchChar(')') ) {
+
+            return true;
+        }
+
+        if (! $mandatoryParenthesis) {
+            $this->seek($s);
+
+            if ($this->valueList($out)) {
+                return true;
+            }
+        }
+
+        $this->seek($s);
+
+        return false;
+    }
+
+    /**
      * Parse space separated value list
      *
      * @param array $out
@@ -1870,7 +1904,7 @@ class Parser
         }
 
         if ($this->valueList($out) && $this->matchChar($closingParen) &&
-            \in_array($out[0], [Type::T_LIST, Type::T_KEYWORD, Type::T_NUMBER, Type::T_COLOR, Type::T_VARIABLE]) &&
+            ! ($closingParen === ")" && \in_array($out[0], [Type::T_EXPRESSION, Type::T_UNARY])) &&
             \in_array(Type::T_LIST, $allowedTypes)
         ) {
             if ($out[0] !== Type::T_LIST || ! empty($out['enclosing'])) {
