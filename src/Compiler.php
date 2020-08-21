@@ -4936,7 +4936,7 @@ class Compiler
             }
         }
 
-        throw new CompilerException($msg);
+        return new CompilerException($msg);
     }
 
     /**
