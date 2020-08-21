@@ -6849,14 +6849,19 @@ class Compiler
         return [Type::T_LIST, ',', $values];
     }
 
-    protected static $libMapRemove = ['map', 'key'];
+    protected static $libMapRemove = ['map', 'key...'];
     protected function libMapRemove($args)
     {
         $map = $this->assertMap($args[0]);
-        $key = $this->compileStringContent($this->coerceString($args[1]));
+        $keyList = $this->assertList($args[1]);
+
+        $keys = [];
+        foreach ($keyList[2] as $key) {
+            $keys[] = $this->compileStringContent($this->coerceString($key));
+        }
 
         for ($i = \count($map[1]) - 1; $i >= 0; $i--) {
-            if ($key === $this->compileStringContent($this->coerceString($map[1][$i]))) {
+            if (in_array($this->compileStringContent($this->coerceString($map[1][$i])), $keys)) {
                 array_splice($map[1], $i, 1);
                 array_splice($map[2], $i, 1);
             }
