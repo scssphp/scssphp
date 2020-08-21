@@ -2542,7 +2542,7 @@ class Parser
             if ($value == 0 || ($value >= 0xD800 && $value <= 0xDFFF) || $value >= 0x10FFFF) {
                 $out = "\u{FFFD}";
             } else {
-                $out = mb_chr($value);
+                $out = Util::mb_chr($value);
             }
 
             return true;
