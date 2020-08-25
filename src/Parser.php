@@ -454,6 +454,7 @@ class Parser
 
             if ($this->literal('@import', 7) &&
                 $this->valueList($importPath) &&
+                $importPath[0] !== Type::T_FUNCTION_CALL &&
                 $this->end()
             ) {
                 $this->append([Type::T_IMPORT, $importPath], $s);
@@ -1131,7 +1132,7 @@ class Parser
         $end = \strlen($this->buffer);
 
         // look for either ending delim, escape, or string interpolation
-        foreach (['#{', '\\', $delim] as $lookahead) {
+        foreach (['#{', '\\', "\r", $delim] as $lookahead) {
             $pos = strpos($this->buffer, $lookahead, $this->count);
 
             if ($pos !== false && $pos < $end) {
@@ -2523,6 +2524,15 @@ class Parser
                     $this->count += \strlen($m[2]);
                     $content[] = '#{'; // ignore it
                 }
+            } elseif ($m[2] === "\r") {
+                $content[] = '\\a';
+                // TODO : warning
+                # DEPRECATION WARNING on line x, column y of zzz:
+                # Unescaped multiline strings are deprecated and will be removed in a future version of Sass.
+                # To include a newline in a string, use "\a" or "\a " as in CSS.
+                if ($this->matchChar("\n", false)) {
+                    $content[] = ' ';
+                }
             } elseif ($m[2] === '\\') {
                 if ($this->literal("\r\n", 2, false) ||
                     $this->matchChar("\r", false) ||
@@ -3286,8 +3296,11 @@ class Parser
      */
     protected function url(&$out)
     {
-        if ($this->match('(url\(\s*(["\']?)([^)]+)\2\s*\))', $m)) {
-            $out = [Type::T_STRING, '', ['url(' . $m[2] . $m[3] . $m[2] . ')']];
+        //if ($this->match('(url\(\s*(["\']?)([^)]+)\2\s*\))', $m)) {
+        if ($this->literal('url(', 4) &&
+            ($this->string($out) || $this->openString(')', $out)) &&
+            $this->matchChar(')')) {
+            $out = [Type::T_STRING, '', ['url(', $out, ')']];
 
             return true;
         }

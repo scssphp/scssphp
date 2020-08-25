@@ -21,6 +21,7 @@ libsass-closed-issues/issue_2472
 libsass-closed-issues/issue_308
 libsass-closed-issues/issue_674
 libsass-closed-issues/issue_759
+libsass-todo-issues/issue_1096
 libsass/variable-scoping/blead-global/expanding/at-root
 libsass/variable-scoping/blead-global/expanding/function
 libsass/variable-scoping/blead-global/expanding/mixin

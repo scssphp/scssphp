@@ -885,7 +885,6 @@ css/plain/error/expression/parent_selector
 css/plain/error/expression/parentheses
 css/plain/error/expression/silent_comment
 css/plain/error/expression/variable/use
-css/plain/error/statement/at_rule/import/interpolated
 css/plain/error/statement/at_rule/import/nested
 css/plain/error/statement/at_rule/interpolation
 css/plain/error/statement/silent_comment
@@ -1160,7 +1159,6 @@ libsass-closed-issues/issue_948
 libsass-closed-issues/issue_988
 libsass-closed-issues/issue_992
 libsass-todo-issues/issue_1026
-libsass-todo-issues/issue_1096
 libsass-todo-issues/issue_1732/invalid/ruleset
 libsass-todo-issues/issue_1763
 libsass-todo-issues/issue_2023/class-selector-id

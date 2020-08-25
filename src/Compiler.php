@@ -2290,7 +2290,7 @@ class Compiler
         if ($rawPath[0] === Type::T_STRING) {
             $path = $this->compileStringContent($rawPath);
 
-            if ($path = $this->findImport($path)) {
+            if (strpos($path, "url(") !== 0 && $path = $this->findImport($path)) {
                 if (! $once || ! \in_array($path, $this->importedFiles)) {
                     $this->importFile($path, $out);
                     $this->importedFiles[] = $path;
@@ -2299,7 +2299,7 @@ class Compiler
                 return true;
             }
 
-            $this->appendRootDirective('@import ' . $this->compileValue($rawPath). ';', $out);
+            $this->appendRootDirective('@import ' . $this->compileImportPath($rawPath). ';', $out);
 
             return false;
         }
@@ -2312,7 +2312,7 @@ class Compiler
 
             foreach ($rawPath[2] as $path) {
                 if ($path[0] !== Type::T_STRING) {
-                    $this->appendRootDirective('@import ' . $this->compileValue($rawPath) . ';', $out);
+                    $this->appendRootDirective('@import ' . $this->compileImportPath($rawPath) . ';', $out);
 
                     return false;
                 }
@@ -2325,11 +2325,26 @@ class Compiler
             return true;
         }
 
-        $this->appendRootDirective('@import ' . $this->compileValue($rawPath) . ';', $out);
+        $this->appendRootDirective('@import ' . $this->compileImportPath($rawPath) . ';', $out);
 
         return false;
     }
 
+    /**
+     * @param $rawPath
+     * @return string
+     * @throws CompilerException
+     */
+    protected function compileImportPath($rawPath)
+    {
+        $path = $this->compileValue($rawPath);
+
+        // case url() without quotes : supress \r \n remaining in the path
+        // if this is a real string there can not be CR or LF char
+        $path = str_replace(array("\r", "\n"), array("", " "), $path);
+
+        return $path;
+    }
 
     /**
      * Append a root directive like @import or @charset as near as the possible from the source code
@@ -3854,7 +3869,11 @@ class Compiler
                 $content = $this->compileStringContent($value);
 
                 if ($value[1]) {
-                    $content = str_replace(array('\\', "\n", "\f", $value[1]), array('\\\\', '\\n', '\\f', '\\' . $value[1]), $content);
+                    $content = str_replace(
+                        array('\\a', "\n", "\f" , '\\'  , "\r" , $value[1]),
+                        array("\r" , ' ' , '\\f', '\\\\', '\\a', '\\' . $value[1]),
+                        $content
+                    );
                 }
 
                 return $value[1] . $content . $value[1];
