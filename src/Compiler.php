@@ -2341,8 +2341,39 @@ class Compiler
 
         // case url() without quotes : supress \r \n remaining in the path
         // if this is a real string there can not be CR or LF char
-        $path = str_replace(array("\r", "\n"), array("", " "), $path);
+        if (strpos($path, "url(") === 0) {
+            $path = str_replace(array("\r", "\n"), array("", " "), $path);
+        }
+        else {
+            // if this is a file name in a string, spaces shoudl be escaped
+            $path = $this->reduce($rawPath);
+            $path = $this->escapeImportPathString($path);
+            $path = $this->compileValue($path);
+        }
 
+        return $path;
+    }
+
+    /**
+     * @param array $path
+     * @return array
+     * @throws CompilerException
+     */
+    protected function escapeImportPathString($path) {
+        switch ($path[0]) {
+            case Type::T_LIST:
+                foreach ($path[2] as $k => $v) {
+                    $path[2][$k] = $this->escapeImportPathString($v);
+                }
+                break;
+            case Type::T_STRING:
+                if ($path[1]) {
+                    $path = $this->compileValue($path);
+                    $path = str_replace(' ', '\\ ', $path);
+                    $path = [Type::T_KEYWORD, $path];
+                }
+                break;
+        }
         return $path;
     }
 

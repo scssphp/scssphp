@@ -1253,7 +1253,6 @@ non_conformant/basic/11_attribute_selectors
 non_conformant/basic/15_arithmetic_and_lists
 non_conformant/basic/23_basic_value_interpolation
 non_conformant/basic/41_slashy_urls
-non_conformant/basic/42_css_imports
 non_conformant/basic/54_adjacent_identifiers_with_hyphens
 non_conformant/errors/fn-change-color-1
 non_conformant/errors/fn-debug/property
