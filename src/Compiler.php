@@ -3854,7 +3854,7 @@ class Compiler
                 $content = $this->compileStringContent($value);
 
                 if ($value[1]) {
-                    $content = str_replace(array($value[1], '\\', "\n", "\f"), array('\\' . $value[1], '\\\\', '\\n', '\\f'), $content);
+                    $content = str_replace(array('\\', "\n", "\f", $value[1]), array('\\\\', '\\n', '\\f', '\\' . $value[1]), $content);
                 }
 
                 return $value[1] . $content . $value[1];

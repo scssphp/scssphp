@@ -812,7 +812,6 @@ core_functions/string/length/combining_character
 core_functions/string/length/double_width_character
 core_functions/string/length/error/type
 core_functions/string/quote/error/type
-core_functions/string/quote/quote_unquoted_quote/double
 core_functions/string/quote/quote_unquoted_quote/single
 core_functions/string/quote/quoted_single
 core_functions/string/slice/double_width_character
@@ -1252,7 +1251,6 @@ libsass/variable-scoping/root-scope
 libsass/warn-directive-nested/inline
 libsass/warn-directive-nested/mixin
 libsass/wrapped-selector-whitespace
-non_conformant/basic/06_nesting_and_comments
 non_conformant/basic/11_attribute_selectors
 non_conformant/basic/15_arithmetic_and_lists
 non_conformant/basic/23_basic_value_interpolation
@@ -1527,15 +1525,11 @@ non_conformant/parser/interpolate/23_escapes_literal_specials/02_variable
 non_conformant/parser/interpolate/23_escapes_literal_specials/03_inline_double
 non_conformant/parser/interpolate/23_escapes_literal_specials/04_variable_double
 non_conformant/parser/interpolate/23_escapes_literal_specials/05_variable_quoted_double
-non_conformant/parser/interpolate/26_escaped_literal_quotes/01_inline
-non_conformant/parser/interpolate/26_escaped_literal_quotes/02_variable
-non_conformant/parser/interpolate/26_escaped_literal_quotes/05_variable_quoted_double
 non_conformant/parser/interpolate/26_escaped_literal_quotes/06_escape_interpolation
 non_conformant/parser/interpolate/27_escaped_double_quotes/01_inline
 non_conformant/parser/interpolate/27_escaped_double_quotes/02_variable
 non_conformant/parser/interpolate/27_escaped_double_quotes/05_variable_quoted_double
 non_conformant/parser/interpolate/27_escaped_double_quotes/06_escape_interpolation
-non_conformant/parser/interpolate/28_escaped_single_quotes/01_inline
 non_conformant/parser/interpolate/28_escaped_single_quotes/02_variable
 non_conformant/parser/interpolate/28_escaped_single_quotes/06_escape_interpolation
 non_conformant/parser/interpolate/29_binary_operation/06_escape_interpolation

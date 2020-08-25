@@ -170,9 +170,9 @@ foo {
 foo {
   a: "oo bar";
   b: "foo bar";
-  c: "  ";
+  c: "•  ";
   d: "foo\\bar";
-  e: "foo\\"'bar"; }
+  e: "foo\"'bar"; }
 
 /* line 141, inputs/scss_css.scss */
 foo {
