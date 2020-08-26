@@ -5290,7 +5290,7 @@ class Compiler
             $keyArgs = [];
             $posArgs = [];
 
-            if (\is_array($args) && \count($args) && end($args) === static::$null) {
+            if (\is_array($args) && \count($args) && \end($args) === static::$null) {
                 array_pop($args);
             }
 
@@ -5298,12 +5298,10 @@ class Compiler
             foreach ($args as $arg) {
                 list($key, $value) = $arg;
 
-                $key = $key[1];
-
-                if (empty($key)) {
+                if (empty($key) or empty($key[1])) {
                     $posArgs[] = empty($arg[2]) ? $value : $arg;
                 } else {
-                    $keyArgs[$key] = $value;
+                    $keyArgs[$key[1]] = $value;
                 }
             }
 
