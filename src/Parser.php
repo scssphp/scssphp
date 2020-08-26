@@ -1789,6 +1789,56 @@ class Parser
                 }
 
                 $trailing_delim = true;
+            } else {
+                // if no delim watch that a keyword didn't eat the single/double quote
+                // from the following starting string
+                if ($value[0] === Type::T_KEYWORD) {
+                    $word = $value[1];
+
+                    $last_char = substr($word, -1);
+                    if (strlen($word) > 1 &&
+                        in_array($last_char, [ "'", '"']) &&
+                        substr($word, -2, 1) !== '\\') {
+                        // if there is a non escaped opening quote in the keyword, this seems unlikely a mistake
+                        $word = str_replace('\\'.$last_char, '\\\\', $word);
+                        if (strpos($word, $last_char) < strlen($word) - 1) {
+                            continue;
+                        }
+
+                        $currentCount = $this->count;
+
+                        // let's try to rewind to previous char and try a parse
+                        $this->count--;
+                        // in case the keyword also eat spaces
+                        while (substr($this->buffer, $this->count, 1) !== $last_char) {
+                            $this->count--;
+                        }
+
+                        $nextValue = null;
+                        if ($this->$parseItem($nextValue)) {
+                            if ($nextValue[0] === Type::T_KEYWORD && $nextValue[1] === $last_char) {
+                                // bad try, forget it
+                                $this->seek($currentCount);
+                                continue;
+                            }
+                            if ($nextValue[0] !== Type::T_STRING) {
+                                // bad try, forget it
+                                $this->seek($currentCount);
+                                continue;
+                            }
+
+                            // OK it was a good idea
+                            $value[1] = substr($value[1], 0, -1);
+                            array_pop($items);
+                            $items[] = $value;
+                            $items[] = $nextValue;
+                        } else {
+                            // bad try, forget it
+                            $this->seek($currentCount);
+                            continue;
+                        }
+                    }
+                }
             }
         }
 

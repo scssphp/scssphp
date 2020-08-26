@@ -1450,7 +1450,6 @@ non_conformant/parser/arglists/can-end-with-comma/error-mixin-2
 non_conformant/parser/arglists/can-end-with-comma/error-mixin-3
 non_conformant/parser/interpolate/00_concatenation/unspaced
 non_conformant/parser/interpolate/01_literal/06_escape_interpolation
-non_conformant/parser/interpolate/02_double_quoted/06_escape_interpolation
 non_conformant/parser/interpolate/03_single_quoted/02_variable
 non_conformant/parser/interpolate/03_single_quoted/06_escape_interpolation
 non_conformant/parser/interpolate/04_space_list_quoted/02_variable
@@ -1526,7 +1525,6 @@ non_conformant/parser/interpolate/26_escaped_literal_quotes/06_escape_interpolat
 non_conformant/parser/interpolate/27_escaped_double_quotes/01_inline
 non_conformant/parser/interpolate/27_escaped_double_quotes/02_variable
 non_conformant/parser/interpolate/27_escaped_double_quotes/05_variable_quoted_double
-non_conformant/parser/interpolate/27_escaped_double_quotes/06_escape_interpolation
 non_conformant/parser/interpolate/28_escaped_single_quotes/02_variable
 non_conformant/parser/interpolate/28_escaped_single_quotes/06_escape_interpolation
 non_conformant/parser/interpolate/29_binary_operation/06_escape_interpolation
