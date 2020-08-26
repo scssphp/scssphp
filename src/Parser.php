@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -143,7 +144,7 @@ class Parser
              ? "line: $line, column: $column"
              : "$this->sourceName on line $line, at column $column";
 
-        if ($this->peek("(.*?)(\n|$)", $m, $this->count)) {
+        if ($this->peek('(.*?)(\n|$)', $m, $this->count)) {
             $this->restoreEncoding();
 
             $e = new ParserException("$msg: failed at `$m[1]` $loc");
@@ -172,12 +173,12 @@ class Parser
     public function parse($buffer)
     {
         if ($this->cache) {
-            $cacheKey = $this->sourceName . ":" . md5($buffer);
+            $cacheKey = $this->sourceName . ':' . md5($buffer);
             $parseOptions = [
                 'charset' => $this->charset,
                 'utf8' => $this->utf8,
             ];
-            $v = $this->cache->getCache("parse", $cacheKey, $parseOptions);
+            $v = $this->cache->getCache('parse', $cacheKey, $parseOptions);
 
             if (! \is_null($v)) {
                 return $v;
@@ -222,7 +223,7 @@ class Parser
         $this->restoreEncoding();
 
         if ($this->cache) {
-            $this->cache->setCache("parse", $cacheKey, $this->env, $parseOptions);
+            $this->cache->setCache('parse', $cacheKey, $this->env, $parseOptions);
         }
 
         return $this->env;
@@ -354,16 +355,17 @@ class Parser
 
         // the directives
         if (isset($this->buffer[$this->count]) && $this->buffer[$this->count] === '@') {
-            if ($this->literal('@at-root', 8) &&
+            if (
+                $this->literal('@at-root', 8) &&
                 ($this->selectors($selector) || true) &&
                 ($this->map($with) || true) &&
-                (($this->matchChar('(')
-                    && $this->interpolation($with)
-                    && $this->matchChar(')')) || true) &&
+                (($this->matchChar('(') &&
+                    $this->interpolation($with) &&
+                    $this->matchChar(')')) || true) &&
                 $this->matchChar('{', false)
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $atRoot = $this->pushSpecialBlock(Type::T_AT_ROOT, $s);
@@ -375,7 +377,11 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@media', 6) && $this->mediaQueryList($mediaQueryList) && $this->matchChar('{', false)) {
+            if (
+                $this->literal('@media', 6) &&
+                $this->mediaQueryList($mediaQueryList) &&
+                $this->matchChar('{', false)
+            ) {
                 $media = $this->pushSpecialBlock(Type::T_MEDIA, $s);
                 $media->queryList = $mediaQueryList[2];
 
@@ -384,13 +390,14 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@mixin', 6) &&
+            if (
+                $this->literal('@mixin', 6) &&
                 $this->keyword($mixinName) &&
                 ($this->argumentDef($args) || true) &&
                 $this->matchChar('{', false)
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $mixin = $this->pushSpecialBlock(Type::T_MIXIN, $s);
@@ -402,19 +409,20 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@include', 8) &&
-                $this->keyword($mixinName) &&
-                ($this->matchChar('(') &&
+            if (
+                ($this->literal('@include', 8) &&
+                    $this->keyword($mixinName) &&
+                    ($this->matchChar('(') &&
                     ($this->argValues($argValues) || true) &&
                     $this->matchChar(')') || true) &&
-                ($this->end() ||
-                    ($this->literal('using', 5) &&
-                        $this->argumentDef($argUsing) &&
-                        ($this->end() || $this->matchChar('{') && $hasBlock = true)) ||
-                    $this->matchChar('{') && $hasBlock = true)
+                    ($this->end()) ||
+                ($this->literal('using', 5) &&
+                    $this->argumentDef($argUsing) &&
+                    ($this->end() || $this->matchChar('{') && $hasBlock = true)) ||
+                $this->matchChar('{') && $hasBlock = true)
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $child = [
@@ -437,12 +445,13 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@scssphp-import-once', 20) &&
+            if (
+                $this->literal('@scssphp-import-once', 20) &&
                 $this->valueList($importPath) &&
                 $this->end()
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $this->append([Type::T_SCSSPHP_IMPORT_ONCE, $importPath], $s);
@@ -452,7 +461,8 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@import', 7) &&
+            if (
+                $this->literal('@import', 7) &&
                 $this->valueList($importPath) &&
                 $importPath[0] !== Type::T_FUNCTION_CALL &&
                 $this->end()
@@ -464,12 +474,13 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@import', 7) &&
+            if (
+                $this->literal('@import', 7) &&
                 $this->url($importPath) &&
                 $this->end()
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $this->append([Type::T_IMPORT, $importPath], $s);
@@ -479,12 +490,13 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@extend', 7) &&
+            if (
+                $this->literal('@extend', 7) &&
                 $this->selectors($selectors) &&
                 $this->end()
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 // check for '!flag'
@@ -496,13 +508,14 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@function', 9) &&
+            if (
+                $this->literal('@function', 9) &&
                 $this->keyword($fnName) &&
                 $this->argumentDef($args) &&
                 $this->matchChar('{', false)
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $func = $this->pushSpecialBlock(Type::T_FUNCTION, $s);
@@ -514,9 +527,12 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@break', 6) && $this->end()) {
+            if (
+                $this->literal('@break', 6) &&
+                $this->end()
+            ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $this->append([Type::T_BREAK], $s);
@@ -526,9 +542,12 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@continue', 9) && $this->end()) {
+            if (
+                $this->literal('@continue', 9) &&
+                $this->end()
+            ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $this->append([Type::T_CONTINUE], $s);
@@ -538,9 +557,13 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@return', 7) && ($this->valueList($retVal) || true) && $this->end()) {
+            if (
+                $this->literal('@return', 7) &&
+                ($this->valueList($retVal) || true) &&
+                $this->end()
+            ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $this->append([Type::T_RETURN, isset($retVal) ? $retVal : [Type::T_NULL]], $s);
@@ -550,14 +573,15 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@each', 5) &&
+            if (
+                $this->literal('@each', 5) &&
                 $this->genericList($varNames, 'variable', ',', false) &&
                 $this->literal('in', 2) &&
                 $this->valueList($list) &&
                 $this->matchChar('{', false)
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $each = $this->pushSpecialBlock(Type::T_EACH, $s);
@@ -573,18 +597,21 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@while', 6) &&
+            if (
+                $this->literal('@while', 6) &&
                 $this->expression($cond) &&
                 $this->matchChar('{', false)
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
-                while ($cond[0] === Type::T_LIST
-                    && ! empty($cond['enclosing'])
-                    && $cond['enclosing'] === 'parent'
-                    && \count($cond[2]) == 1) {
+                while (
+                    $cond[0] === Type::T_LIST &&
+                    ! empty($cond['enclosing']) &&
+                    $cond['enclosing'] === 'parent' &&
+                    \count($cond[2]) == 1
+                ) {
                     $cond = reset($cond[2]);
                 }
 
@@ -596,7 +623,8 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@for', 4) &&
+            if (
+                $this->literal('@for', 4) &&
                 $this->variable($varName) &&
                 $this->literal('from', 4) &&
                 $this->expression($start) &&
@@ -606,7 +634,7 @@ class Parser
                 $this->matchChar('{', false)
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $for = $this->pushSpecialBlock(Type::T_FOR, $s);
@@ -620,19 +648,23 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@if', 3)
-                && $this->functionCallArgumentsList($cond, false)
-                && $this->matchChar('{', false)) {
+            if (
+                $this->literal('@if', 3) &&
+                $this->functionCallArgumentsList($cond, false) &&
+                $this->matchChar('{', false)
+            ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $if = $this->pushSpecialBlock(Type::T_IF, $s);
 
-                while ($cond[0] === Type::T_LIST
-                    && ! empty($cond['enclosing'])
-                    && $cond['enclosing'] === 'parent'
-                    && \count($cond[2]) == 1) {
+                while (
+                    $cond[0] === Type::T_LIST &&
+                    ! empty($cond['enclosing']) &&
+                    $cond['enclosing'] === 'parent' &&
+                    \count($cond[2]) == 1
+                ) {
                     $cond = reset($cond[2]);
                 }
 
@@ -644,12 +676,13 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@debug', 6) &&
+            if (
+                $this->literal('@debug', 6) &&
                 $this->functionCallArgumentsList($value, false) &&
                 $this->end()
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $this->append([Type::T_DEBUG, $value], $s);
@@ -659,12 +692,13 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@warn', 5) &&
+            if (
+                $this->literal('@warn', 5) &&
                 $this->functionCallArgumentsList($value, false) &&
                 $this->end()
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $this->append([Type::T_WARN, $value], $s);
@@ -674,12 +708,13 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@error', 6) &&
+            if (
+                $this->literal('@error', 6) &&
                 $this->functionCallArgumentsList($value, false) &&
                 $this->end()
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $this->append([Type::T_ERROR, $value], $s);
@@ -689,7 +724,8 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@content', 8) &&
+            if (
+                $this->literal('@content', 8) &&
                 ($this->end() ||
                     $this->matchChar('(') &&
                     $this->argValues($argContent) &&
@@ -697,7 +733,7 @@ class Parser
                     $this->end())
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $this->append([Type::T_MIXIN_CONTENT, isset($argContent) ? $argContent : null], $s);
@@ -715,7 +751,11 @@ class Parser
                 if ($this->literal('@else', 5)) {
                     if ($this->matchChar('{', false)) {
                         $else = $this->pushSpecialBlock(Type::T_ELSE, $s);
-                    } elseif ($this->literal('if', 2) && $this->valueList($cond) && $this->matchChar('{', false)) {
+                    } elseif (
+                        $this->literal('if', 2) &&
+                        $this->valueList($cond) &&
+                        $this->matchChar('{', false)
+                    ) {
                         $else = $this->pushSpecialBlock(Type::T_ELSEIF, $s);
                         $else->cond = $cond;
                     }
@@ -732,7 +772,8 @@ class Parser
             }
 
             // only retain the first @charset directive encountered
-            if ($this->literal('@charset', 8) &&
+            if (
+                $this->literal('@charset', 8) &&
                 $this->valueList($charset) &&
                 $this->end()
             ) {
@@ -753,9 +794,10 @@ class Parser
 
             $this->seek($s);
 
-            if ($this->literal('@supports', 9) &&
-                ($t1=$this->supportsQuery($supportQuery)) &&
-                ($t2=$this->matchChar('{', false))
+            if (
+                $this->literal('@supports', 9) &&
+                ($t1 = $this->supportsQuery($supportQuery)) &&
+                ($t2 = $this->matchChar('{', false))
             ) {
                 $directive = $this->pushSpecialBlock(Type::T_DIRECTIVE, $s);
                 $directive->name  = 'supports';
@@ -767,7 +809,8 @@ class Parser
             $this->seek($s);
 
             // doesn't match built in directive, do generic one
-            if ($this->matchChar('@', false) &&
+            if (
+                $this->matchChar('@', false) &&
                 $this->keyword($dirName) &&
                 $this->directiveValue($dirValue, '{')
             ) {
@@ -788,7 +831,8 @@ class Parser
             $this->seek($s);
 
             // maybe it's a generic blockless directive
-            if ($this->matchChar('@', false) &&
+            if (
+                $this->matchChar('@', false) &&
                 $this->keyword($dirName) &&
                 $this->directiveValue($dirValue) &&
                 $this->end()
@@ -805,18 +849,21 @@ class Parser
 
         $inCssSelector = null;
         if ($this->cssOnly) {
-            $inCssSelector = (! empty($this->env->parent)
-                && !in_array($this->env->type, [Type::T_DIRECTIVE, Type::T_MEDIA]));
+            $inCssSelector = (! empty($this->env->parent) &&
+                ! in_array($this->env->type, [Type::T_DIRECTIVE, Type::T_MEDIA]));
         }
         // custom properties : right part is static
-        if (($this->customProperty($name) || ($inCssSelector && $this->propertyName($name))) &&
+        if (
+            ($this->customProperty($name) ||
+                ($inCssSelector && $this->propertyName($name))) &&
             $this->matchChar(':', false)
         ) {
             $start = $this->count;
 
             // but can be complex and finish with ; or }
             foreach ([';','}'] as $ending) {
-                if ($this->openString($ending, $stringValue, '(', ')', false) &&
+                if (
+                    $this->openString($ending, $stringValue, '(', ')', false) &&
                     $this->end()
                 ) {
                     $end = $this->count;
@@ -831,7 +878,8 @@ class Parser
                         if ($p && $p < $end) {
                             $this->seek($start);
 
-                            if ($this->openString($ending, $stringValue, $nestingPair[0], $nestingPair[1], false) &&
+                            if (
+                                $this->openString($ending, $stringValue, $nestingPair[0], $nestingPair[1], false) &&
                                 $this->end() &&
                                 $this->count > $end
                             ) {
@@ -855,7 +903,8 @@ class Parser
 
         // property shortcut
         // captures most properties before having to parse a selector
-        if ($this->keyword($name, false) &&
+        if (
+            $this->keyword($name, false) &&
             $this->literal(': ', 2) &&
             $this->valueList($value) &&
             $this->end()
@@ -869,13 +918,14 @@ class Parser
         $this->seek($s);
 
         // variable assigns
-        if ($this->variable($name) &&
+        if (
+            $this->variable($name) &&
             $this->matchChar(':') &&
             $this->valueList($value) &&
             $this->end()
         ) {
             if ($this->cssOnly) {
-                $this->throwParseError("SCSS syntax not allowed in CSS file");
+                $this->throwParseError('SCSS syntax not allowed in CSS file');
             }
 
             // check for '!flag'
@@ -893,10 +943,13 @@ class Parser
         }
 
         // opening css block
-        if ($this->selectors($selectors) && $this->matchChar('{', false)) {
+        if (
+            $this->selectors($selectors) &&
+            $this->matchChar('{', false)
+        ) {
             if ($this->cssOnly) {
                 if ($inCssSelector) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
             }
 
@@ -913,7 +966,10 @@ class Parser
         $this->seek($s);
 
         // property assign, or nested assign
-        if ($this->propertyName($name) && $this->matchChar(':')) {
+        if (
+            $this->propertyName($name) &&
+            $this->matchChar(':')
+        ) {
             $foundSomething = false;
 
             if ($this->valueList($value)) {
@@ -927,7 +983,7 @@ class Parser
 
             if ($this->matchChar('{', false)) {
                 if ($this->cssOnly) {
-                    $this->throwParseError("SCSS syntax not allowed in CSS file");
+                    $this->throwParseError('SCSS syntax not allowed in CSS file');
                 }
 
                 $propBlock = $this->pushSpecialBlock(Type::T_NESTED_PROPERTY, $s);
@@ -979,7 +1035,8 @@ class Parser
         }
 
         // extra stuff
-        if ($this->matchChar(';') ||
+        if (
+            $this->matchChar(';') ||
             $this->literal('<!--', 4)
         ) {
             return true;
@@ -1269,7 +1326,7 @@ class Parser
                     if ($this->interpolation($out)) {
                         // keep right spaces in the following string part
                         if ($out[3]) {
-                            while ($this->buffer[$this->count-1] !== '}') {
+                            while ($this->buffer[$this->count - 1] !== '}') {
                                 $this->count--;
                             }
 
@@ -1389,7 +1446,9 @@ class Parser
         $expressions = null;
         $parts = [];
 
-        if (($this->literal('only', 4) && ($only = true) || $this->literal('not', 3) && ($not = true) || true) &&
+        if (
+            ($this->literal('only', 4) && ($only = true) ||
+            $this->literal('not', 3) && ($not = true) || true) &&
             $this->mixedKeyword($mediaType)
         ) {
             $prop = [Type::T_MEDIA_TYPE];
@@ -1445,7 +1504,8 @@ class Parser
 
         $not = false;
 
-        if (($this->literal('not', 3) && ($not = true) || true) &&
+        if (
+            ($this->literal('not', 3) && ($not = true) || true) &&
             $this->matchChar('(') &&
             ($this->expression($property)) &&
             $this->literal(': ', 2) &&
@@ -1464,7 +1524,8 @@ class Parser
             $this->seek($s);
         }
 
-        if ($this->matchChar('(') &&
+        if (
+            $this->matchChar('(') &&
             $this->supportsQuery($subQuery) &&
             $this->matchChar(')')
         ) {
@@ -1474,7 +1535,8 @@ class Parser
             $this->seek($s);
         }
 
-        if ($this->literal('not', 3) &&
+        if (
+            $this->literal('not', 3) &&
             $this->supportsQuery($subQuery)
         ) {
             $parts[] = [Type::T_STRING, '', [[Type::T_KEYWORD, 'not '], $subQuery]];
@@ -1483,7 +1545,8 @@ class Parser
             $this->seek($s);
         }
 
-        if ($this->literal('selector(', 9) &&
+        if (
+            $this->literal('selector(', 9) &&
             $this->selector($selector) &&
             $this->matchChar(')')
         ) {
@@ -1520,8 +1583,10 @@ class Parser
             $this->seek($s);
         }
 
-        if ($this->literal('and', 3) &&
-            $this->genericList($expressions, 'supportsQuery', ' and', false)) {
+        if (
+            $this->literal('and', 3) &&
+            $this->genericList($expressions, 'supportsQuery', ' and', false)
+        ) {
             array_unshift($expressions[2], [Type::T_STRING, '', $parts]);
 
             $parts = [$expressions];
@@ -1530,8 +1595,10 @@ class Parser
             $this->seek($s);
         }
 
-        if ($this->literal('or', 2) &&
-            $this->genericList($expressions, 'supportsQuery', ' or', false)) {
+        if (
+            $this->literal('or', 2) &&
+            $this->genericList($expressions, 'supportsQuery', ' or', false)
+        ) {
             array_unshift($expressions[2], [Type::T_STRING, '', $parts]);
 
             $parts = [$expressions];
@@ -1566,9 +1633,11 @@ class Parser
         $s = $this->count;
         $value = null;
 
-        if ($this->matchChar('(') &&
+        if (
+            $this->matchChar('(') &&
             $this->expression($feature) &&
-            ($this->matchChar(':') && $this->expression($value) || true) &&
+            ($this->matchChar(':') &&
+                $this->expression($value) || true) &&
             $this->matchChar(')')
         ) {
             $out = [Type::T_MEDIA_EXPRESSION, $feature];
@@ -1669,7 +1738,7 @@ class Parser
 
         $this->seek($s);
 
-        if ($endChar and $this->openString($endChar, $out)) {
+        if ($endChar && $this->openString($endChar, $out)) {
             if ($this->matchChar($endChar, false)) {
                 return true;
             }
@@ -1731,9 +1800,11 @@ class Parser
     {
         $s = $this->count;
 
-        if ($this->matchChar('(')
-            && $this->valueList($out)
-            && $this->matchChar(')')) {
+        if (
+            $this->matchChar('(') &&
+            $this->valueList($out) &&
+            $this->matchChar(')')
+        ) {
             return true;
         }
 
@@ -1795,11 +1866,14 @@ class Parser
                     $word = $value[1];
 
                     $last_char = substr($word, -1);
-                    if (strlen($word) > 1 &&
+
+                    if (
+                        strlen($word) > 1 &&
                         in_array($last_char, [ "'", '"']) &&
-                        substr($word, -2, 1) !== '\\') {
+                        substr($word, -2, 1) !== '\\'
+                    ) {
                         // if there is a non escaped opening quote in the keyword, this seems unlikely a mistake
-                        $word = str_replace('\\'.$last_char, '\\\\', $word);
+                        $word = str_replace('\\' . $last_char, '\\\\', $word);
                         if (strpos($word, $last_char) < strlen($word) - 1) {
                             continue;
                         }
@@ -1877,7 +1951,7 @@ class Parser
         $allowedTypes = ($listOnly ? [Type::T_LIST] : [Type::T_LIST, Type::T_MAP]);
 
         if ($this->matchChar('(')) {
-            if ($this->enclosedExpression($lhs, $s, ")", $allowedTypes)) {
+            if ($this->enclosedExpression($lhs, $s, ')', $allowedTypes)) {
                 if ($lookForExp) {
                     $out = $this->expHelper($lhs, 0);
                 } else {
@@ -1893,7 +1967,7 @@ class Parser
         }
 
         if (\in_array(Type::T_LIST, $allowedTypes) && $this->matchChar('[')) {
-            if ($this->enclosedExpression($lhs, $s, "]", [Type::T_LIST])) {
+            if ($this->enclosedExpression($lhs, $s, ']', [Type::T_LIST])) {
                 if ($lookForExp) {
                     $out = $this->expHelper($lhs, 0);
                 } else {
@@ -1935,17 +2009,17 @@ class Parser
      *
      * @return boolean
      */
-    protected function enclosedExpression(&$out, $s, $closingParen = ")", $allowedTypes = [Type::T_LIST, Type::T_MAP])
+    protected function enclosedExpression(&$out, $s, $closingParen = ')', $allowedTypes = [Type::T_LIST, Type::T_MAP])
     {
         if ($this->matchChar($closingParen) && \in_array(Type::T_LIST, $allowedTypes)) {
             $out = [Type::T_LIST, '', []];
 
             switch ($closingParen) {
-                case ")":
+                case ')':
                     $out['enclosing'] = 'parent'; // parenthesis list
                     break;
 
-                case "]":
+                case ']':
                     $out['enclosing'] = 'bracket'; // bracketed list
                     break;
             }
@@ -1953,8 +2027,10 @@ class Parser
             return true;
         }
 
-        if ($this->valueList($out) && $this->matchChar($closingParen) &&
-            ! ($closingParen === ")" && \in_array($out[0], [Type::T_EXPRESSION, Type::T_UNARY])) &&
+        if (
+            $this->valueList($out) &&
+            $this->matchChar($closingParen) && ! ($closingParen === ')' &&
+            \in_array($out[0], [Type::T_EXPRESSION, Type::T_UNARY])) &&
             \in_array(Type::T_LIST, $allowedTypes)
         ) {
             if ($out[0] !== Type::T_LIST || ! empty($out['enclosing'])) {
@@ -1962,11 +2038,11 @@ class Parser
             }
 
             switch ($closingParen) {
-                case ")":
+                case ')':
                     $out['enclosing'] = 'parent'; // parenthesis list
                     break;
 
-                case "]":
+                case ']':
                     $out['enclosing'] = 'bracket'; // bracketed list
                     break;
             }
@@ -2050,7 +2126,10 @@ class Parser
         $s = $this->count;
         $char = $this->buffer[$this->count];
 
-        if ($this->literal('url(', 4) && $this->match('data:([a-z]+)\/([a-z0-9.+-]+);base64,', $m, false)) {
+        if (
+            $this->literal('url(', 4) &&
+            $this->match('data:([a-z]+)\/([a-z0-9.+-]+);base64,', $m, false)
+        ) {
             $len = strspn(
                 $this->buffer,
                 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwyxz0123456789+/=',
@@ -2069,7 +2148,10 @@ class Parser
 
         $this->seek($s);
 
-        if ($this->literal('url(', 4, false) && $this->match('\s*(\/\/[^\s\)]+)\s*', $m)) {
+        if (
+            $this->literal('url(', 4, false) &&
+            $this->match('\s*(\/\/[^\s\)]+)\s*', $m)
+        ) {
             $content = 'url(' . $m[1];
 
             if ($this->matchChar(')')) {
@@ -2084,7 +2166,10 @@ class Parser
 
         // not
         if ($char === 'n' && $this->literal('not', 3, false)) {
-            if ($this->whitespace() && $this->value($inner)) {
+            if (
+                $this->whitespace() &&
+                $this->value($inner)
+            ) {
                 $out = [Type::T_UNARY, 'not', $inner, $this->inParens];
 
                 return true;
@@ -2139,7 +2224,10 @@ class Parser
                 return true;
             }
 
-            if ($this->keyword($inner) && ! $this->func($inner, $out)) {
+            if (
+                $this->keyword($inner) &&
+                ! $this->func($inner, $out)
+            ) {
                 $out = [Type::T_UNARY, '-', $inner, $this->inParens];
 
                 return true;
@@ -2167,7 +2255,7 @@ class Parser
             $this->count++;
 
             if ($this->keyword($keyword)) {
-                $out = [Type::T_KEYWORD, "#" . $keyword];
+                $out = [Type::T_KEYWORD, '#' . $keyword];
 
                 return true;
             }
@@ -2198,7 +2286,10 @@ class Parser
         }
 
         // unicode range with wildcards
-        if ($this->literal('U+', 2) && $this->match('([0-9A-F]+\?*)(-([0-9A-F]+))?', $m, false)) {
+        if (
+            $this->literal('U+', 2) &&
+            $this->match('([0-9A-F]+\?*)(-([0-9A-F]+))?', $m, false)
+        ) {
             $out = [Type::T_KEYWORD, 'U+' . $m[0]];
 
             return true;
@@ -2245,7 +2336,10 @@ class Parser
 
             $this->inParens = true;
 
-            if ($this->expression($exp) && $this->matchChar(')')) {
+            if (
+                $this->expression($exp) &&
+                $this->matchChar(')')
+            ) {
                 $out = $exp;
                 $this->inParens = $inParens;
 
@@ -2270,7 +2364,8 @@ class Parser
     {
         $s = $this->count;
 
-        if ($this->literal('progid:', 7, false) &&
+        if (
+            $this->literal('progid:', 7, false) &&
             $this->openString('(', $fn) &&
             $this->matchChar('(')
         ) {
@@ -2312,7 +2407,10 @@ class Parser
             if ($name !== 'expression' && ! preg_match('/^(-[a-z]+-)?calc$/', $name)) {
                 $ss = $this->count;
 
-                if ($this->argValues($args) && $this->matchChar(')')) {
+                if (
+                    $this->argValues($args) &&
+                    $this->matchChar(')')
+                ) {
                     $func = [Type::T_FUNCTION_CALL, $name, $args];
 
                     return true;
@@ -2321,7 +2419,8 @@ class Parser
                 $this->seek($ss);
             }
 
-            if (($this->openString(')', $str, '(') || true) &&
+            if (
+                ($this->openString(')', $str, '(') || true) &&
                 $this->matchChar(')')
             ) {
                 $args = [];
@@ -2356,7 +2455,10 @@ class Parser
         $args = [];
 
         while ($this->keyword($var)) {
-            if ($this->matchChar('=') && $this->expression($exp)) {
+            if (
+                $this->matchChar('=') &&
+                $this->expression($exp)
+            ) {
                 $args[] = [Type::T_STRING, '', [$var . '=']];
                 $arg = $exp;
             } else {
@@ -2402,7 +2504,10 @@ class Parser
 
             $ss = $this->count;
 
-            if ($this->matchChar(':') && $this->genericList($defaultVal, 'expression', '', true)) {
+            if (
+                $this->matchChar(':') &&
+                $this->genericList($defaultVal, 'expression', '', true)
+            ) {
                 $arg[1] = $defaultVal;
             } else {
                 $this->seek($ss);
@@ -2460,7 +2565,9 @@ class Parser
         $keys = [];
         $values = [];
 
-        while ($this->genericList($key, 'expression', '', true) && $this->matchChar(':') &&
+        while (
+            $this->genericList($key, 'expression', '', true) &&
+            $this->matchChar(':') &&
             $this->genericList($value, 'expression', '', true)
         ) {
             $keys[] = $key;
@@ -2583,7 +2690,8 @@ class Parser
                     $content[] = ' ';
                 }
             } elseif ($m[2] === '\\') {
-                if ($this->literal("\r\n", 2, false) ||
+                if (
+                    $this->literal("\r\n", 2, false) ||
                     $this->matchChar("\r", false) ||
                     $this->matchChar("\n", false) ||
                     $this->matchChar("\f", false)
@@ -2635,7 +2743,7 @@ class Parser
             if ($value == 0 || ($value >= 0xD800 && $value <= 0xDFFF) || $value >= 0x10FFFF) {
                 $out = "\u{FFFD}";
             } else {
-                $out = Util::mb_chr($value);
+                $out = Util::mbChr($value);
             }
 
             return true;
@@ -2734,7 +2842,7 @@ class Parser
 
             $tok = $m[2];
 
-            $this->count-= \strlen($tok);
+            $this->count -= \strlen($tok);
 
             if ($tok === $end && ! $nestingLevel) {
                 break;
@@ -2755,7 +2863,7 @@ class Parser
             }
 
             $content[] = $tok;
-            $this->count+= \strlen($tok);
+            $this->count += \strlen($tok);
         }
 
         $this->eatWhiteDefault = $oldWhite;
@@ -2791,13 +2899,17 @@ class Parser
 
         $s = $this->count;
 
-        if ($this->literal('#{', 2) && $this->valueList($value) && $this->matchChar('}', false)) {
+        if (
+            $this->literal('#{', 2) &&
+            $this->valueList($value) &&
+            $this->matchChar('}', false)
+        ) {
             if ($value === [Type::T_SELF]) {
                 $out = $value;
             } else {
                 if ($lookWhite) {
                     $left = ($s > 0 && preg_match('/\s/', $this->buffer[$s - 1])) ? ' ' : '';
-                    $right = preg_match('/\s/', $this->buffer[$this->count]) ? ' ': '';
+                    $right = preg_match('/\s/', $this->buffer[$this->count]) ? ' ' : '';
                 } else {
                     $left = $right = false;
                 }
@@ -2989,7 +3101,8 @@ class Parser
             $s = $this->count;
 
             if ($this->match('[>+~]+', $m, true)) {
-                if ($subSelector && \is_string($subSelector) && strpos($subSelector, 'nth-') === 0 &&
+                if (
+                    $subSelector && \is_string($subSelector) && strpos($subSelector, 'nth-') === 0 &&
                     $m[0] === '+' && $this->match("(\d+|n\b)", $counter)
                 ) {
                     $this->seek($s);
@@ -3128,13 +3241,19 @@ class Parser
 
                     $ss = $this->count;
 
-                    if ($nameParts === ['not'] || $nameParts === ['is'] ||
-                        $nameParts === ['has'] || $nameParts === ['where'] ||
+                    if (
+                        $nameParts === ['not'] ||
+                        $nameParts === ['is'] ||
+                        $nameParts === ['has'] ||
+                        $nameParts === ['where'] ||
                         $nameParts === ['slotted'] ||
-                        $nameParts === ['nth-child'] || $nameParts == ['nth-last-child'] ||
-                        $nameParts === ['nth-of-type'] || $nameParts == ['nth-last-of-type']
+                        $nameParts === ['nth-child'] ||
+                        $nameParts === ['nth-last-child'] ||
+                        $nameParts === ['nth-of-type'] ||
+                        $nameParts === ['nth-last-of-type']
                     ) {
-                        if ($this->matchChar('(', true) &&
+                        if (
+                            $this->matchChar('(', true) &&
                             ($this->selectors($subs, reset($nameParts)) || true) &&
                             $this->matchChar(')')
                         ) {
@@ -3160,21 +3279,20 @@ class Parser
                         } else {
                             $this->seek($ss);
                         }
-                    } else {
-                        if ($this->matchChar('(') &&
-                            ($this->openString(')', $str, '(') || true) &&
-                            $this->matchChar(')')
-                        ) {
-                            $parts[] = '(';
+                    } elseif (
+                        $this->matchChar('(') &&
+                        ($this->openString(')', $str, '(') || true) &&
+                        $this->matchChar(')')
+                    ) {
+                        $parts[] = '(';
 
-                            if (! empty($str)) {
-                                $parts[] = $str;
-                            }
-
-                            $parts[] = ')';
-                        } else {
-                            $this->seek($ss);
+                        if (! empty($str)) {
+                            $parts[] = $str;
                         }
+
+                        $parts[] = ')';
+                    } else {
+                        $this->seek($ss);
                     }
 
                     continue;
@@ -3195,7 +3313,8 @@ class Parser
             $this->seek($s);
 
             // attribute selector
-            if ($char === '[' &&
+            if (
+                $char === '[' &&
                 $this->matchChar('[') &&
                 ($this->openString(']', $str, '[') || true) &&
                 $this->matchChar(']')
@@ -3248,7 +3367,10 @@ class Parser
     {
         $s = $this->count;
 
-        if ($this->matchChar('$', false) && $this->keyword($name)) {
+        if (
+            $this->matchChar('$', false) &&
+            $this->keyword($name)
+        ) {
             if ($this->allowVars) {
                 $out = [Type::T_VARIABLE, $name];
             } else {
@@ -3273,13 +3395,15 @@ class Parser
      */
     protected function keyword(&$word, $eatWhitespace = null)
     {
-        if ($this->match(
+        $match = $this->match(
             $this->utf8
                 ? '(([\pL\w\x{00A0}-\x{10FFFF}_\-\*!"\']|[\\\\].)([\pL\w\x{00A0}-\x{10FFFF}\-_"\']|[\\\\].)*)'
                 : '(([\w_\-\*!"\']|[\\\\].)([\w\-_"\']|[\\\\].)*)',
             $m,
             $eatWhitespace
-        )) {
+        );
+
+        if ($match) {
             $word = $m[1];
 
             return true;
@@ -3318,12 +3442,14 @@ class Parser
      */
     protected function placeholder(&$placeholder)
     {
-        if ($this->match(
+        $match = $this->match(
             $this->utf8
                 ? '([\pL\w\-_]+)'
                 : '([\w\-_]+)',
             $m
-        )) {
+        );
+
+        if ($match) {
             $placeholder = $m[1];
 
             return true;
@@ -3346,9 +3472,11 @@ class Parser
     protected function url(&$out)
     {
         //if ($this->match('(url\(\s*(["\']?)([^)]+)\2\s*\))', $m)) {
-        if ($this->literal('url(', 4) &&
+        if (
+            $this->literal('url(', 4) &&
             ($this->string($out) || $this->openString(')', $out)) &&
-            $this->matchChar(')')) {
+            $this->matchChar(')')
+        ) {
             $out = [Type::T_STRING, '', ['url(', $out, ')']];
 
             return true;

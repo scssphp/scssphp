@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -31,7 +32,7 @@ class Base64VLQTest extends TestCase
      */
     public function testEncode($expected, $value)
     {
-        $encoder = new Base64VLQ;
+        $encoder = new Base64VLQ();
 
         $this->assertEquals($expected, $encoder->encode($value));
     }

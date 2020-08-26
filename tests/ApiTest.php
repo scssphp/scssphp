@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -25,7 +26,7 @@ class ApiTest extends TestCase
 
     public function testUserFunction()
     {
-        $this->scss = new Compiler;
+        $this->scss = new Compiler();
 
         $this->scss->registerFunction('add-two', function ($args) {
             list($a, $b) = $args;
@@ -40,7 +41,7 @@ class ApiTest extends TestCase
 
     public function testUserFunctionNull()
     {
-        $this->scss = new Compiler;
+        $this->scss = new Compiler();
 
         $this->scss->registerFunction('get-null', function ($args) {
             return Compiler::$null;
@@ -54,7 +55,7 @@ class ApiTest extends TestCase
 
     public function testUserFunctionKwargs()
     {
-        $this->scss = new Compiler;
+        $this->scss = new Compiler();
 
         $this->scss->registerFunction(
             'divide',
@@ -72,7 +73,7 @@ class ApiTest extends TestCase
 
     public function testImportCustomCallback()
     {
-        $this->scss = new Compiler;
+        $this->scss = new Compiler();
 
         $this->scss->addImportPath(function ($path) {
             return __DIR__ . '/inputs/' . str_replace('.css', '.scss', $path);
@@ -89,7 +90,7 @@ class ApiTest extends TestCase
      */
     public function testSetVariables($expected, $scss, $variables)
     {
-        $this->scss = new Compiler;
+        $this->scss = new Compiler();
 
         $this->scss->setVariables($variables);
 
@@ -142,7 +143,7 @@ class ApiTest extends TestCase
 
     public function testCompileByteOrderMarker()
     {
-        $this->scss = new Compiler;
+        $this->scss = new Compiler();
 
         // test that BOM is stripped/ignored
         $this->assertEquals(

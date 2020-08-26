@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -174,7 +175,8 @@ class ScssTest extends TestCase
                         continue 2;
                     }
 
-                    if (preg_match('/= <<([A-Z_]+)\s*$/', $line, $matches)
+                    if (
+                        preg_match('/= <<([A-Z_]+)\s*$/', $line, $matches)
                         || preg_match('/= render <<([A-Z_]+)\s*$/', $line, $matches)
                     ) {
                         $terminator = $matches[1];
@@ -186,14 +188,16 @@ class ScssTest extends TestCase
                         continue 2;
                     }
 
-                    if (preg_match('/^\s*assert_equal\(<<CSS, render\(<<SASS\)\)\s*$/', $line, $matches)
-                        || preg_match('/^\s*assert_equal <<CSS, render\(<<SASS\)\s*$/', $line, $matches)
+                    if (
+                        preg_match('/^\s*assert_equal\(<<CSS, render\(<<SASS\)\)\s*$/', $line, $matches) ||
+                        preg_match('/^\s*assert_equal <<CSS, render\(<<SASS\)\s*$/', $line, $matches)
                     ) {
                         $state = 6; // sass parameter list
                         continue 2;
                     }
 
-                    if (preg_match('/^\s*assert_equal\(<<CSS, render\(<<SCSS\)\)\s*$/', $line, $matches) ||
+                    if (
+                         preg_match('/^\s*assert_equal\(<<CSS, render\(<<SCSS\)\)\s*$/', $line, $matches) ||
                          preg_match('/^\s*assert_equal <<CSS, render\(<<SCSS\)\s*$/', $line, $matches) ||
                         // @codingStandardsIgnoreStart
                         preg_match('/^\s*assert_equal\(<<CSS, render\(<<SCSS, :style => :(compressed|nested)\)\)\s*$/', $line, $matches) ||
@@ -232,7 +236,8 @@ class ScssTest extends TestCase
                         continue 2;
                     }
 
-                    if (preg_match('/^\s*assert_raise_message.*render\(<<SCSS\)}\s*$/', $line) ||
+                    if (
+                        preg_match('/^\s*assert_raise_message.*render\(<<SCSS\)}\s*$/', $line) ||
                         preg_match('/^\s*assert_raise_message.*render <<SCSS}\s*$/', $line) ||
                         preg_match('/^\s*assert_raise_line.*render\(<<SCSS\)}\s*$/', $line) ||
                         preg_match('/^\s*silence_warnings .*render\(<<SCSS\)}\s*$/', $line) ||
@@ -256,13 +261,13 @@ class ScssTest extends TestCase
                         continue 2;
                     }
 
-                    if (preg_match('/^\s*assert_equal[ (].*,$/', $line)
-                    ) {
+                    if (preg_match('/^\s*assert_equal[ (].*,$/', $line)) {
                         $i++; // throw-away the next line too
                         continue 2;
                     }
 
-                    if (preg_match('/^\s*assert_equal[ (]/', $line) ||
+                    if (
+                        preg_match('/^\s*assert_equal[ (]/', $line) ||
                         preg_match('/^\s*assert_parses/', $line) ||
                         preg_match('/^\s*assert\(/', $line) ||
                         preg_match('/^\s*render[ (]"/', $line) ||
@@ -274,7 +279,7 @@ class ScssTest extends TestCase
                     if (preg_match('/^\s*end\s*$/', $line)) {
                         $state = 0; // exit function
 
-                        $tests[] = [$name. ($nameSuffix ? "-$nameSuffix" : ""), implode($scss), implode($css), $style];
+                        $tests[] = [$name . ($nameSuffix ? "-$nameSuffix" : ""), implode($scss), implode($css), $style];
                         $scss = [];
                         $css = [];
                         $style = null;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -67,8 +68,8 @@ class Number extends Node implements \ArrayAccess
         ],
         'dpi' => [
             'dpi'  => 1,
-            'dpcm' => 1/2.54,
-            'dppx' => 1/96,
+            'dpcm' => 1 / 2.54,
+            'dppx' => 1 / 96,
         ],
     ];
 
@@ -158,7 +159,8 @@ class Number extends Node implements \ArrayAccess
             return ! \is_null($this->sourceLine);
         }
 
-        if ($offset === -1 ||
+        if (
+            $offset === -1 ||
             $offset === 0 ||
             $offset === 1 ||
             $offset === 2

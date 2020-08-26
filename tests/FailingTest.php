@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -68,7 +69,7 @@ END_OF_EXPECTED
 
     private function compile($str)
     {
-        $scss = new Compiler;
+        $scss = new Compiler();
 
         return trim($scss->compile($str));
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -97,7 +98,8 @@ class Nested extends Formatter
             array_pop($depths);
             $this->depth--;
 
-            if (! $this->depth && ($block->depth <= 1 || (! $this->indentLevel && $block->type === Type::T_COMMENT)) &&
+            if (
+                ! $this->depth && ($block->depth <= 1 || (! $this->indentLevel && $block->type === Type::T_COMMENT)) &&
                 (($block->selectors && ! $isMediaOrDirective) || $previousHasSelector)
             ) {
                 $downLevel = $this->break;

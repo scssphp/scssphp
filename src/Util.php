@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -72,7 +73,14 @@ class Util
         return strtr(rawurlencode($string), $revert);
     }
 
-    public static function mb_chr($code)
+    /**
+     * mb_chr() wrapper
+     *
+     * @param integer $code
+     *
+     * @return string
+     */
+    public static function mbChr($code)
     {
         // Use the native implementation if available.
         if (\function_exists('mb_chr')) {
@@ -82,12 +90,12 @@ class Util
         if (0x80 > $code %= 0x200000) {
             $s = \chr($code);
         } elseif (0x800 > $code) {
-            $s = \chr(0xC0 | $code >> 6).\chr(0x80 | $code & 0x3F);
+            $s = \chr(0xC0 | $code >> 6) . \chr(0x80 | $code & 0x3F);
         } elseif (0x10000 > $code) {
-            $s = \chr(0xE0 | $code >> 12).\chr(0x80 | $code >> 6 & 0x3F).\chr(0x80 | $code & 0x3F);
+            $s = \chr(0xE0 | $code >> 12) . \chr(0x80 | $code >> 6 & 0x3F) . \chr(0x80 | $code & 0x3F);
         } else {
-            $s = \chr(0xF0 | $code >> 18).\chr(0x80 | $code >> 12 & 0x3F)
-                .\chr(0x80 | $code >> 6 & 0x3F).\chr(0x80 | $code & 0x3F);
+            $s = \chr(0xF0 | $code >> 18) . \chr(0x80 | $code >> 12 & 0x3F)
+                . \chr(0x80 | $code >> 6 & 0x3F) . \chr(0x80 | $code & 0x3F);
         }
 
         return $s;

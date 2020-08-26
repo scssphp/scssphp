@@ -1,12 +1,12 @@
 # scssphp
-### <http://scssphp.github.io/scssphp>
+### <https://scssphp.github.io/scssphp>
 
-[![Build](https://travis-ci.org/scssphp/scssphp.svg?branch=master)](http://travis-ci.org/scssphp/scssphp)
+[![Build](https://travis-ci.org/scssphp/scssphp.svg?branch=master)](https://travis-ci.org/scssphp/scssphp)
 [![License](https://poser.pugx.org/scssphp/scssphp/license)](https://packagist.org/packages/scssphp/scssphp)
 
 `scssphp` is a compiler for SCSS written in PHP.
 
-Checkout the homepage, <http://scssphp.github.io/scssphp>, for directions on how to use.
+Checkout the homepage, <https://scssphp.github.io/scssphp>, for directions on how to use.
 
 ## Running Tests
 
@@ -39,8 +39,8 @@ To enable the `scss` compatibility tests:
 
 ## Coding Standard
 
-`scssphp` source conforms to [PSR2](http://www.php-fig.org/psr/psr-2/).
+`scssphp` source conforms to [PSR12](https://www.php-fig.org/psr/psr-12/).
 
 Run the following command from the root directory to check the code for "sniffs".
 
-    vendor/bin/phpcs --standard=PSR2 bin src tests
+    vendor/bin/phpcs --standard=PSR12 --extensions=php bin src tests *.php

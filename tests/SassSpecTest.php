@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -175,7 +176,7 @@ class SassSpecTest extends TestCase
                         $memoryInBytes *= 1024;
                 }
 
-                if ($memoryInBytes < 256*1024*1024) {
+                if ($memoryInBytes < 256 * 1024 * 1024) {
                     @ini_set('memory_limit', "256M");
                 }
             }
@@ -187,7 +188,7 @@ class SassSpecTest extends TestCase
         list($options, $scss, $includes, $inputDir) = $input;
         list($css, $warning, $error, $alternativeCssOutputs) = $output;
 
-        $fullInputs = $scss."\n".implode("\n", $includes);
+        $fullInputs = $scss . "\n" . implode("\n", $includes);
 
         if (false !== strpos($fullInputs, '@forward ') || false !== strpos($fullInputs, '@use ')) {
             $this->markTestSkipped('Sass modules are not supported.');
@@ -199,7 +200,8 @@ class SassSpecTest extends TestCase
             return;
         }
 
-        if (strpos($name, 'libsass-closed-issues/issue_1801/import-cycle') ||
+        if (
+            strpos($name, 'libsass-closed-issues/issue_1801/import-cycle') ||
             strpos($name, 'libsass-todo-issues/issue_1801/simple-import-loop') ||
             // The loop in issue_221260 is not technically infinite, but we go over the xdebug
             // max nesting level in our CI setup before detecting the Sass error.
@@ -292,8 +294,10 @@ class SassSpecTest extends TestCase
                 $this->assertEquals($css, $actual, $name);
 
                 if ($warning) {
-                    if (getenv('TEST_SASS_SPEC')
-                        || !$this->matchExclusionList($name, $this->getWarningExclusionList())) {
+                    if (
+                        getenv('TEST_SASS_SPEC') ||
+                        ! $this->matchExclusionList($name, $this->getWarningExclusionList())
+                    ) {
                         $this->assertEquals(rtrim($warning), rtrim($output));
                     }
                 }
@@ -356,7 +360,7 @@ class SassSpecTest extends TestCase
         foreach ($specs as $fileName) {
             $spec         = file_get_contents($fileName);
             $fileDir      = dirname($fileName);
-            $fileName     = substr($fileName, strlen($dir) +1);
+            $fileName     = substr($fileName, strlen($dir) + 1);
             $baseTestName = substr($fileName, 0, -4);
             $subTests     = explode(
                 '================================================================================',
@@ -474,7 +478,7 @@ class SassSpecTest extends TestCase
                         $baseTestDir
                     );
                     $warning = str_replace(
-                        rtrim("/sass/spec/$baseTestDir/$baseDir", '/').'/',
+                        rtrim("/sass/spec/$baseTestDir/$baseDir", '/') . '/',
                         '',
                         $warning
                     );
@@ -487,8 +491,9 @@ class SassSpecTest extends TestCase
                     [$output, $warning, $error, $alternativeOutputs]
                 ];
 
-                if (! $hasInput ||
-                    (!$hasOutput && ! $error) ||
+                if (
+                    ! $hasInput ||
+                    (! $hasOutput && ! $error) ||
                     strlen($input) > $sizeLimit
                 ) {
                     $skippedTests[] = $test;
@@ -507,7 +512,7 @@ class SassSpecTest extends TestCase
         $testCases = array();
 
         foreach ($tests as $k => $test) {
-            $testName = ($k+1) . '/' . $nb_tests . '. ' . $test[0];
+            $testName = ($k + 1) . '/' . $nb_tests . '. ' . $test[0];
             $test[0] = $testName;
             $testCases[$testName] = $test;
         }

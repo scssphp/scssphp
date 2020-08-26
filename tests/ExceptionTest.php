@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SCSSPHP
  *
@@ -142,7 +143,7 @@ END_OF_SCSS
 
     private function compile($str)
     {
-        $scss = new Compiler;
+        $scss = new Compiler();
 
         return trim($scss->compile($str));
     }
