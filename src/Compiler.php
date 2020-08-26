@@ -3300,7 +3300,7 @@ class Compiler
 
             foreach ((array) $argValues as $arg) {
                 if (empty($arg[0]) or count($argValues)==1) {
-                    $listArgs[] = $this->reduce($arg[1]);
+                    $listArgs[] = $this->reduce($this->stringifyFncallArgs($arg[1]));
                 }
             }
 
@@ -3330,6 +3330,42 @@ class Compiler
             default:
                 return static::$defaultValue;
         }
+    }
+
+    /**
+     * Reformat fncall arguments to proper css function output
+     * @param $arg
+     * @return array|\ArrayAccess|Node\Number|string|null
+     */
+    protected function stringifyFncallArgs($arg) {
+
+        switch ($arg[0]) {
+            case Type::T_LIST:
+                foreach ($arg[2] as $k=>$v) {
+                    $arg[2][$k] = $this->stringifyFncallArgs($v);
+                }
+                break;
+
+            case Type::T_EXPRESSION:
+                if ($arg[1] === '/') {
+                    $arg[2] = $this->stringifyFncallArgs($arg[2]);
+                    $arg[3] = $this->stringifyFncallArgs($arg[3]);
+                    $arg[5] = $arg[6] = false; // no space around /
+                    $arg = $this->expToString($arg);
+                }
+                break;
+
+            case Type::T_FUNCTION_CALL:
+                $name = $arg[1];
+                if (in_array($name, ['max', 'min', 'calc'])) {
+                    $args = $arg[2];
+                    $arg = $this->fncall([Type::T_FUNCTION, $name, [Type::T_LIST, ',', []]], $args);
+                }
+                break;
+
+        }
+
+        return $arg;
     }
 
     /**
@@ -6520,17 +6556,40 @@ class Compiler
         ['hue', 'saturation', 'lightness', 'alpha'] ];
     protected function libHsl($args, $kwargs, $funcName = 'hsl')
     {
+        $args_to_check = $args;
         if (\count($args) == 1) {
             if ($args[0][0] !== Type::T_LIST || \count($args[0][2]) < 3 || \count($args[0][2]) > 4) {
                 return [Type::T_STRING, '', [$funcName . '(', $args[0], ')']];
             }
 
             $args = $args[0][2];
+            $args_to_check = $kwargs['channels'][2];
         }
 
         $hue = $this->compileColorPartValue($args[0], 0, 360, false, false, true);
         $saturation = $this->compileColorPartValue($args[1], 0, 100, false);
         $lightness = $this->compileColorPartValue($args[2], 0, 100, false);
+
+        foreach ($kwargs as $k=>$arg) {
+            if (in_array($arg[0], [Type::T_FUNCTION_CALL]) && in_array($arg[1], ['min', 'max'])) {
+                return null;
+            }
+        }
+
+        foreach ($args_to_check as $k=>$arg) {
+            if (in_array($arg[0], [Type::T_FUNCTION_CALL]) && in_array($arg[1], ['min', 'max'])) {
+                if (count($kwargs)>1 || ($k>=2 && count($args) === 4)) {
+                    return null;
+                }
+                else {
+                    $args[$k] = $this->stringifyFncallArgs($arg);
+                    $hue = '';
+                }
+            }
+            if ($k>=2 && count($args) === 4 && in_array($arg[0], [Type::T_FUNCTION_CALL, Type::T_FUNCTION]) && in_array($arg[1], ['calc','env'])) {
+                return null;
+            }
+        }
 
         $alpha = null;
 
