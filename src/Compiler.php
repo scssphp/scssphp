@@ -3900,6 +3900,12 @@ class Compiler
                 $content = $this->compileStringContent($value);
 
                 if ($value[1]) {
+                    // force double quote as string quote for the output in certain cases
+                    if ($value[1] === "'" &&
+                        strpos($content, '"') === false &&
+                        strpbrk($content, '{}') !== false) {
+                        $value[1] = '"';
+                    }
                     $content = str_replace(
                         array('\\a', "\n", "\f" , '\\'  , "\r" , $value[1]),
                         array("\r" , ' ' , '\\f', '\\\\', '\\a', '\\' . $value[1]),
