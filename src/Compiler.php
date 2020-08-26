@@ -2343,8 +2343,7 @@ class Compiler
         // if this is a real string there can not be CR or LF char
         if (strpos($path, "url(") === 0) {
             $path = str_replace(array("\r", "\n"), array("", " "), $path);
-        }
-        else {
+        } else {
             // if this is a file name in a string, spaces shoudl be escaped
             $path = $this->reduce($rawPath);
             $path = $this->escapeImportPathString($path);
@@ -2359,7 +2358,8 @@ class Compiler
      * @return array
      * @throws CompilerException
      */
-    protected function escapeImportPathString($path) {
+    protected function escapeImportPathString($path)
+    {
         switch ($path[0]) {
             case Type::T_LIST:
                 foreach ($path[2] as $k => $v) {
@@ -5020,14 +5020,23 @@ class Compiler
     {
         $nbExpected = \count($ExpectedArgs);
         if ($nbActual > $nbExpected) {
-            return $this->error("Error: Only %d arguments allowed in %s(), but %d were passed.", $nbExpected, $functionName, $nbActual);
-        }
-        else {
+            return $this->error(
+                "Error: Only %d arguments allowed in %s(), but %d were passed.",
+                $nbExpected,
+                $functionName,
+                $nbActual
+            );
+        } else {
             $missing = [];
             while (count($ExpectedArgs) and count($ExpectedArgs) > $nbActual) {
                 array_unshift($missing, array_pop($ExpectedArgs));
             }
-            return $this->error("Error: %s() argument%s %s missing.", $functionName, count($missing) > 1 ? 's' : '', implode(', ', $missing));
+            return $this->error(
+                "Error: %s() argument%s %s missing.",
+                $functionName,
+                count($missing) > 1 ? 's' : '',
+                implode(', ', $missing)
+            );
         }
     }
 

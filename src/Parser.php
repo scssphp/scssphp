@@ -1733,8 +1733,7 @@ class Parser
 
         if ($this->matchChar('(')
             && $this->valueList($out)
-            && $this->matchChar(')') ) {
-
+            && $this->matchChar(')')) {
             return true;
         }
 
