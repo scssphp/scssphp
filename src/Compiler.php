@@ -7686,12 +7686,30 @@ class Compiler
     protected function isSuperSelector($super, $sub)
     {
         // one and only one selector for each arg
-        if (! $super || \count($super) !== 1) {
+        if (! $super) {
             throw $this->error('Invalid super selector for isSuperSelector()');
         }
 
-        if (! $sub || \count($sub) !== 1) {
+        if (! $sub) {
             throw $this->error('Invalid sub selector for isSuperSelector()');
+        }
+
+        if (count($sub) > 1) {
+            foreach ($sub as $s) {
+                if (! $this->isSuperSelector($super, [$s])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        if (count($super) > 1) {
+            foreach ($super as $s) {
+                if ($this->isSuperSelector([$s], $sub)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         $super = reset($super);
