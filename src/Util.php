@@ -100,4 +100,20 @@ class Util
 
         return $s;
     }
+
+    /**
+     * mb_strlen() wrapper
+     *
+     * @param string $string
+     * @return false|int
+     */
+    public static function mbStrlen($string)
+    {
+        // Use the native implementation if available.
+        if (\function_exists('mb_strlen')) {
+            return mb_strlen($string, 'UTF-8');
+        }
+
+        return @iconv_strlen($string, 'UTF-8');
+    }
 }

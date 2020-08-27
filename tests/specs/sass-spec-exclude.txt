@@ -683,9 +683,6 @@ core_functions/selector/unify/simple/universal/and_universal/explicit/and_defaul
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_empty
 core_functions/string/insert/combining_character
 core_functions/string/insert/double_width_character
-core_functions/string/length/combining_character
-core_functions/string/length/double_width_character
-core_functions/string/length/error/type
 core_functions/string/quote/error/type
 core_functions/string/quote/quote_unquoted_quote/single
 core_functions/string/quote/quoted_single

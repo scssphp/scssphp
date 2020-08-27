@@ -7480,10 +7480,10 @@ class Compiler
     protected static $libStrLength = ['string'];
     protected function libStrLength($args)
     {
-        $string = $this->coerceString($args[0]);
+        $string = $this->assertString($args[0], 'string');
         $stringContent = $this->compileStringContent($string);
 
-        return new Node\Number(\strlen($stringContent), '');
+        return new Node\Number(Util::mbStrlen($stringContent), '');
     }
 
     protected static $libStrSlice = ['string', 'start-at', 'end-at:-1'];
