@@ -7636,7 +7636,7 @@ class Compiler
         }
 
         if (! $this->checkSelectorArgType($arg)) {
-            $var_display = ($varname ? ' $'.$varname.':' : '');
+            $var_display = ($varname ? ' $' . $varname . ':' : '');
             $var_value = $this->compileValue($arg);
             throw $this->error("Error:{$var_display} $var_value is not a valid selector: it must be a string,"
                 . " a list of strings, or a list of lists of strings");
@@ -7652,10 +7652,10 @@ class Compiler
             $gluedSelector = $this->glueFunctionSelectors($selector);
 
             if (! $allowParent) {
-                foreach($gluedSelector as $selector) {
+                foreach ($gluedSelector as $selector) {
                     foreach ($selector as $s) {
                         if (in_array(static::$selfSelector, $s)) {
-                            $var_display = ($varname ? ' $'.$varname.':' : '');
+                            $var_display = ($varname ? ' $' . $varname . ':' : '');
                             throw $this->error("Error:{$var_display} Parent selectors aren't allowed here.");
                         }
                     }
@@ -7674,7 +7674,8 @@ class Compiler
      * @param int $maxDepth
      * @return bool
      */
-    protected function checkSelectorArgType($arg, $maxDepth = 2) {
+    protected function checkSelectorArgType($arg, $maxDepth = 2)
+    {
         if ($arg[0] === Type::T_LIST && $maxDepth > 0) {
             foreach ($arg[2] as $elt) {
                 if (! $this->checkSelectorArgType($elt, $maxDepth - 1)) {
@@ -7834,7 +7835,7 @@ class Compiler
         }
 
         $selectors = [];
-        foreach($args as $arg) {
+        foreach ($args as $arg) {
             $selectors[] = $this->getSelectorArg($arg, 'selector');
         }
 
@@ -7993,7 +7994,7 @@ class Compiler
         }
 
         $selectorsMap = [];
-        foreach($args as $arg) {
+        foreach ($args as $arg) {
             $selectorsMap[] = $this->getSelectorArg($arg, 'selector', true);
         }
 
