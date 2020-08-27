@@ -7715,6 +7715,14 @@ class Compiler
         $super = reset($super);
         $sub = reset($sub);
 
+        foreach(['super'=> $super, 'sub' => $sub] as $var => $selector) {
+            foreach ($selector as $s) {
+                if (in_array(static::$selfSelector, $s)) {
+                    throw $this->error("Error: \${$var}: Parent selectors aren't allowed here.");
+                }
+            }
+        }
+
         $i = 0;
         $nextMustMatch = false;
 

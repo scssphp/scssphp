@@ -472,9 +472,7 @@ core_functions/selector/is_superselector/compound/pseudo_element/class_syntax/af
 core_functions/selector/is_superselector/compound/pseudo_element/class_syntax/before
 core_functions/selector/is_superselector/compound/pseudo_element/class_syntax/first_letter
 core_functions/selector/is_superselector/compound/pseudo_element/class_syntax/first_line
-core_functions/selector/is_superselector/error/sub/parent
 core_functions/selector/is_superselector/error/sub/type
-core_functions/selector/is_superselector/error/super/parent
 core_functions/selector/is_superselector/error/super/type
 core_functions/selector/is_superselector/simple/pseudo/selector_arg/any/prefix/superset
 core_functions/selector/is_superselector/simple/pseudo/selector_arg/any/superset
