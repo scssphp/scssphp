@@ -6217,7 +6217,7 @@ class Compiler
 
     // Built in functions
 
-    protected static $libCall = ['name', 'args...'];
+    protected static $libCall = ['function', 'args...'];
     protected function libCall($args, $kwargs)
     {
         $functionReference = $this->reduce(array_shift($args), true);

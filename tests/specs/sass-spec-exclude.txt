@@ -347,7 +347,6 @@ core_functions/math/unit/multiple_denominators
 core_functions/math/unitless/error/type
 core_functions/math/unitless/numerator_and_denominator
 core_functions/meta/call/error/invalid_args
-core_functions/meta/call/named
 core_functions/meta/content_exists/error/in_content
 core_functions/meta/content_exists/error/in_function_called_by_mixin
 core_functions/meta/content_exists/error/outside_mixin
