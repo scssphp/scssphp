@@ -7627,12 +7627,19 @@ class Compiler
      *
      * @return array|boolean
      */
-    protected function getSelectorArg($arg)
+    protected function getSelectorArg($arg, $varname = null)
     {
         static $parser = null;
 
         if (\is_null($parser)) {
             $parser = $this->parserFactory(__METHOD__);
+        }
+
+        if (! $this->checkSelectorArgType($arg)) {
+            $var_display = ($varname ? ' $'.$varname.':' : '');
+            $var_value = $this->compileValue($arg);
+            throw $this->error("Error:{$var_display} $var_value is not a valid selector: it must be a string,"
+                . " a list of strings, or a list of lists of strings");
         }
 
         $arg = $this->libUnquote([$arg]);
@@ -7648,6 +7655,27 @@ class Compiler
         }
 
         return false;
+    }
+
+    /**
+     * Check variable type for getSelectorArg() function
+     * @param array $arg
+     * @param int $maxDepth
+     * @return bool
+     */
+    protected function checkSelectorArgType($arg, $maxDepth = 2) {
+        if ($arg[0] === Type::T_LIST && $maxDepth > 0) {
+            foreach ($arg[2] as $elt) {
+                if (! $this->checkSelectorArgType($elt, $maxDepth - 1)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        if (!in_array($arg[0], [Type::T_STRING, Type::T_KEYWORD])) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -7669,8 +7697,8 @@ class Compiler
     {
         list($super, $sub) = $args;
 
-        $super = $this->getSelectorArg($super);
-        $sub = $this->getSelectorArg($sub);
+        $super = $this->getSelectorArg($super, 'super');
+        $sub = $this->getSelectorArg($sub, 'sub');
 
         return $this->isSuperSelector($super, $sub);
     }
@@ -7866,9 +7894,9 @@ class Compiler
     {
         list($selectors, $extendee, $extender) = $args;
 
-        $selectors = $this->getSelectorArg($selectors);
-        $extendee  = $this->getSelectorArg($extendee);
-        $extender  = $this->getSelectorArg($extender);
+        $selectors = $this->getSelectorArg($selectors, 'selector');
+        $extendee  = $this->getSelectorArg($extendee, 'extendee');
+        $extender  = $this->getSelectorArg($extender, 'extender');
 
         if (! $selectors || ! $extendee || ! $extender) {
             throw $this->error('selector-extend() invalid arguments');
@@ -7887,9 +7915,9 @@ class Compiler
     {
         list($selectors, $original, $replacement) = $args;
 
-        $selectors   = $this->getSelectorArg($selectors);
-        $original    = $this->getSelectorArg($original);
-        $replacement = $this->getSelectorArg($replacement);
+        $selectors   = $this->getSelectorArg($selectors, 'selector');
+        $original    = $this->getSelectorArg($original, 'original');
+        $replacement = $this->getSelectorArg($replacement, 'replacement');
 
         if (! $selectors || ! $original || ! $replacement) {
             throw $this->error('selector-replace() invalid arguments');
@@ -7982,7 +8010,7 @@ class Compiler
     protected function libSelectorParse($args)
     {
         $selectors = reset($args);
-        $selectors = $this->getSelectorArg($selectors);
+        $selectors = $this->getSelectorArg($selectors, 'selector');
 
         return $this->formatOutputSelector($selectors);
     }
@@ -7992,8 +8020,8 @@ class Compiler
     {
         list($selectors1, $selectors2) = $args;
 
-        $selectors1 = $this->getSelectorArg($selectors1);
-        $selectors2 = $this->getSelectorArg($selectors2);
+        $selectors1 = $this->getSelectorArg($selectors1, 'selectors1');
+        $selectors2 = $this->getSelectorArg($selectors2, 'selectors2');
 
         if (! $selectors1 || ! $selectors2) {
             throw $this->error('selector-unify() invalid arguments');
@@ -8269,7 +8297,7 @@ class Compiler
     protected function libSimpleSelectors($args)
     {
         $selector = reset($args);
-        $selector = $this->getSelectorArg($selector);
+        $selector = $this->getSelectorArg($selector, 'selector');
 
         // remove selectors list layer, keeping the first one
         $selector = reset($selector);
