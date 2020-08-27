@@ -7469,10 +7469,14 @@ class Compiler
             $index = $index - 1;
         }
         if ($index < 0) {
-            $index = strlen($stringContent) + 1 + $index;
+            $index = Util::mbStrlen($stringContent) + 1 + $index;
         }
 
-        $string[2] = [substr_replace($stringContent, $insertContent, $index, 0)];
+        $string[2] = [
+            Util::mbSubstr($stringContent, 0, $index),
+            $insertContent,
+            Util::mbSubstr($stringContent, $index)
+        ];
 
         return $string;
     }
