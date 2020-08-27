@@ -506,8 +506,6 @@ core_functions/selector/is_superselector/simple/universal/namespace/universal/an
 core_functions/selector/is_superselector/simple/universal/namespace/universal/and_universal/empty
 core_functions/selector/is_superselector/simple/universal/namespace/universal/and_universal/explicit
 core_functions/selector/is_superselector/simple/universal/namespace/universal/and_universal/implicit
-core_functions/selector/nest/error/invalid/initial
-core_functions/selector/nest/error/invalid/later
 core_functions/selector/nest/error/parent/first_arg
 core_functions/selector/nest/error/parent/non_initial
 core_functions/selector/nest/error/parent/prefix
@@ -517,7 +515,6 @@ core_functions/selector/nest/parent/selector_pseudo/complex_parent
 core_functions/selector/nest/parent/selector_pseudo/simple_parent
 core_functions/selector/parse/error/outer_space
 core_functions/selector/parse/error/parse/extra
-core_functions/selector/parse/error/parse/invalid
 core_functions/selector/parse/selector/complex/adjacent_sibling
 core_functions/selector/parse/selector/complex/child
 core_functions/selector/parse/selector/complex/sibling

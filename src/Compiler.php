@@ -7665,7 +7665,9 @@ class Compiler
             return $gluedSelector;
         }
 
-        return false;
+        $var_display = ($varname ? ' $' . $varname . ':' : '');
+        throw $this->error("Error:{$var_display} expected more input, invalid selector.");
+
     }
 
     /**
