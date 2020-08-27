@@ -340,9 +340,6 @@ core_functions/math/max/error/too_few_args
 core_functions/math/min/error/too_few_args
 core_functions/math/percentage/error/type
 core_functions/math/percentage/error/unit
-core_functions/math/random/no_arg
-core_functions/math/random/null
-core_functions/math/random/within_precision
 core_functions/math/round/error/type
 core_functions/math/round/up/within_precision
 core_functions/math/unit/error/type

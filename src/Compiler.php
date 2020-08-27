@@ -7542,24 +7542,25 @@ class Compiler
         return [Type::T_STRING, '', ['counter(' . implode(',', $list) . ')']];
     }
 
-    protected static $libRandom = ['limit:1'];
+    protected static $libRandom = ['limit:null'];
     protected function libRandom($args)
     {
-        if (isset($args[0])) {
+        if (isset($args[0]) & $args[0] !== static::$null) {
             $n = $this->assertNumber($args[0]);
 
             if ($n < 1) {
                 throw $this->error("\$limit must be greater than or equal to 1");
             }
 
-            if ($n - \intval($n) > 0) {
+            if (round($n - \intval($n), Node\Number::PRECISION) > 0) {
                 throw $this->error("Expected \$limit to be an integer but got $n for `random`");
             }
 
             return new Node\Number(mt_rand(1, \intval($n)), '');
         }
 
-        return new Node\Number(mt_rand(1, mt_getrandmax()), '');
+        $max = mt_getrandmax();
+        return new Node\Number(mt_rand(0, $max - 1) / $max, '');
     }
 
     protected function libUniqueId()
