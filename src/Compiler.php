@@ -3018,14 +3018,21 @@ class Compiler
      * Reduce expression to string
      *
      * @param array $exp
+     * @param true $keepParens
      *
      * @return array
      */
-    protected function expToString($exp)
+    protected function expToString($exp, $keepParens = false)
     {
-        list(, $op, $left, $right, /* $inParens */, $whiteLeft, $whiteRight) = $exp;
+        list(, $op, $left, $right, $inParens, $whiteLeft, $whiteRight) = $exp;
 
-        $content = [$this->reduce($left)];
+        $content = [];
+
+        if ($keepParens && $inParens) {
+            $content[] = '(';
+        }
+
+        $content[] = $this->reduce($left);
 
         if ($whiteLeft) {
             $content[] = ' ';
@@ -3038,6 +3045,10 @@ class Compiler
         }
 
         $content[] = $this->reduce($right);
+
+        if ($keepParens && $inParens) {
+            $content[] = ')';
+        }
 
         return [Type::T_STRING, '', $content];
     }
@@ -3345,6 +3356,18 @@ class Compiler
             case 'user':
             case 'native':
                 list(,,$name, $fn, $prototype) = $functionReference;
+
+                // special cases of css valid functions min/max
+                $name = strtolower($name);
+                if (\in_array($name, ['min', 'max'])) {
+                    $cssFunction = $this->cssValidArg(
+                        [Type::T_FUNCTION_CALL, $name, $argValues],
+                        ['min', 'max', 'calc', 'env', 'var']
+                    );
+                    if ($cssFunction !== false) {
+                        return $cssFunction;
+                    }
+                }
                 $returnValue = $this->callNativeFunction($name, $fn, $prototype, $argValues);
 
                 if (! isset($returnValue)) {
@@ -3357,6 +3380,88 @@ class Compiler
                 return static::$defaultValue;
         }
     }
+
+    protected function cssValidArg($arg, $allowed_function = [], $inFunction = false)
+    {
+        switch ($arg[0]) {
+            case Type::T_INTERPOLATE:
+                return [Type::T_KEYWORD, $this->CompileValue($arg)];
+
+            case Type::T_FUNCTION:
+                if (! \in_array($arg[1], $allowed_function)) {
+                    return false;
+                }
+                if ($arg[2][0] === Type::T_LIST) {
+                    foreach ($arg[2][2] as $k => $subarg) {
+                        $arg[2][2][$k] = $this->cssValidArg($subarg, $allowed_function, $arg[1]);
+                        if ($arg[2][2][$k] === false) {
+                            return false;
+                        }
+                    }
+                }
+                return $arg;
+
+            case Type::T_FUNCTION_CALL:
+                if (! \in_array($arg[1], $allowed_function)) {
+                    return false;
+                }
+                $cssArgs = [];
+                foreach ($arg[2] as $argValue) {
+                    $cssArg = $this->cssValidArg($argValue[1], $allowed_function, $arg[1]);
+                    if (empty($argValue[0]) && $cssArg !== false) {
+                        $cssArgs[] = [$argValue[0], $cssArg];
+                    } else {
+                        return false;
+                    }
+                }
+
+                return $this->fncall([Type::T_FUNCTION, $arg[1], [Type::T_LIST, ',', []]], $cssArgs);
+
+            case Type::T_STRING:
+            case Type::T_KEYWORD:
+                if (!$inFunction or !\in_array($inFunction, ['calc', 'env', 'var'])) {
+                    return false;
+                }
+                return $this->stringifyFncallArgs($arg);
+
+            case Type::T_NUMBER:
+                return $this->stringifyFncallArgs($arg);
+
+            case Type::T_LIST:
+                if (!$inFunction) {
+                    return false;
+                }
+                if (empty($arg['enclosing']) and $arg[1] === '') {
+                    foreach ($arg[2] as $k => $subarg) {
+                        $arg[2][$k] = $this->cssValidArg($subarg, $allowed_function, $inFunction);
+                        if ($arg[2][$k] === false) {
+                            return false;
+                        }
+                    }
+                    $arg[0] = Type::T_STRING;
+                    return $arg;
+                }
+                return false;
+
+            case Type::T_EXPRESSION:
+                if (! \in_array($arg[1], ['+', '-', '/', '*'])) {
+                    return false;
+                }
+                $arg[2] = $this->cssValidArg($arg[2], $allowed_function, $inFunction);
+                $arg[3] = $this->cssValidArg($arg[3], $allowed_function, $inFunction);
+                if ($arg[2] === false || $arg[3] === false) {
+                    var_dump($arg);
+                    return false;
+                }
+                return $this->expToString($arg, true);
+
+            case Type::T_VARIABLE:
+            case Type::T_SELF:
+            default:
+                return false;
+        }
+    }
+
 
     /**
      * Reformat fncall arguments to proper css function output
@@ -3383,7 +3488,7 @@ class Compiler
                 break;
 
             case Type::T_FUNCTION_CALL:
-                $name = $arg[1];
+                $name = strtolower($arg[1]);
 
                 if (in_array($name, ['max', 'min', 'calc'])) {
                     $args = $arg[2];
@@ -7033,9 +7138,7 @@ class Compiler
         $numbers      = [];
 
         foreach ($args as $key => $item) {
-            if ($item[0] !== Type::T_NUMBER) {
-                throw $this->error('%s is not a number', $item[0]);
-            }
+            $this->assertNumber($item);
 
             $number = $item->normalize();
 
