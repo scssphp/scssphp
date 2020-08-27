@@ -5992,6 +5992,7 @@ class Compiler
      * @api
      *
      * @param array $value
+     * @param string $varName
      *
      * @return array
      *
@@ -6103,19 +6104,47 @@ class Compiler
      * @api
      *
      * @param array $value
+     * @param string $varName
      *
      * @return integer|float
      *
      * @throws \Exception
      */
-    public function assertNumber($value)
+    public function assertNumber($value, $varName = null)
     {
         if ($value[0] !== Type::T_NUMBER) {
-            throw $this->error('expecting number, %s received', $value[0]);
+            $value = $this->compileValue($value);
+            $var_display = ($varName ? " \${$varName}:" : '');
+            throw $this->error("Error:{$var_display} $value is not a number.");
         }
 
         return $value[1];
     }
+
+    /**
+     * Assert value is a integer
+     *
+     * @api
+     *
+     * @param array $value
+     * @param string $varName
+     *
+     * @return integer|float
+     *
+     * @throws \Exception
+     */
+    public function assertInteger($value, $varName = null)
+    {
+
+        $value = $this->assertNumber($value, $varName);
+        if (round($value - \intval($value), Node\Number::PRECISION) > 0) {
+            $var_display = ($varName ? " \${$varName}:" : '');
+            throw $this->error("Error:{$var_display} $value is not an integer.");
+        }
+
+        return intval($value);
+    }
+
 
     /**
      * Make sure a color's components don't go out of bounds
@@ -7429,15 +7458,21 @@ class Compiler
     protected static $libStrInsert = ['string', 'insert', 'index'];
     protected function libStrInsert($args)
     {
-        $string = $this->coerceString($args[0]);
+        $string = $this->assertString($args[0], 'string');
         $stringContent = $this->compileStringContent($string);
 
-        $insert = $this->coerceString($args[1]);
+        $insert = $this->assertString($args[1], 'insert');
         $insertContent = $this->compileStringContent($insert);
 
-        list(, $index) = $args[2];
+        $index = $this->assertInteger($args[2], 'index');
+        if ($index > 0) {
+            $index = $index - 1;
+        }
+        if ($index < 0) {
+            $index = strlen($stringContent) + 1 + $index;
+        }
 
-        $string[2] = [substr_replace($stringContent, $insertContent, $index - 1, 0)];
+        $string[2] = [substr_replace($stringContent, $insertContent, $index, 0)];
 
         return $string;
     }

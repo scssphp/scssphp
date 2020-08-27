@@ -683,13 +683,6 @@ core_functions/selector/unify/simple/universal/and_universal/explicit/and_defaul
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_empty
 core_functions/string/insert/combining_character
 core_functions/string/insert/double_width_character
-core_functions/string/insert/error/decimal
-core_functions/string/insert/error/type/index
-core_functions/string/insert/error/type/insert
-core_functions/string/insert/error/type/string
-core_functions/string/insert/index/negative/1
-core_functions/string/insert/index/negative/2
-core_functions/string/insert/index/positive/0
 core_functions/string/length/combining_character
 core_functions/string/length/double_width_character
 core_functions/string/length/error/type
