@@ -7009,9 +7009,13 @@ class Compiler
             return 'comma';
         }
 
+        if (! \in_array($args[0][0], [Type::T_LIST, Type::T_MAP])) {
+            return 'space';
+        }
+
         $list = $this->coerceList($args[0]);
 
-        if (\count($list[2]) <= 1) {
+        if (\count($list[2]) <= 1 && empty($list['enclosing'])) {
             return 'space';
         }
 
@@ -7277,21 +7281,29 @@ class Compiler
         $lists = [];
         $firstList = array_shift($args);
 
-        foreach ($firstList[2] as $key => $item) {
-            $list = [Type::T_LIST, '', [$item]];
+        $result = [Type::T_LIST, ',', $lists];
+        if (! \is_null($firstList)) {
+            foreach ($firstList[2] as $key => $item) {
+                $list = [Type::T_LIST, '', [$item]];
 
-            foreach ($args as $arg) {
-                if (isset($arg[2][$key])) {
-                    $list[2][] = $arg[2][$key];
-                } else {
-                    break 2;
+                foreach ($args as $arg) {
+                    if (isset($arg[2][$key])) {
+                        $list[2][] = $arg[2][$key];
+                    } else {
+                        break 2;
+                    }
                 }
+
+                $lists[] = $list;
             }
 
-            $lists[] = $list;
+            $result[2] = $lists;
+        }
+        else {
+            $result['enclosing'] = 'parent';
         }
 
-        return [Type::T_LIST, ',', $lists];
+        return $result;
     }
 
     protected static $libTypeOf = ['value'];

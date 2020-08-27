@@ -324,10 +324,8 @@ core_functions/list/utils/empty_map/same_as_empty_list
 core_functions/list/utils/real_separator/empty/comma
 core_functions/list/utils/real_separator/empty/undecided
 core_functions/list/utils/real_separator/single/undecided
-core_functions/list/utils/with_separator/single/comma
 core_functions/list/zip/map/empty
 core_functions/list/zip/map/non_empty
-core_functions/list/zip/no_lists
 core_functions/list/zip/one_list/empty
 core_functions/list/zip/two_lists/first_empty
 core_functions/list/zip/two_lists/second_empty
@@ -995,7 +993,6 @@ libsass-closed-issues/issue_1671
 libsass-closed-issues/issue_1706
 libsass-closed-issues/issue_1709
 libsass-closed-issues/issue_1710
-libsass-closed-issues/issue_1720
 libsass-closed-issues/issue_1729
 libsass-closed-issues/issue_1732/invalid/mixin-def
 libsass-closed-issues/issue_1739/basic
@@ -1053,8 +1050,6 @@ libsass-closed-issues/issue_2333
 libsass-closed-issues/issue_2349
 libsass-closed-issues/issue_2352
 libsass-closed-issues/issue_2358
-libsass-closed-issues/issue_2369
-libsass-closed-issues/issue_2371
 libsass-closed-issues/issue_2444
 libsass-closed-issues/issue_2465
 libsass-closed-issues/issue_2467
