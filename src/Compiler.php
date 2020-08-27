@@ -7627,7 +7627,7 @@ class Compiler
      *
      * @return array|boolean
      */
-    protected function getSelectorArg($arg, $varname = null)
+    protected function getSelectorArg($arg, $varname = null, $allowParent = false)
     {
         static $parser = null;
 
@@ -7650,6 +7650,17 @@ class Compiler
         if ($parser->parseSelector($arg, $parsedSelector)) {
             $selector = $this->evalSelectors($parsedSelector);
             $gluedSelector = $this->glueFunctionSelectors($selector);
+
+            if (! $allowParent) {
+                foreach($gluedSelector as $selector) {
+                    foreach ($selector as $s) {
+                        if (in_array(static::$selfSelector, $s)) {
+                            $var_display = ($varname ? ' $'.$varname.':' : '');
+                            throw $this->error("Error:{$var_display} Parent selectors aren't allowed here.");
+                        }
+                    }
+                }
+            }
 
             return $gluedSelector;
         }
@@ -7743,14 +7754,6 @@ class Compiler
         $super = reset($super);
         $sub = reset($sub);
 
-        foreach(['super'=> $super, 'sub' => $sub] as $var => $selector) {
-            foreach ($selector as $s) {
-                if (in_array(static::$selfSelector, $s)) {
-                    throw $this->error("Error: \${$var}: Parent selectors aren't allowed here.");
-                }
-            }
-        }
-
         $i = 0;
         $nextMustMatch = false;
 
@@ -7830,7 +7833,10 @@ class Compiler
             throw $this->error('selector-append() needs at least 1 argument');
         }
 
-        $selectors = array_map([$this, 'getSelectorArg'], $args);
+        $selectors = [];
+        foreach($args as $arg) {
+            $selectors[] = $this->getSelectorArg($arg, 'selector');
+        }
 
         return $this->formatOutputSelector($this->selectorAppend($selectors));
     }
@@ -7986,7 +7992,11 @@ class Compiler
             throw $this->error('selector-nest() needs at least 1 argument');
         }
 
-        $selectorsMap = array_map([$this, 'getSelectorArg'], $args);
+        $selectorsMap = [];
+        foreach($args as $arg) {
+            $selectorsMap[] = $this->getSelectorArg($arg, 'selector', true);
+        }
+
         $envs = [];
 
         foreach ($selectorsMap as $selectors) {

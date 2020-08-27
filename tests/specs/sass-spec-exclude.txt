@@ -381,7 +381,6 @@ core_functions/meta/mixin_exists/error/argument/type/name
 core_functions/meta/variable_exists/error/argument/type
 core_functions/selector/append/error/leading_combinator
 core_functions/selector/append/error/namespace
-core_functions/selector/append/error/parent
 core_functions/selector/append/error/universal
 core_functions/selector/append/format/input/initial
 core_functions/selector/append/format/input/later
@@ -389,9 +388,6 @@ core_functions/selector/append/format/output
 core_functions/selector/append/suffix/descendant
 core_functions/selector/extend/error/extendee/complex/list
 core_functions/selector/extend/error/extendee/complex/string
-core_functions/selector/extend/error/extendee/parent
-core_functions/selector/extend/error/extender/parent
-core_functions/selector/extend/error/selector/parent
 core_functions/selector/extend/format/input/multiple_extendees/list
 core_functions/selector/extend/format/input/multiple_extendees/list_of_compound
 core_functions/selector/extend/format/input/non_string/extendee
@@ -520,7 +516,6 @@ core_functions/selector/nest/list/parent/selector_pseudo
 core_functions/selector/nest/parent/selector_pseudo/complex_parent
 core_functions/selector/nest/parent/selector_pseudo/simple_parent
 core_functions/selector/parse/error/outer_space
-core_functions/selector/parse/error/parent
 core_functions/selector/parse/error/parse/extra
 core_functions/selector/parse/error/parse/invalid
 core_functions/selector/parse/selector/complex/adjacent_sibling
@@ -536,9 +531,6 @@ core_functions/selector/parse/structure/decomposed/partial/quoted
 core_functions/selector/replace/compound
 core_functions/selector/replace/error/extendee/complex/list
 core_functions/selector/replace/error/extendee/complex/string
-core_functions/selector/replace/error/extendee/parent
-core_functions/selector/replace/error/extender/parent
-core_functions/selector/replace/error/selector/parent
 core_functions/selector/replace/format/input/multiple_extendees/list
 core_functions/selector/replace/format/input/multiple_extendees/list_of_compound
 core_functions/selector/replace/format/input/non_string/extendee
@@ -605,8 +597,6 @@ core_functions/selector/unify/complex/superselector/two_level
 core_functions/selector/unify/compound/full_overlap
 core_functions/selector/unify/compound/order/pseudo_element_after_pseudo_class/element_first
 core_functions/selector/unify/compound/partial_overlap
-core_functions/selector/unify/error/selector1/parent
-core_functions/selector/unify/error/selector2/parent
 core_functions/selector/unify/format/input/non_string/selector1
 core_functions/selector/unify/format/input/non_string/selector2
 core_functions/selector/unify/format/input/two_lists
