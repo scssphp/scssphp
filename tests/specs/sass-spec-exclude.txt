@@ -681,10 +681,6 @@ core_functions/selector/unify/simple/universal/and_universal/empty/and_explicit
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_any
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_default
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_empty
-core_functions/string/index/both_empty
-core_functions/string/index/empty_substring
-core_functions/string/index/error/type/string
-core_functions/string/index/error/type/substring
 core_functions/string/insert/combining_character
 core_functions/string/insert/double_width_character
 core_functions/string/insert/error/decimal

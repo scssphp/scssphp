@@ -5987,6 +5987,35 @@ class Compiler
     }
 
     /**
+     * Assert value is a string (or keyword)
+     *
+     * @api
+     *
+     * @param array $value
+     *
+     * @return array
+     *
+     * @throws \Exception
+     */
+    public function assertString($value, $varName = null)
+    {
+        // case of url(...) parsed a a function
+        if ($value[0] === Type::T_FUNCTION) {
+            $value = $this->coerceString($value);
+        }
+
+        if (! \in_array($value[0], [Type::T_STRING, Type::T_KEYWORD])) {
+            $value = $this->compileValue($value);
+            $var_display = ($varName ? " \${$varName}:" : '');
+            throw $this->error("Error:{$var_display} $value is not a string.");
+        }
+
+        $value = $this->coerceString($value);
+
+        return $value;
+    }
+
+    /**
      * Coerce value to a percentage
      *
      * @param array $value
@@ -7382,13 +7411,17 @@ class Compiler
     protected static $libStrIndex = ['string', 'substring'];
     protected function libStrIndex($args)
     {
-        $string = $this->coerceString($args[0]);
+        $string = $this->assertString($args[0], 'string');
         $stringContent = $this->compileStringContent($string);
 
-        $substring = $this->coerceString($args[1]);
+        $substring = $this->assertString($args[1], 'substring');
         $substringContent = $this->compileStringContent($substring);
 
-        $result = strpos($stringContent, $substringContent);
+        if (! \strlen($substringContent)) {
+            $result = 0;
+        } else {
+            $result = strpos($stringContent, $substringContent);
+        }
 
         return $result === false ? static::$null : new Node\Number($result + 1, '');
     }
@@ -7667,7 +7700,6 @@ class Compiler
 
         $var_display = ($varname ? ' $' . $varname . ':' : '');
         throw $this->error("Error:{$var_display} expected more input, invalid selector.");
-
     }
 
     /**
