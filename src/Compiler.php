@@ -7298,8 +7298,7 @@ class Compiler
             }
 
             $result[2] = $lists;
-        }
-        else {
+        } else {
             $result['enclosing'] = 'parent';
         }
 
