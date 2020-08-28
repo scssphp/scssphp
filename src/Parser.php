@@ -1290,7 +1290,7 @@ class Parser
                 $parsed[0] = Type::T_FUNCTION;
                 $argsList = [Type::T_LIST, ',', []];
                 foreach ($parsed[2] as $arg) {
-                    if ($arg[0] || $arg[2]) {
+                    if ($arg[0] || ! empty($arg[2])) {
                         // no named arguments possible in a css function call
                         // nor ... argument
                         return false;
@@ -3052,7 +3052,7 @@ class Parser
             } else {
                 if ($lookWhite) {
                     $left = ($s > 0 && preg_match('/\s/', $this->buffer[$s - 1])) ? ' ' : '';
-                    $right = preg_match('/\s/', $this->buffer[$this->count]) ? ' ' : '';
+                    $right = ! empty($this->buffer[$this->count]) && preg_match('/\s/', $this->buffer[$this->count]) ? ' ' : '';
                 } else {
                     $left = $right = false;
                 }

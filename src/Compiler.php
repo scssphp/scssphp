@@ -3407,6 +3407,9 @@ class Compiler
                 }
                 $cssArgs = [];
                 foreach ($arg[2] as $argValue) {
+                    if ($argValue === static::$null) {
+                        return false;
+                    }
                     $cssArg = $this->cssValidArg($argValue[1], $allowed_function, $arg[1]);
                     if (empty($argValue[0]) && $cssArg !== false) {
                         $cssArgs[] = [$argValue[0], $cssArg];
