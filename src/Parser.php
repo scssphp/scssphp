@@ -1142,7 +1142,8 @@ class Parser
      * @param int $startPos
      * @throws ParserException
      */
-    protected function assertPlainCssValid($parsed, $startPos=null) {
+    protected function assertPlainCssValid($parsed, $startPos = null)
+    {
         $type = '';
         if ($parsed) {
             $type = $parsed[0];
@@ -1152,8 +1153,7 @@ class Parser
             if (! \is_null($startPos)) {
                 $plain = rtrim(substr($this->buffer, $startPos, $this->count - $startPos));
                 $message = "Error : `{$plain}` isn't allowed in plain CSS";
-            }
-            else {
+            } else {
                 $message = 'Error: SCSS syntax not allowed in CSS file';
             }
             if ($type) {
@@ -1170,9 +1170,10 @@ class Parser
      * @param array $parsed
      * @return bool|array
      */
-    protected function isPlainCssValidElement($parsed, $allowExpression = false) {
-
-        if (\in_array($parsed[0], [Type::T_FUNCTION, Type::T_FUNCTION_CALL]) &&
+    protected function isPlainCssValidElement($parsed, $allowExpression = false)
+    {
+        if (
+            \in_array($parsed[0], [Type::T_FUNCTION, Type::T_FUNCTION_CALL]) &&
             !\in_array($parsed[1], [
                 'alpha',
                 'attr',
@@ -1496,7 +1497,9 @@ class Parser
                 // comment that are ignored and not kept in the output css
                 $this->count += \strlen($m[0]);
                 // silent comments are not allowed in plain CSS files
-                ! $this->cssOnly || ! \strlen(trim($m[0])) || $this->assertPlainCssValid(false, $this->count - \strlen($m[0]));
+                ! $this->cssOnly
+                  || ! \strlen(trim($m[0]))
+                  || $this->assertPlainCssValid(false, $this->count - \strlen($m[0]));
             }
 
             $gotWhite = true;
@@ -1526,7 +1529,6 @@ class Parser
     protected function append($statement, $pos = null)
     {
         if (! \is_null($statement)) {
-
             ! $this->cssOnly || ($statement = $this->assertPlainCssValid($statement, $pos));
 
             if (! \is_null($pos)) {

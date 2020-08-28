@@ -5005,7 +5005,6 @@ class Compiler
             $code   = file_get_contents($path);
             $parser = $this->parserFactory($path);
             $tree   = $parser->parse($code);
-#            var_dump($tree);
 
             $this->importCache[$realPath] = $tree;
         }
@@ -5077,7 +5076,9 @@ class Compiler
                             return reset($found);
                         }
                         if (\count($found) > 1) {
-                            throw $this->error("Error: It's not clear which file to import. Found: " . implode(', ', $found));
+                            throw $this->error(
+                                "Error: It's not clear which file to import. Found: " . implode(', ', $found)
+                            );
                         }
                     }
                 }
