@@ -5046,7 +5046,6 @@ class Compiler
 
             if (! $hasExtension) {
                 $urls[] = "$url/index.scss";
-                $urls[] = "$url/_index.scss";
                 // allow to find a plain css file, *if* no scss or partial scss is found
                 $urls[] .= $url . '.css';
             }
@@ -5056,6 +5055,7 @@ class Compiler
             if (\is_string($dir)) {
                 // check urls for normal import paths
                 foreach ($urls as $full) {
+                    $found = [];
                     $separator = (
                         ! empty($dir) &&
                         substr($dir, -1) !== '/' &&
@@ -5064,7 +5064,21 @@ class Compiler
                     $full = $dir . $separator . $full;
 
                     if (is_file($file = $full)) {
-                        return $file;
+                        $found[] = $file;
+                    }
+                    if (! $isPartial) {
+                        $full = dirname($full) . '/_' . basename($full);
+                        if (is_file($file = $full)) {
+                            $found[] = $file;
+                        }
+                    }
+                    if ($found) {
+                        if (\count($found) === 1) {
+                            return reset($found);
+                        }
+                        if (\count($found) > 1) {
+                            throw $this->error("Error: It's not clear which file to import. Found: " . implode(', ', $found));
+                        }
                     }
                 }
             } elseif (\is_callable($dir)) {
