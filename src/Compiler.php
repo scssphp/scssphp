@@ -3450,7 +3450,6 @@ class Compiler
                 $arg[2] = $this->cssValidArg($arg[2], $allowed_function, $inFunction);
                 $arg[3] = $this->cssValidArg($arg[3], $allowed_function, $inFunction);
                 if ($arg[2] === false || $arg[3] === false) {
-                    var_dump($arg);
                     return false;
                 }
                 return $this->expToString($arg, true);
@@ -5006,6 +5005,7 @@ class Compiler
             $code   = file_get_contents($path);
             $parser = $this->parserFactory($path);
             $tree   = $parser->parse($code);
+#            var_dump($tree);
 
             $this->importCache[$realPath] = $tree;
         }

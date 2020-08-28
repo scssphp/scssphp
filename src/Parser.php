@@ -364,9 +364,7 @@ class Parser
                     $this->matchChar(')')) || true) &&
                 $this->matchChar('{', false)
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $atRoot = $this->pushSpecialBlock(Type::T_AT_ROOT, $s);
                 $atRoot->selector = $selector;
@@ -396,9 +394,7 @@ class Parser
                 ($this->argumentDef($args) || true) &&
                 $this->matchChar('{', false)
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $mixin = $this->pushSpecialBlock(Type::T_MIXIN, $s);
                 $mixin->name = $mixinName;
@@ -421,9 +417,7 @@ class Parser
                     ($this->end() || $this->matchChar('{') && $hasBlock = true)) ||
                 $this->matchChar('{') && $hasBlock = true)
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $child = [
                     Type::T_INCLUDE,
@@ -450,9 +444,7 @@ class Parser
                 $this->valueList($importPath) &&
                 $this->end()
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $this->append([Type::T_SCSSPHP_IMPORT_ONCE, $importPath], $s);
 
@@ -467,6 +459,12 @@ class Parser
                 $importPath[0] !== Type::T_FUNCTION_CALL &&
                 $this->end()
             ) {
+                if ($this->cssOnly) {
+                    $this->assertPlainCssValid($importPath, $s);
+                    $this->append([Type::T_COMMENT, rtrim(substr($this->buffer, $s, $this->count - $s))]);
+                    return true;
+                }
+
                 $this->append([Type::T_IMPORT, $importPath], $s);
 
                 return true;
@@ -480,7 +478,9 @@ class Parser
                 $this->end()
             ) {
                 if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
+                    $this->assertPlainCssValid($importPath, $s);
+                    $this->append([Type::T_COMMENT, rtrim(substr($this->buffer, $s, $this->count - $s))]);
+                    return true;
                 }
 
                 $this->append([Type::T_IMPORT, $importPath], $s);
@@ -495,9 +495,7 @@ class Parser
                 $this->selectors($selectors) &&
                 $this->end()
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 // check for '!flag'
                 $optional = $this->stripOptionalFlag($selectors);
@@ -514,9 +512,7 @@ class Parser
                 $this->argumentDef($args) &&
                 $this->matchChar('{', false)
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $func = $this->pushSpecialBlock(Type::T_FUNCTION, $s);
                 $func->name = $fnName;
@@ -531,9 +527,7 @@ class Parser
                 $this->literal('@break', 6) &&
                 $this->end()
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $this->append([Type::T_BREAK], $s);
 
@@ -546,9 +540,7 @@ class Parser
                 $this->literal('@continue', 9) &&
                 $this->end()
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $this->append([Type::T_CONTINUE], $s);
 
@@ -562,9 +554,7 @@ class Parser
                 ($this->valueList($retVal) || true) &&
                 $this->end()
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $this->append([Type::T_RETURN, isset($retVal) ? $retVal : [Type::T_NULL]], $s);
 
@@ -580,9 +570,7 @@ class Parser
                 $this->valueList($list) &&
                 $this->matchChar('{', false)
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $each = $this->pushSpecialBlock(Type::T_EACH, $s);
 
@@ -602,9 +590,7 @@ class Parser
                 $this->expression($cond) &&
                 $this->matchChar('{', false)
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 while (
                     $cond[0] === Type::T_LIST &&
@@ -633,9 +619,7 @@ class Parser
                 $this->expression($end) &&
                 $this->matchChar('{', false)
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $for = $this->pushSpecialBlock(Type::T_FOR, $s);
                 $for->var   = $varName[1];
@@ -653,9 +637,7 @@ class Parser
                 $this->functionCallArgumentsList($cond, false) &&
                 $this->matchChar('{', false)
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $if = $this->pushSpecialBlock(Type::T_IF, $s);
 
@@ -681,9 +663,7 @@ class Parser
                 $this->functionCallArgumentsList($value, false) &&
                 $this->end()
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $this->append([Type::T_DEBUG, $value], $s);
 
@@ -697,9 +677,7 @@ class Parser
                 $this->functionCallArgumentsList($value, false) &&
                 $this->end()
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $this->append([Type::T_WARN, $value], $s);
 
@@ -713,9 +691,7 @@ class Parser
                 $this->functionCallArgumentsList($value, false) &&
                 $this->end()
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $this->append([Type::T_ERROR, $value], $s);
 
@@ -732,9 +708,7 @@ class Parser
                     $this->matchChar(')') &&
                     $this->end())
             ) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
                 $this->append([Type::T_MIXIN_CONTENT, isset($argContent) ? $argContent : null], $s);
 
@@ -822,6 +796,7 @@ class Parser
                 }
 
                 if (isset($dirValue)) {
+                    ! $this->cssOnly || ($dirValue = $this->assertPlainCssValid($dirValue));
                     $directive->value = $dirValue;
                 }
 
@@ -853,11 +828,7 @@ class Parser
                 ! in_array($this->env->type, [Type::T_DIRECTIVE, Type::T_MEDIA]));
         }
         // custom properties : right part is static
-        if (
-            ($this->customProperty($name) ||
-                ($inCssSelector && $this->propertyName($name))) &&
-            $this->matchChar(':', false)
-        ) {
+        if (($this->customProperty($name) ) && $this->matchChar(':', false)) {
             $start = $this->count;
 
             // but can be complex and finish with ; or }
@@ -924,9 +895,7 @@ class Parser
             $this->valueList($value) &&
             $this->end()
         ) {
-            if ($this->cssOnly) {
-                $this->throwParseError('SCSS syntax not allowed in CSS file');
-            }
+            ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
             // check for '!flag'
             $assignmentFlags = $this->stripAssignmentFlags($value);
@@ -947,11 +916,7 @@ class Parser
             $this->selectors($selectors) &&
             $this->matchChar('{', false)
         ) {
-            if ($this->cssOnly) {
-                if ($inCssSelector) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
-            }
+            ! $this->cssOnly || ! $inCssSelector || $this->assertPlainCssValid(false);
 
             $this->pushBlock($selectors, $s);
 
@@ -982,9 +947,7 @@ class Parser
             }
 
             if ($this->matchChar('{', false)) {
-                if ($this->cssOnly) {
-                    $this->throwParseError('SCSS syntax not allowed in CSS file');
-                }
+                ! $this->cssOnly || $this->assertPlainCssValid(false);
 
                 $propBlock = $this->pushSpecialBlock(Type::T_NESTED_PROPERTY, $s);
                 $propBlock->prefix = $name;
@@ -1170,6 +1133,178 @@ class Parser
     protected function seek($where)
     {
         $this->count = $where;
+    }
+
+    /**
+     * Assert a parsed part is plain CSS Valid
+     *
+     * @param array $parsed
+     * @param int $startPos
+     * @throws ParserException
+     */
+    protected function assertPlainCssValid($parsed, $startPos=null) {
+        $type = '';
+        if ($parsed) {
+            $type = $parsed[0];
+            $parsed = $this->isPlainCssValidElement($parsed);
+        }
+        if (! $parsed) {
+            if (! \is_null($startPos)) {
+                $plain = rtrim(substr($this->buffer, $startPos, $this->count - $startPos));
+                $message = "Error : `{$plain}` isn't allowed in plain CSS";
+            }
+            else {
+                $message = 'Error: SCSS syntax not allowed in CSS file';
+            }
+            if ($type) {
+                $message .= " ($type)";
+            }
+            $this->throwParseError($message);
+        }
+
+        return $parsed;
+    }
+
+    /**
+     * Check a parsed element is plain CSS Valid
+     * @param array $parsed
+     * @return bool|array
+     */
+    protected function isPlainCssValidElement($parsed, $allowExpression = false) {
+
+        if (\in_array($parsed[0], [Type::T_FUNCTION, Type::T_FUNCTION_CALL]) &&
+            !\in_array($parsed[1], [
+                'alpha',
+                'attr',
+                'calc',
+                'cubic-bezier',
+                'env',
+                'grayscale',
+                'hsl',
+                'hsla',
+                'invert',
+                'linear-gradient',
+                'min',
+                'max',
+                'radial-gradient',
+                'repeating-linear-gradient',
+                'repeating-radial-gradient',
+                'rgb',
+                'rgba',
+                'rotate',
+                'saturate',
+                'var',
+            ])
+        ) {
+            return false;
+        }
+
+        switch ($parsed[0]) {
+            case Type::T_BLOCK:
+            case Type::T_KEYWORD:
+            case Type::T_NULL:
+            case Type::T_NUMBER:
+                return $parsed;
+
+            case Type::T_COMMENT:
+                if (isset($parsed[2])) {
+                    return false;
+                }
+                return $parsed;
+
+            case Type::T_DIRECTIVE:
+                if (\is_array($parsed[1])) {
+                    $parsed[1][1] = $this->isPlainCssValidElement($parsed[1][1]);
+                    if (! $parsed[1][1]) {
+                        return false;
+                    }
+                }
+
+                return $parsed;
+
+            case Type::T_STRING:
+                foreach ($parsed[2] as $k => $substr) {
+                    if (\is_array($substr)) {
+                        $parsed[2][$k] = $this->isPlainCssValidElement($substr);
+                        if (! $parsed[2][$k]) {
+                            return false;
+                        }
+                    }
+                }
+                return $parsed;
+
+            case Type::T_ASSIGN:
+                foreach ([1, 2, 3] as $k) {
+                    if (! empty($parsed[$k])) {
+                        $parsed[$k] = $this->isPlainCssValidElement($parsed[$k]);
+                        if (! $parsed[$k]) {
+                            return false;
+                        }
+                    }
+                }
+                return $parsed;
+
+            case Type::T_EXPRESSION:
+                list( ,$op, $lhs, $rhs, $inParens, $whiteBefore, $whiteAfter) = $parsed;
+                if (! $allowExpression &&  ! \in_array($op, ['and', 'or', '/'])) {
+                    return false;
+                }
+                $lhs = $this->isPlainCssValidElement($lhs, true);
+                if (! $lhs) {
+                    return false;
+                }
+                $rhs = $this->isPlainCssValidElement($rhs, true);
+                if (! $rhs) {
+                    return false;
+                }
+
+                return [
+                    Type::T_STRING,
+                    '', [
+                        $this->inParens ? '(' : '',
+                        $lhs,
+                        ($whiteBefore ? ' ' : '') . $op . ($whiteAfter ? ' ' : ''),
+                        $rhs,
+                        $this->inParens ? ')' : ''
+                    ]
+                ];
+
+            case Type::T_UNARY:
+                $parsed[2] = $this->isPlainCssValidElement($parsed[2]);
+                if (! $parsed[2]) {
+                    return false;
+                }
+                return $parsed;
+
+            case Type::T_FUNCTION:
+                $argsList = $parsed[2];
+                foreach ($argsList[2] as $argElement) {
+                    if (! $this->isPlainCssValidElement($argElement)) {
+                        return false;
+                    }
+                }
+                return $parsed;
+
+            case Type::T_FUNCTION_CALL:
+                $parsed[0] = Type::T_FUNCTION;
+                $argsList = [Type::T_LIST, ',', []];
+                foreach ($parsed[2] as $arg) {
+                    if ($arg[0] || $arg[2]) {
+                        // no named arguments possible in a css function call
+                        // nor ... argument
+                        return false;
+                    }
+                    $arg = $this->isPlainCssValidElement($arg[1], $parsed[1] === 'calc');
+                    if (! $arg) {
+                        return false;
+                    }
+                    $argsList[2][] = $arg;
+                }
+                $parsed[2] = $argsList;
+                return $parsed;
+        }
+
+        return false;
     }
 
     /**
@@ -1360,6 +1495,8 @@ class Parser
             } else {
                 // comment that are ignored and not kept in the output css
                 $this->count += \strlen($m[0]);
+                // silent comments are not allowed in plain CSS files
+                ! $this->cssOnly || ! \strlen(trim($m[0])) || $this->assertPlainCssValid(false, $this->count - \strlen($m[0]));
             }
 
             $gotWhite = true;
@@ -1389,6 +1526,9 @@ class Parser
     protected function append($statement, $pos = null)
     {
         if (! \is_null($statement)) {
+
+            ! $this->cssOnly || ($statement = $this->assertPlainCssValid($statement, $pos));
+
             if (! \is_null($pos)) {
                 list($line, $column) = $this->getSourcePosition($pos);
 
@@ -2100,6 +2240,7 @@ class Parser
             }
 
             $lhs = [Type::T_EXPRESSION, $op, $lhs, $rhs, $this->inParens, $whiteBefore, $whiteAfter];
+
             $ss = $this->count;
             $whiteBefore = isset($this->buffer[$this->count - 1]) &&
                 ctype_space($this->buffer[$this->count - 1]);
@@ -3181,6 +3322,7 @@ class Parser
                 case '&':
                     $parts[] = Compiler::$selfSelector;
                     $this->count++;
+                    ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
                     continue 2;
 
                 case '.':
@@ -3205,6 +3347,7 @@ class Parser
                 if ($this->placeholder($placeholder)) {
                     $parts[] = '%';
                     $parts[] = $placeholder;
+                    ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
                     continue;
                 }
 
@@ -3214,6 +3357,7 @@ class Parser
             if ($char === '#') {
                 if ($this->interpolation($inter)) {
                     $parts[] = $inter;
+                    ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
                     continue;
                 }
 
