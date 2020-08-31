@@ -634,8 +634,7 @@ class Parser
 
             if (
                 $this->literal('@if', 3) &&
-                $this->functionCallArgumentsList($cond, false) &&
-                $this->matchChar('{', false)
+                $this->functionCallArgumentsList($cond, false, '{', false)
             ) {
                 ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
@@ -660,8 +659,7 @@ class Parser
 
             if (
                 $this->literal('@debug', 6) &&
-                $this->functionCallArgumentsList($value, false) &&
-                $this->end()
+                $this->functionCallArgumentsList($value, false)
             ) {
                 ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
@@ -674,8 +672,7 @@ class Parser
 
             if (
                 $this->literal('@warn', 5) &&
-                $this->functionCallArgumentsList($value, false) &&
-                $this->end()
+                $this->functionCallArgumentsList($value, false)
             ) {
                 ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
@@ -688,8 +685,7 @@ class Parser
 
             if (
                 $this->literal('@error', 6) &&
-                $this->functionCallArgumentsList($value, false) &&
-                $this->end()
+                $this->functionCallArgumentsList($value, false)
             ) {
                 ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
@@ -1936,16 +1932,19 @@ class Parser
      *
      * @param $out
      * @param bool $mandatoryParenthesis
+     * @param null|string $expectingCharAfter
+     * @param null|bool $eatWhiteSpace
      * @return bool
      */
-    protected function functionCallArgumentsList(&$out, $mandatoryParenthesis = true)
+    protected function functionCallArgumentsList(&$out, $mandatoryParenthesis = true, $expectingCharAfter = null, $eatWhiteSpace = null)
     {
         $s = $this->count;
 
         if (
             $this->matchChar('(') &&
             $this->valueList($out) &&
-            $this->matchChar(')')
+            $this->matchChar(')') &&
+            ($expectingCharAfter ? $this->matchChar($expectingCharAfter, $eatWhiteSpace) : $this->end())
         ) {
             return true;
         }
@@ -1953,7 +1952,8 @@ class Parser
         if (! $mandatoryParenthesis) {
             $this->seek($s);
 
-            if ($this->valueList($out)) {
+            if ($this->valueList($out) &&
+                ($expectingCharAfter ? $this->matchChar($expectingCharAfter, $eatWhiteSpace) : $this->end())) {
                 return true;
             }
         }

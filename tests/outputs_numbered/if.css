@@ -24,3 +24,7 @@ div {
 /* line 67, inputs/if.scss */
 del {
   thing: no; }
+
+/* line 86, inputs/if.scss */
+.debug {
+  color: red; }

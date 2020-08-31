@@ -78,3 +78,10 @@ $return: (1);
 @if $return == () {
     @warn 'empty list';
 }
+
+// @if with parenthesis but no global parenthesis
+$test: "1";
+$test2: "2";
+@if ($test == "1") and ($test2 == "2") {
+  .debug {color:red;}
+}
