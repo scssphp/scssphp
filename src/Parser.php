@@ -1931,12 +1931,12 @@ class Parser
      * and not of the value list
      *
      * @param $out
-     * @param bool $mandatoryParenthesis
-     * @param null|string $expectingCharAfter
-     * @param null|bool $eatWhiteSpace
+     * @param bool $mandatoryEnclos
+     * @param null|string $charAfter
+     * @param null|bool $eatWhiteSp
      * @return bool
      */
-    protected function functionCallArgumentsList(&$out, $mandatoryParenthesis = true, $expectingCharAfter = null, $eatWhiteSpace = null)
+    protected function functionCallArgumentsList(&$out, $mandatoryEnclos = true, $charAfter = null, $eatWhiteSp = null)
     {
         $s = $this->count;
 
@@ -1944,16 +1944,18 @@ class Parser
             $this->matchChar('(') &&
             $this->valueList($out) &&
             $this->matchChar(')') &&
-            ($expectingCharAfter ? $this->matchChar($expectingCharAfter, $eatWhiteSpace) : $this->end())
+            ($charAfter ? $this->matchChar($charAfter, $eatWhiteSp) : $this->end())
         ) {
             return true;
         }
 
-        if (! $mandatoryParenthesis) {
+        if (! $mandatoryEnclos) {
             $this->seek($s);
 
-            if ($this->valueList($out) &&
-                ($expectingCharAfter ? $this->matchChar($expectingCharAfter, $eatWhiteSpace) : $this->end())) {
+            if (
+                $this->valueList($out) &&
+                ($charAfter ? $this->matchChar($charAfter, $eatWhiteSp) : $this->end())
+            ) {
                 return true;
             }
         }
@@ -3052,7 +3054,10 @@ class Parser
             } else {
                 if ($lookWhite) {
                     $left = ($s > 0 && preg_match('/\s/', $this->buffer[$s - 1])) ? ' ' : '';
-                    $right = ! empty($this->buffer[$this->count]) && preg_match('/\s/', $this->buffer[$this->count]) ? ' ' : '';
+                    $right = (
+                        ! empty($this->buffer[$this->count]) &&
+                        preg_match('/\s/', $this->buffer[$this->count])
+                    ) ? ' ' : '';
                 } else {
                     $left = $right = false;
                 }
