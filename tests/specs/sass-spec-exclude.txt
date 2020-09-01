@@ -724,7 +724,6 @@ css/unicode_range/error/too_many_decimal_digits
 css/unicode_range/error/too_many_decimal_digits_after_minus
 css/unicode_range/error/too_many_digits_after_minus
 css/unicode_range/error/too_many_hex_digits
-css/unicode_range/question_mark
 css/unicode_range/simple
 css/unknown_directive/name_interpolation
 css/unknown_directive/plain

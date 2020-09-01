@@ -2239,6 +2239,10 @@ class Parser
                 break;
             }
 
+            if ($op === '-' && ! $whiteAfter && $rhs[0] === Type::T_KEYWORD) {
+                break;
+            }
+
             // peek and see if rhs belongs to next operator
             if ($this->peek($operators, $next) && static::$precedence[$next[1]] > static::$precedence[$op]) {
                 $rhs = $this->expHelper($rhs, static::$precedence[$next[1]]);
@@ -2434,11 +2438,15 @@ class Parser
         // unicode range with wildcards
         if (
             $this->literal('U+', 2) &&
-            $this->match('([0-9A-F]+\?*)(-([0-9A-F]+))?', $m, false)
+            $this->match('\?+|([0-9A-F]+(\?+|(-[0-9A-F]+))?)', $m, false)
         ) {
-            $out = [Type::T_KEYWORD, 'U+' . $m[0]];
+            $unicode = explode('-', $m[0]);
+            if (strlen(reset($unicode)) <= 6 && strlen(end($unicode)) <= 6) {
+                $out = [Type::T_KEYWORD, 'U+' . $m[0]];
 
-            return true;
+                return true;
+            }
+            $this->count -= strlen($m[0]) + 2;
         }
 
         if ($this->keyword($keyword, false)) {
