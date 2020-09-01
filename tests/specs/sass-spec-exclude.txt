@@ -704,7 +704,6 @@ css/media/range/error/mismatched_range/lte_gte
 css/media/range/static
 css/media/range/with_expressions
 css/moz_document/multi_function
-css/plain/functions/defined_elsewhere
 css/plain/import/sass_takes_precedence
 css/selector/attribute/modifier/after_string
 css/selector/error/attribute/modifier/digit

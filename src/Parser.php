@@ -1191,7 +1191,8 @@ class Parser
                 'rotate',
                 'saturate',
                 'var',
-            ])
+            ]) &&
+            Compiler::isNativeFunction($parsed[1])
         ) {
             return false;
         }

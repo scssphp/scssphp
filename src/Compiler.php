@@ -5385,6 +5385,18 @@ class Compiler
      */
     protected function getBuiltinFunction($name)
     {
+        $libName = self::normalizeNativeFunctionName($name);
+        return [$this, $libName];
+    }
+
+    /**
+     * Normalize native function name
+     * @param $name
+     * @return string
+     */
+    public static function normalizeNativeFunctionName($name)
+    {
+        $name = str_replace("-", "_", $name);
         $libName = 'lib' . preg_replace_callback(
             '/_(.)/',
             function ($m) {
@@ -5392,8 +5404,17 @@ class Compiler
             },
             ucfirst($name)
         );
+        return $libName;
+    }
 
-        return [$this, $libName];
+    /**
+     * Check if a function is a native built-in scss function, for css parsing
+     * @param $name
+     * @return bool
+     */
+    public static function isNativeFunction($name)
+    {
+        return method_exists(Compiler::class, self::normalizeNativeFunctionName($name));
     }
 
     /**
