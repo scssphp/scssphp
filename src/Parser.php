@@ -3008,26 +3008,26 @@ class Parser
      *
      * @param string  $end
      * @param array   $out
-     * @param string  $nestingOpen
-     * @param string  $nestingClose
-     * @param boolean $trimEnd
-     * @param string $disallowChars
+     * @param string  $nestOpen
+     * @param string  $nestClose
+     * @param boolean $rtrim
+     * @param string $disallow
      *
      * @return boolean
      */
-    protected function openString($end, &$out, $nestingOpen = null, $nestingClose = null, $trimEnd = true, $disallowChars = null)
+    protected function openString($end, &$out, $nestOpen = null, $nestClose = null, $rtrim = true, $disallow = null)
     {
         $oldWhite = $this->eatWhiteDefault;
         $this->eatWhiteDefault = false;
 
-        if ($nestingOpen && ! $nestingClose) {
-            $nestingClose = $end;
+        if ($nestOpen && ! $nestClose) {
+            $nestClose = $end;
         }
 
-        $patt = ($disallowChars ? '[^' . $this->pregQuote($disallowChars) . ']' : '.');
+        $patt = ($disallow ? '[^' . $this->pregQuote($disallow) . ']' : '.');
         $patt = '(' . $patt . '*?)([\'"]|#\{|'
             . $this->pregQuote($end) . '|'
-            . (($nestingClose && $nestingClose !== $end) ? $this->pregQuote($nestingClose) . '|' : '')
+            . (($nestClose && $nestClose !== $end) ? $this->pregQuote($nestClose) . '|' : '')
             . static::$commentPattern . ')';
 
         $nestingLevel = 0;
@@ -3038,8 +3038,8 @@ class Parser
             if (isset($m[1]) && $m[1] !== '') {
                 $content[] = $m[1];
 
-                if ($nestingOpen) {
-                    $nestingLevel += substr_count($m[1], $nestingOpen);
+                if ($nestOpen) {
+                    $nestingLevel += substr_count($m[1], $nestOpen);
                 }
             }
 
@@ -3051,7 +3051,7 @@ class Parser
                 break;
             }
 
-            if ($tok === $nestingClose) {
+            if ($tok === $nestClose) {
                 $nestingLevel--;
             }
 
@@ -3076,7 +3076,7 @@ class Parser
         }
 
         // trim the end
-        if ($trimEnd && \is_string(end($content))) {
+        if ($rtrim && \is_string(end($content))) {
             $content[\count($content) - 1] = rtrim(end($content));
         }
 
