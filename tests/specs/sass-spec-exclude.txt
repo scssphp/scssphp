@@ -727,7 +727,6 @@ css/unicode_range/error/too_many_hex_digits
 css/unicode_range/simple
 directives/forward/escaped
 directives/function/escaped
-directives/if/error/syntax/else/partial_if
 directives/if/escaped/if_only
 directives/if/escaped/with_else
 directives/import/error/conflict/extension

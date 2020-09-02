@@ -810,11 +810,8 @@ class Parser
             if (
                 $this->matchChar('@', false) &&
                 $this->mixedKeyword($dirName) &&
-                ($this->isKnownGenericDirective($dirName) ?
-                    ($this->directiveValue($dirValue) && $this->end())
-                    :
-                    ($this->end(false) || ($this->directiveValue($dirValue, '') && $this->end(false)))
-                )
+                ! $this->isKnownGenericDirective($dirName) &&
+                ($this->end(false) || ($this->directiveValue($dirValue, '') && $this->end(false)))
             ) {
                 if (count($dirName) === 1 && is_string(reset($dirName))) {
                     $dirName = reset($dirName);
@@ -823,8 +820,8 @@ class Parser
                 }
                 if (
                     ! empty($this->env->parent) &&
-                    ! \in_array($this->env->type, [Type::T_DIRECTIVE, Type::T_MEDIA]) &&
-                    ! $this->isKnownGenericDirective($dirName)
+                    //$this->env->type &&
+                    ! \in_array($this->env->type, [Type::T_DIRECTIVE, Type::T_MEDIA])
                 ) {
                     $plain = trim(substr($this->buffer, $s, $this->count - $s));
                     $this->throwParseError(
@@ -1899,7 +1896,33 @@ class Parser
         if (! \is_string($directiveName)) {
             return false;
         }
-        if (\in_array($directiveName, ['warn', 'error', 'debug', 'use', 'forward'])) {
+        if (\in_array($directiveName, [
+            'at-root',
+            'media',
+            'mixin',
+            'include',
+            'scssphp-import-once',
+            'import',
+            'extend',
+            'function',
+            'break',
+            'continue',
+            'return',
+            'each',
+            'while',
+            'for',
+            'if',
+            'debug',
+            'warn',
+            'error',
+            'content',
+            'else',
+            'charset',
+            'supports',
+            // Todo
+            'use',
+            'forward',
+        ])) {
             return true;
         }
         return false;
