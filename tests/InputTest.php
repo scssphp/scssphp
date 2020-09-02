@@ -143,7 +143,14 @@ class InputTest extends TestCase
             });
         }
 
-        return $files;
+        $filesKeys = array_map(
+            function ($a) {
+                return substr($a, strlen(__DIR__) + 1);
+            },
+            $files
+        );
+
+        return array_combine($filesKeys, $files);
     }
 
     public static function outputNameFor($input)
