@@ -810,13 +810,26 @@ class Parser
             if (
                 $this->matchChar('@', false) &&
                 $this->mixedKeyword($dirName) &&
-                $this->directiveValue($dirValue) &&
-                $this->end()
+                ($this->isKnownGenericDirective($dirName) ?
+                    ($this->directiveValue($dirValue) && $this->end())
+                    :
+                    ($this->end() || ($this->directiveValue($dirValue, '') && $this->end()))
+                )
             ) {
                 if (count($dirName) === 1 && is_string(reset($dirName))) {
                     $dirName = reset($dirName);
                 } else {
                     $dirName = [Type::T_STRING, '', $dirName];
+                }
+                if (
+                    ! empty($this->env->parent) &&
+                    ! \in_array($this->env->type, [Type::T_DIRECTIVE, Type::T_MEDIA]) &&
+                    ! $this->isKnownGenericDirective($dirName)
+                ) {
+                    $plain = trim(substr($this->buffer, $s, $this->count - $s));
+                    $this->throwParseError(
+                        "Unknown directive `{$plain}` not allowed in `" . $this->env->type . "` block"
+                    );
                 }
                 $this->append([Type::T_DIRECTIVE, [$dirName, $dirValue]], $s);
 
@@ -1864,6 +1877,25 @@ class Parser
     }
 
     /**
+     * Check if a generic directive is known to be able to allow almost any syntax or not
+     * @param $directiveName
+     * @return bool
+     */
+    protected function isKnownGenericDirective($directiveName)
+    {
+        if (\is_array($directiveName) && \is_string(reset($directiveName))) {
+            $directiveName = reset($directiveName);
+        }
+        if (! \is_string($directiveName)) {
+            return false;
+        }
+        if (\in_array($directiveName, ['warn', 'error', 'debug', 'use', 'forward'])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Parse directive value list that considers $vars as keyword
      *
      * @param array          $out
@@ -1887,8 +1919,13 @@ class Parser
 
         $this->seek($s);
 
-        if ($endChar && $this->openString($endChar, $out)) {
-            if ($this->matchChar($endChar, false)) {
+        if (\is_string($endChar) && $this->openString($endChar ? $endChar : ';', $out, null, null, true, ";}{")) {
+            if ($endChar && $this->matchChar($endChar, false)) {
+                return true;
+            }
+            $ss = $this->count;
+            if (!$endChar && $this->end()) {
+                $this->seek($ss);
                 return true;
             }
         }
@@ -2974,10 +3011,11 @@ class Parser
      * @param string  $nestingOpen
      * @param string  $nestingClose
      * @param boolean $trimEnd
+     * @param string $disallowChars
      *
      * @return boolean
      */
-    protected function openString($end, &$out, $nestingOpen = null, $nestingClose = null, $trimEnd = true)
+    protected function openString($end, &$out, $nestingOpen = null, $nestingClose = null, $trimEnd = true, $disallowChars = null)
     {
         $oldWhite = $this->eatWhiteDefault;
         $this->eatWhiteDefault = false;
@@ -2986,7 +3024,8 @@ class Parser
             $nestingClose = $end;
         }
 
-        $patt = '(.*?)([\'"]|#\{|'
+        $patt = ($disallowChars ? '[^' . $this->pregQuote($disallowChars) . ']' : '.');
+        $patt = '(' . $patt . '*?)([\'"]|#\{|'
             . $this->pregQuote($end) . '|'
             . (($nestingClose && $nestingClose !== $end) ? $this->pregQuote($nestingClose) . '|' : '')
             . static::$commentPattern . ')';
