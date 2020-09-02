@@ -727,7 +727,6 @@ css/unicode_range/error/too_many_hex_digits
 css/unicode_range/simple
 css/unknown_directive/name_interpolation
 css/unknown_directive/plain
-css/unknown_directive/value_interpolation
 directives/forward/escaped
 directives/function/escaped
 directives/if/error/syntax/else/partial_if
@@ -760,7 +759,6 @@ libsass-closed-issues/issue_1081
 libsass-closed-issues/issue_1082
 libsass-closed-issues/issue_1091
 libsass-closed-issues/issue_1093/parameter/function
-libsass-closed-issues/issue_1093/parameter/mixin
 libsass-closed-issues/issue_1098
 libsass-closed-issues/issue_1102
 libsass-closed-issues/issue_1107
@@ -889,7 +887,6 @@ libsass-closed-issues/issue_2155
 libsass-closed-issues/issue_2175
 libsass-closed-issues/issue_2179
 libsass-closed-issues/issue_2185
-libsass-closed-issues/issue_2202
 libsass-closed-issues/issue_2233
 libsass-closed-issues/issue_2236/floats
 libsass-closed-issues/issue_2236/ints
@@ -1237,8 +1234,6 @@ non_conformant/parser/arglists/can-end-with-comma/error-call-2
 non_conformant/parser/arglists/can-end-with-comma/error-function-1
 non_conformant/parser/arglists/can-end-with-comma/error-function-2
 non_conformant/parser/arglists/can-end-with-comma/error-function-3
-non_conformant/parser/arglists/can-end-with-comma/error-include-1
-non_conformant/parser/arglists/can-end-with-comma/error-include-2
 non_conformant/parser/arglists/can-end-with-comma/error-mixin-1
 non_conformant/parser/arglists/can-end-with-comma/error-mixin-2
 non_conformant/parser/arglists/can-end-with-comma/error-mixin-3
