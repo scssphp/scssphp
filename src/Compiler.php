@@ -1078,7 +1078,12 @@ class Compiler
                 $appendNewLine = "\n";
             }
 
-            $this->appendRootDirective($s . ';' . $appendNewLine, $out, [Type::T_COMMENT, Type::T_DIRECTIVE]);
+            if (empty($directive[3])) {
+                $this->appendRootDirective($s . ';' . $appendNewLine, $out, [Type::T_COMMENT, Type::T_DIRECTIVE]);
+            }
+            else {
+                $this->appendOutputLine($out, Type::T_DIRECTIVE, $s . ';');
+            }
         } else {
             $directive->name = $this->compileDirectiveName($directive->name);
             $s = '@' . $directive->name;

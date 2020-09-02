@@ -820,7 +820,7 @@ class Parser
                 }
                 if (
                     ! empty($this->env->parent) &&
-                    //$this->env->type &&
+                    $this->env->type &&
                     ! \in_array($this->env->type, [Type::T_DIRECTIVE, Type::T_MEDIA])
                 ) {
                     $plain = trim(substr($this->buffer, $s, $this->count - $s));
@@ -837,7 +837,7 @@ class Parser
                     $this->seek($s);
                 }
 
-                $this->append([Type::T_DIRECTIVE, [$dirName, $dirValue, $hasBlankLine]], $s);
+                $this->append([Type::T_DIRECTIVE, [$dirName, $dirValue, $hasBlankLine, ! empty($this->env->parent)]], $s);
                 $this->whitespace();
 
                 return true;

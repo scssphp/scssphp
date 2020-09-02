@@ -781,7 +781,6 @@ libsass-closed-issues/issue_1248
 libsass-closed-issues/issue_1253
 libsass-closed-issues/issue_1258
 libsass-closed-issues/issue_1259
-libsass-closed-issues/issue_1263
 libsass-closed-issues/issue_1279
 libsass-closed-issues/issue_1322
 libsass-closed-issues/issue_1328
