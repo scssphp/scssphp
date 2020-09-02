@@ -1066,7 +1066,7 @@ class Compiler
     protected function compileDirective($directive, OutputBlock $out)
     {
         if (\is_array($directive)) {
-            $s = '@' . $directive[0];
+            $s = '@' . $this->compileDirectiveName($directive[0]);
 
             if (! empty($directive[1])) {
                 $s .= ' ' . $this->compileValue($directive[1]);
@@ -1074,6 +1074,7 @@ class Compiler
 
             $this->appendRootDirective($s . ';', $out);
         } else {
+            $directive->name = $this->compileDirectiveName($directive->name);
             $s = '@' . $directive->name;
 
             if (! empty($directive->value)) {
@@ -1086,6 +1087,22 @@ class Compiler
                 $this->compileNestedBlock($directive, [$s]);
             }
         }
+    }
+
+    /**
+     * directive names can include some interpolation
+     *
+     * @param string|array $directiveName
+     * @return array|string
+     * @throws CompilerException
+     */
+    protected function compileDirectiveName($directiveName)
+    {
+        if (is_string($directiveName)) {
+            return $directiveName;
+        }
+
+        return $this->compileValue($directiveName);
     }
 
     /**
@@ -1360,7 +1377,7 @@ class Compiler
 
             if ($block->type === Type::T_DIRECTIVE) {
                 if (isset($block->name)) {
-                    return $this->testWithWithout($block->name, $with, $without);
+                    return $this->testWithWithout($this->compileDirectiveName($block->name), $with, $without);
                 } elseif (isset($block->selectors) && preg_match(',@(\w+),ims', json_encode($block->selectors), $m)) {
                     return $this->testWithWithout($m[1], $with, $without);
                 } else {
@@ -1486,7 +1503,7 @@ class Compiler
 
         // wrap assign children in a block
         // except for @font-face
-        if ($block->type !== Type::T_DIRECTIVE || $block->name !== 'font-face') {
+        if ($block->type !== Type::T_DIRECTIVE || $this->compileDirectiveName($block->name) !== 'font-face') {
             // need wrapping?
             $needWrapping = false;
 

@@ -781,9 +781,14 @@ class Parser
             // doesn't match built in directive, do generic one
             if (
                 $this->matchChar('@', false) &&
-                $this->keyword($dirName) &&
+                $this->mixedKeyword($dirName) &&
                 $this->directiveValue($dirValue, '{')
             ) {
+                if (count($dirName) === 1 && is_string(reset($dirName))) {
+                    $dirName = reset($dirName);
+                } else {
+                    $dirName = [Type::T_STRING, '', $dirName];
+                }
                 if ($dirName === 'media') {
                     $directive = $this->pushSpecialBlock(Type::T_MEDIA, $s);
                 } else {
@@ -804,10 +809,15 @@ class Parser
             // maybe it's a generic blockless directive
             if (
                 $this->matchChar('@', false) &&
-                $this->keyword($dirName) &&
+                $this->mixedKeyword($dirName) &&
                 $this->directiveValue($dirValue) &&
                 $this->end()
             ) {
+                if (count($dirName) === 1 && is_string(reset($dirName))) {
+                    $dirName = reset($dirName);
+                } else {
+                    $dirName = [Type::T_STRING, '', $dirName];
+                }
                 $this->append([Type::T_DIRECTIVE, [$dirName, $dirValue]], $s);
 
                 return true;
