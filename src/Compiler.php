@@ -1080,8 +1080,7 @@ class Compiler
 
             if (empty($directive[3])) {
                 $this->appendRootDirective($s . ';' . $appendNewLine, $out, [Type::T_COMMENT, Type::T_DIRECTIVE]);
-            }
-            else {
+            } else {
                 $this->appendOutputLine($out, Type::T_DIRECTIVE, $s . ';');
             }
         } else {

@@ -813,8 +813,8 @@ class Parser
                 ! $this->isKnownGenericDirective($dirName) &&
                 ($this->end(false) || ($this->directiveValue($dirValue, '') && $this->end(false)))
             ) {
-                if (count($dirName) === 1 && is_string(reset($dirName))) {
-                    $dirName = reset($dirName);
+                if (\count($dirName) === 1 && \is_string(\reset($dirName))) {
+                    $dirName = \reset($dirName);
                 } else {
                     $dirName = [Type::T_STRING, '', $dirName];
                 }
@@ -823,7 +823,7 @@ class Parser
                     $this->env->type &&
                     ! \in_array($this->env->type, [Type::T_DIRECTIVE, Type::T_MEDIA])
                 ) {
-                    $plain = trim(substr($this->buffer, $s, $this->count - $s));
+                    $plain = \trim(\substr($this->buffer, $s, $this->count - $s));
                     $this->throwParseError(
                         "Unknown directive `{$plain}` not allowed in `" . $this->env->type . "` block"
                     );
@@ -836,8 +836,8 @@ class Parser
                     $hasBlankLine = true;
                     $this->seek($s);
                 }
-
-                $this->append([Type::T_DIRECTIVE, [$dirName, $dirValue, $hasBlankLine, ! empty($this->env->parent)]], $s);
+                $isNotRoot = ! empty($this->env->parent);
+                $this->append([Type::T_DIRECTIVE, [$dirName, $dirValue, $hasBlankLine, $isNotRoot]], $s);
                 $this->whitespace();
 
                 return true;
@@ -1896,7 +1896,8 @@ class Parser
         if (! \is_string($directiveName)) {
             return false;
         }
-        if (\in_array($directiveName, [
+        if (
+            \in_array($directiveName, [
             'at-root',
             'media',
             'mixin',
@@ -1922,7 +1923,8 @@ class Parser
             // Todo
             'use',
             'forward',
-        ])) {
+            ])
+        ) {
             return true;
         }
         return false;
