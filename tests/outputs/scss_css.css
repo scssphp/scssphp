@@ -1,6 +1,8 @@
 @charset "UTF-8";
 @foo "bar";
+
 @foo;
+
 @import "foo.css";
 @import 'foo.css';
 @import url("foo.css");
@@ -15,9 +17,13 @@
 @import "baz2.css";
 @foo bar;
 @bar baz;
+
 @namespace "http://www.w3.org/Profiles/xhtml1-strict";
+
 @namespace url(http://www.w3.org/Profiles/xhtml1-strict);
+
 @namespace html url("http://www.w3.org/Profiles/xhtml1-strict");
+
 [foo~=bar] {
   a: b; }
 

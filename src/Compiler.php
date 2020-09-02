@@ -1066,13 +1066,19 @@ class Compiler
     protected function compileDirective($directive, OutputBlock $out)
     {
         if (\is_array($directive)) {
-            $s = '@' . $this->compileDirectiveName($directive[0]);
+            $directiveName = $this->compileDirectiveName($directive[0]);
+            $s = '@' . $directiveName;
 
             if (! empty($directive[1])) {
                 $s .= ' ' . $this->compileValue($directive[1]);
             }
+            // sass-spec compliance on newline after directives, a bit tricky :/
+            $appendNewLine = (! empty($directive[2]) || strpos($s, "\n")) ? "\n" : "";
+            if (\is_array($directive[0]) && empty($directive[1])) {
+                $appendNewLine = "\n";
+            }
 
-            $this->appendRootDirective($s . ';', $out);
+            $this->appendRootDirective($s . ';' . $appendNewLine, $out, [Type::T_COMMENT, Type::T_DIRECTIVE]);
         } else {
             $directive->name = $this->compileDirectiveName($directive->name);
             $s = '@' . $directive->name;

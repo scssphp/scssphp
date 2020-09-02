@@ -813,7 +813,7 @@ class Parser
                 ($this->isKnownGenericDirective($dirName) ?
                     ($this->directiveValue($dirValue) && $this->end())
                     :
-                    ($this->end() || ($this->directiveValue($dirValue, '') && $this->end()))
+                    ($this->end(false) || ($this->directiveValue($dirValue, '') && $this->end(false)))
                 )
             ) {
                 if (count($dirName) === 1 && is_string(reset($dirName))) {
@@ -831,7 +831,17 @@ class Parser
                         "Unknown directive `{$plain}` not allowed in `" . $this->env->type . "` block"
                     );
                 }
-                $this->append([Type::T_DIRECTIVE, [$dirName, $dirValue]], $s);
+                // blockless directives with a blank line after keeps their blank lines after
+                // sass-spec compliance purpose
+                $s = $this->count;
+                $hasBlankLine = false;
+                if ($this->match('\s*?\n\s*\n', $out, false)) {
+                    $hasBlankLine = true;
+                    $this->seek($s);
+                }
+
+                $this->append([Type::T_DIRECTIVE, [$dirName, $dirValue, $hasBlankLine]], $s);
+                $this->whitespace();
 
                 return true;
             }
@@ -2849,7 +2859,7 @@ class Parser
      *
      * @return boolean
      */
-    protected function string(&$out)
+    protected function string(&$out, $keepDelimWithInterpolation = false)
     {
         $s = $this->count;
 
@@ -2912,7 +2922,7 @@ class Parser
         $this->eatWhiteDefault = $oldWhite;
 
         if ($this->literal($delim, \strlen($delim))) {
-            if ($hasInterpolation) {
+            if ($hasInterpolation && ! $keepDelimWithInterpolation) {
                 $delim = '"';
             }
 
@@ -3055,7 +3065,7 @@ class Parser
                 $nestingLevel--;
             }
 
-            if (($tok === "'" || $tok === '"') && $this->string($str)) {
+            if (($tok === "'" || $tok === '"') && $this->string($str, true)) {
                 $content[] = $str;
                 continue;
             }
@@ -3696,12 +3706,13 @@ class Parser
 
     /**
      * Consume an end of statement delimiter
+     * @param bool $eatWhitespace
      *
      * @return boolean
      */
-    protected function end()
+    protected function end($eatWhitespace = null)
     {
-        if ($this->matchChar(';')) {
+        if ($this->matchChar(';', $eatWhitespace)) {
             return true;
         }
 
