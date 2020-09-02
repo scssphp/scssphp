@@ -1,4 +1,6 @@
 @charset "UTF-8";
+@foo "bar";
+@foo;
 @import "foo.css";
 @import 'foo.css';
 @import url("foo.css");
@@ -11,6 +13,11 @@
 @import "foo2.css";
 @import "bar2.css";
 @import "baz2.css";
+@foo bar;
+@bar baz;
+@namespace "http://www.w3.org/Profiles/xhtml1-strict";
+@namespace url(http://www.w3.org/Profiles/xhtml1-strict);
+@namespace html url("http://www.w3.org/Profiles/xhtml1-strict");
 [foo~=bar] {
   a: b; }
 
@@ -157,16 +164,14 @@ foo {
   name/*\**/: val;
   name: val; }
 
-@foo "bar"  ;
-
 foo {
   a: -moz-element(#foo);
   b: -webkit-element(#foo);
   b: -foobar-element(#foo); }
-@foo ;
 
 foo {
   bar: baz; }
+
 0% {
   a: b; }
 
@@ -387,16 +392,10 @@ foo {
   a: b; }
 @bar baz {
   c: d; }
-@foo bar;
-@bar baz;
-
-
 /* Foo
  * Bar */
 /* Baz
  * Bang */
-
-
 .foo {
   /* Foo
    * Bar */
@@ -406,12 +405,6 @@ foo {
 .foo {
   /* Foo Bar */
   /* Baz Bang */ }
-
-@namespace "http://www.w3.org/Profiles/xhtml1-strict";
-
-@namespace url(http://www.w3.org/Profiles/xhtml1-strict);
-
-@namespace html url("http://www.w3.org/Profiles/xhtml1-strict");
 
 [foo|bar=baz] {
   a: b; }
