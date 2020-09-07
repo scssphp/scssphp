@@ -4,6 +4,9 @@
 @import "http://foo.com/bar";
 @import url(foo);
 
+$web-font-path: "https://fontapi.example.com/css?family=Source+Sans+Pro:wght@300;400;700&display=swap" !default;
+@import url($web-font-path);
+
 @import "imports/simple";
 
 pre {

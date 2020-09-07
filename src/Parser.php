@@ -3715,15 +3715,28 @@ class Parser
      */
     protected function url(&$out)
     {
-        //if ($this->match('(url\(\s*(["\']?)([^)]+)\2\s*\))', $m)) {
-        if (
-            $this->literal('url(', 4) &&
-            ($this->string($out) || $this->openString(')', $out)) &&
-            $this->matchChar(')')
-        ) {
-            $out = [Type::T_STRING, '', ['url(', $out, ')']];
+        if ($this->literal('url(', 4)) {
+            $s = $this->count;
 
-            return true;
+            if (
+                ($this->string($out) || $this->spaceList($out)) &&
+                $this->matchChar(')')
+            ) {
+                $out = [Type::T_STRING, '', ['url(', $out, ')']];
+
+                return true;
+            }
+
+            $this->seek($s);
+
+            if (
+                $this->openString(')', $out) &&
+                $this->matchChar(')')
+            ) {
+                $out = [Type::T_STRING, '', ['url(', $out, ')']];
+
+                return true;
+            }
         }
 
         return false;

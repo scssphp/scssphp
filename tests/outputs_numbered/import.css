@@ -2,12 +2,13 @@
 @import "foo" screen;
 @import "http://foo.com/bar";
 @import url(foo);
+@import url("https://fontapi.example.com/css?family=Source+Sans+Pro:wght@300;400;700&display=swap");
 /* line 1, inputs/imports/simple.scss */
 div {
   height: 200px;
   color: red; }
 
-/* line 9, inputs/import.scss */
+/* line 12, inputs/import.scss */
 pre {
   color: red; }
 
@@ -16,7 +17,7 @@ pre div {
   height: 200px;
   color: red; }
 
-/* line 14, inputs/import.scss */
+/* line 17, inputs/import.scss */
 /* line 1, inputs/imports/simple.scss */
 code div {
   height: 200px;
@@ -31,7 +32,7 @@ code div {
 #partial {
   color: blue; }
 
-/* line 20, inputs/import.scss */
+/* line 23, inputs/import.scss */
 body {
   color: #7C2;
   background: gray; }

@@ -2,6 +2,7 @@
 @import "foo" screen;
 @import "http://foo.com/bar";
 @import url(foo);
+@import url("https://fontapi.example.com/css?family=Source+Sans+Pro:wght@300;400;700&display=swap");
 div {
   height: 200px;
   color: red; }
