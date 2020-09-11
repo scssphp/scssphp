@@ -53,3 +53,15 @@ div::before {
 /* line 13, inputs/imports/plain.css */
   100% {
     transform: rotate(359deg); } }
+/* line 18, inputs/imports/plain.css */
+.fancybox-is-hidden {
+  position: absolute !important; }
+
+/* line 22, inputs/imports/plain.css */
+.fancybox-navigation .fancybox-button {
+  transition: opacity 0.25s ease, visibility 0s ease 0.25s; }
+
+@media (max-width: 576px) {
+/* line 27, inputs/imports/plain.css */
+  .fancybox-thumbs {
+    width: 110px; } }

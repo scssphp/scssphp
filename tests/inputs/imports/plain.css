@@ -14,3 +14,17 @@ div::before {
     transform: rotate(359deg);
   }
 }
+
+.fancybox-is-hidden {
+    position: absolute !important;
+}
+
+.fancybox-navigation .fancybox-button {
+    transition: opacity .25s ease, visibility 0s ease .25s;
+}
+
+@media all and (max-width: 576px) {
+  .fancybox-thumbs {
+    width: 110px;
+  }
+}

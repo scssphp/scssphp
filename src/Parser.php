@@ -460,7 +460,7 @@ class Parser
                 $this->end()
             ) {
                 if ($this->cssOnly) {
-                    $this->assertPlainCssValid($importPath, $s);
+                    $this->assertPlainCssValid([Type::T_IMPORT, $importPath], $s);
                     $this->append([Type::T_COMMENT, rtrim(substr($this->buffer, $s, $this->count - $s))]);
                     return true;
                 }
@@ -478,7 +478,7 @@ class Parser
                 $this->end()
             ) {
                 if ($this->cssOnly) {
-                    $this->assertPlainCssValid($importPath, $s);
+                    $this->assertPlainCssValid([Type::T_IMPORT, $importPath], $s);
                     $this->append([Type::T_COMMENT, rtrim(substr($this->buffer, $s, $this->count - $s))]);
                     return true;
                 }
@@ -1198,6 +1198,11 @@ class Parser
      */
     protected function isPlainCssValidElement($parsed, $allowExpression = false)
     {
+        // keep string as is
+        if (is_string($parsed)) {
+            return $parsed;
+        }
+
         if (
             \in_array($parsed[0], [Type::T_FUNCTION, Type::T_FUNCTION_CALL]) &&
             !\in_array($parsed[1], [
@@ -1232,6 +1237,7 @@ class Parser
             case Type::T_KEYWORD:
             case Type::T_NULL:
             case Type::T_NUMBER:
+            case Type::T_MEDIA:
                 return $parsed;
 
             case Type::T_COMMENT:
@@ -1250,6 +1256,16 @@ class Parser
 
                 return $parsed;
 
+            case Type::T_IMPORT:
+                if ($parsed[1][0] === Type::T_LIST) {
+                    return false;
+                }
+                $parsed[1] = $this->isPlainCssValidElement($parsed[1]);
+                if ($parsed[1] === false) {
+                    return false;
+                }
+                return $parsed;
+
             case Type::T_STRING:
                 foreach ($parsed[2] as $k => $substr) {
                     if (\is_array($substr)) {
@@ -1257,6 +1273,18 @@ class Parser
                         if (! $parsed[2][$k]) {
                             return false;
                         }
+                    }
+                }
+                return $parsed;
+
+            case Type::T_LIST:
+                if (!empty($parsed['enclosing'])) {
+                    return false;
+                }
+                foreach ($parsed[2] as $k => $listElement) {
+                    $parsed[2][$k] = $this->isPlainCssValidElement($listElement);
+                    if (! $parsed[2][$k]) {
+                        return false;
                     }
                 }
                 return $parsed;
