@@ -29,6 +29,19 @@ class SassSpecTest extends TestCase
 
     protected static $fileExclusionList = __DIR__ . '/specs/sass-spec-exclude.txt';
     protected static $fileWarningExclusionList = __DIR__ . '/specs/sass-spec-exclude-warning.txt';
+    private $dirToClean;
+
+    /**
+     * @after
+     */
+    protected function cleanDirection()
+    {
+        if (!$this->dirToClean) {
+            return;
+        }
+
+        self::removeDirectory($this->dirToClean);
+    }
 
     protected function sassSpecDir()
     {
@@ -218,20 +231,22 @@ class SassSpecTest extends TestCase
         // this test needs @import of includes files, build a dir with files and set the ImportPaths
         if ($includes) {
             $basedir = sys_get_temp_dir() . '/sass-spec/' . preg_replace(",^\d+/\d+\.\s*,", "", $name);
-            $dirToClean = $basedir;
+            $this->dirToClean = $basedir;
 
             foreach ($includes as $f => $c) {
                 $f = $basedir . '/' . $f;
 
                 if (! is_dir(dirname($f))) {
-                    passthru("mkdir -p " . dirname($f));
+                    mkdir(dirname($f), 0777, true);
                 }
 
                 file_put_contents($f, $c);
             }
             if ($inputDir) {
                 $basedir .= '/' . $inputDir;
-                passthru("mkdir -p $basedir");
+                if (!is_dir($basedir)) {
+                    mkdir($basedir, 0777, true);
+                }
             }
 
             // SassSpec use @import "core_functions/.../..."
@@ -266,11 +281,6 @@ class SassSpecTest extends TestCase
             rewind($fp_err_stream);
             $output = stream_get_contents($fp_err_stream);
             fclose($fp_err_stream);
-
-            // clean after the test
-            if ($includes) {
-                passthru("rm -fR $dirToClean");
-            }
 
             // if several outputs check if we match one alternative if not the first
             if ($css !== $actual and $alternativeCssOutputs) {
@@ -321,10 +331,6 @@ class SassSpecTest extends TestCase
             }
 
             fclose($fp_err_stream);
-            // clean after the test
-            if ($includes) {
-                passthru("rm -fR $dirToClean");
-            }
         }
     }
 
@@ -519,5 +525,30 @@ class SassSpecTest extends TestCase
 
         //var_dump($skippedTests);
         return $testCases;
+    }
+
+    private static function removeDirectory($dir)
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        foreach (scandir($dir) as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            $path = $dir.'/'.$item;
+
+            if (is_link($path)) {
+                unlink($path);
+            } elseif (is_dir($path)) {
+                self::removeDirectory($path);
+            } else {
+                unlink($path);
+            }
+        }
+
+        rmdir($dir);
     }
 }
