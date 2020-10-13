@@ -5090,13 +5090,13 @@ class Compiler
                         substr($dir, -1) !== '/' &&
                         substr($full, 0, 1) !== '/'
                     ) ? '/' : '';
-                    $full = $dir . $separator . $full;
+                    $full = realpath($dir . $separator . $full);
 
                     if (is_file($file = $full)) {
                         $found[] = $file;
                     }
                     if (! $isPartial) {
-                        $full = dirname($full) . '/_' . basename($full);
+                        $full = realpath(dirname($full) . '/_' . basename($full));
                         if (is_file($file = $full)) {
                             $found[] = $file;
                         }
