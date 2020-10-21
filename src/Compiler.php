@@ -4973,7 +4973,8 @@ class Compiler
 
             $tree = $this->importCache[$realPath];
         } else {
-            $code   = file_get_contents($path);
+            $wpfs   = new \Boldgrid_Framework_Wp_Fs();
+            $code   = $wpfs->get_contents($path);
             $parser = $this->parserFactory($path);
             $tree   = $parser->parse($code);
 
