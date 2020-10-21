@@ -18,9 +18,9 @@ if (version_compare(PHP_VERSION, '5.4') < 0) {
 
 include __DIR__ . '/../scss.inc.php';
 
-use Leafo\ScssPhp\Compiler;
-use Leafo\ScssPhp\Parser;
-use Leafo\ScssPhp\Version;
+use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Parser;
+use ScssPhp\ScssPhp\Version;
 
 $style = null;
 $loadPaths = null;
