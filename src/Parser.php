@@ -2988,8 +2988,9 @@ class Parser
         return false;
     }
 
-    protected function matchEscapeCharacter(&$out)
+    protected function matchEscapeCharacter(&$out, $inKeywords = false)
     {
+        $s = $this->count;
         if ($this->match('[a-f0-9]', $m, false)) {
             $hex = $m[0];
 
@@ -3004,7 +3005,17 @@ class Parser
             $value = hexdec($hex);
 
             if ($value == 0 || ($value >= 0xD800 && $value <= 0xDFFF) || $value >= 0x10FFFF) {
+                if ($inKeywords) {
+                    $this->seek($s);
+                    return false;
+                }
                 $out = "\u{FFFD}";
+            } elseif ($value < 0x20) {
+                if ($inKeywords) {
+                    $this->seek($s);
+                    return false;
+                }
+                $out = Util::mbChr($value);
             } else {
                 $out = Util::mbChr($value);
             }
@@ -3013,6 +3024,10 @@ class Parser
         }
 
         if ($this->match('.', $m, false)) {
+            if ($inKeywords && in_array($m[0], ["'",'"','@','&',' ','\\',':','/','%'])) {
+                $this->seek($s);
+                return false;
+            }
             $out = $m[0];
 
             return true;
@@ -3666,16 +3681,49 @@ class Parser
      */
     protected function keyword(&$word, $eatWhitespace = null)
     {
+        $s = $this->count;
         $match = $this->match(
             $this->utf8
                 ? '(([\pL\w\x{00A0}-\x{10FFFF}_\-\*!"\']|[\\\\].)([\pL\w\x{00A0}-\x{10FFFF}\-_"\']|[\\\\].)*)'
                 : '(([\w_\-\*!"\']|[\\\\].)([\w\-_"\']|[\\\\].)*)',
             $m,
-            $eatWhitespace
+            false
         );
 
         if ($match) {
             $word = $m[1];
+
+            // handling of escaping in keyword : get the escaped char
+            if (strpos($word, '\\') !== false) {
+                $send = $this->count;
+                $escapedWord = [];
+                $this->seek($s);
+                $previousEscape = false;
+                while ($this->count < $send) {
+                    $char = $this->buffer[$this->count];
+                    $this->count++;
+                    if ($this->count < $send
+                        && $char === '\\'
+                        && !$previousEscape
+                        && $this->matchEscapeCharacter($out, true)) {
+                        $escapedWord[] = $out;
+                    } else {
+                        if ($previousEscape) {
+                            $previousEscape = false;
+                        }
+                        elseif ($char === '\\') {
+                            $previousEscape = true;
+                        }
+                        $escapedWord[] = $char;
+                    }
+                }
+
+                $word = implode('', $escapedWord);
+            }
+
+            if (is_null($eatWhitespace) ? $this->eatWhiteDefault : $eatWhitespace) {
+                $this->whitespace();
+            }
 
             return true;
         }

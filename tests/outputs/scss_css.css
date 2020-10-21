@@ -149,7 +149,7 @@ E > F, G > H {
 foo {
   a: \foo bar;
   b: foo\ bar;
-  c: \2022 \0020;
+  c: •  ;
   d: foo\\bar;
   e: foo\"\'bar; }
 
