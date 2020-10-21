@@ -3,7 +3,7 @@
 /**
  * SCSSPHP
  *
- * @copyright 2012-2015 Leaf Corcoran
+ * @copyright 2012-2020 Leaf Corcoran
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
@@ -12,8 +12,8 @@
 
 error_reporting(E_ALL);
 
-if (version_compare(PHP_VERSION, '5.4') < 0) {
-    die('Requires PHP 5.4 or above');
+if (version_compare(PHP_VERSION, '5.6') < 0) {
+    die('Requires PHP 5.6 or above');
 }
 
 include __DIR__ . '/../scss.inc.php';
