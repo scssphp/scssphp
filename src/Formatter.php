@@ -13,7 +13,6 @@
 namespace ScssPhp\ScssPhp;
 
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
-use ScssPhp\ScssPhp\SourceMap\SourceMapGenerator;
 
 /**
  * Base formatter
@@ -76,11 +75,6 @@ abstract class Formatter
      * @var integer
      */
     protected $currentColumn;
-
-    /**
-     * @var \ScssPhp\ScssPhp\SourceMap\SourceMapGenerator
-     */
-    protected $sourceMapGenerator;
 
     /**
      * @var string
@@ -260,16 +254,8 @@ abstract class Formatter
      *
      * @return string
      */
-    public function format(OutputBlock $block, SourceMapGenerator $sourceMapGenerator = null)
+    public function format(OutputBlock $block)
     {
-        $this->sourceMapGenerator = null;
-
-        if ($sourceMapGenerator) {
-            $this->currentLine        = 1;
-            $this->currentColumn      = 0;
-            $this->sourceMapGenerator = $sourceMapGenerator;
-        }
-
         $this->testEmptyChildren($block);
 
         ob_start();
@@ -307,25 +293,6 @@ abstract class Formatter
             $str = substr($str, 0, -1);
 
             $this->strippedSemicolon = ';';
-        }
-
-        if ($this->sourceMapGenerator) {
-            $this->sourceMapGenerator->addMapping(
-                $this->currentLine,
-                $this->currentColumn,
-                $this->currentBlock->sourceLine,
-                //columns from parser are off by one
-                $this->currentBlock->sourceColumn > 0 ? $this->currentBlock->sourceColumn - 1 : 0,
-                $this->currentBlock->sourceName
-            );
-
-            $lines = explode("\n", $str);
-            $lineCount = \count($lines);
-            $this->currentLine += $lineCount - 1;
-
-            $lastLine = array_pop($lines);
-
-            $this->currentColumn = ($lineCount === 1 ? $this->currentColumn : 0) + \strlen($lastLine);
         }
 
         echo $str;
