@@ -3557,7 +3557,7 @@ class Parser
                             $this->seek($ss);
                         }
                     } elseif (
-                        $this->matchChar('(') &&
+                        $this->matchChar('(', true) &&
                         ($this->openString(')', $str, '(') || true) &&
                         $this->matchChar(')')
                     ) {

@@ -562,7 +562,7 @@ foo {
 .foo {
   a: b; }
 
-.foo #bar:baz(/* bang )*/ bip) {
+.foo #bar:baz(bip) {
   a: b; }
 
 > E {

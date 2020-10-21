@@ -704,7 +704,7 @@ foo {
   a: b; }
 
 /* line 720, inputs/scss_css.scss */
-.foo #bar:baz(/* bang )*/ bip) {
+.foo #bar:baz(bip) {
   a: b; }
 
 /* line 724, inputs/scss_css.scss */
