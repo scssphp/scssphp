@@ -7,7 +7,7 @@
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
- * @link http://leafo.github.io/scssphp
+ * @link http://scssphp.github.io/scssphp
  */
 
 error_reporting(E_ALL);
@@ -190,7 +190,7 @@ if ($precision) {
 }
 
 if ($style) {
-    $scss->setFormatter('Leafo\\ScssPhp\\Formatter\\' . ucfirst($style));
+    $scss->setFormatter('ScssPhp\\ScssPhp\\Formatter\\' . ucfirst($style));
 }
 
 if ($encoding) {
