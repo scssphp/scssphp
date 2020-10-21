@@ -675,7 +675,6 @@ core_functions/string/unique_id/error/too_many_args
 core_functions/string/unquote/error/type
 core_functions/string/unquote/escaped_backslash
 css/comment/error/loud/unterminated/scss
-css/comment/multiple_stars
 css/custom_properties/error/brackets/curly
 css/custom_properties/error/brackets/curly_in_square
 css/custom_properties/error/brackets/paren
@@ -848,8 +847,6 @@ libsass-closed-issues/issue_1739/interpolate/left
 libsass-closed-issues/issue_1739/interpolate/right
 libsass-closed-issues/issue_1793
 libsass-closed-issues/issue_1797
-libsass-closed-issues/issue_1798/1
-libsass-closed-issues/issue_1798/2
 libsass-closed-issues/issue_1803/nested
 libsass-closed-issues/issue_1804/inline
 libsass-closed-issues/issue_1804/variable

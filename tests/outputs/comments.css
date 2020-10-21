@@ -6,7 +6,6 @@ Here is a block comment
 **/
 /*hello*/
 div {
-  /*yeah*/
   border: 1px solid red;
   /* another property */
   color: url('http://mage-page.com');

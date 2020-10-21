@@ -3366,6 +3366,9 @@ class Parser
     {
         $selector = [];
 
+        $discardComments = $this->discardComments;
+        $this->discardComments = true;
+
         for (;;) {
             $s = $this->count;
 
@@ -3383,7 +3386,7 @@ class Parser
 
             if ($this->selectorSingle($part, $subSelector)) {
                 $selector[] = $part;
-                $this->match('\s+', $m);
+                $this->whitespace();
                 continue;
             }
 
@@ -3394,6 +3397,8 @@ class Parser
 
             break;
         }
+
+        $this->discardComments = $discardComments;
 
         if (! $selector) {
             return false;

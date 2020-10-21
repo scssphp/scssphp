@@ -235,8 +235,7 @@ foo {
   /* b; c: */ }
 
 foo {
-  a: d;
-  /*: b; c */ }
+  a: d; }
 
 /* Foo
  * Bar */
@@ -564,7 +563,6 @@ foo {
   a: b; }
 
 .foo #bar:baz(/* bang )*/ bip) {
-  /* .a #foo */
   a: b; }
 
 > E {
