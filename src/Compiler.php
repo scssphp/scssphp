@@ -20,7 +20,6 @@ use ScssPhp\ScssPhp\Compiler\Environment;
 use ScssPhp\ScssPhp\Exception\CompilerException;
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
 use ScssPhp\ScssPhp\Node;
-use ScssPhp\ScssPhp\SourceMap\SourceMapGenerator;
 use ScssPhp\ScssPhp\Type;
 use ScssPhp\ScssPhp\Parser;
 use ScssPhp\ScssPhp\Util;
@@ -129,9 +128,6 @@ class Compiler
     protected $encoding = null;
     protected $lineNumberStyle = null;
 
-    protected $sourceMap = self::SOURCE_MAP_NONE;
-    protected $sourceMapOptions = [];
-
     /**
      * @var string|\ScssPhp\ScssPhp\Formatter
      */
@@ -159,7 +155,6 @@ class Compiler
     protected $sourceIndex;
     protected $sourceLine;
     protected $sourceColumn;
-    protected $stderr;
     protected $shouldEvaluate;
     protected $ignoreErrors;
     protected $ignoreCallStackMessage = false;
@@ -179,8 +174,6 @@ class Compiler
         if ($cacheOptions) {
             $this->cache = new Cache($cacheOptions);
         }
-
-        $this->stderr = fopen('php://stderr', 'w');
     }
 
     /**
@@ -271,35 +264,7 @@ class Compiler
         $this->compileRoot($tree);
         $this->popEnv();
 
-        $sourceMapGenerator = null;
-
-        if ($this->sourceMap) {
-            if (\is_object($this->sourceMap) && $this->sourceMap instanceof SourceMapGenerator) {
-                $sourceMapGenerator = $this->sourceMap;
-                $this->sourceMap = self::SOURCE_MAP_FILE;
-            } elseif ($this->sourceMap !== self::SOURCE_MAP_NONE) {
-                $sourceMapGenerator = new SourceMapGenerator($this->sourceMapOptions);
-            }
-        }
-
-        $out = $this->formatter->format($this->scope, $sourceMapGenerator);
-
-        if (! empty($out) && $this->sourceMap && $this->sourceMap !== self::SOURCE_MAP_NONE) {
-            $sourceMap    = $sourceMapGenerator->generateJson();
-            $sourceMapUrl = null;
-
-            switch ($this->sourceMap) {
-                case self::SOURCE_MAP_INLINE:
-                    $sourceMapUrl = sprintf('data:application/json,%s', Util::encodeURIComponent($sourceMap));
-                    break;
-
-                case self::SOURCE_MAP_FILE:
-                    $sourceMapUrl = $sourceMapGenerator->saveMap($sourceMap);
-                    break;
-            }
-
-            $out .= sprintf('/*# sourceMappingURL=%s */', $sourceMapUrl);
-        }
+        $out = $this->formatter->format( $this->scope );
 
         if ($this->cache && isset($cacheKey) && isset($compileOptions)) {
             $v = [
@@ -3011,7 +2976,7 @@ class Compiler
                 $line  = $this->sourceLine;
                 $value = $this->compileDebugValue($value);
 
-                fwrite($this->stderr, "$fname:$line DEBUG: $value\n");
+                $this->throwError("$fname:$line DEBUG: $value\n");
                 break;
 
             case Type::T_WARN:
@@ -3021,7 +2986,7 @@ class Compiler
                 $line  = $this->sourceLine;
                 $value = $this->compileDebugValue($value);
 
-                fwrite($this->stderr, "WARNING: $value\n         on line $line of $fname\n\n");
+                $this->throwError("WARNING: $value\n         on line $line of $fname\n\n");
                 break;
 
             case Type::T_ERROR:
@@ -4954,30 +4919,6 @@ class Compiler
     }
 
     /**
-     * Enable/disable source maps
-     *
-     * @api
-     *
-     * @param integer $sourceMap
-     */
-    public function setSourceMap($sourceMap)
-    {
-        $this->sourceMap = $sourceMap;
-    }
-
-    /**
-     * Set source map options
-     *
-     * @api
-     *
-     * @param array $sourceMapOptions
-     */
-    public function setSourceMapOptions($sourceMapOptions)
-    {
-        $this->sourceMapOptions = $sourceMapOptions;
-    }
-
-    /**
      * Register function
      *
      * @api
@@ -6455,7 +6396,7 @@ class Compiler
             $name = $this->compileStringContent($this->coerceString($this->reduce($functionReference, true)));
             $warning = "DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal\n"
                 . "in Sass 4.0. Use call(function-reference($name)) instead.";
-            fwrite($this->stderr, "$warning\n\n");
+            $this->throwError("$warning\n\n");
             $functionReference = $this->libGetFunction([$functionReference]);
         }
 
