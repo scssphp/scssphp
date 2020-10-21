@@ -85,7 +85,6 @@ E F { color: blue; }
 E > F { color: blue; }
 E + F { color: blue; }
 E ~ F { color: blue; }
-E /foo/ F { color: blue; }
 E! > F { color: blue; }
 
 // namespaces
@@ -240,7 +239,7 @@ $name: escape;
 
 $span: 'span';
 $p: 'p';
-$div: 'div'; 
+$div: 'div';
 
 $all: $span, $p, $div;
 

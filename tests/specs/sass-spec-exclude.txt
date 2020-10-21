@@ -714,7 +714,6 @@ css/selector/placeholder/pseudoselectors/matches/with_real
 css/selector/placeholder/pseudoselectors/not/solo
 css/selector/placeholder/pseudoselectors/not/universal
 css/selector/placeholder/pseudoselectors/not/with_real
-css/selector/reference_combinator
 css/unicode_range/error/ident_minus_space_ident
 css/unicode_range/error/minus_ident_minus
 css/unicode_range/error/minus_number_minus_ident

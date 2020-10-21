@@ -3390,11 +3390,6 @@ class Parser
                 continue;
             }
 
-            if ($this->match('\/[^\/]+\/', $m, true)) {
-                $selector[] = [$m[0]];
-                continue;
-            }
-
             break;
         }
 

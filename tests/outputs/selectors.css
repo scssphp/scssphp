@@ -229,9 +229,6 @@ E + F {
 E ~ F {
   color: blue; }
 
-E /foo/ F {
-  color: blue; }
-
 E! > F {
   color: blue; }
 
