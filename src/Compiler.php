@@ -4217,9 +4217,25 @@ class Compiler
 
                 $filtered = [];
 
+                $same_string_quote = null;
                 foreach ($items as $item) {
+                    if (\is_null($same_string_quote)) {
+                        $same_string_quote = false;
+                        if ($item[0] === Type::T_STRING) {
+                            $same_string_quote = $item[1];
+                            foreach ($items as $ii) {
+                                if ($ii[0] !== Type::T_STRING) {
+                                    $same_string_quote = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     if ($item[0] === Type::T_NULL) {
                         continue;
+                    }
+                    if ($same_string_quote === '"' && $item[0] === Type::T_STRING && $item[1]) {
+                        $item[1] = $same_string_quote;
                     }
 
                     $compiled = $this->compileValue($item);
