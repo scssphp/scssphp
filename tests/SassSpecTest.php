@@ -469,6 +469,12 @@ class SassSpecTest extends TestCase
                     $hasOutput = true;
                 }
 
+                if ($output && !empty($alternativeOutputs['dart-sass'])) {
+                    $alternativeOutputs['default'] = $output;
+                    $output = $alternativeOutputs['dart-sass'];
+                    unset($alternativeOutputs['dart-sass']);
+                }
+
                 if (!$options && $generalOptions) {
                     $options = $generalOptions;
                 }
