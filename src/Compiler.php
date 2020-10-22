@@ -310,6 +310,12 @@ class Compiler
             $this->cache->setCache('compile', $cacheKey, $v, $compileOptions);
         }
 
+        if (!$this->charsetSeen && function_exists('mb_strlen')) {
+            if (strlen($out) !== mb_strlen($out)) {
+                $out = '@charset "UTF-8";' . "\n" . $out;
+            }
+        }
+
         return $out;
     }
 

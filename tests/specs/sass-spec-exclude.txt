@@ -653,8 +653,6 @@ core_functions/selector/unify/simple/universal/and_universal/empty/and_explicit
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_any
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_default
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_empty
-core_functions/string/insert/combining_character
-core_functions/string/insert/double_width_character
 core_functions/string/quote/error/type
 core_functions/string/quote/quote_unquoted_quote/single
 core_functions/string/quote/quoted_single
@@ -757,7 +755,6 @@ libsass-closed-issues/issue_1093/parameter/function
 libsass-closed-issues/issue_1098
 libsass-closed-issues/issue_1102
 libsass-closed-issues/issue_1107
-libsass-closed-issues/issue_1115
 libsass-closed-issues/issue_1132
 libsass-closed-issues/issue_1162
 libsass-closed-issues/issue_1169/error/color
