@@ -723,8 +723,7 @@ class Parser
                         $else = $this->pushSpecialBlock(Type::T_ELSE, $s);
                     } elseif (
                         $this->literal('if', 2) &&
-                        $this->valueList($cond) &&
-                        $this->matchChar('{', false)
+                        $this->functionCallArgumentsList($cond, false, '{', false)
                     ) {
                         $else = $this->pushSpecialBlock(Type::T_ELSEIF, $s);
                         $else->cond = $cond;
