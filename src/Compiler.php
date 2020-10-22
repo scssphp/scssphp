@@ -4138,7 +4138,7 @@ class Compiler
                     if (
                         $value[1] === "'" &&
                         strpos($content, '"') === false &&
-                        strpbrk($content, '{}') !== false
+                        strpbrk($content, '{}\\') !== false
                     ) {
                         $value[1] = '"';
                     }
