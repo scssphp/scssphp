@@ -4034,7 +4034,7 @@ class Compiler
         $string = str_replace(array_keys($replacement), array_values($replacement), $string);
         // chr(0) is not a possible char from the input, so any chr(0) comes from our escaping replacement
         if (strpos($string, chr(0)) !== false) {
-            if (substr($string,-1) === chr(0)) {
+            if (substr($string, -1) === chr(0)) {
                 $string = substr($string, 0, -1);
             }
             $string = str_replace(

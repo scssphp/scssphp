@@ -544,7 +544,7 @@ class SassSpecTest extends TestCase
                 continue;
             }
 
-            $path = $dir.'/'.$item;
+            $path = $dir . '/' . $item;
 
             if (is_link($path)) {
                 unlink($path);
