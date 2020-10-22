@@ -4137,6 +4137,14 @@ class Compiler
                 $content = $this->compileStringContent($value);
 
                 if ($value[1]) {
+                    $content = str_replace(
+                        array('\\a', '\\'),
+                        array(chr(10) , '\\\\'),
+                        $content
+                    );
+
+                    $content = $this->escapeNonPrintableChars($content);
+
                     // force double quote as string quote for the output in certain cases
                     if (
                         $value[1] === "'" &&
@@ -4145,13 +4153,8 @@ class Compiler
                     ) {
                         $value[1] = '"';
                     }
-                    $content = str_replace(
-                        array('\\a', '\\'  , $value[1]),
-                        array(chr(10) , '\\\\', '\\' . $value[1]),
-                        $content
-                    );
 
-                    $content = $this->escapeNonPrintableChars($content);
+                    $content = str_replace($value[1], '\\' . $value[1], $content);
                 }
 
                 return $value[1] . $content . $value[1];
