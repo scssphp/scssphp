@@ -654,7 +654,6 @@ core_functions/selector/unify/simple/universal/and_universal/explicit/and_any
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_default
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_empty
 core_functions/string/quote/error/type
-core_functions/string/quote/quote_unquoted_quote/single
 core_functions/string/quote/quoted_single
 core_functions/string/slice/double_width_character
 core_functions/string/slice/empty/end/0
@@ -868,7 +867,6 @@ libsass-closed-issues/issue_2140
 libsass-closed-issues/issue_2147/lhs
 libsass-closed-issues/issue_2147/rhs
 libsass-closed-issues/issue_2149
-libsass-closed-issues/issue_2153
 libsass-closed-issues/issue_2155
 libsass-closed-issues/issue_2175
 libsass-closed-issues/issue_2179
@@ -917,7 +915,6 @@ libsass-closed-issues/issue_628
 libsass-closed-issues/issue_659/static
 libsass-closed-issues/issue_660
 libsass-closed-issues/issue_673
-libsass-closed-issues/issue_694
 libsass-closed-issues/issue_698
 libsass-closed-issues/issue_712
 libsass-closed-issues/issue_713/and
@@ -1237,13 +1234,6 @@ non_conformant/parser/interpolate/07_comma_list_complex/02_variable
 non_conformant/parser/interpolate/07_comma_list_complex/03_inline_double
 non_conformant/parser/interpolate/07_comma_list_complex/04_variable_double
 non_conformant/parser/interpolate/07_comma_list_complex/05_variable_quoted_double
-non_conformant/parser/interpolate/26_escaped_literal_quotes/06_escape_interpolation
-non_conformant/parser/interpolate/27_escaped_double_quotes/01_inline
-non_conformant/parser/interpolate/27_escaped_double_quotes/02_variable
-non_conformant/parser/interpolate/27_escaped_double_quotes/05_variable_quoted_double
-non_conformant/parser/interpolate/28_escaped_single_quotes/02_variable
-non_conformant/parser/interpolate/29_binary_operation/06_escape_interpolation
-non_conformant/parser/interpolate/30_base_test/06_escape_interpolation
 non_conformant/parser/interpolate/31_schema_simple/01_inline
 non_conformant/parser/interpolate/31_schema_simple/02_variable
 non_conformant/parser/interpolate/32_comma_list/01_inline

@@ -4156,10 +4156,14 @@ class Compiler
                     // force double quote as string quote for the output in certain cases
                     if (
                         $value[1] === "'" &&
-                        strpos($content, '"') === false &&
-                        strpbrk($content, '{}\\') !== false
+                        (strpos($content, '"') === false or strpos($content,"'") !== false) &&
+                        strpbrk($content, '{}\\\'') !== false
                     ) {
                         $value[1] = '"';
+                    }
+                    elseif($value[1] === '"' &&
+                        (strpos($content, '"') !== false and strpos($content,"'") === false)) {
+                        $value[1] = "'";
                     }
 
                     $content = str_replace($value[1], '\\' . $value[1], $content);
