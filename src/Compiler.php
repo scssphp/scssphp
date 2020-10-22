@@ -4149,11 +4149,7 @@ class Compiler
                 $content = $this->compileStringContent($value);
 
                 if ($value[1]) {
-                    $content = str_replace(
-                        array('\\a', '\\'),
-                        array(chr(10) , '\\\\'),
-                        $content
-                    );
+                    $content = str_replace( '\\', '\\\\', $content);
 
                     $content = $this->escapeNonPrintableChars($content);
 

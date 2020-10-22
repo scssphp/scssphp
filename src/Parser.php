@@ -2944,7 +2944,7 @@ class Parser
                     $content[] = '#{'; // ignore it
                 }
             } elseif ($m[2] === "\r") {
-                $content[] = '\\a';
+                $content[] = chr(10);
                 // TODO : warning
                 # DEPRECATION WARNING on line x, column y of zzz:
                 # Unescaped multiline strings are deprecated and will be removed in a future version of Sass.
@@ -3004,11 +3004,7 @@ class Parser
 
             $value = hexdec($hex);
 
-            if ($value == 0 || ($value >= 0xD800 && $value <= 0xDFFF) || $value >= 0x10FFFF) {
-                if ($inKeywords) {
-                    $this->seek($s);
-                    return false;
-                }
+            if (!$inKeywords && ($value == 0 || ($value >= 0xD800 && $value <= 0xDFFF) || $value >= 0x10FFFF)) {
                 $out = "\u{FFFD}";
             } elseif ($value < 0x20) {
                 $out = Util::mbChr($value);
