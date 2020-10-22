@@ -154,7 +154,7 @@ foo {
   e: foo\"\'bar; }
 
 foo {
-  a: "oo bar";
+  a: "\f oo bar";
   b: "foo bar";
   c: "•  ";
   d: "foo\\bar";

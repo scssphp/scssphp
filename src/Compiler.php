@@ -4017,6 +4017,36 @@ class Compiler
     }
 
     /**
+     * Escape non printable chars in strings output as in dart-sass
+     * @param $string
+     * @return string|string[]
+     */
+    public function escapeNonPrintableChars($string)
+    {
+        static $replacement;
+        if (empty($replacement)) {
+            for ($i = 0; $i < 32; $i++) {
+                if ($i !== 9) {
+                    $replacement[chr($i)] = '\\' . dechex($i) . chr(0);
+                }
+            }
+        }
+        $string = str_replace(array_keys($replacement), array_values($replacement), $string);
+        // chr(0) is not a possible char from the input, so any chr(0) comes from our escaping replacement
+        if (strpos($string, chr(0)) !== false) {
+            if (substr($string,-1) === chr(0)) {
+                $string = substr($string, 0, -1);
+            }
+            $string = str_replace(
+                [chr(0) . '\\',chr(0) . ' ', chr(0)],
+                [ '\\', ' ', ' '],
+                $string
+            );
+        }
+        return $string;
+    }
+
+    /**
      * Compiles a primitive value into a CSS property value.
      *
      * Values in scssphp are typed by being wrapped in arrays, their format is
@@ -4107,10 +4137,12 @@ class Compiler
                         $value[1] = '"';
                     }
                     $content = str_replace(
-                        array('\\a', "\n", "\f" , '\\'  , "\r" , $value[1]),
-                        array("\r" , ' ' , '\\f', '\\\\', '\\a', '\\' . $value[1]),
+                        array('\\a', '\\'  , $value[1]),
+                        array(chr(10) , '\\\\', '\\' . $value[1]),
                         $content
                     );
+
+                    $content = $this->escapeNonPrintableChars($content);
                 }
 
                 return $value[1] . $content . $value[1];
