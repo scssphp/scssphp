@@ -147,7 +147,7 @@ E > F, G > H {
   color: green; }
 
 foo {
-  a: \foo bar;
+  a: \f oo bar;
   b: foo\ bar;
   c: •  ;
   d: foo\\bar;

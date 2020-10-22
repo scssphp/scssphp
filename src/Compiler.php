@@ -4027,17 +4027,17 @@ class Compiler
      * @param $string
      * @return string|string[]
      */
-    public function escapeNonPrintableChars($string)
+    public function escapeNonPrintableChars($string, $inKeyword = false)
     {
-        static $replacement;
-        if (empty($replacement)) {
+        static $replacement = [];
+        if (empty($replacement[$inKeyword])) {
             for ($i = 0; $i < 32; $i++) {
-                if ($i !== 9) {
-                    $replacement[chr($i)] = '\\' . dechex($i) . chr(0);
+                if ($i !== 9 || $inKeyword) {
+                    $replacement[$inKeyword][chr($i)] = '\\' . dechex($i) . ($inKeyword ? ' ' : chr(0));
                 }
             }
         }
-        $string = str_replace(array_keys($replacement), array_values($replacement), $string);
+        $string = str_replace(array_keys($replacement[$inKeyword]), array_values($replacement[$inKeyword]), $string);
         // chr(0) is not a possible char from the input, so any chr(0) comes from our escaping replacement
         if (strpos($string, chr(0)) !== false) {
             if (substr($string, -1) === chr(0)) {
@@ -4075,6 +4075,9 @@ class Compiler
 
         switch ($value[0]) {
             case Type::T_KEYWORD:
+                if (is_string($value[1])) {
+                    $value[1] = $this->escapeNonPrintableChars($value[1], true);
+                }
                 return $value[1];
 
             case Type::T_COLOR:
@@ -4296,7 +4299,7 @@ class Compiler
                         break;
 
                     case Type::T_STRING:
-                        $reduced = [Type::T_KEYWORD, $this->compileStringContent($reduced)];
+                        $reduced = [Type::T_STRING, '', [$this->compileStringContent($reduced)]];
                         break;
 
                     case Type::T_NULL:

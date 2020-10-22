@@ -173,7 +173,7 @@ E > F, G > H {
 
 /* line 125, inputs/scss_css.scss */
 foo {
-  a: \foo bar;
+  a: \f oo bar;
   b: foo\ bar;
   c: •  ;
   d: foo\\bar;

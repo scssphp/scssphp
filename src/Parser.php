@@ -3011,10 +3011,6 @@ class Parser
                 }
                 $out = "\u{FFFD}";
             } elseif ($value < 0x20) {
-                if ($inKeywords) {
-                    $this->seek($s);
-                    return false;
-                }
                 $out = Util::mbChr($value);
             } else {
                 $out = Util::mbChr($value);
