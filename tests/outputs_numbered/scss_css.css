@@ -181,7 +181,7 @@ foo {
 
 /* line 133, inputs/scss_css.scss */
 foo {
-  a: "\f oo bar";
+  a: "\foo bar";
   b: "foo bar";
   c: "•  ";
   d: "foo\\bar";

@@ -4044,10 +4044,22 @@ class Compiler
                 $string = substr($string, 0, -1);
             }
             $string = str_replace(
-                [chr(0) . '\\',chr(0) . ' ', chr(0)],
-                [ '\\', ' ', ' '],
+                [chr(0) . '\\',chr(0) . ' '],
+                [ '\\', ' '],
                 $string
             );
+            if (strpos($string, chr(0)) !== false) {
+                $parts = explode(chr(0), $string);
+                $string = array_shift($parts);
+                while (count($parts)) {
+                    $next = array_shift($parts);
+                    if (strpos("0123456789abcdefABCDEF".chr(9), $next[0]) !== false) {
+                        $string .= " ";
+                    }
+                    $string .= $next;
+                }
+            }
+
         }
         return $string;
     }
