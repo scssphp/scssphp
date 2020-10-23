@@ -486,7 +486,6 @@ core_functions/selector/nest/list/parent/selector_pseudo
 core_functions/selector/nest/parent/selector_pseudo/complex_parent
 core_functions/selector/nest/parent/selector_pseudo/simple_parent
 core_functions/selector/parse/error/outer_space
-core_functions/selector/parse/error/parse/extra
 core_functions/selector/parse/selector/complex/adjacent_sibling
 core_functions/selector/parse/selector/complex/child
 core_functions/selector/parse/selector/complex/sibling
@@ -743,7 +742,6 @@ libsass-closed-issues/issue_1029
 libsass-closed-issues/issue_1036
 libsass-closed-issues/issue_1043
 libsass-closed-issues/issue_1063
-libsass-closed-issues/issue_1079
 libsass-closed-issues/issue_1081
 libsass-closed-issues/issue_1082
 libsass-closed-issues/issue_1091
@@ -1232,9 +1230,6 @@ non_conformant/parser/interpolate/07_comma_list_complex/02_variable
 non_conformant/parser/interpolate/07_comma_list_complex/03_inline_double
 non_conformant/parser/interpolate/07_comma_list_complex/04_variable_double
 non_conformant/parser/interpolate/07_comma_list_complex/05_variable_quoted_double
-non_conformant/parser/interpolate/44_selector/todo_single_escape/11_escaped_interpolated_value
-non_conformant/parser/interpolate/44_selector/todo_single_escape/21_escaped_interpolated_variable
-non_conformant/parser/interpolate/44_selector/todo_single_escape/31_escaped_literal
 non_conformant/parser/operations/addition/dimensions/pairs
 non_conformant/parser/operations/addition/numbers/pairs
 non_conformant/parser/operations/addition/strings/pairs

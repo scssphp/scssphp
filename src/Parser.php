@@ -263,10 +263,11 @@ class Parser
      *
      * @param string       $buffer
      * @param string|array $out
+     * @param bool         $shouldValidate
      *
      * @return boolean
      */
-    public function parseSelector($buffer, &$out)
+    public function parseSelector($buffer, &$out, $shouldValidate = true)
     {
         $this->count           = 0;
         $this->env             = null;
@@ -279,6 +280,10 @@ class Parser
         $selector = $this->selectors($out);
 
         $this->restoreEncoding();
+
+        if ($shouldValidate && $this->count !== strlen($buffer)) {
+            $this->throwParseError("`" . substr($buffer, $this->count) . "` is not a valid Selector in `$buffer`");
+        }
 
         return $selector;
     }

@@ -802,7 +802,7 @@ class Compiler
                 $buffer    = $matches[2];
                 $parser    = $this->parserFactory(__METHOD__);
 
-                if ($parser->parseSelector($buffer, $subSelectors)) {
+                if ($parser->parseSelector($buffer, $subSelectors, false)) {
                     foreach ($subSelectors as $ksub => $subSelector) {
                         $subExtended = [];
                         $this->matchExtends($subSelector, $subExtended, 0, false);
@@ -1695,7 +1695,7 @@ class Compiler
             $buffer    = $this->collapseSelectors($selectors);
             $parser    = $this->parserFactory(__METHOD__);
 
-            if ($parser->parseSelector($buffer, $newSelectors)) {
+            if ($parser->parseSelector($buffer, $newSelectors, true)) {
                 $selectors = array_map([$this, 'evalSelector'], $newSelectors);
             }
         }
@@ -1728,8 +1728,8 @@ class Compiler
             if (\is_array($p) && ($p[0] === Type::T_INTERPOLATE || $p[0] === Type::T_STRING)) {
                 $p = $this->compileValue($p);
 
-                // force re-evaluation
-                if (strpos($p, '&') !== false || strpos($p, ',') !== false) {
+                // force re-evaluation if self char or non standard char
+                if (preg_match(',[^\w-],', $p)) {
                     $this->shouldEvaluate = true;
                 }
             } elseif (
@@ -7960,7 +7960,7 @@ class Compiler
 
         $parsedSelector = [];
 
-        if ($parser->parseSelector($arg, $parsedSelector)) {
+        if ($parser->parseSelector($arg, $parsedSelector, true)) {
             $selector = $this->evalSelectors($parsedSelector);
             $gluedSelector = $this->glueFunctionSelectors($selector);
 
