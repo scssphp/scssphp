@@ -7172,6 +7172,7 @@ class Compiler
         $value = $args[0];
 
         if ($value[0] === Type::T_STRING && ! empty($value[1])) {
+            $value[1] = '"';
             return $value;
         }
 
