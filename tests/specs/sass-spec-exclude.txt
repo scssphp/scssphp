@@ -742,7 +742,6 @@ libsass-closed-issues/issue_1036
 libsass-closed-issues/issue_1043
 libsass-closed-issues/issue_1063
 libsass-closed-issues/issue_1081
-libsass-closed-issues/issue_1082
 libsass-closed-issues/issue_1091
 libsass-closed-issues/issue_1093/parameter/function
 libsass-closed-issues/issue_1098
@@ -754,9 +753,7 @@ libsass-closed-issues/issue_1169/error/color
 libsass-closed-issues/issue_1169/error/functioncall
 libsass-closed-issues/issue_1169/error/interpolate
 libsass-closed-issues/issue_1169/error/simple
-libsass-closed-issues/issue_1169/functioncall
 libsass-closed-issues/issue_1169/interpolated
-libsass-closed-issues/issue_1169/simple
 libsass-closed-issues/issue_1178
 libsass-closed-issues/issue_1187
 libsass-closed-issues/issue_1206
@@ -767,9 +764,6 @@ libsass-closed-issues/issue_1218
 libsass-closed-issues/issue_1243/warning
 libsass-closed-issues/issue_1248
 libsass-closed-issues/issue_1253
-libsass-closed-issues/issue_1258
-libsass-closed-issues/issue_1259
-libsass-closed-issues/issue_1279
 libsass-closed-issues/issue_1322
 libsass-closed-issues/issue_1328
 libsass-closed-issues/issue_1333
@@ -842,7 +836,6 @@ libsass-closed-issues/issue_1804/variable
 libsass-closed-issues/issue_1819
 libsass-closed-issues/issue_1822
 libsass-closed-issues/issue_1873
-libsass-closed-issues/issue_1907
 libsass-closed-issues/issue_1923
 libsass-closed-issues/issue_1941/function_function
 libsass-closed-issues/issue_1941/function_mixin
@@ -858,12 +851,10 @@ libsass-closed-issues/issue_2053
 libsass-closed-issues/issue_2054
 libsass-closed-issues/issue_2055
 libsass-closed-issues/issue_2057
-libsass-closed-issues/issue_2123/test-02
 libsass-closed-issues/issue_2124
 libsass-closed-issues/issue_2140
 libsass-closed-issues/issue_2147/lhs
 libsass-closed-issues/issue_2147/rhs
-libsass-closed-issues/issue_2149
 libsass-closed-issues/issue_2155
 libsass-closed-issues/issue_2175
 libsass-closed-issues/issue_2179
@@ -903,7 +894,6 @@ libsass-closed-issues/issue_469
 libsass-closed-issues/issue_54
 libsass-closed-issues/issue_549
 libsass-closed-issues/issue_556
-libsass-closed-issues/issue_558
 libsass-closed-issues/issue_575
 libsass-closed-issues/issue_590
 libsass-closed-issues/issue_592
@@ -919,16 +909,12 @@ libsass-closed-issues/issue_713/not
 libsass-closed-issues/issue_713/or
 libsass-closed-issues/issue_72
 libsass-closed-issues/issue_760
-libsass-closed-issues/issue_763
-libsass-closed-issues/issue_817
 libsass-closed-issues/issue_823
 libsass-closed-issues/issue_828
 libsass-closed-issues/issue_829
 libsass-closed-issues/issue_870
 libsass-closed-issues/issue_941
 libsass-closed-issues/issue_948
-libsass-closed-issues/issue_988
-libsass-closed-issues/issue_992
 libsass-todo-issues/issue_1026
 libsass-todo-issues/issue_1732/invalid/ruleset
 libsass-todo-issues/issue_1763
@@ -1218,7 +1204,6 @@ non_conformant/parser/arglists/can-end-with-comma/error-mixin-1
 non_conformant/parser/arglists/can-end-with-comma/error-mixin-2
 non_conformant/parser/arglists/can-end-with-comma/error-mixin-3
 non_conformant/parser/interpolate/00_concatenation/unspaced
-non_conformant/parser/interpolate/03_single_quoted/02_variable
 non_conformant/parser/interpolate/06_space_list_complex/01_inline
 non_conformant/parser/interpolate/06_space_list_complex/02_variable
 non_conformant/parser/interpolate/06_space_list_complex/03_inline_double

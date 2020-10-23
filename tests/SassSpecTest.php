@@ -166,6 +166,55 @@ class SassSpecTest extends TestCase
     }
 
     /**
+     * Check if two CSS outputs are equivalent
+     * ie equals (or differing only by quotes if $disallowQuoteDifference=false)
+     * @param string $computed
+     * @param string $spec
+     * @param bool $disallowQuoteDifference
+     * @return bool
+     */
+    protected function checkCssEqual(&$computed, $spec, $disallowQuoteDifference = false)
+    {
+
+        if ($computed === $spec) {
+            return true;
+        }
+
+        if (!$disallowQuoteDifference) {
+            if (strlen($computed) !== strlen($spec)) {
+                return false;
+            }
+
+            $diffLeft = $diffRight = [];
+            for ($i = 0; $i < strlen($computed); $i++) {
+                if ($computed[$i] === $spec[$i]) {
+                    continue;
+                }
+                if (!in_array($computed[$i], ["'", '"']) or !in_array($spec[$i], ["'", '"'])) {
+                    return false;
+                }
+                if (
+                        count($diffLeft)  and end($diffLeft) === $computed[$i]
+                    and count($diffRight) and end($diffRight) === $spec[$i]
+                ) {
+                    array_pop($diffLeft);
+                    array_pop($diffRight);
+                } else {
+                    $diffLeft[] = $computed[$i];
+                    $diffRight[] = $spec[$i];
+                }
+            }
+
+            if (!count($diffLeft) && !count($diffRight)) {
+                $computed = $spec;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @dataProvider provideTests
      */
     public function testTests($name, $input, $output)
@@ -282,11 +331,16 @@ class SassSpecTest extends TestCase
             $output = stream_get_contents($fp_err_stream);
             fclose($fp_err_stream);
 
+            $disallowQuoteDifference = getenv('DISALLOW_QUOTE_DIFFERENCE');
+
             // if several outputs check if we match one alternative if not the first
-            if ($css !== $actual and $alternativeCssOutputs) {
+            if (
+                !$this->checkCssEqual($actual, $css, $disallowQuoteDifference)
+                and $alternativeCssOutputs
+            ) {
                 foreach ($alternativeCssOutputs as $acss) {
                     $acss = $this->normalizeCssOutput($acss);
-                    if ($acss === $actual) {
+                    if ($this->checkCssEqual($actual, $acss, $disallowQuoteDifference)) {
                         $css = $acss;
                         break;
                     }

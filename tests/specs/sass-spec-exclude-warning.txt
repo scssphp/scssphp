@@ -5,6 +5,7 @@ css/moz_document/functions/static
 directives/warn/functions_in_stack
 libsass-closed-issues/issue_1106
 libsass-closed-issues/issue_1240
+libsass-closed-issues/issue_1258
 libsass-closed-issues/issue_1291
 libsass-closed-issues/issue_1632
 libsass-closed-issues/issue_1681/calc
