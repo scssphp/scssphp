@@ -3699,16 +3699,17 @@ class Parser
                 while ($this->count < $send) {
                     $char = $this->buffer[$this->count];
                     $this->count++;
-                    if ($this->count < $send
+                    if (
+                        $this->count < $send
                         && $char === '\\'
                         && !$previousEscape
-                        && $this->matchEscapeCharacter($out, true)) {
+                        && $this->matchEscapeCharacter($out, true)
+                    ) {
                         $escapedWord[] = $out;
                     } else {
                         if ($previousEscape) {
                             $previousEscape = false;
-                        }
-                        elseif ($char === '\\') {
+                        } elseif ($char === '\\') {
                             $previousEscape = true;
                         }
                         $escapedWord[] = $char;

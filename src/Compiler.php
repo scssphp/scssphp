@@ -4053,14 +4053,14 @@ class Compiler
                 $string = array_shift($parts);
                 while (count($parts)) {
                     $next = array_shift($parts);
-                    if (strpos("0123456789abcdefABCDEF".chr(9), $next[0]) !== false) {
+                    if (strpos("0123456789abcdefABCDEF" . chr(9), $next[0]) !== false) {
                         $string .= " ";
                     }
                     $string .= $next;
                 }
             }
-
         }
+
         return $string;
     }
 
@@ -4149,20 +4149,21 @@ class Compiler
                 $content = $this->compileStringContent($value);
 
                 if ($value[1]) {
-                    $content = str_replace( '\\', '\\\\', $content);
+                    $content = str_replace('\\', '\\\\', $content);
 
                     $content = $this->escapeNonPrintableChars($content);
 
                     // force double quote as string quote for the output in certain cases
                     if (
                         $value[1] === "'" &&
-                        (strpos($content, '"') === false or strpos($content,"'") !== false) &&
+                        (strpos($content, '"') === false or strpos($content, "'") !== false) &&
                         strpbrk($content, '{}\\\'') !== false
                     ) {
                         $value[1] = '"';
-                    }
-                    elseif($value[1] === '"' &&
-                        (strpos($content, '"') !== false and strpos($content,"'") === false)) {
+                    } elseif (
+                        $value[1] === '"' &&
+                        (strpos($content, '"') !== false and strpos($content, "'") === false)
+                    ) {
                         $value[1] = "'";
                     }
 
