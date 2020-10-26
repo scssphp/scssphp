@@ -248,6 +248,7 @@ class Parser
         $this->buffer          = (string) $buffer;
 
         $this->saveEncoding();
+        $this->extractLineNumbers($this->buffer);
 
         $list = $this->valueList($out);
 
@@ -276,6 +277,7 @@ class Parser
         $this->buffer          = (string) $buffer;
 
         $this->saveEncoding();
+        $this->extractLineNumbers($this->buffer);
 
         $selector = $this->selectors($out);
 
@@ -307,6 +309,7 @@ class Parser
         $this->buffer          = (string) $buffer;
 
         $this->saveEncoding();
+        $this->extractLineNumbers($this->buffer);
 
         $isMediaQuery = $this->mediaQueryList($out);
 
