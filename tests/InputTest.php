@@ -69,56 +69,11 @@ class InputTest extends TestCase
         $this->assertEquals($output, $css);
     }
 
-    /**
-     * Run all tests with line numbering
-     *
-     * @dataProvider numberedFileNameProvider
-     */
-    public function testLineNumbering($inFname, $outFname)
-    {
-        chdir(__DIR__);
-
-        $this->scss = new Compiler();
-        $this->scss->addImportPath(self::$inputDir);
-
-        $fp_err_stream = fopen("php://memory", 'r+');
-        $this->scss->setErrorOuput($fp_err_stream);
-
-        $this->scss->setLineNumberStyle(Compiler::LINE_COMMENTS);
-
-        if (getenv('BUILD')) {
-            $this->buildInput($inFname, $outFname);
-            $this->assertNull(null);
-            return;
-        }
-
-        if (! is_readable($outFname)) {
-            $this->fail("$outFname is missing, consider building tests with BUILD=true");
-        }
-
-        $input = file_get_contents($inFname);
-        $output = file_get_contents($outFname);
-
-        $css = $this->scss->compile($input, substr($inFname, strlen(__DIR__) + 1));
-        fclose($fp_err_stream);
-        $this->assertEquals($output, $css);
-    }
-
     public function fileNameProvider()
     {
         return array_map(
             function ($a) {
                 return [$a, InputTest::outputNameFor($a)];
-            },
-            self::findInputNames()
-        );
-    }
-
-    public function numberedFileNameProvider()
-    {
-        return array_map(
-            function ($a) {
-                return [$a, InputTest::outputNumberedNameFor($a)];
             },
             self::findInputNames()
         );
@@ -163,25 +118,5 @@ class InputTest extends TestCase
         $out = preg_replace('/.scss$/', '.css', $out);
 
         return __DIR__ . '/' . $out;
-    }
-
-    public static function outputNumberedNameFor($input)
-    {
-        $front = _quote(__DIR__ . '/');
-        $out = preg_replace("/^$front/", '', $input);
-
-        $in = _quote(self::$inputDir . '/');
-        $out = preg_replace("/$in/", self::$outputNumberedDir . '/', $out);
-        $out = preg_replace('/.scss$/', '.css', $out);
-
-        return __DIR__ . '/' . $out;
-    }
-
-    public static function buildTests($pattern)
-    {
-        $files = self::findInputNames($pattern);
-
-        foreach ($files as $file) {
-        }
     }
 }
