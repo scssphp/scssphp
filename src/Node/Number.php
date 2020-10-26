@@ -244,6 +244,18 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
+     * Checks whether the number has exactly this unit
+     *
+     * @param string $unit
+     *
+     * @return bool
+     */
+    public function hasUnit($unit)
+    {
+        return isset($this->units[$unit]) && $this->units[$unit] === 1 && array_sum($this->units) === 1;
+    }
+
+    /**
      * Test if a number can be normalized in a base unit
      * ie if its units are homogeneous
      *

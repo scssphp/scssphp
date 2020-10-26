@@ -6152,36 +6152,27 @@ class Compiler
      * @param integer|float $min
      * @param integer|float $max
      * @param boolean       $isInt
-     * @param boolean       $clamp
-     * @param boolean       $modulo
      *
      * @return integer|mixed
      */
-    protected function compileColorPartValue($value, $min, $max, $isInt = true, $clamp = true, $modulo = false)
+    protected function compileColorPartValue($value, $min, $max, $isInt = true)
     {
         if (! is_numeric($value)) {
             if (\is_array($value)) {
                 $reduced = $this->reduce($value);
 
-                if (\is_object($reduced) && $value->type === Type::T_NUMBER) {
+                if ($reduced instanceof Node\Number) {
                     $value = $reduced;
                 }
             }
 
-            if (\is_object($value) && $value->type === Type::T_NUMBER) {
-                $num = $value->dimension;
-
-                if (\count($value->units)) {
-                    $unit = array_keys($value->units);
-                    $unit = reset($unit);
-
-                    switch ($unit) {
-                        case '%':
-                            $num *= $max / 100;
-                            break;
-                        default:
-                            break;
-                    }
+            if ($value instanceof Node\Number) {
+                if ($value->unitless()) {
+                    $num = $value->dimension;
+                } elseif ($value->hasUnit('%')) {
+                    $num = $max * $value->dimension / 100;
+                } else {
+                    throw $this->error('Expected %s to have no units or "%%".', $value);
                 }
 
                 $value = $num;
@@ -6195,18 +6186,7 @@ class Compiler
                 $value = round($value);
             }
 
-            if ($clamp) {
-                $value = min($max, max($min, $value));
-            }
-
-            if ($modulo) {
-                $value = $value % $max;
-
-                // still negative?
-                while ($value < $min) {
-                    $value += $max;
-                }
-            }
+            $value = min($max, max($min, $value));
 
             return $value;
         }
@@ -6913,10 +6893,6 @@ class Compiler
             $args_to_check = $kwargs['channels'][2];
         }
 
-        $hue = $this->compileColorPartValue($args[0], 0, 360, false, false, true);
-        $saturation = $this->compileColorPartValue($args[1], 0, 100, false);
-        $lightness = $this->compileColorPartValue($args[2], 0, 100, false);
-
         foreach ($kwargs as $k => $arg) {
             if (in_array($arg[0], [Type::T_FUNCTION_CALL]) && in_array($arg[1], ['min', 'max'])) {
                 return null;
@@ -6930,7 +6906,6 @@ class Compiler
                 }
 
                 $args[$k] = $this->stringifyFncallArgs($arg);
-                $hue = '';
             }
 
             if (
@@ -6942,22 +6917,31 @@ class Compiler
             }
         }
 
+        $hue = $this->reduce($args[0]);
+        $saturation = $this->reduce($args[1]);
+        $lightness = $this->reduce($args[2]);
         $alpha = null;
 
         if (\count($args) === 4) {
             $alpha = $this->compileColorPartValue($args[3], 0, 100, false);
 
-            if (! is_numeric($hue) || ! is_numeric($saturation) || ! is_numeric($lightness) || ! is_numeric($alpha)) {
+            if (!$hue instanceof Node\Number || !$saturation instanceof Node\Number || ! $lightness instanceof Node\Number || ! is_numeric($alpha)) {
                 return [Type::T_STRING, '',
                     [$funcName . '(', $args[0], ', ', $args[1], ', ', $args[2], ', ', $args[3], ')']];
             }
         } else {
-            if (! is_numeric($hue) || ! is_numeric($saturation) || ! is_numeric($lightness)) {
+            if (!$hue instanceof Node\Number || !$saturation instanceof Node\Number || ! $lightness instanceof Node\Number) {
                 return [Type::T_STRING, '', [$funcName . '(', $args[0], ', ', $args[1], ', ', $args[2], ')']];
             }
         }
 
-        $color = $this->toRGB($hue, $saturation, $lightness);
+        $hueValue = $hue->dimension % 360;
+
+        while ($hueValue < 0) {
+            $hueValue += 360;
+        }
+
+        $color = $this->toRGB($hueValue, max(0, min($saturation->dimension, 100)), max(0, min($lightness->dimension, 100)));
 
         if (! \is_null($alpha)) {
             $color[4] = $alpha;
