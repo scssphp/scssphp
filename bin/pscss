@@ -28,8 +28,6 @@ $loadPaths = null;
 $dumpTree = false;
 $inputFile = null;
 $changeDir = false;
-$debugInfo = false;
-$lineNumbers = false;
 $encoding = false;
 $sourceMap = false;
 
@@ -71,10 +69,10 @@ Options include:
 
     --help              Show this message [-h, -?]
     --continue-on-error [deprecated] Ignored
-    --debug-info        Annotate selectors with CSS referring to the source file and line number [-g]
+    --debug-info        [deprecated] Ignored [-g]
     --dump-tree         Dump formatted parse tree [-T]
     --iso8859-1         Use iso8859-1 encoding instead of default utf-8
-    --line-numbers      Annotate selectors with comments referring to the source file and line number [--line-comments]
+    --line-numbers      [deprecated] Ignored [--line-comments]
     --load-path=PATH    Set import path [-I]
     --precision=N       [deprecated] Ignored. (default 10) [-p]
     --sourcemap         Create source map file
@@ -95,8 +93,9 @@ EOT;
         continue;
     }
 
+    // Keep parsing it to avoid BC breaks for scripts using it
     if ($argv[$i] === '-g' || $argv[$i] === '--debug-info') {
-        $debugInfo = true;
+        // TODO report it as a warning ?
         continue;
     }
 
@@ -105,8 +104,9 @@ EOT;
         continue;
     }
 
+    // Keep parsing it to avoid BC breaks for scripts using it
     if ($argv[$i] === '--line-numbers' || $argv[$i] === '--line-comments') {
-        $lineNumbers = true;
+        // TODO report it as a warning ?
         continue;
     }
 
@@ -176,14 +176,6 @@ if ($dumpTree) {
 }
 
 $scss = new Compiler();
-
-if ($debugInfo) {
-    $scss->setLineNumberStyle(Compiler::DEBUG_INFO);
-}
-
-if ($lineNumbers) {
-    $scss->setLineNumberStyle(Compiler::LINE_COMMENTS);
-}
 
 if ($loadPaths) {
     $scss->setImportPaths(explode(PATH_SEPARATOR, $loadPaths));
