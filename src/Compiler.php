@@ -2632,7 +2632,7 @@ class Compiler
                                 $divider = $this->reduce($divider, true);
                             }
 
-                            if (\intval($divider->dimension) && ! \count($divider->units)) {
+                            if ($divider instanceof Node\Number && \intval($divider->getDimension()) && $divider->unitless()) {
                                 $revert = false;
                             }
                         }
@@ -2656,7 +2656,7 @@ class Compiler
                                                 $divider = $this->reduce($divider, true);
                                             }
 
-                                            if (\intval($divider->dimension) && ! \count($divider->units)) {
+                                            if ($divider instanceof Node\Number && \intval($divider->getDimension()) && $divider->unitless()) {
                                                 $revert = false;
                                             }
                                         }
@@ -6144,9 +6144,9 @@ class Compiler
 
             if ($value instanceof Node\Number) {
                 if ($value->unitless()) {
-                    $num = $value->dimension;
+                    $num = $value->getDimension();
                 } elseif ($value->hasUnit('%')) {
-                    $num = $max * $value->dimension / 100;
+                    $num = $max * $value->getDimension() / 100;
                 } else {
                     throw $this->error('Expected %s to have no units or "%%".', $value);
                 }
@@ -6911,13 +6911,13 @@ class Compiler
             }
         }
 
-        $hueValue = $hue->dimension % 360;
+        $hueValue = $hue->getDimension() % 360;
 
         while ($hueValue < 0) {
             $hueValue += 360;
         }
 
-        $color = $this->toRGB($hueValue, max(0, min($saturation->dimension, 100)), max(0, min($lightness->dimension, 100)));
+        $color = $this->toRGB($hueValue, max(0, min($saturation->getDimension(), 100)), max(0, min($lightness->getDimension(), 100)));
 
         if (! \is_null($alpha)) {
             $color[4] = $alpha;
