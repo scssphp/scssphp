@@ -309,7 +309,6 @@ core_functions/math/percentage/error/unit
 core_functions/math/round/error/type
 core_functions/math/round/up/within_precision
 core_functions/math/unit/error/type
-core_functions/math/unit/multiple_denominators
 core_functions/math/unitless/error/type
 core_functions/math/unitless/numerator_and_denominator
 core_functions/meta/call/error/invalid_args

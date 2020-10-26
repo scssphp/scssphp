@@ -293,6 +293,18 @@ class Number extends Node implements \ArrayAccess
             }
         }
 
+        if (!\count($numerators)) {
+            if (\count($denominators) === 0) {
+                return '';
+            }
+
+            if (\count($denominators) === 1) {
+                return $denominators[0] . '^-1';
+            }
+
+            return '(' . implode('*', $denominators) . ')^-1';
+        }
+
         return implode('*', $numerators) . (\count($denominators) ? '/' . implode('*', $denominators) : '');
     }
 
