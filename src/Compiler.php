@@ -59,12 +59,30 @@ use ScssPhp\ScssPhp\Util;
  */
 class Compiler
 {
+    /**
+     * @deprecated
+     */
     const LINE_COMMENTS = 1;
+    /**
+     * @deprecated
+     */
     const DEBUG_INFO    = 2;
 
+    /**
+     * @deprecated
+     */
     const WITH_RULE     = 1;
+    /**
+     * @deprecated
+     */
     const WITH_MEDIA    = 2;
+    /**
+     * @deprecated
+     */
     const WITH_SUPPORTS = 4;
+    /**
+     * @deprecated
+     */
     const WITH_ALL      = 7;
 
     const SOURCE_MAP_NONE   = 0;
@@ -127,6 +145,9 @@ class Compiler
     ];
 
     protected $encoding = null;
+    /**
+     * @deprecated
+     */
     protected $lineNumberStyle = null;
 
     protected $sourceMap = self::SOURCE_MAP_NONE;
@@ -1009,30 +1030,6 @@ class Compiler
                 $wrapped->children     = $media->children;
 
                 $media->children = [[Type::T_BLOCK, $wrapped]];
-
-                if (isset($this->lineNumberStyle)) {
-                    $annotation = $this->makeOutputBlock(Type::T_COMMENT);
-                    $annotation->depth = 0;
-
-                    $file = $this->sourceNames[$media->sourceIndex];
-                    $line = $media->sourceLine;
-
-                    switch ($this->lineNumberStyle) {
-                        case static::LINE_COMMENTS:
-                            $annotation->lines[] = '/* line ' . $line
-                                                 . ($file ? ', ' . $file : '')
-                                                 . ' */';
-                            break;
-
-                        case static::DEBUG_INFO:
-                            $annotation->lines[] = '@media -sass-debug-info{'
-                                                 . ($file ? 'filename{font-family:"' . $file . '"}' : '')
-                                                 . 'line{font-family:' . $line . '}}';
-                            break;
-                    }
-
-                    $this->scope->children[] = $annotation;
-                }
             }
 
             $this->compileChildrenNoReturn($media->children, $this->scope);
@@ -1577,30 +1574,6 @@ class Compiler
         $env->selectors = $this->evalSelectors($block->selectors);
 
         $out = $this->makeOutputBlock(null);
-
-        if (isset($this->lineNumberStyle) && \count($env->selectors) && \count($block->children)) {
-            $annotation = $this->makeOutputBlock(Type::T_COMMENT);
-            $annotation->depth = 0;
-
-            $file = $this->sourceNames[$block->sourceIndex];
-            $line = $block->sourceLine;
-
-            switch ($this->lineNumberStyle) {
-                case static::LINE_COMMENTS:
-                    $annotation->lines[] = '/* line ' . $line
-                                         . ($file ? ', ' . $file : '')
-                                         . ' */';
-                    break;
-
-                case static::DEBUG_INFO:
-                    $annotation->lines[] = '@media -sass-debug-info{'
-                                         . ($file ? 'filename{font-family:"' . $file . '"}' : '')
-                                         . 'line{font-family:' . $line . '}}';
-                    break;
-            }
-
-            $this->scope->children[] = $annotation;
-        }
 
         $this->scope->children[] = $out;
 
@@ -5020,10 +4993,13 @@ class Compiler
      * @api
      *
      * @param string $lineNumberStyle
+     *
+     * @deprecated The line number output is not supported anymore. Use source maps instead.
      */
     public function setLineNumberStyle($lineNumberStyle)
     {
-        $this->lineNumberStyle = $lineNumberStyle;
+        @trigger_error('The line number output is not supported anymore. '
+                       . 'Use source maps instead.', E_USER_DEPRECATED);
     }
 
     /**
