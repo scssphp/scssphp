@@ -76,27 +76,34 @@ class Number extends Node implements \ArrayAccess
     /**
      * @var integer|float
      */
-    public $dimension;
+    private $dimension;
 
     /**
      * @var array
      */
-    public $units;
+    private $units;
 
     /**
      * Initialize number
      *
-     * @param mixed $dimension
-     * @param mixed $initialUnit
+     * @param integer|float $dimension
+     * @param array|string $initialUnit
      */
     public function __construct($dimension, $initialUnit)
     {
-        $this->type      = Type::T_NUMBER;
         $this->dimension = $dimension;
         $this->units     = \is_array($initialUnit)
             ? $initialUnit
             : ($initialUnit ? [$initialUnit => 1]
                             : []);
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getDimension()
+    {
+        return $this->dimension;
     }
 
     /**
@@ -187,7 +194,7 @@ class Number extends Node implements \ArrayAccess
                 return $this->sourceIndex;
 
             case 0:
-                return $this->type;
+                return Type::T_NUMBER;
 
             case 1:
                 return $this->dimension;
@@ -202,17 +209,7 @@ class Number extends Node implements \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        if ($offset === 1) {
-            $this->dimension = $value;
-        } elseif ($offset === 2) {
-            $this->units = $value;
-        } elseif ($offset == -1) {
-            $this->sourceIndex = $value;
-        } elseif ($offset == -2) {
-            $this->sourceLine = $value;
-        } elseif ($offset == -3) {
-            $this->sourceColumn = $value;
-        }
+        throw new \BadMethodCallException('Number is immutable');
     }
 
     /**
@@ -220,17 +217,7 @@ class Number extends Node implements \ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        if ($offset === 1) {
-            $this->dimension = null;
-        } elseif ($offset === 2) {
-            $this->units = null;
-        } elseif ($offset === -1) {
-            $this->sourceIndex = null;
-        } elseif ($offset === -2) {
-            $this->sourceLine = null;
-        } elseif ($offset === -3) {
-            $this->sourceColumn = null;
-        }
+        throw new \BadMethodCallException('Number is immutable');
     }
 
     /**
