@@ -335,7 +335,7 @@ class Number extends Node implements \ArrayAccess
 
         $dimension = number_format($dimension, self::PRECISION, '.', '');
 
-        return (self::PRECISION ? rtrim(rtrim($dimension, '0'), '.') : $dimension) . $unit;
+        return rtrim(rtrim($dimension, '0'), '.') . $unit;
     }
 
     /**
