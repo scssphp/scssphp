@@ -82,8 +82,8 @@ class Util
      */
     public static function mbChr($code)
     {
-        // Use the native implementation if available.
-        if (\function_exists('mb_chr')) {
+        // Use the native implementation if available, but not on PHP 7.2 as mb_chr(0) is buggy there
+        if (\PHP_VERSION_ID > 70300 && \function_exists('mb_chr')) {
             return mb_chr($code, 'UTF-8');
         }
 
