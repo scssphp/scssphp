@@ -122,7 +122,9 @@ class Compiler
 
     public static $true         = [Type::T_KEYWORD, 'true'];
     public static $false        = [Type::T_KEYWORD, 'false'];
+    /** @deprecated */
     public static $NaN          = [Type::T_KEYWORD, 'NaN'];
+    /** @deprecated */
     public static $Infinity     = [Type::T_KEYWORD, 'Infinity'];
     public static $null         = [Type::T_NULL];
     public static $nullString   = [Type::T_STRING, '', []];
@@ -3606,15 +3608,10 @@ class Compiler
      * @param Number $left
      * @param Number $right
      *
-     * @return array|Number
+     * @return Number
      */
     protected function opDivNumberNumber(Number $left, Number $right)
     {
-        // TODO handle NaN and Infinity inside Number for proper math everywhere
-        if ($right->getDimension() == 0) {
-            return ($left->getDimension() == 0) ? static::$NaN : static::$Infinity;
-        }
-
         return $left->dividedBy($right);
     }
 
@@ -3628,10 +3625,6 @@ class Compiler
      */
     protected function opModNumberNumber(Number $left, Number $right)
     {
-        if ($right->getDimension() == 0) {
-            return static::$NaN;
-        }
-
         return $left->modulo($right);
     }
 
