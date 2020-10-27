@@ -6296,7 +6296,7 @@ class Compiler
      * @param mixed $value
      * @param string $varName
      *
-     * @return integer|float
+     * @return Number
      *
      * @throws \Exception
      */
@@ -6308,7 +6308,7 @@ class Compiler
             throw $this->error("Error:{$var_display} $value is not a number.");
         }
 
-        return $value->getDimension();
+        return $value;
     }
 
     /**
@@ -6326,7 +6326,7 @@ class Compiler
     public function assertInteger($value, $varName = null)
     {
 
-        $value = $this->assertNumber($value, $varName);
+        $value = $this->assertNumber($value, $varName)->getDimension();
         if (round($value - \intval($value), Number::PRECISION) > 0) {
             $var_display = ($varName ? " \${$varName}:" : '');
             throw $this->error("Error:{$var_display} $value is not an integer.");
@@ -6653,7 +6653,7 @@ class Compiler
 
         foreach ([1 => 1, 2 => 2, 3 => 3, 7 => 4] as $iarg => $irgba) {
             if (isset($args[$iarg])) {
-                $val = $this->assertNumber($args[$iarg]);
+                $val = $this->assertNumber($args[$iarg])->getDimension();
 
                 if (! isset($color[$irgba])) {
                     $color[$irgba] = (($irgba < 4) ? 0 : 1);
@@ -6668,7 +6668,7 @@ class Compiler
 
             foreach ([4 => 1, 5 => 2, 6 => 3] as $iarg => $ihsl) {
                 if (! empty($args[$iarg])) {
-                    $val = $this->assertNumber($args[$iarg]);
+                    $val = $this->assertNumber($args[$iarg])->getDimension();
                     $hsl[$ihsl] = \call_user_func($fn, $hsl[$ihsl], $val, $iarg);
                 }
             }
@@ -6986,7 +6986,7 @@ class Compiler
     protected function libAdjustHue($args)
     {
         $color = $this->assertColor($args[0]);
-        $degrees = $this->assertNumber($args[1]);
+        $degrees = $this->assertNumber($args[1])->getDimension();
 
         return $this->adjustHsl($color, 1, $degrees);
     }
@@ -7150,11 +7150,7 @@ class Compiler
     protected static $libPercentage = ['number'];
     protected function libPercentage($args)
     {
-        $this->assertNumber($args[0], 'number');
-        /**
-         * @var Number $num
-         */
-        $num = $args[0];
+        $num = $this->assertNumber($args[0], 'number');
         $num->assertNoUnits('number');
 
         return new Number($num->getDimension() * 100, '%');
@@ -7163,11 +7159,7 @@ class Compiler
     protected static $libRound = ['number'];
     protected function libRound($args)
     {
-        $this->assertNumber($args[0], 'number');
-        /**
-         * @var Number $num
-         */
-        $num = $args[0];
+        $num = $this->assertNumber($args[0], 'number');
 
         return new Number(round($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
     }
@@ -7175,11 +7167,7 @@ class Compiler
     protected static $libFloor = ['number'];
     protected function libFloor($args)
     {
-        $this->assertNumber($args[0], 'number');
-        /**
-         * @var Number $num
-         */
-        $num = $args[0];
+        $num = $this->assertNumber($args[0], 'number');
 
         return new Number(floor($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
     }
@@ -7187,11 +7175,7 @@ class Compiler
     protected static $libCeil = ['number'];
     protected function libCeil($args)
     {
-        $this->assertNumber($args[0], 'number');
-        /**
-         * @var Number $num
-         */
-        $num = $args[0];
+        $num = $this->assertNumber($args[0], 'number');
 
         return new Number(ceil($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
     }
@@ -7199,11 +7183,7 @@ class Compiler
     protected static $libAbs = ['number'];
     protected function libAbs($args)
     {
-        $this->assertNumber($args[0], 'number');
-        /**
-         * @var Number $num
-         */
-        $num = $args[0];
+        $num = $this->assertNumber($args[0], 'number');
 
         return new Number(abs($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
     }
@@ -7216,11 +7196,7 @@ class Compiler
         $min = null;
 
         foreach ($args as $arg) {
-            $this->assertNumber($arg);
-            /**
-             * @var Number $number
-             */
-            $number = $arg;
+            $number = $this->assertNumber($arg);
 
             if (\is_null($min) || $min->greaterThan($number)) {
                 $min = $number;
@@ -7242,11 +7218,7 @@ class Compiler
         $max = null;
 
         foreach ($args as $arg) {
-            $this->assertNumber($arg);
-            /**
-             * @var Number $number
-             */
-            $number = $arg;
+            $number = $this->assertNumber($arg);
 
             if (\is_null($max) || $max->lessThan($number)) {
                 $max = $number;
@@ -7296,7 +7268,7 @@ class Compiler
     protected function libNth($args)
     {
         $list = $this->coerceList($args[0], ',', false);
-        $n = $this->assertNumber($args[1]);
+        $n = $this->assertNumber($args[1])->getDimension();
 
         if ($n > 0) {
             $n--;
@@ -7311,7 +7283,7 @@ class Compiler
     protected function libSetNth($args)
     {
         $list = $this->coerceList($args[0]);
-        $n = $this->assertNumber($args[1]);
+        $n = $this->assertNumber($args[1])->getDimension();
 
         if ($n > 0) {
             $n--;
@@ -7822,7 +7794,7 @@ class Compiler
     protected function libRandom($args)
     {
         if (isset($args[0]) & $args[0] !== static::$null) {
-            $n = $this->assertNumber($args[0]);
+            $n = $this->assertNumber($args[0])->getDimension();
 
             if ($n < 1) {
                 throw $this->error("\$limit must be greater than or equal to 1");
