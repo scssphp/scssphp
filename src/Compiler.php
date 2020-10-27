@@ -3320,7 +3320,6 @@ class Compiler
             case Type::T_INTERPOLATE:
                 $value[1] = $this->reduce($value[1]);
 
-                var_dump(['reducing ', $value, $inExp, base64_encode(serialize($value))]);
                 if ($inExp) {
                     return $value[1];
                 }
@@ -4043,6 +4042,7 @@ class Compiler
         $string = str_replace(array_keys($replacement[$inKeyword]), array_values($replacement[$inKeyword]), $string);
         // chr(0) is not a possible char from the input, so any chr(0) comes from our escaping replacement
         if (strpos($string, chr(0)) !== false) {
+            var_dump(base64_encode($string), $inKeyword);
             if (substr($string, -1) === chr(0)) {
                 $string = substr($string, 0, -1);
             }
