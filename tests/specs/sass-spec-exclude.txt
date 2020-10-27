@@ -299,18 +299,11 @@ core_functions/map/keys/empty
 core_functions/map/keys/single
 core_functions/map/values/empty
 core_functions/map/values/single
-core_functions/math/abs/error/type
-core_functions/math/ceil/error/type
-core_functions/math/floor/error/type
 core_functions/math/max/error/too_few_args
 core_functions/math/min/error/too_few_args
-core_functions/math/percentage/error/type
-core_functions/math/percentage/error/unit
-core_functions/math/round/error/type
 core_functions/math/round/up/within_precision
 core_functions/math/unit/error/type
 core_functions/math/unitless/error/type
-core_functions/math/unitless/numerator_and_denominator
 core_functions/meta/call/error/invalid_args
 core_functions/meta/content_exists/error/in_content
 core_functions/meta/content_exists/error/in_function_called_by_mixin
@@ -795,7 +788,6 @@ libsass-closed-issues/issue_1550/mixin_embedded
 libsass-closed-issues/issue_1550/while_embedded
 libsass-closed-issues/issue_1567
 libsass-closed-issues/issue_1569
-libsass-closed-issues/issue_1577
 libsass-closed-issues/issue_1583
 libsass-closed-issues/issue_1585
 libsass-closed-issues/issue_1590/ampersand-against-literal
@@ -953,7 +945,6 @@ libsass/basic/44_not_number_expression
 libsass/bourbon
 libsass/color-functions/other/change-color/h
 libsass/color-functions/saturate
-libsass/conversions
 libsass/debug-directive-nested/inline
 libsass/debug-directive-nested/mixin
 libsass/delayed
@@ -977,7 +968,6 @@ libsass/propsets
 libsass/selectors/simple
 libsass/test
 libsass/units/feature-test
-libsass/units/simple
 libsass/variable-scoping/blead-global/expanding/each
 libsass/variable-scoping/blead-global/expanding/else
 libsass/variable-scoping/blead-global/expanding/elseif
@@ -1021,7 +1011,6 @@ non_conformant/errors/import/file/simple
 non_conformant/errors/import/miss/simple
 non_conformant/errors/import/url/simple
 non_conformant/errors/invalid-operation/plus
-non_conformant/errors/invalid-operation/sub
 non_conformant/errors/invalid-operation/times
 non_conformant/errors/invalid-parent/function-in-each
 non_conformant/errors/invalid-parent/function-in-for
@@ -1268,4 +1257,3 @@ values/identifiers/escape/script
 values/maps/duplicate-keys
 values/maps/errors
 values/maps/invalid-key
-values/numbers/units/multiple

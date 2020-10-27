@@ -92,7 +92,7 @@
   top: 1ex;
   width: 200%;
   bottom: 10px;
-  padding: 3em 1in 96px 72pt; }
+  padding: 3em 1in 1in 1in; }
 
 /* line 120, inputs/builtins.scss */
 #list {
@@ -104,7 +104,6 @@
   hello: one, two, three, hello;
   index: 2;
   index: 3;
-  index: 1;
   index: 1;
   index: 2;
   index: 2;

@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Node;
 
 use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Node;
 use ScssPhp\ScssPhp\Type;
 
@@ -78,24 +79,29 @@ class Number extends Node implements \ArrayAccess
      */
     private $dimension;
 
-    /**
-     * @var array
-     */
-    private $units;
+    private $numeratorUnits;
+    private $denominatorUnits;
 
     /**
      * Initialize number
      *
-     * @param integer|float $dimension
-     * @param array|string $initialUnit
+     * @param integer|float   $dimension
+     * @param string[]|string $numeratorUnits
+     * @param string[]        $denominatorUnits
      */
-    public function __construct($dimension, $initialUnit)
+    public function __construct($dimension, $numeratorUnits, array $denominatorUnits = [])
     {
+        if (is_string($numeratorUnits)) {
+            $numeratorUnits = $numeratorUnits ? [$numeratorUnits] : [];
+        } elseif (isset($numeratorUnits['numerator_units'], $numeratorUnits['denominator_units'])) {
+            // TODO get rid of this once `$number[2]` is not used anymore
+            $denominatorUnits = $numeratorUnits['denominator_units'];
+            $numeratorUnits = $numeratorUnits['numerator_units'];
+        }
+
         $this->dimension = $dimension;
-        $this->units     = \is_array($initialUnit)
-            ? $initialUnit
-            : ($initialUnit ? [$initialUnit => 1]
-                            : []);
+        $this->numeratorUnits = $numeratorUnits;
+        $this->denominatorUnits = $denominatorUnits;
     }
 
     /**
@@ -107,50 +113,19 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * Coerce number to target units
-     *
-     * @param array $units
-     *
-     * @return \ScssPhp\ScssPhp\Node\Number
+     * @return string[]
      */
-    public function coerce($units)
+    public function getNumeratorUnits()
     {
-        if ($this->unitless()) {
-            return new Number($this->dimension, $units);
-        }
-
-        $dimension = $this->dimension;
-
-        if (\count($units)) {
-            $baseUnit = array_keys($units);
-            $baseUnit = reset($baseUnit);
-            $baseUnit = $this->findBaseUnit($baseUnit);
-            if ($baseUnit && isset(static::$unitTable[$baseUnit])) {
-                foreach (static::$unitTable[$baseUnit] as $unit => $conv) {
-                    $from       = isset($this->units[$unit]) ? $this->units[$unit] : 0;
-                    $to         = isset($units[$unit]) ? $units[$unit] : 0;
-                    $factor     = pow($conv, $from - $to);
-                    $dimension /= $factor;
-                }
-            }
-        }
-
-        return new Number($dimension, $units);
+        return $this->numeratorUnits;
     }
 
     /**
-     * Normalize number
-     *
-     * @return \ScssPhp\ScssPhp\Node\Number
+     * @return string[]
      */
-    public function normalize()
+    public function getDenominatorUnits()
     {
-        $dimension = $this->dimension;
-        $units     = [];
-
-        $this->normalizeUnits($dimension, $units);
-
-        return new Number($dimension, $units);
+        return $this->denominatorUnits;
     }
 
     /**
@@ -200,7 +175,7 @@ class Number extends Node implements \ArrayAccess
                 return $this->dimension;
 
             case 2:
-                return $this->units;
+                return array('numerator_units' => $this->numeratorUnits, 'denominator_units' => $this->denominatorUnits);
         }
     }
 
@@ -227,7 +202,7 @@ class Number extends Node implements \ArrayAccess
      */
     public function unitless()
     {
-        return ! array_sum($this->units);
+        return \count($this->numeratorUnits) === 0 && \count($this->denominatorUnits) === 0;
     }
 
     /**
@@ -239,36 +214,7 @@ class Number extends Node implements \ArrayAccess
      */
     public function hasUnit($unit)
     {
-        return isset($this->units[$unit]) && $this->units[$unit] === 1 && array_sum($this->units) === 1;
-    }
-
-    /**
-     * Test if a number can be normalized in a base unit
-     * ie if its units are homogeneous
-     *
-     * @return boolean
-     */
-    public function isNormalizable()
-    {
-        if ($this->unitless()) {
-            return false;
-        }
-
-        $baseUnit = null;
-
-        foreach ($this->units as $unit => $exp) {
-            $b = $this->findBaseUnit($unit);
-
-            if (\is_null($baseUnit)) {
-                $baseUnit = $b;
-            }
-
-            if (\is_null($b) or $b !== $baseUnit) {
-                return false;
-            }
-        }
-
-        return $baseUnit;
+        return \count($this->numeratorUnits) === 1 && \count($this->denominatorUnits) === 0 && $this->numeratorUnits[0] === $unit;
     }
 
     /**
@@ -278,34 +224,195 @@ class Number extends Node implements \ArrayAccess
      */
     public function unitStr()
     {
-        $numerators   = [];
-        $denominators = [];
-
-        foreach ($this->units as $unit => $unitSize) {
-            if ($unitSize > 0) {
-                $numerators = array_pad($numerators, \count($numerators) + $unitSize, $unit);
-                continue;
-            }
-
-            if ($unitSize < 0) {
-                $denominators = array_pad($denominators, \count($denominators) - $unitSize, $unit);
-                continue;
-            }
+        if ($this->unitless()) {
+            return '';
         }
 
-        if (!\count($numerators)) {
-            if (\count($denominators) === 0) {
-                return '';
-            }
+        return self::getUnitString($this->numeratorUnits, $this->denominatorUnits);
+    }
 
-            if (\count($denominators) === 1) {
-                return $denominators[0] . '^-1';
-            }
-
-            return '(' . implode('*', $denominators) . ')^-1';
+    public function assertNoUnits($varName = null)
+    {
+        if ($this->unitless()) {
+            return;
         }
 
-        return implode('*', $numerators) . (\count($denominators) ? '/' . implode('*', $denominators) : '');
+        $varDisplay = !\is_null($varName) ? "\${$varName}: " : '';
+
+        throw new SassScriptException(sprintf('%sExpected %s to have no units', $varDisplay, $this));
+    }
+
+    public function assertSameUnitOrUnitless(Number $other)
+    {
+        if ($other->unitless()) {
+            return;
+        }
+
+        if ($this->numeratorUnits === $other->numeratorUnits && $this->denominatorUnits === $other->denominatorUnits) {
+            return;
+        }
+
+        throw new SassScriptException(sprintf(
+            'Incompatible units %s and %s.',
+            self::getUnitString($this->numeratorUnits, $this->denominatorUnits),
+            self::getUnitString($other->numeratorUnits, $other->denominatorUnits)
+        ));
+    }
+
+    /**
+     * @param Number $other
+     *
+     * @return bool
+     */
+    public function isComparableTo(Number $other)
+    {
+        if ($this->unitless() || $other->unitless()) {
+            return true;
+        }
+
+        try {
+            $this->greaterThan($other);
+            return true;
+        } catch (SassScriptException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param Number $other
+     *
+     * @return bool
+     */
+    public function lessThan(Number $other)
+    {
+        return $this->coerceUnits($other, function ($num1, $num2) {
+            return $num1 < $num2;
+        });
+    }
+
+    /**
+     * @param Number $other
+     *
+     * @return bool
+     */
+    public function lessThanOrEqual(Number $other)
+    {
+        return $this->coerceUnits($other, function ($num1, $num2) {
+            return $num1 <= $num2;
+        });
+    }
+
+    /**
+     * @param Number $other
+     *
+     * @return bool
+     */
+    public function greaterThan(Number $other)
+    {
+        return $this->coerceUnits($other, function ($num1, $num2) {
+            return $num1 > $num2;
+        });
+    }
+
+    /**
+     * @param Number $other
+     *
+     * @return bool
+     */
+    public function greaterThanOrEqual(Number $other)
+    {
+        return $this->coerceUnits($other, function ($num1, $num2) {
+            return $num1 >= $num2;
+        });
+    }
+
+    /**
+     * @param Number $other
+     *
+     * @return Number
+     */
+    public function plus(Number $other)
+    {
+        return $this->coerceNumber($other, function ($num1, $num2) {
+            return $num1 + $num2;
+        });
+    }
+
+    /**
+     * @param Number $other
+     *
+     * @return Number
+     */
+    public function minus(Number $other)
+    {
+        return $this->coerceNumber($other, function ($num1, $num2) {
+            return $num1 - $num2;
+        });
+    }
+
+    /**
+     * @return Number
+     */
+    public function unaryMinus()
+    {
+        return new Number(-$this->dimension, $this->numeratorUnits, $this->denominatorUnits);
+    }
+
+    /**
+     * @param Number $other
+     *
+     * @return Number
+     */
+    public function modulo(Number $other)
+    {
+        return $this->coerceNumber($other, function ($num1, $num2) {
+            return $num1 % $num2;
+        });
+    }
+
+    /**
+     * @param Number $other
+     *
+     * @return Number
+     */
+    public function times(Number $other)
+    {
+        return $this->multiplyUnits($this->dimension * $other->dimension, $this->numeratorUnits, $this->denominatorUnits, $other->numeratorUnits, $other->denominatorUnits);
+    }
+
+    /**
+     * @param Number $other
+     *
+     * @return Number
+     */
+    public function dividedBy(Number $other)
+    {
+        return $this->multiplyUnits($this->dimension / $other->dimension, $this->numeratorUnits, $this->denominatorUnits, $other->denominatorUnits, $other->numeratorUnits);
+    }
+
+    /**
+     * @param Number $other
+     *
+     * @return bool
+     */
+    public function equals(Number $other)
+    {
+        // Unitless numbers are convertable to unit numbers, but not equal, so we special-case unitless here.
+        if ($this->unitless() !== $other->unitless()) {
+            return false;
+        }
+
+        if ($this->unitless()) {
+            return round($this->dimension, self::PRECISION) == round($other->dimension, self::PRECISION);
+        }
+
+        try {
+            return $this->coerceUnits($other, function ($num1, $num2) {
+                return round($num1,self::PRECISION) == round($num2, self::PRECISION);
+            });
+        } catch (SassScriptException $e) {
+            return false;
+        }
     }
 
     /**
@@ -319,30 +426,12 @@ class Number extends Node implements \ArrayAccess
     {
         $dimension = round($this->dimension, self::PRECISION);
 
-        $units = array_filter($this->units, function ($unitSize) {
-            return $unitSize;
-        });
-
-        if (\count($units) > 1 && array_sum($units) === 0) {
-            $dimension = $this->dimension;
-            $units     = [];
-
-            $this->normalizeUnits($dimension, $units);
-
-            $dimension = round($dimension, self::PRECISION);
-            $units     = array_filter($units, function ($unitSize) {
-                return $unitSize;
-            });
-        }
-
-        $unitSize = array_sum($units);
-
-        if ($compiler && ($unitSize > 1 || $unitSize < 0 || \count($units) > 1)) {
-            $this->units = $units;
+        if ($compiler) {
             $unit = $this->unitStr();
+        } elseif (isset($this->numeratorUnits[0])) {
+            $unit = $this->numeratorUnits[0];
         } else {
-            reset($units);
-            $unit = key($units);
+            $unit = '';
         }
 
         $dimension = number_format($dimension, self::PRECISION, '.', '');
@@ -359,48 +448,216 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * Normalize units
+     * @param Number   $other
+     * @param callable $operation
      *
-     * @param integer|float $dimension
-     * @param array         $units
-     * @param string        $baseUnit
+     * @return Number
+     *
+     * @phpstan-param callable(int|float, int|float): int|float $operation
      */
-    private function normalizeUnits(&$dimension, &$units, $baseUnit = null)
+    private function coerceNumber(Number $other, $operation)
     {
-        $dimension = $this->dimension;
-        $units     = [];
+        $result = $this->coerceUnits($other, $operation);
 
-        foreach ($this->units as $unit => $exp) {
-            if (! $baseUnit) {
-                $baseUnit = $this->findBaseUnit($unit);
-            }
-
-            if ($baseUnit && isset(static::$unitTable[$baseUnit][$unit])) {
-                $factor = pow(static::$unitTable[$baseUnit][$unit], $exp);
-
-                $unit = $baseUnit;
-                $dimension /= $factor;
-            }
-
-            $units[$unit] = $exp + (isset($units[$unit]) ? $units[$unit] : 0);
+        if (!$this->unitless()) {
+            return new Number($result, $this->numeratorUnits, $this->denominatorUnits);
         }
+
+        return new Number($result, $other->numeratorUnits, $other->denominatorUnits);
     }
 
     /**
-     * Find the base unit family for a given unit
+     * @param Number $other
+     * @param callable $operation
      *
-     * @param string $unit
+     * @return mixed
      *
-     * @return string|null
+     * @phpstan-template T
+     * @phpstan-param callable(int|float, int|float): T $operation
+     * @phpstan-return T
      */
-    private function findBaseUnit($unit)
+    private function coerceUnits(Number $other, $operation)
     {
-        foreach (static::$unitTable as $baseUnit => $unitVariants) {
-            if (isset($unitVariants[$unit])) {
-                return $baseUnit;
+        if (!$this->unitless()) {
+            $num1 = $this->dimension;
+            $num2 = $other->valueInUnits($this->numeratorUnits, $this->denominatorUnits);
+        } else {
+            $num1 = $this->valueInUnits($other->numeratorUnits, $other->denominatorUnits);
+            $num2 = $other->dimension;
+        }
+
+        return \call_user_func($operation, $num1, $num2);
+    }
+
+    /**
+     * @param string[] $numeratorUnits
+     * @param string[] $denominatorUnits
+     *
+     * @return int|float
+     */
+    private function valueInUnits(array $numeratorUnits, array $denominatorUnits)
+    {
+        if (
+            $this->unitless()
+            || (\count($numeratorUnits) === 0 && \count($denominatorUnits) === 0)
+            || ($this->numeratorUnits === $numeratorUnits && $this->denominatorUnits === $denominatorUnits)
+        ) {
+            return $this->dimension;
+        }
+
+        $value = $this->dimension;
+        $oldNumerators = $this->numeratorUnits;
+
+        foreach ($numeratorUnits as $newNumerator) {
+            foreach ($oldNumerators as $key => $oldNumerator) {
+                $conversionFactor = self::getConversionFactor($newNumerator, $oldNumerator);
+
+                if (\is_null($conversionFactor)) {
+                    continue;
+                }
+
+                $value *= $conversionFactor;
+                unset($oldNumerators[$key]);
+                continue 2;
+            }
+
+            throw new SassScriptException(sprintf(
+                'Incompatible units %s and %s.',
+                self::getUnitString($this->numeratorUnits, $this->denominatorUnits),
+                self::getUnitString($numeratorUnits, $denominatorUnits)
+            ));
+        }
+
+        $oldDenominators = $this->denominatorUnits;
+
+        foreach ($denominatorUnits as $newDenominator) {
+            foreach ($oldDenominators as $key => $oldDenominator) {
+                $conversionFactor = self::getConversionFactor($newDenominator, $oldDenominator);
+
+                if (\is_null($conversionFactor)) {
+                    continue;
+                }
+
+                $value /= $conversionFactor;
+                unset($oldDenominators[$key]);
+                continue 2;
+            }
+
+            throw new SassScriptException(sprintf(
+                'Incompatible units %s and %s.',
+                self::getUnitString($this->numeratorUnits, $this->denominatorUnits),
+                self::getUnitString($numeratorUnits, $denominatorUnits)
+            ));
+        }
+
+        if (\count($oldNumerators) || \count($oldDenominators)) {
+            throw new SassScriptException(sprintf(
+                'Incompatible units %s and %s.',
+                self::getUnitString($this->numeratorUnits, $this->denominatorUnits),
+                self::getUnitString($numeratorUnits, $denominatorUnits)
+            ));
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param int|float $value
+     * @param string[] $numerators1
+     * @param string[] $denominators1
+     * @param string[] $numerators2
+     * @param string[] $denominators2
+     *
+     * @return Number
+     */
+    private function multiplyUnits($value, array $numerators1, array $denominators1, array $numerators2, array $denominators2)
+    {
+        $newNumerators = array();
+
+        foreach ($numerators1 as $numerator) {
+            foreach ($denominators2 as $key => $denominator) {
+                $conversionFactor = self::getConversionFactor($numerator, $denominator);
+
+                if (\is_null($conversionFactor)) {
+                    continue;
+                }
+
+                $value /= $conversionFactor;
+                unset($denominators2[$key]);
+                continue 2;
+            }
+
+            $newNumerators[] = $numerator;
+        }
+
+        foreach ($numerators2 as $numerator) {
+            foreach ($denominators1 as $key => $denominator) {
+                $conversionFactor = self::getConversionFactor($numerator, $denominator);
+
+                if (\is_null($conversionFactor)) {
+                    continue;
+                }
+
+                $value /= $conversionFactor;
+                unset($denominators1[$key]);
+                continue 2;
+            }
+
+            $newNumerators[] = $numerator;
+        }
+
+        $newDenominators = array_values(array_merge($denominators1, $denominators2));
+
+        return new Number($value, $newNumerators, $newDenominators);
+    }
+
+    /**
+     * Returns the number of [unit1]s per [unit2].
+     *
+     * Equivalently, `1unit1 * conversionFactor(unit1, unit2) = 1unit2`.
+     *
+     * @param string $unit1
+     * @param string $unit2
+     *
+     * @return float|int|null
+     */
+    private static function getConversionFactor($unit1, $unit2)
+    {
+        if ($unit1 === $unit2) {
+            return 1;
+        }
+
+        foreach (static::$unitTable as $unitVariants) {
+            if (isset($unitVariants[$unit1]) && isset($unitVariants[$unit2])) {
+                return $unitVariants[$unit1] / $unitVariants[$unit2];
             }
         }
 
         return null;
+    }
+
+    /**
+     * Returns unit(s) as the product of numerator units divided by the product of denominator units
+     *
+     * @param string[] $numerators
+     * @param string[] $denominators
+     *
+     * @return string
+     */
+    private static function getUnitString(array $numerators, array $denominators)
+    {
+        if (!\count($numerators)) {
+            if (\count($denominators) === 0) {
+                return 'no units';
+            }
+
+            if (\count($denominators) === 1) {
+                return $denominators[0] . '^-1';
+            }
+
+            return '(' . implode('*', $denominators) . ')^-1';
+        }
+
+        return implode('*', $numerators) . (\count($denominators) ? '/' . implode('*', $denominators) : '');
     }
 }
