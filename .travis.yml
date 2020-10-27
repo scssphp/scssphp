@@ -13,7 +13,7 @@ php:
 install: composer install
 
 before_script:
-  - php -m
+  - php --ri mbstring
 
 script:
   - vendor/bin/phpunit --filter non_conformant/parser/interpolate/23_escapes_literal_specials/03_inline_double
