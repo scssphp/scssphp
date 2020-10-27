@@ -1,7 +1,7 @@
 # scssphp
 ### <https://scssphp.github.io/scssphp>
 
-[![Build](https://travis-ci.org/scssphp/scssphp.svg?branch=master)](https://travis-ci.org/scssphp/scssphp)
+[![Build](https://travis-ci.com/scssphp/scssphp.svg?branch=master)](https://travis-ci.com/scssphp/scssphp)
 [![License](https://poser.pugx.org/scssphp/scssphp/license)](https://packagist.org/packages/scssphp/scssphp)
 
 `scssphp` is a compiler for SCSS written in PHP.
