@@ -4030,6 +4030,7 @@ class Compiler
     public function escapeNonPrintableChars($string, $inKeyword = false)
     {
         var_dump(base64_encode($string), $inKeyword);
+     //   var_dump(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,100));
         static $replacement = [];
         if (empty($replacement[$inKeyword])) {
             for ($i = 0; $i < 32; $i++) {
@@ -4392,6 +4393,7 @@ class Compiler
     protected function compileStringContent($string)
     {
         $parts = [];
+        var_dump($string, base64_encode(serialize($string)));
 
         foreach ($string[2] as $part) {
             if (\is_array($part) || $part instanceof \ArrayAccess) {
