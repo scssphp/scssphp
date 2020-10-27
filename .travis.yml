@@ -12,6 +12,9 @@ php:
 
 install: composer install
 
+before_script:
+  - php -m
+
 script:
   - vendor/bin/phpunit tests
 
