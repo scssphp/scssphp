@@ -366,6 +366,10 @@ class Number extends Node implements \ArrayAccess
     public function modulo(Number $other)
     {
         return $this->coerceNumber($other, function ($num1, $num2) {
+            if ($num2 == 0) {
+                return NAN;
+            }
+
             return $num1 % $num2;
         });
     }
@@ -387,7 +391,17 @@ class Number extends Node implements \ArrayAccess
      */
     public function dividedBy(Number $other)
     {
-        return $this->multiplyUnits($this->dimension / $other->dimension, $this->numeratorUnits, $this->denominatorUnits, $other->denominatorUnits, $other->numeratorUnits);
+        if ($other->dimension == 0) {
+            if ($this->dimension == 0) {
+                $value = NAN;
+            } else {
+                $value = INF;
+            }
+        } else {
+            $value = $this->dimension / $other->dimension;
+        }
+
+        return $this->multiplyUnits($value, $this->numeratorUnits, $this->denominatorUnits, $other->denominatorUnits, $other->numeratorUnits);
     }
 
     /**
@@ -425,6 +439,14 @@ class Number extends Node implements \ArrayAccess
     public function output(Compiler $compiler = null)
     {
         $dimension = round($this->dimension, self::PRECISION);
+
+        if (is_nan($dimension)) {
+            return 'NaN';
+        }
+
+        if ($dimension === INF) {
+            return 'Infinity';
+        }
 
         if ($compiler) {
             $unit = $this->unitStr();
