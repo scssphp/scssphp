@@ -16,7 +16,7 @@ before_script:
   - php -m
 
 script:
-  - vendor/bin/phpunit tests
+  - vendor/bin/phpunit --filter non_conformant/parser/interpolate/23_escapes_literal_specials/03_inline_double
 
 branches:
   only:

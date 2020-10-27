@@ -4029,6 +4029,7 @@ class Compiler
      */
     public function escapeNonPrintableChars($string, $inKeyword = false)
     {
+        var_dump(base64_encode($string), $inKeyword);
         static $replacement = [];
         if (empty($replacement[$inKeyword])) {
             for ($i = 0; $i < 32; $i++) {
