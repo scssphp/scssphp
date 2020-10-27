@@ -3013,7 +3013,7 @@ class Parser
             $value = hexdec($hex);
 
             if (!$inKeywords && ($value == 0 || ($value >= 0xD800 && $value <= 0xDFFF) || $value >= 0x10FFFF)) {
-                $out = "\u{FFFD}";
+                $out = "\xEF\xBF\xBD"; // "\u{FFFD}" but with a syntax supported on PHP 5
             } elseif ($value < 0x20) {
                 $out = Util::mbChr($value);
             } else {
