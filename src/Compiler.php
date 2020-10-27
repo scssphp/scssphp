@@ -3320,6 +3320,7 @@ class Compiler
             case Type::T_INTERPOLATE:
                 $value[1] = $this->reduce($value[1]);
 
+                var_dump(['reducing ', $value, $inExp, base64_encode(serialize($value))]);
                 if ($inExp) {
                     return $value[1];
                 }
@@ -4030,7 +4031,7 @@ class Compiler
     public function escapeNonPrintableChars($string, $inKeyword = false)
     {
         var_dump(base64_encode($string), $inKeyword);
-     //   var_dump(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,100));
+       // var_dump(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,100));
         static $replacement = [];
         if (empty($replacement[$inKeyword])) {
             for ($i = 0; $i < 32; $i++) {
