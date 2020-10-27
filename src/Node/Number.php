@@ -394,8 +394,10 @@ class Number extends Node implements \ArrayAccess
         if ($other->dimension == 0) {
             if ($this->dimension == 0) {
                 $value = NAN;
-            } else {
+            } elseif ($this->dimension > 0) {
                 $value = INF;
+            } else {
+                $value = -INF;
             }
         } else {
             $value = $this->dimension / $other->dimension;
@@ -413,6 +415,11 @@ class Number extends Node implements \ArrayAccess
     {
         // Unitless numbers are convertable to unit numbers, but not equal, so we special-case unitless here.
         if ($this->unitless() !== $other->unitless()) {
+            return false;
+        }
+
+        // In Sass, neither NaN nor Infinity are equal to themselves, while PHP defines INF==INF
+        if (is_nan($this->dimension) || is_nan($other->dimension) || !is_finite($this->dimension) || !is_finite($other->dimension)) {
             return false;
         }
 
@@ -446,6 +453,10 @@ class Number extends Node implements \ArrayAccess
 
         if ($dimension === INF) {
             return 'Infinity';
+        }
+
+        if ($dimension === -INF) {
+            return '-Infinity';
         }
 
         if ($compiler) {
