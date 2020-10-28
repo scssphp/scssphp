@@ -552,32 +552,6 @@ class Parser
             $this->seek($s);
 
             if (
-                $this->literal('@break', 6) &&
-                $this->end()
-            ) {
-                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
-
-                $this->append([Type::T_BREAK], $s);
-
-                return true;
-            }
-
-            $this->seek($s);
-
-            if (
-                $this->literal('@continue', 9) &&
-                $this->end()
-            ) {
-                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
-
-                $this->append([Type::T_CONTINUE], $s);
-
-                return true;
-            }
-
-            $this->seek($s);
-
-            if (
                 $this->literal('@return', 7) &&
                 ($this->valueList($retVal) || true) &&
                 $this->end()

@@ -2776,17 +2776,11 @@ class Compiler
                     $ret = $this->compileChildren($each->children, $out);
 
                     if ($ret) {
-                        if ($ret[0] !== Type::T_CONTROL) {
-                            $store = $this->env->store;
-                            $this->popEnv();
-                            $this->backPropagateEnv($store, $each->vars);
+                        $store = $this->env->store;
+                        $this->popEnv();
+                        $this->backPropagateEnv($store, $each->vars);
 
-                            return $ret;
-                        }
-
-                        if ($ret[1]) {
-                            break;
-                        }
+                        return $ret;
                     }
                 }
                 $store = $this->env->store;
@@ -2802,13 +2796,7 @@ class Compiler
                     $ret = $this->compileChildren($while->children, $out);
 
                     if ($ret) {
-                        if ($ret[0] !== Type::T_CONTROL) {
-                            return $ret;
-                        }
-
-                        if ($ret[1]) {
-                            break;
-                        }
+                        return $ret;
                     }
                 }
                 break;
@@ -2853,17 +2841,11 @@ class Compiler
                     $ret = $this->compileChildren($for->children, $out);
 
                     if ($ret) {
-                        if ($ret[0] !== Type::T_CONTROL) {
-                            $store = $this->env->store;
-                            $this->popEnv();
-                            $this->backPropagateEnv($store, [$for->var]);
+                        $store = $this->env->store;
+                        $this->popEnv();
+                        $this->backPropagateEnv($store, [$for->var]);
 
-                            return $ret;
-                        }
-
-                        if ($ret[1]) {
-                            break;
-                        }
+                        return $ret;
                     }
                 }
 
@@ -2872,12 +2854,6 @@ class Compiler
                 $this->backPropagateEnv($store, [$for->var]);
 
                 break;
-
-            case Type::T_BREAK:
-                return [Type::T_CONTROL, true];
-
-            case Type::T_CONTINUE:
-                return [Type::T_CONTROL, false];
 
             case Type::T_RETURN:
                 return $this->reduce($child[1], true);
@@ -3018,9 +2994,6 @@ class Compiler
                 $value = $this->compileValue($this->reduce($value, true));
 
                 throw $this->error("File $fname on line $line ERROR: $value\n");
-
-            case Type::T_CONTROL:
-                throw $this->error('@break/@continue not permitted in this scope');
 
             default:
                 throw $this->error("unknown child type: $child[0]");
