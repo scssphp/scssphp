@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+{% assign generate_date = 'now' | date: "%a %b %d, %Y %T" %}
+{% include head.html %}
+  <body>
+    {% include header.html %}
+    <div class="body">
+      <div class="inner">
+        {{ content }}
+      </div>
+    </div>
+    {% include footer.html %}
+  </body>
+</html>

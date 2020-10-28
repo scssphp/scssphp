@@ -1,0 +1,27 @@
+# Site settings
+title: SCSS Compiler in PHP
+current_version: 1.2
+description: >
+  SCSS compiler written in PHP
+url: http://scssphp.github.io
+baseurl: /scssphp
+repo_url: https://github.com/scssphp/scssphp
+
+# Build settings
+markdown: kramdown
+exclude:
+- Gemfile
+- Gemfile.lock
+- Makefile
+- composer.lock
+- frameworks/
+- vendor/
+
+# Github Pages
+ghlighter: pygments
+github: [Repository metadata]
+gems:
+- jekyll-mentions
+- jemoji
+- jekyll-redirect-from
+- jekyll-sitemap
