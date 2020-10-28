@@ -10,7 +10,7 @@
  * @link http://scssphp.github.io/scssphp
  */
 
-namespace ScssPhp\ScssPhp\Node;
+namespace ScssPhp\ScssPhp\Value;
 
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
@@ -27,7 +27,7 @@ use ScssPhp\ScssPhp\Type;
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
  */
-class Number implements \ArrayAccess
+class SassNumber implements \ArrayAccess
 {
     const PRECISION = 10;
 
@@ -235,7 +235,7 @@ class Number implements \ArrayAccess
      *
      * @return void
      */
-    public function assertSameUnitOrUnitless(Number $other)
+    public function assertSameUnitOrUnitless(SassNumber $other)
     {
         if ($other->unitless()) {
             return;
@@ -253,11 +253,11 @@ class Number implements \ArrayAccess
     }
 
     /**
-     * @param Number $other
+     * @param SassNumber $other
      *
      * @return bool
      */
-    public function isComparableTo(Number $other)
+    public function isComparableTo(SassNumber $other)
     {
         if ($this->unitless() || $other->unitless()) {
             return true;
@@ -272,11 +272,11 @@ class Number implements \ArrayAccess
     }
 
     /**
-     * @param Number $other
+     * @param SassNumber $other
      *
      * @return bool
      */
-    public function lessThan(Number $other)
+    public function lessThan(SassNumber $other)
     {
         return $this->coerceUnits($other, function ($num1, $num2) {
             return $num1 < $num2;
@@ -284,11 +284,11 @@ class Number implements \ArrayAccess
     }
 
     /**
-     * @param Number $other
+     * @param SassNumber $other
      *
      * @return bool
      */
-    public function lessThanOrEqual(Number $other)
+    public function lessThanOrEqual(SassNumber $other)
     {
         return $this->coerceUnits($other, function ($num1, $num2) {
             return $num1 <= $num2;
@@ -296,11 +296,11 @@ class Number implements \ArrayAccess
     }
 
     /**
-     * @param Number $other
+     * @param SassNumber $other
      *
      * @return bool
      */
-    public function greaterThan(Number $other)
+    public function greaterThan(SassNumber $other)
     {
         return $this->coerceUnits($other, function ($num1, $num2) {
             return $num1 > $num2;
@@ -308,11 +308,11 @@ class Number implements \ArrayAccess
     }
 
     /**
-     * @param Number $other
+     * @param SassNumber $other
      *
      * @return bool
      */
-    public function greaterThanOrEqual(Number $other)
+    public function greaterThanOrEqual(SassNumber $other)
     {
         return $this->coerceUnits($other, function ($num1, $num2) {
             return $num1 >= $num2;
@@ -320,11 +320,11 @@ class Number implements \ArrayAccess
     }
 
     /**
-     * @param Number $other
+     * @param SassNumber $other
      *
-     * @return Number
+     * @return SassNumber
      */
-    public function plus(Number $other)
+    public function plus(SassNumber $other)
     {
         return $this->coerceNumber($other, function ($num1, $num2) {
             return $num1 + $num2;
@@ -332,11 +332,11 @@ class Number implements \ArrayAccess
     }
 
     /**
-     * @param Number $other
+     * @param SassNumber $other
      *
-     * @return Number
+     * @return SassNumber
      */
-    public function minus(Number $other)
+    public function minus(SassNumber $other)
     {
         return $this->coerceNumber($other, function ($num1, $num2) {
             return $num1 - $num2;
@@ -344,19 +344,19 @@ class Number implements \ArrayAccess
     }
 
     /**
-     * @return Number
+     * @return SassNumber
      */
     public function unaryMinus()
     {
-        return new Number(-$this->dimension, $this->numeratorUnits, $this->denominatorUnits);
+        return new SassNumber(-$this->dimension, $this->numeratorUnits, $this->denominatorUnits);
     }
 
     /**
-     * @param Number $other
+     * @param SassNumber $other
      *
-     * @return Number
+     * @return SassNumber
      */
-    public function modulo(Number $other)
+    public function modulo(SassNumber $other)
     {
         return $this->coerceNumber($other, function ($num1, $num2) {
             if ($num2 == 0) {
@@ -378,21 +378,21 @@ class Number implements \ArrayAccess
     }
 
     /**
-     * @param Number $other
+     * @param SassNumber $other
      *
-     * @return Number
+     * @return SassNumber
      */
-    public function times(Number $other)
+    public function times(SassNumber $other)
     {
         return $this->multiplyUnits($this->dimension * $other->dimension, $this->numeratorUnits, $this->denominatorUnits, $other->numeratorUnits, $other->denominatorUnits);
     }
 
     /**
-     * @param Number $other
+     * @param SassNumber $other
      *
-     * @return Number
+     * @return SassNumber
      */
-    public function dividedBy(Number $other)
+    public function dividedBy(SassNumber $other)
     {
         if ($other->dimension == 0) {
             if ($this->dimension == 0) {
@@ -410,11 +410,11 @@ class Number implements \ArrayAccess
     }
 
     /**
-     * @param Number $other
+     * @param SassNumber $other
      *
      * @return bool
      */
-    public function equals(Number $other)
+    public function equals(SassNumber $other)
     {
         // Unitless numbers are convertable to unit numbers, but not equal, so we special-case unitless here.
         if ($this->unitless() !== $other->unitless()) {
@@ -484,27 +484,27 @@ class Number implements \ArrayAccess
     }
 
     /**
-     * @param Number   $other
-     * @param callable $operation
+     * @param SassNumber $other
+     * @param callable   $operation
      *
-     * @return Number
+     * @return SassNumber
      *
      * @phpstan-param callable(int|float, int|float): (int|float) $operation
      */
-    private function coerceNumber(Number $other, $operation)
+    private function coerceNumber(SassNumber $other, $operation)
     {
         $result = $this->coerceUnits($other, $operation);
 
         if (!$this->unitless()) {
-            return new Number($result, $this->numeratorUnits, $this->denominatorUnits);
+            return new SassNumber($result, $this->numeratorUnits, $this->denominatorUnits);
         }
 
-        return new Number($result, $other->numeratorUnits, $other->denominatorUnits);
+        return new SassNumber($result, $other->numeratorUnits, $other->denominatorUnits);
     }
 
     /**
-     * @param Number $other
-     * @param callable $operation
+     * @param SassNumber $other
+     * @param callable   $operation
      *
      * @return mixed
      *
@@ -512,7 +512,7 @@ class Number implements \ArrayAccess
      * @phpstan-param callable(int|float, int|float): T $operation
      * @phpstan-return T
      */
-    private function coerceUnits(Number $other, $operation)
+    private function coerceUnits(SassNumber $other, $operation)
     {
         if (!$this->unitless()) {
             $num1 = $this->dimension;
@@ -607,7 +607,7 @@ class Number implements \ArrayAccess
      * @param string[] $numerators2
      * @param string[] $denominators2
      *
-     * @return Number
+     * @return SassNumber
      *
      * @phpstan-param list<string> $numerators1
      * @phpstan-param list<string> $denominators1
@@ -652,7 +652,7 @@ class Number implements \ArrayAccess
 
         $newDenominators = array_values(array_merge($denominators1, $denominators2));
 
-        return new Number($value, $newNumerators, $newDenominators);
+        return new SassNumber($value, $newNumerators, $newDenominators);
     }
 
     /**

@@ -26,7 +26,7 @@ if (! class_exists('ScssPhp\ScssPhp\Version', false)) {
     include_once __DIR__ . '/src/Formatter/Expanded.php';
     include_once __DIR__ . '/src/Formatter/Nested.php';
     include_once __DIR__ . '/src/Formatter/OutputBlock.php';
-    include_once __DIR__ . '/src/Node/Number.php';
+    include_once __DIR__ . '/src/Value/SassNumber.php';
     include_once __DIR__ . '/src/Parser.php';
     include_once __DIR__ . '/src/SourceMap/Base64.php';
     include_once __DIR__ . '/src/SourceMap/Base64VLQ.php';

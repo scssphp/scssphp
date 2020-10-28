@@ -19,8 +19,8 @@ use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Formatter\Compressed;
 use ScssPhp\ScssPhp\Formatter\Expanded;
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
-use ScssPhp\ScssPhp\Node\Number;
 use ScssPhp\ScssPhp\SourceMap\SourceMapGenerator;
+use ScssPhp\ScssPhp\Value\SassNumber;
 
 /**
  * The scss compiler and parser.
@@ -906,7 +906,7 @@ class Compiler
         }
 
         foreach ($rawSingle as $part) {
-            // matches Number
+            // matches SassNumber
             if (! \is_string($part)) {
                 return false;
             }
@@ -1534,7 +1534,7 @@ class Compiler
                     $s = reset($s);
                 }
 
-                if (\is_object($s) && $s instanceof Number) {
+                if (\is_object($s) && $s instanceof SassNumber) {
                     return $this->testWithWithout('keyframes', $with, $without);
                 }
             }
@@ -2640,7 +2640,7 @@ class Compiler
      * @param array                                  $child
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
      *
-     * @return array|Number|null
+     * @return array|SassNumber|null
      */
     protected function compileChild($child, OutputBlock $out)
     {
@@ -2784,7 +2784,7 @@ class Compiler
                                 $divider = $this->reduce($divider, true);
                             }
 
-                            if ($divider instanceof Number && \intval($divider->getDimension()) && $divider->unitless()) {
+                            if ($divider instanceof SassNumber && \intval($divider->getDimension()) && $divider->unitless()) {
                                 $revert = false;
                             }
                         }
@@ -2808,7 +2808,7 @@ class Compiler
                                                 $divider = $this->reduce($divider, true);
                                             }
 
-                                            if ($divider instanceof Number && \intval($divider->getDimension()) && $divider->unitless()) {
+                                            if ($divider instanceof SassNumber && \intval($divider->getDimension()) && $divider->unitless()) {
                                                 $revert = false;
                                             }
                                         }
@@ -2952,11 +2952,11 @@ class Compiler
                 $start = $this->reduce($for->start, true);
                 $end   = $this->reduce($for->end, true);
 
-                if (! $start instanceof Number) {
+                if (! $start instanceof SassNumber) {
                     throw $this->error('%s is not a number', $start[0]);
                 }
 
-                if (! $end instanceof Number) {
+                if (! $end instanceof SassNumber) {
                     throw $this->error('%s is not a number', $end[0]);
                 }
 
@@ -2980,7 +2980,7 @@ class Compiler
                         break;
                     }
 
-                    $this->set($for->var, new Number($start, $numeratorUnits, $denominatorUnits));
+                    $this->set($for->var, new SassNumber($start, $numeratorUnits, $denominatorUnits));
                     $start += $d;
 
                     $ret = $this->compileChildren($for->children, $out);
@@ -3187,7 +3187,7 @@ class Compiler
     /**
      * Is truthy?
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      *
      * @return boolean
      */
@@ -3235,10 +3235,10 @@ class Compiler
     /**
      * Reduce value
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      * @param boolean $inExp
      *
-     * @return null|string|array|Number
+     * @return null|string|array|SassNumber
      */
     protected function reduce($value, $inExp = false)
     {
@@ -3313,7 +3313,7 @@ class Compiler
                 $inExp = $inExp || $this->shouldEval($exp);
                 $exp = $this->reduce($exp);
 
-                if ($exp instanceof Number) {
+                if ($exp instanceof SassNumber) {
                     switch ($op) {
                         case '+':
                             return $exp;
@@ -3397,7 +3397,7 @@ class Compiler
      * @param string $name
      * @param array  $argValues
      *
-     * @return array|Number
+     * @return array|SassNumber
      */
     protected function fncall($functionReference, $argValues)
     {
@@ -3553,7 +3553,7 @@ class Compiler
      *
      * @param $arg
      *
-     * @return array|\ArrayAccess|Number|string|null
+     * @return array|\ArrayAccess|SassNumber|string|null
      */
     protected function stringifyFncallArgs($arg)
     {
@@ -3643,9 +3643,9 @@ class Compiler
     /**
      * Normalize value
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      *
-     * @return array|Number
+     * @return array|SassNumber
      */
     public function normalizeValue($value)
     {
@@ -3683,12 +3683,12 @@ class Compiler
     /**
      * Add numbers
      *
-     * @param Number $left
-     * @param Number $right
+     * @param SassNumber $left
+     * @param SassNumber $right
      *
-     * @return Number
+     * @return SassNumber
      */
-    protected function opAddNumberNumber(Number $left, Number $right)
+    protected function opAddNumberNumber(SassNumber $left, SassNumber $right)
     {
         return $left->plus($right);
     }
@@ -3696,12 +3696,12 @@ class Compiler
     /**
      * Multiply numbers
      *
-     * @param Number $left
-     * @param Number $right
+     * @param SassNumber $left
+     * @param SassNumber $right
      *
-     * @return Number
+     * @return SassNumber
      */
-    protected function opMulNumberNumber(Number $left, Number $right)
+    protected function opMulNumberNumber(SassNumber $left, SassNumber $right)
     {
         return $left->times($right);
     }
@@ -3709,12 +3709,12 @@ class Compiler
     /**
      * Subtract numbers
      *
-     * @param Number $left
-     * @param Number $right
+     * @param SassNumber $left
+     * @param SassNumber $right
      *
-     * @return Number
+     * @return SassNumber
      */
-    protected function opSubNumberNumber(Number $left, Number $right)
+    protected function opSubNumberNumber(SassNumber $left, SassNumber $right)
     {
         return $left->minus($right);
     }
@@ -3722,12 +3722,12 @@ class Compiler
     /**
      * Divide numbers
      *
-     * @param Number $left
-     * @param Number $right
+     * @param SassNumber $left
+     * @param SassNumber $right
      *
-     * @return Number
+     * @return SassNumber
      */
-    protected function opDivNumberNumber(Number $left, Number $right)
+    protected function opDivNumberNumber(SassNumber $left, SassNumber $right)
     {
         return $left->dividedBy($right);
     }
@@ -3735,12 +3735,12 @@ class Compiler
     /**
      * Mod numbers
      *
-     * @param Number $left
-     * @param Number $right
+     * @param SassNumber $left
+     * @param SassNumber $right
      *
-     * @return Number
+     * @return SassNumber
      */
-    protected function opModNumberNumber(Number $left, Number $right)
+    protected function opModNumberNumber(SassNumber $left, SassNumber $right)
     {
         return $left->modulo($right);
     }
@@ -3781,11 +3781,11 @@ class Compiler
     /**
      * Boolean and
      *
-     * @param array|Number $left
-     * @param array|Number  $right
+     * @param array|SassNumber $left
+     * @param array|SassNumber  $right
      * @param boolean $shouldEval
      *
-     * @return array|Number|null
+     * @return array|SassNumber|null
      */
     protected function opAnd($left, $right, $shouldEval)
     {
@@ -3809,11 +3809,11 @@ class Compiler
     /**
      * Boolean or
      *
-     * @param array|Number $left
-     * @param array|Number $right
+     * @param array|SassNumber $left
+     * @param array|SassNumber $right
      * @param boolean $shouldEval
      *
-     * @return array|Number|null
+     * @return array|SassNumber|null
      */
     protected function opOr($left, $right, $shouldEval)
     {
@@ -3912,13 +3912,13 @@ class Compiler
     /**
      * Compare color and number
      *
-     * @param string $op
-     * @param array  $left
-     * @param Number  $right
+     * @param string     $op
+     * @param array      $left
+     * @param SassNumber $right
      *
      * @return array
      */
-    protected function opColorNumber($op, $left, Number $right)
+    protected function opColorNumber($op, $left, SassNumber $right)
     {
         if ($op === '==') {
             return static::$false;
@@ -3940,13 +3940,13 @@ class Compiler
     /**
      * Compare number and color
      *
-     * @param string $op
-     * @param Number  $left
-     * @param array  $right
+     * @param string     $op
+     * @param SassNumber $left
+     * @param array      $right
      *
      * @return array
      */
-    protected function opNumberColor($op, Number $left, $right)
+    protected function opNumberColor($op, SassNumber $left, $right)
     {
         if ($op === '==') {
             return static::$false;
@@ -3968,8 +3968,8 @@ class Compiler
     /**
      * Compare number1 == number2
      *
-     * @param array|Number $left
-     * @param array|Number $right
+     * @param array|SassNumber $left
+     * @param array|SassNumber $right
      *
      * @return array
      */
@@ -3989,8 +3989,8 @@ class Compiler
     /**
      * Compare number1 != number2
      *
-     * @param array|Number $left
-     * @param array|Number $right
+     * @param array|SassNumber $left
+     * @param array|SassNumber $right
      *
      * @return array
      */
@@ -4010,12 +4010,12 @@ class Compiler
     /**
      * Compare number1 == number2
      *
-     * @param Number $left
-     * @param Number $right
+     * @param SassNumber $left
+     * @param SassNumber $right
      *
      * @return array
      */
-    protected function opEqNumberNumber(Number $left, Number $right)
+    protected function opEqNumberNumber(SassNumber $left, SassNumber $right)
     {
         return $this->toBool($left->equals($right));
     }
@@ -4023,12 +4023,12 @@ class Compiler
     /**
      * Compare number1 != number2
      *
-     * @param Number $left
-     * @param Number $right
+     * @param SassNumber $left
+     * @param SassNumber $right
      *
      * @return array
      */
-    protected function opNeqNumberNumber(Number $left, Number $right)
+    protected function opNeqNumberNumber(SassNumber $left, SassNumber $right)
     {
         return $this->toBool(!$left->equals($right));
     }
@@ -4036,12 +4036,12 @@ class Compiler
     /**
      * Compare number1 >= number2
      *
-     * @param Number $left
-     * @param Number $right
+     * @param SassNumber $left
+     * @param SassNumber $right
      *
      * @return array
      */
-    protected function opGteNumberNumber(Number $left, Number $right)
+    protected function opGteNumberNumber(SassNumber $left, SassNumber $right)
     {
         return $this->toBool($left->greaterThanOrEqual($right));
     }
@@ -4049,12 +4049,12 @@ class Compiler
     /**
      * Compare number1 > number2
      *
-     * @param Number $left
-     * @param Number $right
+     * @param SassNumber $left
+     * @param SassNumber $right
      *
      * @return array
      */
-    protected function opGtNumberNumber(Number $left, Number $right)
+    protected function opGtNumberNumber(SassNumber $left, SassNumber $right)
     {
         return $this->toBool($left->greaterThan($right));
     }
@@ -4062,12 +4062,12 @@ class Compiler
     /**
      * Compare number1 <= number2
      *
-     * @param Number $left
-     * @param Number $right
+     * @param SassNumber $left
+     * @param SassNumber $right
      *
      * @return array
      */
-    protected function opLteNumberNumber(Number $left, Number $right)
+    protected function opLteNumberNumber(SassNumber $left, SassNumber $right)
     {
         return $this->toBool($left->lessThanOrEqual($right));
     }
@@ -4075,12 +4075,12 @@ class Compiler
     /**
      * Compare number1 < number2
      *
-     * @param Number $left
-     * @param Number $right
+     * @param SassNumber $left
+     * @param SassNumber $right
      *
      * @return array
      */
-    protected function opLtNumberNumber(Number $left, Number $right)
+    protected function opLtNumberNumber(SassNumber $left, SassNumber $right)
     {
         return $this->toBool($left->lessThan($right));
     }
@@ -4154,7 +4154,7 @@ class Compiler
      *
      * @api
      *
-     * @param array|Number|string $value
+     * @param array|SassNumber|string $value
      *
      * @return string
      */
@@ -4191,7 +4191,7 @@ class Compiler
                         }
 
                         if (is_numeric($alpha)) {
-                            $a = new Number($alpha, '');
+                            $a = new SassNumber($alpha, '');
                         } else {
                             $a = $alpha;
                         }
@@ -5697,7 +5697,7 @@ class Compiler
      * @param array  $prototype
      * @param array  $args
      *
-     * @return array|Number|null
+     * @return array|SassNumber|null
      */
     protected function callNativeFunction($name, $function, $prototype, $args)
     {
@@ -6142,7 +6142,7 @@ class Compiler
      *
      * @param mixed $value
      *
-     * @return array|Number
+     * @return array|SassNumber
      */
     protected function coerceValue($value)
     {
@@ -6159,7 +6159,7 @@ class Compiler
         }
 
         if (is_numeric($value)) {
-            return new Number($value, '');
+            return new SassNumber($value, '');
         }
 
         if ($value === '') {
@@ -6179,9 +6179,9 @@ class Compiler
     /**
      * Coerce something to map
      *
-     * @param array|Number $item
+     * @param array|SassNumber $item
      *
-     * @return array|Number
+     * @return array|SassNumber
      */
     protected function coerceMap($item)
     {
@@ -6257,9 +6257,9 @@ class Compiler
     /**
      * Coerce color for expression
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      *
-     * @return array|Number
+     * @return array|SassNumber
      */
     protected function coerceForExpression($value)
     {
@@ -6273,7 +6273,7 @@ class Compiler
     /**
      * Coerce value to color
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      * @param bool         $inRGBFunction
      *
      * @return array|null
@@ -6365,7 +6365,7 @@ class Compiler
                             if ($color[3] === 255) {
                                 $color[3] = 1; // fully opaque
                             } else {
-                                $color[3] = round($color[3] / 255, Number::PRECISION);
+                                $color[3] = round($color[3] / 255, SassNumber::PRECISION);
                             }
                         }
 
@@ -6388,8 +6388,8 @@ class Compiler
     }
 
     /**
-     * @param integer|Number $value
-     * @param boolean        $isAlpha
+     * @param integer|SassNumber $value
+     * @param boolean            $isAlpha
      *
      * @return integer|mixed
      */
@@ -6416,12 +6416,12 @@ class Compiler
             if (\is_array($value)) {
                 $reduced = $this->reduce($value);
 
-                if ($reduced instanceof Number) {
+                if ($reduced instanceof SassNumber) {
                     $value = $reduced;
                 }
             }
 
-            if ($value instanceof Number) {
+            if ($value instanceof SassNumber) {
                 if ($value->unitless()) {
                     $num = $value->getDimension();
                 } elseif ($value->hasUnit('%')) {
@@ -6452,7 +6452,7 @@ class Compiler
     /**
      * Coerce value to string
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      *
      * @return array
      */
@@ -6470,7 +6470,7 @@ class Compiler
      *
      * @api
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      * @param string $varName
      *
      * @return array
@@ -6498,13 +6498,13 @@ class Compiler
     /**
      * Coerce value to a percentage
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      *
      * @return integer|float
      */
     protected function coercePercent($value)
     {
-        if ($value instanceof Number) {
+        if ($value instanceof SassNumber) {
             if ($value->hasUnit('%')) {
                 return $value->getDimension() / 100;
             }
@@ -6520,7 +6520,7 @@ class Compiler
      *
      * @api
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      *
      * @return array
      *
@@ -6542,7 +6542,7 @@ class Compiler
      *
      * @api
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      *
      * @return array
      *
@@ -6562,7 +6562,7 @@ class Compiler
      *
      * @api
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      *
      * @return array
      *
@@ -6582,16 +6582,16 @@ class Compiler
      *
      * @api
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      * @param string $varName
      *
-     * @return Number
+     * @return SassNumber
      *
      * @throws \Exception
      */
     public function assertNumber($value, $varName = null)
     {
-        if (!$value instanceof Number) {
+        if (!$value instanceof SassNumber) {
             $value = $this->compileValue($value);
             $var_display = ($varName ? " \${$varName}:" : '');
             throw $this->error("Error:{$var_display} $value is not a number.");
@@ -6605,7 +6605,7 @@ class Compiler
      *
      * @api
      *
-     * @param array|Number $value
+     * @param array|SassNumber $value
      * @param string $varName
      *
      * @return integer
@@ -6616,7 +6616,7 @@ class Compiler
     {
 
         $value = $this->assertNumber($value, $varName)->getDimension();
-        if (round($value - \intval($value), Number::PRECISION) > 0) {
+        if (round($value - \intval($value), SassNumber::PRECISION) > 0) {
             $var_display = ($varName ? " \${$varName}:" : '');
             throw $this->error("Error:{$var_display} $value is not an integer.");
         }
@@ -6846,14 +6846,14 @@ class Compiler
         // Numbers are represented with value objects, for which the PHP equality operator does not
         // match the Sass rules (and we cannot overload it). As they are the only type of values
         // represented with a value object for now, they require a special case.
-        if ($value instanceof Number) {
+        if ($value instanceof SassNumber) {
             $key = 0;
             foreach ($list[2] as $item) {
                 $key++;
                 $itemValue = $this->normalizeValue($item);
 
-                if ($itemValue instanceof Number && $value->equals($itemValue)) {
-                    return new Number($key, '');
+                if ($itemValue instanceof SassNumber && $value->equals($itemValue)) {
+                    return new SassNumber($key, '');
                 }
             }
             return static::$null;
@@ -6938,7 +6938,7 @@ class Compiler
     /**
      * Helper function for adjust_color, change_color, and scale_color
      *
-     * @param array<array|Number> $args
+     * @param array<array|SassNumber> $args
      * @param callable $fn
      *
      * @return array
@@ -7108,7 +7108,7 @@ class Compiler
     {
         $value = $args[0];
 
-        if ($value instanceof Number) {
+        if ($value instanceof SassNumber) {
             return null;
         }
 
@@ -7204,12 +7204,12 @@ class Compiler
         if (\count($args) === 4) {
             $alpha = $this->compileColorPartValue($args[3], 0, 100, false);
 
-            if (!$hue instanceof Number || !$saturation instanceof Number || ! $lightness instanceof Number || ! is_numeric($alpha)) {
+            if (!$hue instanceof SassNumber || !$saturation instanceof SassNumber || ! $lightness instanceof SassNumber || ! is_numeric($alpha)) {
                 return [Type::T_STRING, '',
                     [$funcName . '(', $args[0], ', ', $args[1], ', ', $args[2], ', ', $args[3], ')']];
             }
         } else {
-            if (!$hue instanceof Number || !$saturation instanceof Number || ! $lightness instanceof Number) {
+            if (!$hue instanceof SassNumber || !$saturation instanceof SassNumber || ! $lightness instanceof SassNumber) {
                 return [Type::T_STRING, '', [$funcName . '(', $args[0], ', ', $args[1], ', ', $args[2], ')']];
             }
         }
@@ -7244,7 +7244,7 @@ class Compiler
         $color = $this->assertColor($args[0]);
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
 
-        return new Number($hsl[1], 'deg');
+        return new SassNumber($hsl[1], 'deg');
     }
 
     protected static $libSaturation = ['color'];
@@ -7253,7 +7253,7 @@ class Compiler
         $color = $this->assertColor($args[0]);
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
 
-        return new Number($hsl[2], '%');
+        return new SassNumber($hsl[2], '%');
     }
 
     protected static $libLightness = ['color'];
@@ -7262,7 +7262,7 @@ class Compiler
         $color = $this->assertColor($args[0]);
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
 
-        return new Number($hsl[3], '%');
+        return new SassNumber($hsl[3], '%');
     }
 
     protected function adjustHsl($color, $idx, $amount)
@@ -7310,7 +7310,7 @@ class Compiler
     {
         $value = $args[0];
 
-        if ($value instanceof Number) {
+        if ($value instanceof SassNumber) {
             return null;
         }
 
@@ -7339,7 +7339,7 @@ class Compiler
     {
         $value = $args[0];
 
-        if ($value instanceof Number) {
+        if ($value instanceof SassNumber) {
             return null;
         }
 
@@ -7363,7 +7363,7 @@ class Compiler
             $weight = $this->coercePercent($weight);
         }
 
-        if ($value instanceof Number) {
+        if ($value instanceof SassNumber) {
             return null;
         }
 
@@ -7374,7 +7374,7 @@ class Compiler
         $inverted[3] = 255 - $inverted[3];
 
         if ($weight < 1) {
-            return $this->libMix([$inverted, $color, new Number($weight, '')]);
+            return $this->libMix([$inverted, $color, new SassNumber($weight, '')]);
         }
 
         return $inverted;
@@ -7449,7 +7449,7 @@ class Compiler
         $num = $this->assertNumber($args[0], 'number');
         $num->assertNoUnits('number');
 
-        return new Number($num->getDimension() * 100, '%');
+        return new SassNumber($num->getDimension() * 100, '%');
     }
 
     protected static $libRound = ['number'];
@@ -7457,7 +7457,7 @@ class Compiler
     {
         $num = $this->assertNumber($args[0], 'number');
 
-        return new Number(round($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
+        return new SassNumber(round($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
     }
 
     protected static $libFloor = ['number'];
@@ -7465,7 +7465,7 @@ class Compiler
     {
         $num = $this->assertNumber($args[0], 'number');
 
-        return new Number(floor($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
+        return new SassNumber(floor($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
     }
 
     protected static $libCeil = ['number'];
@@ -7473,7 +7473,7 @@ class Compiler
     {
         $num = $this->assertNumber($args[0], 'number');
 
-        return new Number(ceil($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
+        return new SassNumber(ceil($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
     }
 
     protected static $libAbs = ['number'];
@@ -7481,13 +7481,13 @@ class Compiler
     {
         $num = $this->assertNumber($args[0], 'number');
 
-        return new Number(abs($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
+        return new SassNumber(abs($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
     }
 
     protected function libMin($args)
     {
         /**
-         * @var Number|null
+         * @var SassNumber|null
          */
         $min = null;
 
@@ -7509,7 +7509,7 @@ class Compiler
     protected function libMax($args)
     {
         /**
-         * @var Number|null
+         * @var SassNumber|null
          */
         $max = null;
 
@@ -7727,7 +7727,7 @@ class Compiler
 
     /**
      * @param array $list1
-     * @param array|Number|null $sep
+     * @param array|SassNumber|null $sep
      *
      * @return string
      * @throws CompilerException
@@ -7884,7 +7884,7 @@ class Compiler
     {
         $num = $args[0];
 
-        if ($num instanceof Number) {
+        if ($num instanceof SassNumber) {
             return [Type::T_STRING, '"', [$num->unitStr()]];
         }
 
@@ -7896,7 +7896,7 @@ class Compiler
     {
         $value = $args[0];
 
-        return $value instanceof Number && $value->unitless();
+        return $value instanceof SassNumber && $value->unitless();
     }
 
     protected static $libComparable = [
@@ -7908,8 +7908,8 @@ class Compiler
         list($number1, $number2) = $args;
 
         if (
-            ! $number1 instanceof Number ||
-            ! $number2 instanceof Number
+            ! $number1 instanceof SassNumber ||
+            ! $number2 instanceof SassNumber
         ) {
             throw $this->error('Invalid argument(s) for "comparable"');
         }
@@ -7932,7 +7932,7 @@ class Compiler
             $result = Util::mbStrpos($stringContent, $substringContent);
         }
 
-        return $result === false ? static::$null : new Number($result + 1, '');
+        return $result === false ? static::$null : new SassNumber($result + 1, '');
     }
 
     protected static $libStrInsert = ['string', 'insert', 'index'];
@@ -7967,7 +7967,7 @@ class Compiler
         $string = $this->assertString($args[0], 'string');
         $stringContent = $this->compileStringContent($string);
 
-        return new Number(Util::mbStrlen($stringContent), '');
+        return new SassNumber(Util::mbStrlen($stringContent), '');
     }
 
     protected static $libStrSlice = ['string', 'start-at', 'end-at:-1'];
@@ -8130,15 +8130,15 @@ class Compiler
                 throw $this->error("\$limit must be greater than or equal to 1");
             }
 
-            if (round($n - \intval($n), Number::PRECISION) > 0) {
+            if (round($n - \intval($n), SassNumber::PRECISION) > 0) {
                 throw $this->error("Expected \$limit to be an integer but got $n for `random`");
             }
 
-            return new Number(mt_rand(1, \intval($n)), '');
+            return new SassNumber(mt_rand(1, \intval($n)), '');
         }
 
         $max = mt_getrandmax();
-        return new Number(mt_rand(0, $max - 1) / $max, '');
+        return new SassNumber(mt_rand(0, $max - 1) / $max, '');
     }
 
     protected function libUniqueId()
