@@ -60,15 +60,5 @@
     "bin": ["bin/pscss"],
     "config": {
         "sort-packages": true
-    },
-    "archive": {
-        "exclude": [
-            "/Makefile",
-            "/.gitattributes",
-            "/.gitignore",
-            "/.travis.yml",
-            "/phpunit.xml.dist",
-            "/tests"
-        ]
     }
 }
