@@ -39,7 +39,6 @@ class Parser
         'and' => 2,
         '=='  => 3,
         '!='  => 3,
-        '<=>' => 3,
         '<='  => 4,
         '>='  => 4,
         '<'   => 4,
@@ -98,7 +97,7 @@ class Parser
         $this->cssOnly          = $cssOnly;
 
         if (empty(static::$operatorPattern)) {
-            static::$operatorPattern = '([*\/%+-]|[!=]\=|\>\=?|\<\=\>|\<\=?|and|or)';
+            static::$operatorPattern = '([*\/%+-]|[!=]\=|\>\=?|\<\=?|and|or)';
 
             $commentSingle      = '\/\/';
             $commentMultiLeft   = '\/\*';
