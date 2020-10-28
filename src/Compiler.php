@@ -4992,9 +4992,13 @@ class Compiler
      * @api
      *
      * @param string $name
+     *
+     * @deprecated Registering additional features is deprecated.
      */
     public function addFeature($name)
     {
+        @trigger_error('Registering additional features is deprecated.', E_USER_DEPRECATED);
+
         $this->registeredFeatures[$name] = true;
     }
 
