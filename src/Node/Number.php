@@ -14,7 +14,6 @@ namespace ScssPhp\ScssPhp\Node;
 
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
-use ScssPhp\ScssPhp\Node;
 use ScssPhp\ScssPhp\Type;
 
 /**
@@ -28,7 +27,7 @@ use ScssPhp\ScssPhp\Type;
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
  */
-class Number extends Node implements \ArrayAccess
+class Number implements \ArrayAccess
 {
     const PRECISION = 10;
 
@@ -145,16 +144,7 @@ class Number extends Node implements \ArrayAccess
      */
     public function offsetExists($offset)
     {
-        if ($offset === -3) {
-            return ! \is_null($this->sourceColumn);
-        }
-
-        if ($offset === -2) {
-            return ! \is_null($this->sourceLine);
-        }
-
         if (
-            $offset === -1 ||
             $offset === 0 ||
             $offset === 1 ||
             $offset === 2
@@ -171,15 +161,6 @@ class Number extends Node implements \ArrayAccess
     public function offsetGet($offset)
     {
         switch ($offset) {
-            case -3:
-                return $this->sourceColumn;
-
-            case -2:
-                return $this->sourceLine;
-
-            case -1:
-                return $this->sourceIndex;
-
             case 0:
                 return Type::T_NUMBER;
 
