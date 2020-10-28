@@ -108,7 +108,6 @@ class Compiler
 
         '<='  => 'lte',
         '>='  => 'gte',
-        '<=>' => 'cmp',
     ];
 
     /**
@@ -3941,27 +3940,6 @@ class Compiler
     protected function opLtNumberNumber(Number $left, Number $right)
     {
         return $this->toBool($left->lessThan($right));
-    }
-
-    /**
-     * Three-way comparison, aka spaceship operator
-     *
-     * @param Number $left
-     * @param Number $right
-     *
-     * @return Number
-     */
-    protected function opCmpNumberNumber(Number $left, Number $right)
-    {
-        if ($left->greaterThan($right)) {
-            return new Number(1, '');
-        }
-
-        if ($left->lessThan($right)) {
-            return new Number(-1, '');
-        }
-
-        return new Number( 0, '');
     }
 
     /**
