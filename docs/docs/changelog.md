@@ -5,6 +5,30 @@ title: Changelog
 
 ## Changelog
 
+* **1.3** -- Oct 29, 2020
+  * Better `quote()` compliance (Cerdic)
+  * Improve string compliance with sass-spec (Cerdic)
+  * Fix issue with argument values being swapped (jljr222, Cerdic)
+  * Fix parsing of comment in selector list (Daijobou, Cerdic)
+  * Fix for double dash in class names (janstieler, Cerdic)
+  * Drop support for  `/foo/` selector (Cerdic)
+  * Fix compatibility issues with PHP 5.6 and 7.2 (stof)
+  * Migrate from throwParseError to parseError factory (stof)
+  * Refactor Number (to be continued) (stof)
+  * Remove dead code, support for numbered output, and ruby-sass tests (stof)
+  * Remove experimental spaceship operator and `@break` and `@continue` (stof)
+  * Deprecate `Compiler::addFeature()` (stof)
+  * Move `gh-pages` to `/docs` folder on main branch (stof, robocoder)
+  * Add php 8 support for phpunit (adlenton)
+* **1.2.1** -- Sep 7, 2020
+  * Fix `@import url()` parsing (leonardfischer, Cerdic)
+  * Fix various directive parsing issues (zoglo, CatoTH, Cerdic)
+  * Fix `min()`, `max()` (Cerdic)
+  * Fix `str-length()`, `str-index()`, and `str-insert()` (Cerdic)
+  * Fix `is-superselector()` and other select issues (Cerdic)
+  * Fix `call()` argument name (Cerdic)
+  * Fix `random()` (Cerdic)
+  * Fix `list-separator()` on empty or one element list (Cerdic)
 * **1.2** -- Aug 26, 2020
   * Many, many sass-spec test improvements (stof, Cerdic)
   * Partial fix of special cases in hsl/hsla functions (Cerdic)
