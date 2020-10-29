@@ -104,10 +104,6 @@ class Number implements \ArrayAccess
     {
         if (is_string($numeratorUnits)) {
             $numeratorUnits = $numeratorUnits ? [$numeratorUnits] : [];
-        } elseif (isset($numeratorUnits['numerator_units'], $numeratorUnits['denominator_units'])) {
-            // TODO get rid of this once `$number[2]` is not used anymore
-            $denominatorUnits = $numeratorUnits['denominator_units'];
-            $numeratorUnits = $numeratorUnits['numerator_units'];
         }
 
         $this->dimension = $dimension;
@@ -146,8 +142,7 @@ class Number implements \ArrayAccess
     {
         if (
             $offset === 0 ||
-            $offset === 1 ||
-            $offset === 2
+            $offset === 1
         ) {
             return true;
         }
@@ -166,9 +161,6 @@ class Number implements \ArrayAccess
 
             case 1:
                 return $this->dimension;
-
-            case 2:
-                return array('numerator_units' => $this->numeratorUnits, 'denominator_units' => $this->denominatorUnits);
         }
     }
 
