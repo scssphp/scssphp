@@ -143,7 +143,7 @@ class Compiler
     protected $registeredFeatures = [
         'extend-selector-pseudoclass' => false,
         'at-error'                    => true,
-        'units-level-3'               => false,
+        'units-level-3'               => true,
         'global-variable-shadowing'   => false,
     ];
 
