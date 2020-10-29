@@ -79,7 +79,16 @@ class Number extends Node implements \ArrayAccess
      */
     private $dimension;
 
+    /**
+     * @var string[]
+     * @phpstan-var list<string>
+     */
     private $numeratorUnits;
+
+    /**
+     * @var string[]
+     * @phpstan-var list<string>
+     */
     private $denominatorUnits;
 
     /**
@@ -88,6 +97,9 @@ class Number extends Node implements \ArrayAccess
      * @param integer|float   $dimension
      * @param string[]|string $numeratorUnits
      * @param string[]        $denominatorUnits
+     *
+     * @phpstan-param list<string>|string $numeratorUnits
+     * @phpstan-param list<string>        $denominatorUnits
      */
     public function __construct($dimension, $numeratorUnits, array $denominatorUnits = [])
     {
@@ -231,6 +243,11 @@ class Number extends Node implements \ArrayAccess
         return self::getUnitString($this->numeratorUnits, $this->denominatorUnits);
     }
 
+    /**
+     * @param string|null $varName
+     *
+     * @return void
+     */
     public function assertNoUnits($varName = null)
     {
         if ($this->unitless()) {
@@ -242,6 +259,11 @@ class Number extends Node implements \ArrayAccess
         throw new SassScriptException(sprintf('%sExpected %s to have no units', $varDisplay, $this));
     }
 
+    /**
+     * @param Number $other
+     *
+     * @return void
+     */
     public function assertSameUnitOrUnitless(Number $other)
     {
         if ($other->unitless()) {
@@ -537,6 +559,9 @@ class Number extends Node implements \ArrayAccess
      * @param string[] $denominatorUnits
      *
      * @return int|float
+     *
+     * @phpstan-param list<string> $numeratorUnits
+     * @phpstan-param list<string> $denominatorUnits
      */
     private function valueInUnits(array $numeratorUnits, array $denominatorUnits)
     {
@@ -612,6 +637,11 @@ class Number extends Node implements \ArrayAccess
      * @param string[] $denominators2
      *
      * @return Number
+     *
+     * @phpstan-param list<string> $numerators1
+     * @phpstan-param list<string> $denominators1
+     * @phpstan-param list<string> $numerators2
+     * @phpstan-param list<string> $denominators2
      */
     private function multiplyUnits($value, array $numerators1, array $denominators1, array $numerators2, array $denominators2)
     {
@@ -684,6 +714,9 @@ class Number extends Node implements \ArrayAccess
      *
      * @param string[] $numerators
      * @param string[] $denominators
+     *
+     * @phpstan-param list<string> $numerators
+     * @phpstan-param list<string> $denominators
      *
      * @return string
      */
