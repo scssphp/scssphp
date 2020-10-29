@@ -40,3 +40,26 @@ jobs:
 
             -   name: Run tests
                 run: vendor/bin/phpunit --colors=always
+
+    static_analysis:
+        name: Static analysis
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    coverage: "none"
+                    php-version: "7.4"
+
+            -   name: Install dependencies
+                run: composer update --ansi --no-progress
+
+            -   name: Install phpstan
+                run: composer bin phpstan update --ansi --no-progress
+
+            -   name: Run phpstan
+                run: vendor/bin/phpstan analyse --ansi --no-progress

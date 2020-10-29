@@ -1,0 +1,8 @@
+{
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "phpstan/phpstan": "^0.12.81"
+    }
+}
