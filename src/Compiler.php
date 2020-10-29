@@ -5088,7 +5088,7 @@ class Compiler
             if (! $hasExtension) {
                 $urls[] = "$url/index.scss";
                 // allow to find a plain css file, *if* no scss or partial scss is found
-                $urls[] .= $url . '.css';
+                $urls[] = $url . '.css';
             }
         }
 
