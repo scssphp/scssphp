@@ -317,7 +317,6 @@ core_functions/meta/feature_exists/custom_property
 core_functions/meta/feature_exists/error/type
 core_functions/meta/feature_exists/extend_selector_pseudoclass
 core_functions/meta/feature_exists/global_variable_shadowing
-core_functions/meta/feature_exists/units_level_3
 core_functions/meta/function_exists/error/argument/type/name
 core_functions/meta/get_function/equality/user_defined/redefined
 core_functions/meta/get_function/error/argument/function_ref
@@ -952,7 +951,6 @@ libsass/div
 libsass/env
 libsass/features/extend-selector-pseudoclass
 libsass/features/global-variable-shadowing
-libsass/features/units-level-3
 libsass/import
 libsass/inh
 libsass/interpolated-function-call
@@ -967,7 +965,6 @@ libsass/properties-in-media
 libsass/propsets
 libsass/selectors/simple
 libsass/test
-libsass/units/feature-test
 libsass/variable-scoping/blead-global/expanding/each
 libsass/variable-scoping/blead-global/expanding/else
 libsass/variable-scoping/blead-global/expanding/elseif
