@@ -496,7 +496,7 @@ class Number extends Node implements \ArrayAccess
      *
      * @return Number
      *
-     * @phpstan-param callable(int|float, int|float): int|float $operation
+     * @phpstan-param callable(int|float, int|float): (int|float) $operation
      */
     private function coerceNumber(Number $other, $operation)
     {
