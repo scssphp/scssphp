@@ -1,0 +1,5 @@
+# All config actually goes into phpstan-no-baseline.neon to be able to disable the baseline
+# easily by using it as the config file with `phpstan analyse -c phpstan-no-baseline.neon`
+includes:
+    - phpstan-no-baseline.neon
+    - phpstan-baseline.neon
