@@ -845,8 +845,6 @@ libsass-closed-issues/issue_2175
 libsass-closed-issues/issue_2179
 libsass-closed-issues/issue_2185
 libsass-closed-issues/issue_2233
-libsass-closed-issues/issue_2236/floats
-libsass-closed-issues/issue_2236/ints
 libsass-closed-issues/issue_2260/no-parent-with-compound
 libsass-closed-issues/issue_2260/outer-parent-with-compound
 libsass-closed-issues/issue_2261

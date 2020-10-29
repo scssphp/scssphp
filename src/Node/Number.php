@@ -370,7 +370,17 @@ class Number extends Node implements \ArrayAccess
                 return NAN;
             }
 
-            return $num1 % $num2;
+            $result = fmod($num1, $num2);
+
+            if ($result == 0) {
+                return 0;
+            }
+
+            if ($num2 < 0 xor $num1 < 0) {
+                $result += $num2;
+            }
+
+            return $result;
         });
     }
 
