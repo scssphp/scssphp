@@ -48,6 +48,11 @@ div {
 
     color: blue + 34;
 
+    color: #fff == 255;
+    color: #fff != 255;
+    color: 255 == #fff;
+    color: 255 != #fff;
+
     color: #fff == #000;
     color: #fff == #fff;
 
