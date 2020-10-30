@@ -1,24 +1,25 @@
 div {
-  color: blue; }
-
+  color: blue;
+}
 pre {
   val-1: "red";
   val-2: "blue";
   val-3: "blue";
   val-4: "red";
-  val-5: "red"; }
-
+  val-5: "red";
+}
 span {
   color: blue;
   height: 10px;
-  width: 20px; }
-
+  width: 20px;
+}
 div {
   color: blue;
-  border-color: green; }
-
+  border-color: green;
+}
 del {
-  thing: no; }
-
+  thing: no;
+}
 .debug {
-  color: red; }
+  color: red;
+}

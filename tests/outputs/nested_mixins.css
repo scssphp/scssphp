@@ -1,23 +1,30 @@
 div .container {
-  width: 10px; }
-  div .container .container {
-    width: 10px;
-    max-width: 12px; }
-  div .container .foo {
-    width: 10px; }
-  div .container .bar {
-    width: 12px; }
-
+  width: 10px;
+}
+div .container .container {
+  width: 10px;
+  max-width: 12px;
+}
+div .container .foo {
+  width: 10px;
+}
+div .container .bar {
+  width: 12px;
+}
 @media print, screen and (min-width:640px) {
   .position-left {
     color: red;
-    background: yellow; } }
-
+    background: yellow;
+  }
+}
 @media print, screen and (min-width:640px) {
   .element {
-    float: left; } }
-
+    float: left;
+  }
+}
 .a {
-  x: y; }
-  .a .inner {
-    x: y; }
+  x: y;
+}
+.a .inner {
+  x: y;
+}

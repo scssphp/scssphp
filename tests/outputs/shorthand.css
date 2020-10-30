@@ -52,4 +52,5 @@ div {
   border-radius: 10px 2.5% 30px;
   /* these are shorthands with wrong values (lack of unit but more than 4 values if this is a division)*/
   border-radius: 10px 5px 2em / 20 25px 30%;
-  border-radius: 10px 5% / 20 25em 30px 35em; }
+  border-radius: 10px 5% / 20 25em 30px 35em;
+}

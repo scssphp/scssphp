@@ -1,10 +1,12 @@
 .foo:after, .bar:after, .bar:before, .baz.bar:before {
-  color: red; }
+  color: red;
+}
 .foo:hover:after, .bar:hover:after, .bar:before:hover, .baz.bar:before:hover {
-  color: blue; }
-
+  color: blue;
+}
 a, a:link, a:visited, a:active, a:hover {
-  color: #fff; }
-
+  color: #fff;
+}
 .nest a.some-class, .nest a.some-class:link, .nest a.some-class:visited, .nest a.some-class:active, .nest a.some-class:hover {
-  color: #ccc; }
+  color: #ccc;
+}

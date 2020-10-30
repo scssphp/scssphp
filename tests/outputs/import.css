@@ -5,46 +5,52 @@
 @import url("https://fontapi.example.com/css?family=Source+Sans+Pro:wght@300;400;700&display=swap");
 div {
   height: 200px;
-  color: red; }
-
+  color: red;
+}
 pre {
-  color: red; }
-  pre div {
-    height: 200px;
-    color: red; }
-
+  color: red;
+}
+pre div {
+  height: 200px;
+  color: red;
+}
 code div {
   height: 200px;
-  color: red; }
+  color: red;
+}
 code div {
   height: 200px;
-  color: red; }
-
+  color: red;
+}
 #partial {
-  color: blue; }
-
+  color: blue;
+}
 body {
   color: #7C2;
-  background: gray; }
-
+  background: gray;
+}
 a:before {
-  content: ''; }
-
+  content: '';
+}
 div::before {
-  content: ':)'; }
-
+  content: ':)';
+}
 @keyframes spin {
   0% {
-    transform: rotate(0deg); }
+    transform: rotate(0deg);
+  }
   100% {
-    transform: rotate(359deg); } }
-
+    transform: rotate(359deg);
+  }
+}
 .fancybox-is-hidden {
-  position: absolute !important; }
-
+  position: absolute !important;
+}
 .fancybox-navigation .fancybox-button {
-  transition: opacity 0.25s ease, visibility 0s ease 0.25s; }
-
+  transition: opacity 0.25s ease, visibility 0s ease 0.25s;
+}
 @media (max-width: 576px) {
   .fancybox-thumbs {
-    width: 110px; } }
+    width: 110px;
+  }
+}

@@ -6,26 +6,26 @@ body {
   color: 5px;
   top: 1.5em;
   left: -1cm;
-  top: 6.2992125984; }
-
+  top: 6.2992125984;
+}
 div {
   color: false;
   color: true;
   color: true;
   color: false;
-  color: what > 3; }
-
+  color: what > 3;
+}
 #units {
   test: 2.5748031496in;
   test: 13mm;
   test: 4em;
   test: 11mm;
-  test: 1.1cm; }
-
+  test: 1.1cm;
+}
 #modulo {
   test: 1;
-  test: 1cm; }
-
+  test: 1cm;
+}
 #colors {
   color: #ff0203;
   color: #fe0000;
@@ -43,12 +43,12 @@ div {
   color: false;
   color: true;
   color: true;
-  color: false; }
-
+  color: false;
+}
 #preserve {
   hello: what -going;
-  hello: what - going; }
-
+  hello: what - going;
+}
 #strings {
   hello: what -going;
   hello: whatgoing;
@@ -57,21 +57,21 @@ div {
   hello: whatgoing;
   hello: "whatgoing";
   hello: goingwhat;
-  hello: "whatwhat"; }
-
+  hello: "whatwhat";
+}
 #negation {
   a: -60;
   b: -90;
-  b: -90; }
-
+  b: -90;
+}
 #bools-fail {
   and: false and two;
   and: one and two;
   and: one and false;
   or: false or two;
   or: one or two;
-  or: one or false; }
-
+  or: one or false;
+}
 #bools {
   and: false;
   and: two;
@@ -79,16 +79,16 @@ div {
   or: two;
   or: one;
   or: one;
-  or: two; }
-
+  or: two;
+}
 #nots-fail {
   not: false2;
   not: not false;
   not: not 0;
   not: not 1;
   not: not "";
-  not: not hello; }
-
+  not: not hello;
+}
 #nots {
   not: false2;
   not: true;
@@ -96,85 +96,85 @@ div {
   not: false;
   not: false;
   not: false;
-  not: true; }
-
+  not: true;
+}
 #string-test {
   str: true;
   str: false;
   str: true;
   str: true;
   str: xhellohellofalse;
-  str: true; }
-
+  str: true;
+}
 #special {
-  cancel-unit: 1; }
-
+  cancel-unit: 1;
+}
 .row .a {
-  margin: -0.5em; }
-
+  margin: -0.5em;
+}
 .row .b {
-  margin: -0.5em; }
-
+  margin: -0.5em;
+}
 .row .c {
-  margin: -0.5em; }
-
+  margin: -0.5em;
+}
 .row .d {
-  margin: -0.5em; }
-
+  margin: -0.5em;
+}
 .row .e {
-  margin: 0 -0.5em; }
-
+  margin: 0 -0.5em;
+}
 .alt .a {
-  margin: -0.5em; }
-
+  margin: -0.5em;
+}
 .alt .b {
-  margin: -0.5em; }
-
+  margin: -0.5em;
+}
 .alt .c {
-  margin: -0.5em; }
-
+  margin: -0.5em;
+}
 .alt .d {
-  margin: 0 -0.5em; }
-
+  margin: 0 -0.5em;
+}
 .alt .e {
-  margin: 0 -0.5em; }
-
+  margin: 0 -0.5em;
+}
 .row .f {
-  margin: -2em; }
-
+  margin: -2em;
+}
 .row .g {
-  margin: -2em; }
-
+  margin: -2em;
+}
 .row .h {
-  margin: -2em; }
-
+  margin: -2em;
+}
 .row .i {
-  margin: -2em; }
-
+  margin: -2em;
+}
 .row .j {
-  margin: 0 -2em; }
-
+  margin: 0 -2em;
+}
 .alt .f {
-  margin: -2em; }
-
+  margin: -2em;
+}
 .alt .g {
-  margin: -2em; }
-
+  margin: -2em;
+}
 .alt .h {
-  margin: -2em; }
-
+  margin: -2em;
+}
 .alt .i {
-  margin: 0 -2em; }
-
+  margin: 0 -2em;
+}
 .alt .j {
-  margin: 0 -2em; }
-
+  margin: 0 -2em;
+}
 div {
-  *margin-left: 2.0744680851%; }
-
+  *margin-left: 2.0744680851%;
+}
 .foo {
-  width: 12.5%; }
-
+  width: 12.5%;
+}
 #bools-test {
   a: false;
   b: true;
@@ -183,8 +183,9 @@ div {
   o: true;
   p: false;
   r: one;
-  s: one; }
-
+  s: one;
+}
 a {
   width: 0.9722222222vw;
-  height: 0.9722222222vw; }
+  height: 0.9722222222vw;
+}

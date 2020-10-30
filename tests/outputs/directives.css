@@ -1,103 +1,144 @@
 @charset "hello-world";
 @page :left {
   div {
-    color: red; } }
+    color: red;
+  }
+}
 @page test {
   @media yes {
     div {
-      color: red; } } }
+      color: red;
+    }
+  }
+}
 @media something {
   @page {
     @media else {
       div {
-        height: 200px; } } } }
-
+        height: 200px;
+      }
+    }
+  }
+}
 div {
-  color: red; }
+  color: red;
+}
 @page yeah {
   div pre {
-    height: 20px; } }
+    height: 20px;
+  }
+}
 @font-face {
   color: red;
-  height: 20px; }
+  height: 20px;
+}
 @keyframes 'bounce' {
   from {
     top: 100px;
-    animation-timing-function: ease-out; }
+    animation-timing-function: ease-out;
+  }
   25% {
     top: 50px;
-    animation-timing-function: ease-in; }
+    animation-timing-function: ease-in;
+  }
   50% {
     top: 100px;
-    animation-timing-function: ease-out; }
+    animation-timing-function: ease-out;
+  }
   75% {
     top: 75px;
-    animation-timing-function: ease-in; }
+    animation-timing-function: ease-in;
+  }
   to {
-    top: 100px; } }
+    top: 100px;
+  }
+}
 @-webkit-keyframes flowouttoleft {
   0% {
-    -webkit-transform: translateX(0) scale(1); }
+    -webkit-transform: translateX(0) scale(1);
+  }
   60%, 70% {
-    -webkit-transform: translateX(0) scale(0.7); }
+    -webkit-transform: translateX(0) scale(0.7);
+  }
   100% {
-    -webkit-transform: translateX(-100%) scale(0.7); } }
-
+    -webkit-transform: translateX(-100%) scale(0.7);
+  }
+}
 div {
   animation-name: 'diagonal-slide';
   animation-duration: 5s;
-  animation-iteration-count: 10; }
-
+  animation-iteration-count: 10;
+}
 @keyframes 'diagonal-slide' {
   from {
     left: 0;
-    top: 0; }
+    top: 0;
+  }
   to {
     left: 100px;
-    top: 100px; } }
+    top: 100px;
+  }
+}
 @document url(http://www.w3.org/),
           url-prefix(http://www.w3.org/Style/),
           domain(mozilla.org),
           regexp("https:.*") {
   body {
     color: purple;
-    background: yellow; } }
+    background: yellow;
+  }
+}
 @keyframes anim-rotate {
   0% {
-    transform: rotate(0); }
+    transform: rotate(0);
+  }
   100% {
-    transform: rotate(360deg); } }
-
+    transform: rotate(360deg);
+  }
+}
 .bold, .icon-ajax {
-  font-weight: 700; }
-
+  font-weight: 700;
+}
 .custom-selector {
-  color: blue; }
-
+  color: blue;
+}
 @-webkit-keyframes zoomer {
   from {
-    transform: scale(0.5); }
+    transform: scale(0.5);
+  }
   to {
-    transform: scale(1); } }
+    transform: scale(1);
+  }
+}
 @keyframes zoomer {
   from {
-    transform: scale(0.5); }
+    transform: scale(0.5);
+  }
   to {
-    transform: scale(1); } }
-
+    transform: scale(1);
+  }
+}
 @supports (position: sticky) {
   .sticky-top .top2 {
-    position: sticky; } }
-
+    position: sticky;
+  }
+}
 @supports (position: sticky) {
   .sticky-top {
     position: sticky;
-    top: 0; } }
+    top: 0;
+  }
+}
 @supports (position: sticky) {
   .sticky-top2 {
-    position: sticky; } }
+    position: sticky;
+  }
+}
 @media print {
   .table-bordered th, .table-bordered td {
-    border: 1px solid #ddd !important; } }
+    border: 1px solid #ddd !important;
+  }
+}
 @font-face {
-  font-family: "Glyphicons Halflings"; }
+  font-family: "Glyphicons Halflings";
+}

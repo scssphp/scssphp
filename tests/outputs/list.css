@@ -1,25 +1,26 @@
 div {
   padding: 10px 20px 30px 40px;
   margin: 0 10px 10px 10px;
-  background: linear-gradient(black, white); }
-
+  background: linear-gradient(black, white);
+}
 p {
-  background: linear-gradient(red, blue); }
-
+  background: linear-gradient(red, blue);
+}
 .bracket-list {
-  background: linear-gradient(red, blue); }
-
+  background: linear-gradient(red, blue);
+}
 div {
   x: 2;
-  z: 2; }
-
+  z: 2;
+}
 div {
   a: 10px;
   b: -20px;
   c: 30px;
-  d: 30px; }
-
+  d: 30px;
+}
 div {
   x: space;
   y: comma;
-  z: space; }
+  z: space;
+}
