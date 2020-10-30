@@ -17,14 +17,17 @@ div {
   background: what what;
   background: is is;
   background: this this;
-  color: red; }
-  div h1 {
-    font-size: 2em; }
-  div h2 {
-    font-size: 1.5em; }
-  div h3 {
-    font-size: 1.2em; }
-
+  color: red;
+}
+div h1 {
+  font-size: 2em;
+}
+div h2 {
+  font-size: 1.5em;
+}
+div h3 {
+  font-size: 1.2em;
+}
 span {
   color: 0;
   color: 1;
@@ -36,8 +39,8 @@ span {
   color: 7;
   color: 8;
   color: 9;
-  color: 10; }
-
+  color: 10;
+}
 pre {
   color: 1;
   color: 2;
@@ -55,26 +58,35 @@ pre {
   cool: 6;
   cool: 5;
   cool: 4;
-  cool: 3; }
-
+  cool: 3;
+}
 div {
   a: false;
   b: true;
   c: true;
-  c: true; }
-  .bg-gray-0 {
-    background-color: #f8f9fa; }
-  .bg-gray-1 {
-    background-color: #f1f3f5; }
-  .bg-red-0 {
-    background-color: #fff5f5; }
-  .bg-red-1 {
-    background-color: #ffe3e3; }
-  a.a-blue {
-    color: #44e; }
-  a.a-black {
-    color: #333; }
-  div.div-green {
-    color: #8d8; }
-  div.div-black {
-    color: #333; }
+  c: true;
+}
+.bg-gray-0 {
+  background-color: #f8f9fa;
+}
+.bg-gray-1 {
+  background-color: #f1f3f5;
+}
+.bg-red-0 {
+  background-color: #fff5f5;
+}
+.bg-red-1 {
+  background-color: #ffe3e3;
+}
+a.a-blue {
+  color: #44e;
+}
+a.a-black {
+  color: #333;
+}
+div.div-green {
+  color: #8d8;
+}
+div.div-black {
+  color: #333;
+}

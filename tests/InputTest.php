@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Tests;
 
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Formatter\Expanded;
 
 function _dump($value)
 {
@@ -46,6 +47,7 @@ class InputTest extends TestCase
         chdir(__DIR__);
 
         $this->scss = new Compiler();
+        $this->scss->setFormatter(Expanded::class);
         $this->scss->addImportPath(self::$inputDir);
 
         $fp_err_stream = fopen("php://memory", 'r+');

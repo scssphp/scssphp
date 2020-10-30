@@ -15,11 +15,11 @@ div {
   string: 'hello /* this is not a comment */';
   world: '// neither is this';
   what-ever: 100px;
-  background: url(); }
-
+  background: url();
+}
 .dummy {
-  color: blue; }
-
+  color: blue;
+}
 /* comment 1 */
 a {
   /* comment 2 */
@@ -28,8 +28,8 @@ a {
   /* comment 4 */
   background-color: red;
   /* comment 5 */
-  /* comment 6 */ }
-
+  /* comment 6 */
+}
 /* comment 7 */
 /* коммент */
 /* This is a comment with vars references:
@@ -42,12 +42,13 @@ radius:2px
   /* @noflip */
   display: block;
   /* hop */
-  width: 100%; }
-
+  width: 100%;
+}
 .class {
   /* This is a comment with vars references not on root level
   color:red
   and a fake #{ doing nothing
   radius:2px
      and also a #{$fake} interpolation that should not throw an error
-  */ }
+  */
+}

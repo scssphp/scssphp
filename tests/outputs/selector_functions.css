@@ -2,128 +2,131 @@
   content: ".foo";
   content: ".bar";
   content: ".foo2 .bar2";
-  content: ".foo3 > .bar3"; }
-
+  content: ".foo3 > .bar3";
+}
 .main aside:hover, .sidebar p {
   content: ".main aside:hover";
-  content: ".sidebar p"; }
-
+  content: ".sidebar p";
+}
 .is-superselector {
   content: false;
-  /* false */ }
-
+  /* false */
+}
 .is-superselector1 {
   content: true;
-  /*true*/ }
-
+  /*true*/
+}
 .is-superselector2 {
   content: true;
-  /*true*/ }
-
+  /*true*/
+}
 .is-superselector3 {
   content: true;
-  /*true*/ }
-
+  /*true*/
+}
 .is-superselector4 {
   content: false;
-  /*false*/ }
-
+  /*false*/
+}
 .is-superselector5 {
   content: true;
-  /* true*/ }
-
+  /* true*/
+}
 .is-superselector6 {
   content: false;
-  /* false*/ }
-
+  /* false*/
+}
 .is-superselector7 {
   content: true;
-  /* true*/ }
-
+  /* true*/
+}
 .is-superselector8 {
   content: false;
-  /* false*/ }
-
+  /* false*/
+}
 .is-superselector9 {
   content: true;
-  /* true*/ }
-
+  /* true*/
+}
 a.disabled {
-  content: 'a.disabled'; }
-
+  content: 'a.disabled';
+}
 .accordion__copy {
-  content: '.accordion__copy'; }
-
+  content: '.accordion__copy';
+}
 .accordion__copy, .accordion__image {
-  content: '.accordion__copy, .accordion__image'; }
-
+  content: '.accordion__copy, .accordion__image';
+}
 .accordion__copy, .slider__copy, .accordion__image, .slider__image {
-  content: '.accordion__copy, .slider__copy, .accordion__image, .slider__image'; }
-
+  content: '.accordion__copy, .slider__copy, .accordion__image, .slider__image';
+}
 a.disabled, .disabled.link {
-  content: "a.disabled, .link.disabled"; }
-
+  content: "a.disabled, .link.disabled";
+}
 a.disabled {
-  content: "a.disabled"; }
-
+  content: "a.disabled";
+}
 .guide .info, .guide .content nav.sidebar, .content .guide nav.sidebar {
-  content: ".guide .info, .guide .content nav.sidebar, .content .guide nav.sidebar"; }
-
+  content: ".guide .info, .guide .content nav.sidebar, .content .guide nav.sidebar";
+}
 ul li {
-  content: "ul li"; }
-
+  content: "ul li";
+}
 .alert p, .warning p {
-  content: ".alert p, .warning p"; }
-
+  content: ".alert p, .warning p";
+}
 .alert:hover {
-  content: ".alert:hover"; }
-
+  content: ".alert:hover";
+}
 .accordion__copy {
-  content: ".accordion__copy"; }
-  .main aside:hover {
-    content: ".main";
-    content: "aside:hover"; }
-  .sidebar p {
-    content: ".sidebar";
-    content: "p"; }
-
+  content: ".accordion__copy";
+}
+.main aside:hover {
+  content: ".main";
+  content: "aside:hover";
+}
+.sidebar p {
+  content: ".sidebar";
+  content: "p";
+}
 .disabled.link {
-  content: ".link.disabled"; }
-
+  content: ".link.disabled";
+}
 a.disabled {
-  content: "a.disabled"; }
-
+  content: "a.disabled";
+}
 .guide .content nav.sidebar, .content .guide nav.sidebar {
-  content: ".guide .content nav.sidebar, .content .guide nav.sidebar"; }
-
+  content: ".guide .content nav.sidebar, .content .guide nav.sidebar";
+}
 a, .disabled {
   /* a, .disabled */
   content: "a";
-  content: ".disabled"; }
-
+  content: ".disabled";
+}
 main, .blog, :after {
   /* main, .blog, :after */
   content: "main";
   content: ".blog";
-  content: ":after"; }
-
+  content: ":after";
+}
 a.disabled {
-  content: "a.disabled"; }
-
+  content: "a.disabled";
+}
 a.disabled.outgoing {
-  content: "a.disabled.outgoing"; }
-
+  content: "a.disabled.outgoing";
+}
  {
-  content: "null"; }
-
+  content: "null";
+}
 .warning main a, main .warning a {
-  content: ".warning main a, main .warning a"; }
-
+  content: ".warning main a, main .warning a";
+}
 main.warning a.disabled {
-  content: "main.warning a.disabled"; }
-
+  content: "main.warning a.disabled";
+}
 main .warning a {
-  content: "main .warning a"; }
-
+  content: "main .warning a";
+}
 .class .par1 {
-  content: .class .par1 .test .test2, .par1 .test .class .test2; }
+  content: .class .par1 .test .test2, .par1 .test .class .test2;
+}

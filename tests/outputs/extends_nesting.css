@@ -1,36 +1,42 @@
 .btn, .extend .the-button {
-  padding: 1px; }
-
+  padding: 1px;
+}
 .btn-lg, .btn-group-lg > .btn, .extend .btn-group-lg > .the-button {
-  font-size: 10px; }
-
+  font-size: 10px;
+}
 .dropup .btn-lg .caret, .dropup .btn-group-lg > .btn .caret, .dropup .extend .btn-group-lg > .the-button .caret, .extend .dropup .btn-group-lg > .the-button .caret {
-  border-width: 100px; }
-
+  border-width: 100px;
+}
 .dropup .btn, .dropup .extend .the-button, .extend .dropup .the-button {
-  content: "dropup btn"; }
-  .dropup .btn .caret, .dropup .extend .the-button .caret, .extend .dropup .the-button .caret {
-    content: "dropup btn caret"; }
-
+  content: "dropup btn";
+}
+.dropup .btn .caret, .dropup .extend .the-button .caret, .extend .dropup .the-button .caret {
+  content: "dropup btn caret";
+}
 .dropup > .btn, .extend .dropup > .the-button {
-  content: "dropup > btn"; }
-  .dropup > .btn > .caret, .extend .dropup > .the-button > .caret {
-    content: "dropup > btn > caret"; }
-
+  content: "dropup > btn";
+}
+.dropup > .btn > .caret, .extend .dropup > .the-button > .caret {
+  content: "dropup > btn > caret";
+}
 .dropup + .btn, .extend .dropup + .the-button {
-  content: "dropup + btn"; }
-  .dropup + .btn + .caret, .extend .dropup + .the-button + .caret {
-    content: "dropup + btn + caret"; }
-
+  content: "dropup + btn";
+}
+.dropup + .btn + .caret, .extend .dropup + .the-button + .caret {
+  content: "dropup + btn + caret";
+}
 .dropup.btn, .extend .dropup.the-button {
-  content: "dropupbtn"; }
-  .dropup.btn.caret, .extend .dropup.caret.the-button {
-    content: "dropupbtncaret"; }
-
+  content: "dropupbtn";
+}
+.dropup.btn.caret, .extend .dropup.caret.the-button {
+  content: "dropupbtncaret";
+}
 .nav-bar, header ul {
-  background: #eee; }
-  .nav-bar > .item, header ul > .item, header ul.nav-bar > li, header ul > li {
-    margin: 0 10px; }
-
+  background: #eee;
+}
+.nav-bar > .item, header ul > .item, header ul.nav-bar > li, header ul > li {
+  margin: 0 10px;
+}
 .a .b + .btn-block, .a .b + .b {
-  margin-top: 1.5rem; }
+  margin-top: 1.5rem;
+}
