@@ -3766,6 +3766,14 @@ class Compiler
      */
     protected function opColorNumber($op, $left, Number $right)
     {
+        if ($op === '==') {
+            return static::$false;
+        }
+
+        if ($op === '!=') {
+            return static::$true;
+        }
+
         $value = $right->getDimension();
 
         return $this->opColorColor(
@@ -3786,6 +3794,14 @@ class Compiler
      */
     protected function opNumberColor($op, Number $left, $right)
     {
+        if ($op === '==') {
+            return static::$false;
+        }
+
+        if ($op === '!=') {
+            return static::$true;
+        }
+
         $value = $left->getDimension();
 
         return $this->opColorColor(
