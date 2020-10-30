@@ -120,8 +120,8 @@ default formatter.
 
 Five formatters are included:
 
-* `ScssPhp\ScssPhp\Formatter\Expanded`
-* `ScssPhp\ScssPhp\Formatter\Nested` *(default)*
+* `ScssPhp\ScssPhp\Formatter\Expanded` *(default)*
+* `ScssPhp\ScssPhp\Formatter\Nested`
 * `ScssPhp\ScssPhp\Formatter\Compressed`
 * `ScssPhp\ScssPhp\Formatter\Compact`
 * `ScssPhp\ScssPhp\Formatter\Crunched`

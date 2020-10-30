@@ -101,7 +101,7 @@ class ApiTest extends TestCase
     {
         return [
             [
-                ".magic {\n  color: red;\n  width: 760px; }",
+                ".magic {\n  color: red;\n  width: 760px;\n}",
                 '.magic { color: $color; width: $base - 200; }',
                 [
                     'color' => 'red',
@@ -109,7 +109,7 @@ class ApiTest extends TestCase
                 ],
             ],
             [
-                ".logo {\n  color: gray; }",
+                ".logo {\n  color: gray;\n}",
                 '.logo { color: desaturate($primary, 100%); }',
                 [
                     'primary' => '#ff0000',
@@ -117,14 +117,14 @@ class ApiTest extends TestCase
             ],
             // !default
             [
-                ".default {\n  color: red; }",
+                ".default {\n  color: red;\n}",
                 '$color: red !default;' . "\n" . '.default { color: $color; }',
                 [
                 ],
             ],
             // no !default
             [
-                ".default {\n  color: red; }",
+                ".default {\n  color: red;\n}",
                 '$color: red;' . "\n" . '.default { color: $color; }',
                 [
                 ],
@@ -132,7 +132,7 @@ class ApiTest extends TestCase
             ],
             // override !default
             [
-                ".default {\n  color: blue; }",
+                ".default {\n  color: blue;\n}",
                 '$color: red !default;' . "\n" . '.default { color: $color; }',
                 [
                     'color' => 'blue',

@@ -16,6 +16,7 @@ use ScssPhp\ScssPhp\Base\Range;
 use ScssPhp\ScssPhp\Compiler\Environment;
 use ScssPhp\ScssPhp\Exception\CompilerException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\Formatter\Expanded;
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
 use ScssPhp\ScssPhp\Node\Number;
 use ScssPhp\ScssPhp\SourceMap\SourceMapGenerator;
@@ -171,7 +172,7 @@ class Compiler
     /**
      * @var string|\ScssPhp\ScssPhp\Formatter
      */
-    protected $formatter = 'ScssPhp\ScssPhp\Formatter\Nested';
+    protected $formatter = Expanded::class;
 
     /**
      * @var Environment
