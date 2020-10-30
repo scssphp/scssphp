@@ -16,6 +16,7 @@ use ScssPhp\ScssPhp\Base\Range;
 use ScssPhp\ScssPhp\Compiler\Environment;
 use ScssPhp\ScssPhp\Exception\CompilerException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\Formatter\Compressed;
 use ScssPhp\ScssPhp\Formatter\Expanded;
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
 use ScssPhp\ScssPhp\Node\Number;
@@ -5096,6 +5097,10 @@ class Compiler
      */
     public function setFormatter($formatterName)
     {
+        if (!\in_array($formatterName, [Expanded::class, Compressed::class], true)) {
+            @trigger_error('Formatters other than Expanded and Compressed are deprecated.', E_USER_DEPRECATED);
+        }
+
         $this->formatter = $formatterName;
     }
 
