@@ -5385,7 +5385,7 @@ class Compiler
         }
         @list($sorted, $kwargs) = $sorted_kwargs;
 
-        if ($name !== 'if' && $name !== 'call') {
+        if ($name !== 'if') {
             $inExp = true;
 
             if ($name === 'join') {
@@ -6432,10 +6432,10 @@ class Compiler
     protected static $libCall = ['function', 'args...'];
     protected function libCall($args, $kwargs)
     {
-        $functionReference = $this->reduce(array_shift($args), true);
+        $functionReference = array_shift($args);
 
         if (in_array($functionReference[0], [Type::T_STRING, Type::T_KEYWORD])) {
-            $name = $this->compileStringContent($this->coerceString($this->reduce($functionReference, true)));
+            $name = $this->compileStringContent($this->coerceString($functionReference));
             $warning = "DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal\n"
                 . "in Sass 4.0. Use call(function-reference($name)) instead.";
             fwrite($this->stderr, "$warning\n\n");
@@ -6473,11 +6473,11 @@ class Compiler
     ];
     protected function libGetFunction($args)
     {
-        $name = $this->compileStringContent($this->coerceString($this->reduce(array_shift($args), true)));
+        $name = $this->compileStringContent($this->coerceString(array_shift($args)));
         $isCss = false;
 
         if (count($args)) {
-            $isCss = $this->reduce(array_shift($args), true);
+            $isCss = array_shift($args);
             $isCss = (($isCss === static::$true) ? true : false);
         }
 
