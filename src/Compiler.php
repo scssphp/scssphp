@@ -5087,6 +5087,31 @@ class Compiler
     }
 
     /**
+     * Sets the output style.
+     *
+     * @api
+     *
+     * @param string $style One of the OutputStyle constants
+     *
+     * @phpstan-param OutputStyle::* $style
+     */
+    public function setOutputStyle($style)
+    {
+        switch ($style) {
+            case OutputStyle::EXPANDED:
+                $this->formatter = Expanded::class;
+                break;
+
+            case OutputStyle::COMPRESSED:
+                $this->formatter = Compressed::class;
+                break;
+
+            default:
+                throw new \InvalidArgumentException(sprintf('Invalid output style "%s".', $style));
+        }
+    }
+
+    /**
      * Set formatter
      *
      * @api
@@ -5094,12 +5119,15 @@ class Compiler
      * @param string $formatterName
      *
      * @return void
+     *
+     * @deprecated Use {@see setOutputStyle} instead.
      */
     public function setFormatter($formatterName)
     {
         if (!\in_array($formatterName, [Expanded::class, Compressed::class], true)) {
             @trigger_error('Formatters other than Expanded and Compressed are deprecated.', E_USER_DEPRECATED);
         }
+        @trigger_error('The method "setFormatter" is deprecated. Use "setOutputStyle" instead.', E_USER_DEPRECATED);
 
         $this->formatter = $formatterName;
     }

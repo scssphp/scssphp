@@ -47,7 +47,6 @@ class InputTest extends TestCase
         chdir(__DIR__);
 
         $this->scss = new Compiler();
-        $this->scss->setFormatter(Expanded::class);
         $this->scss->addImportPath(self::$inputDir);
 
         $fp_err_stream = fopen("php://memory", 'r+');

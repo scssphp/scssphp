@@ -115,22 +115,9 @@ method, and unset a variable using the `unsetVariable($name)` method.
 
 ### Output Formatting
 
-It's possible to customize the formatting of the output CSS by changing the
-default formatter.
-
-Five formatters are included:
-
-* `ScssPhp\ScssPhp\Formatter\Expanded` *(default)*
-* `ScssPhp\ScssPhp\Formatter\Nested`
-* `ScssPhp\ScssPhp\Formatter\Compressed`
-* `ScssPhp\ScssPhp\Formatter\Compact`
-* `ScssPhp\ScssPhp\Formatter\Crunched`
-
-We can change the formatting using the `setFormatter` method.
-
-* `setFormatter($formatterName)` sets the current formatter to `$formatterName`,
-  the name of a class as a string that implements the formatting interface. See
-  the source for `ScssPhp\ScssPhp\Formatter\Expanded` for an example.
+The output formatting can be configured using the `setOutputStyle` method.
+2 styles are provided: `\ScssPhp\ScssPhp\OutputStyle::EXPANDED` and
+`\ScssPhp\ScssPhp\OutputStyle::COMPRESSED`.
 
 Given the following SCSS:
 
@@ -153,9 +140,9 @@ Given the following SCSS:
 }
 {% endhighlight %}
 
-The formatters output the following:
+The output will look like that:
 
-`ScssPhp\ScssPhp\Formatter\Expanded`:
+`OutputStyle::EXPANDED`:
 
 {% highlight css %}
 /*! Comment */
@@ -171,41 +158,10 @@ The formatters output the following:
 }
 {% endhighlight %}
 
-`ScssPhp\ScssPhp\Formatter\Nested`:
-
-{% highlight css %}
-/*! Comment */
-.navigation ul {
-  line-height: 20px;
-  color: blue; }
-    .navigation ul a {
-      color: red; }
-
-.footer .copyright {
-  color: silver; }
-{% endhighlight %}
-
-`ScssPhp\ScssPhp\Formatter\Compact`:
-
-{% highlight css %}
-/*! Comment */
-.navigation ul { line-height:20px; color:blue; }
-
-.navigation ul a { color:red; }
-
-.footer .copyright { color:silver; }
-{% endhighlight %}
-
-`ScssPhp\ScssPhp\Formatter\Compressed`:
+`OutputStyle::COMPRESSED`:
 
 {% highlight css %}
 /* Comment*/.navigation ul{line-height:20px;color:blue;}.navigation ul a{color:red;}.footer .copyright{color:silver;}
-{% endhighlight %}
-
-`ScssPhp\ScssPhp\Formatter\Crunched`:
-
-{% highlight css %}
-.navigation ul{line-height:20px;color:blue;}.navigation ul a{color:red;}.footer .copyright{color:silver;}
 {% endhighlight %}
 
 ### Source Maps
