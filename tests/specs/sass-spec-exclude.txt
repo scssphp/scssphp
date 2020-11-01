@@ -701,8 +701,6 @@ core_functions/selector/unify/simple/universal/and_universal/empty/and_explicit
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_any
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_default
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_empty
-core_functions/string/index/combining_character
-core_functions/string/index/double_width_character
 core_functions/string/quote/error/type
 core_functions/string/slice/double_width_character
 core_functions/string/slice/empty/end/0

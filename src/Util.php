@@ -157,4 +157,17 @@ class Util
 
         return substr($string, $start, $length);
     }
+
+    public static function mbStrpos($haystack, $needle, $offset = 0)
+    {
+        if (\function_exists('mb_strpos')) {
+            return mb_strpos($haystack, $needle, $offset, 'UTF-8');
+        }
+
+        if (\function_exists('iconv_strpos')) {
+            return iconv_strpos($haystack, $needle, $offset, 'UTF-8');
+        }
+
+        return strpos($haystack, $needle, $offset);
+    }
 }

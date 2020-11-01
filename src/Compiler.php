@@ -7599,7 +7599,7 @@ class Compiler
         if (! \strlen($substringContent)) {
             $result = 0;
         } else {
-            $result = strpos($stringContent, $substringContent);
+            $result = Util::mbStrpos($stringContent, $substringContent);
         }
 
         return $result === false ? static::$null : new Number($result + 1, '');
