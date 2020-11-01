@@ -105,7 +105,7 @@ class Util
      * mb_strlen() wrapper
      *
      * @param string $string
-     * @return false|int
+     * @return int
      */
     public static function mbStrlen($string)
     {
@@ -158,6 +158,14 @@ class Util
         return substr($string, $start, $length);
     }
 
+    /**
+     * mb_strpos wrapper
+     * @param string $haystack
+     * @param string $needle
+     * @param int $offset
+     *
+     * @return int|false
+     */
     public static function mbStrpos($haystack, $needle, $offset = 0)
     {
         if (\function_exists('mb_strpos')) {
