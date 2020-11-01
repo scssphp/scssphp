@@ -7663,7 +7663,7 @@ class Compiler
         $string = $this->coerceString($args[0]);
         $stringContent = $this->compileStringContent($string);
 
-        $string[2] = [\function_exists('mb_strtolower') ? mb_strtolower($stringContent) : strtolower($stringContent)];
+        $string[2] = [strtolower($stringContent)];
 
         return $string;
     }
@@ -7674,7 +7674,7 @@ class Compiler
         $string = $this->coerceString($args[0]);
         $stringContent = $this->compileStringContent($string);
 
-        $string[2] = [\function_exists('mb_strtoupper') ? mb_strtoupper($stringContent) : strtoupper($stringContent)];
+        $string[2] = [strtoupper($stringContent)];
 
         return $string;
     }
