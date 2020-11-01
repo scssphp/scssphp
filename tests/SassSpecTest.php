@@ -23,7 +23,6 @@ use ScssPhp\ScssPhp\Exception\SassException;
  */
 class SassSpecTest extends TestCase
 {
-    protected static $scss;
     protected static $exclusionList;
     protected static $warningExclusionList;
 
@@ -219,33 +218,31 @@ class SassSpecTest extends TestCase
      */
     public function testTests($name, $input, $output)
     {
-        if (is_null(static::$scss)) {
-            // Increase the memory_limit to at least 256M to run these tests.
-            // This code takes care of not lowering it.
-            $memoryLimit = trim(ini_get('memory_limit'));
-            if ($memoryLimit != -1) {
-                $unit = strtolower(substr($memoryLimit, -1, 1));
-                $memoryInBytes = (int) $memoryLimit;
+        // Increase the memory_limit to at least 256M to run these tests.
+        // This code takes care of not lowering it.
+        $memoryLimit = trim(ini_get('memory_limit'));
+        if ($memoryLimit != -1) {
+            $unit = strtolower(substr($memoryLimit, -1, 1));
+            $memoryInBytes = (int) $memoryLimit;
 
-                switch ($unit) {
-                    case 'g':
-                        $memoryInBytes *= 1024;
-                        // no break (cumulative multiplier)
-                    case 'm':
-                        $memoryInBytes *= 1024;
-                        // no break (cumulative multiplier)
-                    case 'k':
-                        $memoryInBytes *= 1024;
-                }
-
-                if ($memoryInBytes < 256 * 1024 * 1024) {
-                    @ini_set('memory_limit', "256M");
-                }
+            switch ($unit) {
+                case 'g':
+                    $memoryInBytes *= 1024;
+                    // no break (cumulative multiplier)
+                case 'm':
+                    $memoryInBytes *= 1024;
+                    // no break (cumulative multiplier)
+                case 'k':
+                    $memoryInBytes *= 1024;
             }
 
-            static::$scss = new Compiler();
-            static::$scss->setFormatter('ScssPhp\ScssPhp\Formatter\Expanded');
+            if ($memoryInBytes < 256 * 1024 * 1024) {
+                @ini_set('memory_limit', "256M");
+            }
         }
+
+        $compiler = new Compiler();
+        $compiler->setFormatter('ScssPhp\ScssPhp\Formatter\Expanded');
 
         list($options, $scss, $includes, $inputDir) = $input;
         list($css, $warning, $error, $alternativeCssOutputs) = $output;
@@ -299,19 +296,19 @@ class SassSpecTest extends TestCase
             }
 
             // SassSpec use @import "core_functions/.../..."
-            static::$scss->setImportPaths([$basedir, $this->sassSpecDir()]);
+            $compiler->setImportPaths([$basedir, $this->sassSpecDir()]);
         } else {
             // SassSpec use @import "core_functions/.../..."
-            static::$scss->setImportPaths([$this->sassSpecDir()]);
+            $compiler->setImportPaths([$this->sassSpecDir()]);
         }
 
         $fp_err_stream = fopen("php://memory", 'r+');
-        static::$scss->setErrorOuput($fp_err_stream);
+        $compiler->setErrorOuput($fp_err_stream);
 
         if (! strlen($error)) {
             if (getenv('BUILD')) {
                 try {
-                    $actual = static::$scss->compile($scss, 'input.scss');
+                    $actual = $compiler->compile($scss, 'input.scss');
                 } catch (\Exception $e) {
                     $this->appendToExclusionList($name);
                     fclose($fp_err_stream);
@@ -320,7 +317,7 @@ class SassSpecTest extends TestCase
                     //throwException($e);
                 }
             } else {
-                $actual = static::$scss->compile($scss, 'input.scss');
+                $actual = $compiler->compile($scss, 'input.scss');
             }
 
             // normalize css for comparison purpose
@@ -369,7 +366,7 @@ class SassSpecTest extends TestCase
         } else {
             if (getenv('BUILD')) {
                 try {
-                    static::$scss->compile($scss, 'input.scss');
+                    $compiler->compile($scss, 'input.scss');
                     throw new \Exception('Expecting a SassException for error tests');
                 } catch (SassException $e) {
                     // TODO assert the error message ?
@@ -380,7 +377,7 @@ class SassSpecTest extends TestCase
                 $this->assertNull(null);
             } else {
                 $this->expectException(SassException::class);
-                static::$scss->compile($scss, 'input.scss');
+                $compiler->compile($scss, 'input.scss');
                 // TODO assert the error message ?
             }
 
