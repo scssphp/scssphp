@@ -714,9 +714,7 @@ core_functions/string/slice/error/type/start_at
 core_functions/string/slice/error/type/string
 core_functions/string/slice/start/positive/after_end
 core_functions/string/to_lower_case/error/type
-core_functions/string/to_lower_case/non_ascii
 core_functions/string/to_upper_case/error/type
-core_functions/string/to_upper_case/non_ascii
 core_functions/string/unique_id/error/too_many_args
 core_functions/string/unquote/error/type
 css/comment/error/loud/unterminated/scss
