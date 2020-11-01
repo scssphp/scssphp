@@ -23,7 +23,7 @@ There are several tests in the `tests/` directory:
 * `FailingTest.php` contains tests reported in Github issues that demonstrate compatibility bugs.
 * `InputTest.php` compiles every `.scss` file in the `tests/inputs` directory
   then compares to the respective `.css` file in the `tests/outputs` directory.
-* `ScssTest.php` extracts (ruby) `scss` tests from the `tests/scss_test.rb` file.
+* `SassSpecTest.php` extracts tests from the `sass/sass-spec` repository.
 
 When changing any of the tests in `tests/inputs`, the tests will most likely
 fail because the output has changed. Once you verify that the output is correct
@@ -31,11 +31,12 @@ you can run the following command to rebuild all the tests:
 
     BUILD=1 vendor/bin/phpunit tests
 
-This will compile all the tests, and save results into `tests/outputs`.
+This will compile all the tests, and save results into `tests/outputs`. It also
+updates the list of excluded specs from sass-spec.
 
-To enable the `scss` compatibility tests:
+To enable the full `sass-spec` compatibility tests:
 
-    TEST_SCSS_COMPAT=1 vendor/bin/phpunit tests
+    TEST_SASS_SPEC=1 vendor/bin/phpunit tests
 
 ## Coding Standard
 
