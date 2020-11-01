@@ -30,7 +30,7 @@ If you use [Packagist][2] for installing packages, then you can update your `com
 {% highlight json %}
 {
     "require": {
-        "scssphp/scssphp": "{{ site.current_version }}"
+        "scssphp/scssphp": "^{{ site.current_version }}"
     }
 }
 {% endhighlight %}
@@ -61,20 +61,14 @@ If passed the flag `-v` (or `--version`), input is ignored and the current versi
 
 If passed the flag `-T`, a formatted parse tree is returned instead of the compiled CSS.
 
-The flag `-f` (or `--style`) can be used to set the [formatter](#output-formatting):
+The flag `-s` (or `--style`) can be used to set the [output style](docs/#output-formatting):
 
 {% highlight bash %}
-$ bin/pscss -f compressed < styles.scss
+$ bin/pscss -s compressed < styles.scss
 {% endhighlight %}
 
-The flag `-i` (or `--load_paths`) can be used to set import paths for the loader. On Unix/Linux systems,
+The flag `-I` (or `--load_path`) can be used to set import paths for the loader. On Unix/Linux systems,
 the paths are colon separated.
-
-The flag `-p` (or `--precision`) can be used to set the decimal number precision. The default is 5.
-
-The flag `--debug-info` can be used to annotate the selectors with CSS {% raw %}@{% endraw %}media queries that identify the source file and line number.
-
-The flag `--line-comments` (or `--line-numbers`) can be used to annotate the selectors with comments that identify the source file and line number.
 
 ## SCSSPHP Library Reference
 
@@ -97,7 +91,7 @@ echo $scss->compile('
 {% endhighlight %}
 
 The `compile` method takes `SCSS` as a string, and returns the `CSS`. If there
-is an error when compiling then an exception is thrown with an appropriate
+is an error when compiling, an exception is thrown with an appropriate
 message.
 
 For a more detailed guide, consult <a href="{{ site.baseurl }}/docs/">{{ site.baseurl }}/docs/</a>.
@@ -112,7 +106,7 @@ Please submit bug reports and feature requests to the [the issue tracker][3]. Pu
 
 For a list of **scssphp** changes, refer to <a href="{{ site.baseurl }}/docs/changelog.html">{{ site.baseurl }}/docs/changelog.html</a>.
 
-  [0]: http://sass-lang.com/
-  [1]: http://sass-lang.com/documentation/file.SASS_REFERENCE.html
-  [2]: http://packagist.org/
+  [0]: https://sass-lang.com/
+  [1]: https://sass-lang.com/documentation
+  [2]: https://packagist.org/
   [3]: {{ site.repo_url }}/issues
