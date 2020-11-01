@@ -36,7 +36,7 @@ echo $scss->compile('
 {% endhighlight %}
 
 * `compile($scssCode)` will attempt to compile a string of SCSS code. If it
-  succeeds then the CSS will be returned as a string. If there is any error, an
+  succeeds, the CSS will be returned as a string. If there is any error, an
   exception is thrown with an appropriate error message.
 
 ### Import Paths
@@ -108,7 +108,7 @@ echo $scss->compile('$var: true !default;');
 {% endhighlight %}
 
 Note: the value is the scss source to be parsed. If you want to parse a string,
-you have to represent it as a string, e.g,, `'var' => '"string"'`.
+you have to represent it as a string, e.g. `'var' => '"string"'`.
 
 Likewise, you can retrieve the preset variables using the `getVariables()`
 method, and unset a variable using the `unsetVariable($name)` method.
@@ -208,36 +208,11 @@ The formatters output the following:
 .navigation ul{line-height:20px;color:blue;}.navigation ul a{color:red;}.footer .copyright{color:silver;}
 {% endhighlight %}
 
-You can also change the number precision using the `setNumberPrecision($precision)`
-method. (The default precision is 5.)
-
-### Source Line Debugging
-
-You can output the original SCSS line numbers within the compiled CSS file for better frontend debugging.
-
-This works well in combination with frontend debugging tools such as https://addons.mozilla.org/de/firefox/addon/firecompass-for-firebug/
-
-To activate this feature, call the `setLineNumberStyle` method after creating a new instance of class `Compiler`.
-
-{% highlight php startinline=true %}
-use ScssPhp\ScssPhp\Compiler;
-
-$directory = 'css';
-
-$scss = new Compiler();
-$scss->setLineNumberStyle(Compiler::LINE_COMMENTS);
-
-echo $scss->compile('
-  $color: #abc;
-  div { color: lighten($color, 20%); }
-');
-{% endhighlight %}
-
 ### Source Maps
 
 Source Maps are useful in debugging compiled css files using browser developer tools.
 
-To enable source maps, use the `setSourceMap()' and `setSourceMapOptions()` methods.
+To enable source maps, use the `setSourceMap()` and `setSourceMapOptions()` methods.
 
 {% highlight php startinline=true %}
 use ScssPhp\ScssPhp\Compiler;
@@ -275,8 +250,8 @@ We can add and remove functions using the methods `registerFunction` and
 `unregisterFunction`.
 
 * `registerFunction($functionName, $callable, $prototype)` assigns the callable value to
-  the name `$functionName`. The name is normalized using the rules of SCSS.
-  Meaning underscores and dashes are interchangeable. If a function with the
+  the name `$functionName`. The name is normalized using the rules of SCSS,
+  meaning underscores and dashes are interchangeable. If a function with the
   same name already exists then it is replaced. The optional `$prototype` is an
   array of parameter names.
 
@@ -288,12 +263,11 @@ The `$callable` can be anything that PHP knows how to call using
 is an array of SCSS typed arguments that the function was sent. The second is an
 array of SCSS values corresponding to keyword arguments (aka kwargs).
 
-The SCSS *typed arguments* and *kwargs* are actually just arrays that represent
-SCSS values.  SCSS has different types than PHP, and this is how **scssphp**
-represents them internally.
+The SCSS *typed arguments* and *kwargs* are actually just arrays or Number objects
+that represent SCSS values. SCSS has different types than PHP, and this is how
+**scssphp** represents them internally.
 
-For example, the value `10px` in PHP would be `array('number', 1, 'px')`. There
-is a large variety of types. Experiment with a debugging function like `print_r`
+There is a large variety of types. Experiment with a debugging function like `print_r`
 to examine the possible inputs.
 
 The return value of the custom function can either be a SCSS type or a basic
@@ -343,14 +317,9 @@ Note: in the above examples, we lose the units of the number, and we
 also don't do any type checking. This will have undefined results if we give it
 anything other than two numbers.
 
-For feature detection via the `feature-exists()` built-in function, you can register
-your custom feature using the `addFeature` method:
-
-* `addFeature($name)` registers the `$name`.
-
 ### Security Considerations
 
-If your web appilcation compiles SCSS on-the-fly, you need to handle any potential
+If your web application compiles SCSS on-the-fly, you need to handle any potential
 exceptions thrown by the Compiler. This is especially important in a production
 environment where the content may be untrusted (e.g., user uploaded) because
 the exception stack trace may contain sensitive data.
