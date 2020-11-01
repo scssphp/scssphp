@@ -6903,7 +6903,7 @@ class Compiler
         $color = $this->coerceColor($args[0]);
 
         if (\is_null($color)) {
-            $this->throwError('Error: argument `$color` of `ie-hex-str($color)` must be a color');
+            throw $this->error('Error: argument `$color` of `ie-hex-str($color)` must be a color');
         }
 
         $color[4] = isset($color[4]) ? round(255 * $color[4]) : 255;
@@ -6917,7 +6917,7 @@ class Compiler
         $color = $this->coerceColor($args[0]);
 
         if (\is_null($color)) {
-            $this->throwError('Error: argument `$color` of `red($color)` must be a color');
+            throw $this->error('Error: argument `$color` of `red($color)` must be a color');
         }
 
         return $color[1];
@@ -6929,7 +6929,7 @@ class Compiler
         $color = $this->coerceColor($args[0]);
 
         if (\is_null($color)) {
-            $this->throwError('Error: argument `$color` of `green($color)` must be a color');
+            throw $this->error('Error: argument `$color` of `green($color)` must be a color');
         }
 
         return $color[2];
@@ -6941,7 +6941,7 @@ class Compiler
         $color = $this->coerceColor($args[0]);
 
         if (\is_null($color)) {
-            $this->throwError('Error: argument `$color` of `blue($color)` must be a color');
+            throw $this->error('Error: argument `$color` of `blue($color)` must be a color');
         }
 
         return $color[3];
