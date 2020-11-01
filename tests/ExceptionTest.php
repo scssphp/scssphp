@@ -143,8 +143,15 @@ END_OF_SCSS
 
     private function compile($str)
     {
-        $scss = new Compiler();
+        $errorStream = fopen("php://memory", 'r+');
 
-        return trim($scss->compile($str));
+        $scss = new Compiler();
+        $scss->setErrorOuput($errorStream);
+
+        try {
+            return trim($scss->compile($str));
+        } finally {
+            fclose($errorStream);
+        }
     }
 }
