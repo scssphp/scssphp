@@ -384,8 +384,17 @@ class Compiler
 
             $out = $this->formatter->format($this->scope, $sourceMapGenerator);
 
+            $prefix = '';
+
+            if (!$this->charsetSeen && function_exists('mb_strlen')) {
+                if (strlen($out) !== mb_strlen($out)) {
+                    $prefix = '@charset "UTF-8";' . "\n";
+                    $out = $prefix . $out;
+                }
+            }
+
             if (! empty($out) && $this->sourceMap && $this->sourceMap !== self::SOURCE_MAP_NONE) {
-                $sourceMap    = $sourceMapGenerator->generateJson();
+                $sourceMap    = $sourceMapGenerator->generateJson($prefix);
                 $sourceMapUrl = null;
 
                 switch ($this->sourceMap) {
@@ -411,12 +420,6 @@ class Compiler
             ];
 
             $this->cache->setCache('compile', $cacheKey, $v, $compileOptions);
-        }
-
-        if (!$this->charsetSeen && function_exists('mb_strlen')) {
-            if (strlen($out) !== mb_strlen($out)) {
-                $out = '@charset "UTF-8";' . "\n" . $out;
-            }
         }
 
         return $out;
