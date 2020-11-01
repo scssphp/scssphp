@@ -48,7 +48,7 @@ class SassSpecTest extends TestCase
     }
 
     /**
-     * List of excluded tests if not in TEST_SCSS_COMPAT mode
+     * List of excluded tests if not in TEST_SASS_SPEC mode
      *
      * @return string
      */
@@ -92,7 +92,7 @@ class SassSpecTest extends TestCase
     }
 
     /**
-     * List of tests excluding the assertion on warnings if not in TEST_SCSS_COMPAT mode
+     * List of tests excluding the assertion on warnings if not in TEST_SASS_SPEC mode
      *
      * @return array
      */
