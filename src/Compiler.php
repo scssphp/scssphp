@@ -3700,6 +3700,15 @@ class Compiler
      */
     protected function opColorColor($op, $left, $right)
     {
+        if ($op !== '==' && $op !== '!=') {
+            $warning = "Color arithmetic is deprecated and will be an error in future versions.\n"
+                . "Consider using Sass's color functions instead.";
+            $fname = $this->sourceNames[$this->sourceIndex];
+            $line  = $this->sourceLine;
+
+            fwrite($this->stderr, "DEPRECATION WARNING: $warning\n         on line $line of $fname\n\n");
+        }
+
         $out = [Type::T_COLOR];
 
         foreach ([1, 2, 3] as $i) {
