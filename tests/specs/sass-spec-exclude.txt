@@ -840,8 +840,6 @@ libsass-closed-issues/issue_1415/variable
 libsass-closed-issues/issue_1417
 libsass-closed-issues/issue_1418/dynamic
 libsass-closed-issues/issue_1418/static
-libsass-closed-issues/issue_1419/quoted
-libsass-closed-issues/issue_1419/unquoted
 libsass-closed-issues/issue_1422
 libsass-closed-issues/issue_1425
 libsass-closed-issues/issue_1452
@@ -1320,7 +1318,6 @@ non_conformant/scss/simple-inheritance
 non_conformant/scss/strings
 non_conformant/scss/vars
 non_conformant/scss/while_without_condition
-values/identifiers/escape/script
 values/maps/duplicate-keys
 values/maps/errors
 values/maps/invalid-key
