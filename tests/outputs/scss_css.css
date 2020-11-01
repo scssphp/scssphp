@@ -149,14 +149,14 @@ E > F, G > H {
 foo {
   a: \f oo bar;
   b: foo\ bar;
-  c: •  ;
+  c: • ;
   d: foo\\bar;
   e: foo\"\'bar; }
 
 foo {
   a: "\foo bar";
   b: "foo bar";
-  c: "•  ";
+  c: "• ";
   d: "foo\\bar";
   e: "foo\"'bar"; }
 
