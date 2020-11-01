@@ -12,12 +12,7 @@
 
 namespace ScssPhp\ScssPhp;
 
-use ScssPhp\ScssPhp\Block;
-use ScssPhp\ScssPhp\Cache;
-use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Exception\ParserException;
-use ScssPhp\ScssPhp\Node;
-use ScssPhp\ScssPhp\Type;
 
 /**
  * Parser
@@ -31,7 +26,7 @@ class Parser
     const SOURCE_COLUMN = -3;
 
     /**
-     * @var array
+     * @var array<string, int>
      */
     protected static $precedence = [
         '='   => 0,
@@ -50,24 +45,65 @@ class Parser
         '%'   => 6,
     ];
 
+    /**
+     * @var string
+     */
     protected static $commentPattern;
+    /**
+     * @var string
+     */
     protected static $operatorPattern;
+    /**
+     * @var string
+     */
     protected static $whitePattern;
 
+    /**
+     * @var Cache|null
+     */
     protected $cache;
 
     private $sourceName;
     private $sourceIndex;
+    /**
+     * @var array<int, int>
+     */
     private $sourcePositions;
+    /**
+     * @var array|null
+     */
     private $charset;
+    /**
+     * The current offset in the buffer
+     *
+     * @var int
+     */
     private $count;
+    /**
+     * @var Block
+     */
     private $env;
+    /**
+     * @var bool
+     */
     private $inParens;
+    /**
+     * @var bool
+     */
     private $eatWhiteDefault;
+    /**
+     * @var bool
+     */
     private $discardComments;
     private $allowVars;
+    /**
+     * @var string
+     */
     private $buffer;
     private $utf8;
+    /**
+     * @var string|null
+     */
     private $encoding;
     private $patternModifiers;
     private $commentsSeen;
@@ -79,12 +115,13 @@ class Parser
      *
      * @api
      *
-     * @param string                 $sourceName
-     * @param integer                $sourceIndex
-     * @param string                 $encoding
-     * @param \ScssPhp\ScssPhp\Cache $cache
+     * @param string      $sourceName
+     * @param integer     $sourceIndex
+     * @param string|null $encoding
+     * @param Cache|null  $cache
+     * @param bool        $cssOnly
      */
-    public function __construct($sourceName, $sourceIndex = 0, $encoding = 'utf-8', $cache = null, $cssOnly = false)
+    public function __construct($sourceName, $sourceIndex = 0, $encoding = 'utf-8', Cache $cache = null, $cssOnly = false)
     {
         $this->sourceName       = $sourceName ?: '(stdin)';
         $this->sourceIndex      = $sourceIndex;
@@ -109,9 +146,7 @@ class Parser
                 : '/' . $commentSingle . '[^\n]*\s*|(' . static::$commentPattern . ')\s*|\s+/AisS';
         }
 
-        if ($cache) {
-            $this->cache = $cache;
-        }
+        $this->cache = $cache;
     }
 
     /**
@@ -133,7 +168,7 @@ class Parser
      *
      * @param string $msg
      *
-     * @throws \ScssPhp\ScssPhp\Exception\ParserException
+     * @throws ParserException
      *
      * @deprecated use "parseError" and throw the exception in the caller instead.
      */
@@ -188,7 +223,7 @@ class Parser
      *
      * @param string $buffer
      *
-     * @return \ScssPhp\ScssPhp\Block
+     * @return Block
      */
     public function parse($buffer)
     {
@@ -1038,10 +1073,10 @@ class Parser
     /**
      * Push block onto parse tree
      *
-     * @param array   $selectors
+     * @param array|null $selectors
      * @param integer $pos
      *
-     * @return \ScssPhp\ScssPhp\Block
+     * @return Block
      */
     protected function pushBlock($selectors, $pos = 0)
     {
@@ -1087,7 +1122,7 @@ class Parser
      * @param string  $type
      * @param integer $pos
      *
-     * @return \ScssPhp\ScssPhp\Block
+     * @return Block
      */
     protected function pushSpecialBlock($type, $pos)
     {
@@ -1100,7 +1135,7 @@ class Parser
     /**
      * Pop scope and return last block
      *
-     * @return \ScssPhp\ScssPhp\Block
+     * @return Block
      *
      * @throws \Exception
      */
@@ -1165,7 +1200,7 @@ class Parser
     /**
      * Assert a parsed part is plain CSS Valid
      *
-     * @param array $parsed
+     * @param array|false $parsed
      * @param int $startPos
      * @throws ParserException
      */
@@ -1579,7 +1614,7 @@ class Parser
     /**
      * Append statement to current block
      *
-     * @param array   $statement
+     * @param array|null $statement
      * @param integer $pos
      */
     protected function append($statement, $pos = null)
@@ -1914,7 +1949,7 @@ class Parser
 
     /**
      * Check if a generic directive is known to be able to allow almost any syntax or not
-     * @param $directiveName
+     * @param mixed $directiveName
      * @return bool
      */
     protected function isKnownGenericDirective($directiveName)
@@ -2092,10 +2127,10 @@ class Parser
     /**
      * Parse generic list
      *
-     * @param array    $out
-     * @param callable $parseItem
-     * @param string   $delim
-     * @param boolean  $flatten
+     * @param array   $out
+     * @param string  $parseItem The name of the method used to parse items
+     * @param string  $delim
+     * @param boolean $flatten
      *
      * @return boolean
      */
@@ -3333,8 +3368,8 @@ class Parser
     /**
      * Parse comma separated selector list
      *
-     * @param array   $out
-     * @param boolean $subSelector
+     * @param array $out
+     * @param string|boolean $subSelector
      *
      * @return boolean
      */
@@ -3369,8 +3404,8 @@ class Parser
     /**
      * Parse whitespace separated selector list
      *
-     * @param array   $out
-     * @param boolean $subSelector
+     * @param array          $out
+     * @param string|boolean $subSelector
      *
      * @return boolean
      */
@@ -3423,8 +3458,8 @@ class Parser
      *     div[yes=no]#something.hello.world:nth-child(-2n+1)%placeholder
      * }}
      *
-     * @param array   $out
-     * @param boolean $subSelector
+     * @param array          $out
+     * @param string|boolean $subSelector
      *
      * @return boolean
      */
