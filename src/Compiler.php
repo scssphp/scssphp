@@ -13,19 +13,12 @@
 namespace ScssPhp\ScssPhp;
 
 use ScssPhp\ScssPhp\Base\Range;
-use ScssPhp\ScssPhp\Block;
-use ScssPhp\ScssPhp\Cache;
-use ScssPhp\ScssPhp\Colors;
 use ScssPhp\ScssPhp\Compiler\Environment;
 use ScssPhp\ScssPhp\Exception\CompilerException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
-use ScssPhp\ScssPhp\Node;
 use ScssPhp\ScssPhp\Node\Number;
 use ScssPhp\ScssPhp\SourceMap\SourceMapGenerator;
-use ScssPhp\ScssPhp\Type;
-use ScssPhp\ScssPhp\Parser;
-use ScssPhp\ScssPhp\Util;
 
 /**
  * The scss compiler and parser.
