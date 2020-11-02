@@ -178,7 +178,9 @@ if ($dumpTree) {
 $scss = new Compiler();
 
 if ($loadPaths) {
-    $scss->setImportPaths(explode(PATH_SEPARATOR, $loadPaths));
+    foreach (explode(PATH_SEPARATOR, $loadPaths) as $loadPath) {
+        $scss->addImportPath($loadPath);
+    }
 }
 
 if ($style) {
