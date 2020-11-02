@@ -3,11 +3,12 @@
 namespace ScssPhp\ScssPhp\Exception;
 
 /**
- * Internal exception thrown in places not having access to reporting the location.
+ * An exception thrown by SassScript.
  *
- * This class does not implement SassException on purpose, as it should never be returned to the outside code.
- *
- * @internal
+ * This class does not implement SassException on purpose, as it should
+ * never be returned to the outside code. The compilation will catch it
+ * and replace it with a SassException reporting the location of the
+ * error.
  */
 class SassScriptException extends \Exception
 {
