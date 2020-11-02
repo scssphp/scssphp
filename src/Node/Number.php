@@ -254,9 +254,7 @@ class Number extends Node implements \ArrayAccess
             return;
         }
 
-        $varDisplay = !\is_null($varName) ? "\${$varName}: " : '';
-
-        throw new SassScriptException(sprintf('%sExpected %s to have no units', $varDisplay, $this));
+        throw SassScriptException::forArgument(sprintf('Expected %s to have no units', $this), $varName);
     }
 
     /**
