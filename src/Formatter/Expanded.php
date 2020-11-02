@@ -13,7 +13,6 @@
 namespace ScssPhp\ScssPhp\Formatter;
 
 use ScssPhp\ScssPhp\Formatter;
-use ScssPhp\ScssPhp\Formatter\OutputBlock;
 
 /**
  * Expanded formatter
