@@ -45,7 +45,7 @@ class OutputBlock
     public $children;
 
     /**
-     * @var OutputBlock
+     * @var OutputBlock|null
      */
     public $parent;
 
