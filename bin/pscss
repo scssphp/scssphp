@@ -20,6 +20,7 @@ if (version_compare(PHP_VERSION, '5.6') < 0) {
 include __DIR__ . '/../scss.inc.php';
 
 use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\OutputStyle;
 use ScssPhp\ScssPhp\Parser;
 use ScssPhp\ScssPhp\Version;
@@ -199,7 +200,12 @@ if ($encoding) {
     $scss->setEncoding($encoding);
 }
 
-echo $scss->compile($data, $inputFile);
+try {
+    echo $scss->compile($data, $inputFile);
+} catch (SassException $e) {
+    fwrite(STDERR, $e->getMessage()."\n");
+    exit(1);
+}
 
 if ($changeDir) {
     chdir($oldWorkingDir);
