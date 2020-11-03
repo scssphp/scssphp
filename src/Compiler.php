@@ -133,7 +133,7 @@ class Compiler
     /**
      * @var array<int, string|callable>
      */
-    protected $importPaths = [''];
+    protected $importPaths = [];
     /**
      * @var array<string, Block>
      */
@@ -266,6 +266,20 @@ class Compiler
     protected $callStack = [];
 
     /**
+     * The directory of the currently processed file
+     *
+     * @var string
+     */
+    private $currentDirectory;
+
+    /**
+     * The directory of the input file
+     *
+     * @var string
+     */
+    private $rootDirectory;
+
+    /**
      * Constructor
      *
      * @param array|null $cacheOptions
@@ -359,6 +373,13 @@ class Compiler
         $this->charsetSeen    = null;
         $this->shouldEvaluate = null;
         $this->ignoreCallStackMessage = false;
+
+        if (!\is_null($path) && is_file($path)) {
+            $this->currentDirectory = dirname(realpath($path) ?: $path);
+        } else {
+            $this->currentDirectory = getcwd();
+        }
+        $this->rootDirectory = $this->currentDirectory;
 
         try {
             $this->parser = $this->parserFactory($path);
@@ -3093,7 +3114,7 @@ class Compiler
             case Type::T_DEBUG:
                 list(, $value) = $child;
 
-                $fname = $this->sourceNames[$this->sourceIndex];
+                $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
                 $line  = $this->sourceLine;
                 $value = $this->compileDebugValue($value);
 
@@ -3103,7 +3124,7 @@ class Compiler
             case Type::T_WARN:
                 list(, $value) = $child;
 
-                $fname = $this->sourceNames[$this->sourceIndex];
+                $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
                 $line  = $this->sourceLine;
                 $value = $this->compileDebugValue($value);
 
@@ -3113,7 +3134,7 @@ class Compiler
             case Type::T_ERROR:
                 list(, $value) = $child;
 
-                $fname = $this->sourceNames[$this->sourceIndex];
+                $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
                 $line  = $this->sourceLine;
                 $value = $this->compileValue($this->reduce($value, true));
 
@@ -3827,7 +3848,7 @@ class Compiler
         if ($op !== '==' && $op !== '!=') {
             $warning = "Color arithmetic is deprecated and will be an error in future versions.\n"
                 . "Consider using Sass's color functions instead.";
-            $fname = $this->sourceNames[$this->sourceIndex];
+            $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
             $line  = $this->sourceLine;
 
             fwrite($this->stderr, "DEPRECATION WARNING: $warning\n         on line $line of $fname\n\n");
@@ -5237,7 +5258,7 @@ class Compiler
      */
     protected function importFile($path, OutputBlock $out)
     {
-        $this->pushCallStack('import ' . $path);
+        $this->pushCallStack('import ' . $this->getPrettyPath($path));
         // see if tree is cached
         $realPath = realpath($path);
 
@@ -5253,11 +5274,11 @@ class Compiler
             $this->importCache[$realPath] = $tree;
         }
 
-        $pi = pathinfo($path);
+        $currentDirectory = $this->currentDirectory;
+        $this->currentDirectory = dirname($path);
 
-        array_unshift($this->importPaths, $pi['dirname']);
         $this->compileChildrenNoReturn($tree->children, $out);
-        array_shift($this->importPaths);
+        $this->currentDirectory = $currentDirectory;
         $this->popCallStack();
     }
 
@@ -5272,59 +5293,38 @@ class Compiler
      */
     public function findImport($url)
     {
-        $urls = [];
-
-        $hasExtension = preg_match('/[.]s?css$/', $url);
-
         // for "normal" scss imports (ignore vanilla css and external requests)
-        if (! preg_match('~\.css$|^https?://|^//~', $url)) {
-            $isPartial = (strpos(basename($url), '_') === 0);
+        // Callback importers are still called for BC.
+        if (preg_match('~\.css$|^https?://|^//~', $url)) {
+            foreach ($this->importPaths as $dir) {
+                if (\is_string($dir)) {
+                    continue;
+                }
 
-            // try both normal and the _partial filename
-            $urls = [$url . ($hasExtension ? '' : '.scss')];
+                if (\is_callable($dir)) {
+                    // check custom callback for import path
+                    $file = \call_user_func($dir, $url);
 
-            if (! $isPartial) {
-                $urls[] = preg_replace('~[^/]+$~', '_\0', $url) . ($hasExtension ? '' : '.scss');
+                    if (! \is_null($file)) {
+                        return $file;
+                    }
+                }
             }
+            return null;
+        }
 
-            if (! $hasExtension) {
-                $urls[] = "$url/index.scss";
-                // allow to find a plain css file, *if* no scss or partial scss is found
-                $urls[] = $url . '.css';
-            }
+        $relativePath = $this->resolveImportPath($url, $this->currentDirectory);
+
+        if (!\is_null($relativePath)) {
+            return $relativePath;
         }
 
         foreach ($this->importPaths as $dir) {
             if (\is_string($dir)) {
-                // check urls for normal import paths
-                foreach ($urls as $full) {
-                    $found = [];
-                    $separator = (
-                        ! empty($dir) &&
-                        substr($dir, -1) !== '/' &&
-                        substr($full, 0, 1) !== '/'
-                    ) ? '/' : '';
-                    $full = $dir . $separator . $full;
+                $path = $this->resolveImportPath($url, $dir);
 
-                    if (is_file($file = $full)) {
-                        $found[] = $file;
-                    }
-                    if (! $isPartial) {
-                        $full = dirname($full) . '/_' . basename($full);
-                        if (is_file($file = $full)) {
-                            $found[] = $file;
-                        }
-                    }
-                    if ($found) {
-                        if (\count($found) === 1) {
-                            return reset($found);
-                        }
-                        if (\count($found) > 1) {
-                            throw $this->error(
-                                "Error: It's not clear which file to import. Found: " . implode(', ', $found)
-                            );
-                        }
-                    }
+                if (!\is_null($path)) {
+                    return $path;
                 }
             } elseif (\is_callable($dir)) {
                 // check custom callback for import path
@@ -5336,13 +5336,124 @@ class Compiler
             }
         }
 
-        if ($urls) {
-            if (! $hasExtension || preg_match('/[.]scss$/', $url)) {
-                throw $this->error("`$url` file not found for @import");
-            }
+        throw $this->error("`$url` file not found for @import");
+    }
+
+    private function resolveImportPath($url, $baseDir)
+    {
+        $path = rtrim($baseDir, '/').'/'.ltrim($url, '/');
+
+        $hasExtension = preg_match('/.scss$/', $url);
+
+        if ($hasExtension) {
+            return $this->checkImportPathConflicts($this->tryImportPath($path));
         }
 
-        return null;
+        $result = $this->checkImportPathConflicts($this->tryImportPathWithExtensions($path));
+
+        if (!\is_null($result)) {
+            return $result;
+        }
+
+        return $this->tryImportPathAsDirectory($path);
+    }
+
+    /**
+     * @param string[] $paths
+     *
+     * @return string|null
+     */
+    private function checkImportPathConflicts(array $paths)
+    {
+        if (\count($paths) === 0) {
+            return null;
+        }
+
+        if (\count($paths) === 1) {
+            return $paths[0];
+        }
+
+        $formattedPrettyPaths = [];
+
+        foreach ($paths as $path) {
+            $formattedPrettyPaths[] = '  ' . $this->getPrettyPath($path);
+        }
+
+        throw $this->error("It's not clear which file to import. Found:\n" . implode("\n", $formattedPrettyPaths));
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return string[]
+     */
+    private function tryImportPathWithExtensions($path)
+    {
+        $result = $this->tryImportPath($path.'.scss');
+
+        if ($result) {
+            return $result;
+        }
+
+        return $this->tryImportPath($path.'.css');
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return string[]
+     */
+    private function tryImportPath($path)
+    {
+        $partial = dirname($path).'/_'.basename($path);
+
+        $candidates = [];
+
+        if (is_file($partial)) {
+            $candidates[] = $partial;
+        }
+
+        if (is_file($path)) {
+            $candidates[] = $path;
+        }
+
+        return $candidates;
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return string|null
+     */
+    private function tryImportPathAsDirectory($path)
+    {
+        if (!is_dir($path)) {
+            return null;
+        }
+
+        return $this->checkImportPathConflicts($this->tryImportPathWithExtensions($path.'/index'));
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    private function getPrettyPath($path)
+    {
+        $normalizedPath = $path;
+        $normalizedRootDirectory = $this->rootDirectory.'/';
+
+        if (\DIRECTORY_SEPARATOR === '\\') {
+            $normalizedRootDirectory = str_replace('\\', '/', $normalizedRootDirectory);
+            $normalizedPath = str_replace('\\', '/', $path);
+        }
+
+        if (0 === strpos($normalizedPath, $normalizedRootDirectory)) {
+            return substr($normalizedPath, \strlen($normalizedRootDirectory));
+        }
+
+        return $path;
     }
 
     /**
@@ -5432,7 +5543,7 @@ class Compiler
             $column = $this->sourceColumn;
 
             $loc = isset($this->sourceNames[$this->sourceIndex])
-                ? $this->sourceNames[$this->sourceIndex] . " on line $line, at column $column"
+                ? $this->getPrettyPath($this->sourceNames[$this->sourceIndex]) . " on line $line, at column $column"
                 : "line: $line, column: $column";
 
             $msg = "$msg: $loc";
@@ -5498,7 +5609,7 @@ class Compiler
                 if ($all || (isset($call['n']) && $call['n'])) {
                     $msg = '#' . $ncall++ . ' ' . $call['n'] . ' ';
                     $msg .= (isset($this->sourceNames[$call[Parser::SOURCE_INDEX]])
-                          ? $this->sourceNames[$call[Parser::SOURCE_INDEX]]
+                          ? $this->getPrettyPath($this->sourceNames[$call[Parser::SOURCE_INDEX]])
                           : '(unknown file)');
                     $msg .= ' on line ' . $call[Parser::SOURCE_LINE];
 
