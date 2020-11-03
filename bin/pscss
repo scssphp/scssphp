@@ -153,14 +153,6 @@ EOT;
 
 if ($inputFile) {
     $data = file_get_contents($inputFile);
-
-    $newWorkingDir = dirname(realpath($inputFile));
-    $oldWorkingDir = getcwd();
-
-    if ($oldWorkingDir !== $newWorkingDir) {
-        $changeDir = chdir($newWorkingDir);
-        $inputFile = basename($inputFile);
-    }
 } else {
     $data = '';
 
@@ -205,8 +197,4 @@ try {
 } catch (SassException $e) {
     fwrite(STDERR, $e->getMessage()."\n");
     exit(1);
-}
-
-if ($changeDir) {
-    chdir($oldWorkingDir);
 }
