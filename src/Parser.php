@@ -334,6 +334,11 @@ class Parser
         $this->saveEncoding();
         $this->extractLineNumbers($this->buffer);
 
+        // discard space/comments at the start
+        $this->discardComments = true;
+        $this->whitespace();
+        $this->discardComments = false;
+
         $selector = $this->selectors($out);
 
         $this->restoreEncoding();
