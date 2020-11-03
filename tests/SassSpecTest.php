@@ -274,33 +274,31 @@ class SassSpecTest extends TestCase
         // normalize css for comparison purpose
         $css = $this->normalizeCssOutput($css);
 
-        // this test needs @import of includes files, build a dir with files and set the ImportPaths
-        if ($includes) {
-            $basedir = sys_get_temp_dir() . '/sass-spec/' . preg_replace(",^\d+/\d+\.\s*,", "", $name);
-            $this->dirToClean = $basedir;
+        // build a dir with files and set the ImportPaths
+        $basedir = sys_get_temp_dir() . '/sass-spec/' . preg_replace(",^\d+/\d+\.\s*,", "", $name);
+        $this->dirToClean = $basedir;
 
-            foreach ($includes as $f => $c) {
-                $f = $basedir . '/' . $f;
+        foreach ($includes as $f => $c) {
+            $f = $basedir . '/' . $f;
 
-                if (! is_dir(dirname($f))) {
-                    mkdir(dirname($f), 0777, true);
-                }
-
-                file_put_contents($f, $c);
-            }
-            if ($inputDir) {
-                $basedir .= '/' . $inputDir;
-                if (!is_dir($basedir)) {
-                    mkdir($basedir, 0777, true);
-                }
+            if (! is_dir(dirname($f))) {
+                mkdir(dirname($f), 0777, true);
             }
 
-            // SassSpec use @import "core_functions/.../..."
-            $compiler->setImportPaths([$basedir, $this->sassSpecDir()]);
-        } else {
-            // SassSpec use @import "core_functions/.../..."
-            $compiler->setImportPaths([$this->sassSpecDir()]);
+            file_put_contents($f, $c);
         }
+        if ($inputDir) {
+            $basedir .= '/' . $inputDir;
+        }
+        if (!is_dir($basedir)) {
+            mkdir($basedir, 0777, true);
+        }
+
+        $inputPath = $basedir.'/input.scss';
+        file_put_contents($inputPath, $scss);
+
+        // SassSpec use @import "core_functions/.../..."
+        $compiler->addImportPath($this->sassSpecDir());
 
         $fp_err_stream = fopen("php://memory", 'r+');
         $compiler->setErrorOuput($fp_err_stream);
@@ -308,7 +306,7 @@ class SassSpecTest extends TestCase
         if (! strlen($error)) {
             if (getenv('BUILD')) {
                 try {
-                    $actual = $compiler->compile($scss, 'input.scss');
+                    $actual = $compiler->compile($scss, $inputPath);
                 } catch (\Exception $e) {
                     $this->appendToExclusionList($name);
                     fclose($fp_err_stream);
@@ -317,7 +315,7 @@ class SassSpecTest extends TestCase
                     //throwException($e);
                 }
             } else {
-                $actual = $compiler->compile($scss, 'input.scss');
+                $actual = $compiler->compile($scss, $inputPath);
             }
 
             // normalize css for comparison purpose
@@ -366,7 +364,7 @@ class SassSpecTest extends TestCase
         } else {
             if (getenv('BUILD')) {
                 try {
-                    $compiler->compile($scss, 'input.scss');
+                    $compiler->compile($scss, $inputPath);
                     throw new \Exception('Expecting a SassException for error tests');
                 } catch (SassException $e) {
                     // TODO assert the error message ?
@@ -377,7 +375,7 @@ class SassSpecTest extends TestCase
                 $this->assertNull(null);
             } else {
                 $this->expectException(SassException::class);
-                $compiler->compile($scss, 'input.scss');
+                $compiler->compile($scss, $inputPath);
                 // TODO assert the error message ?
             }
 
