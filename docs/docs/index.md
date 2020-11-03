@@ -41,10 +41,12 @@ echo $scss->compile('
 
 ### Import Paths
 
-When you import a file using the `{% raw %}@{% endraw %}import` directive, the current path of your
-PHP script is used as the search path by default. This is often not what
-you want, so there are two methods for manipulating the import path:
-`addImportPath`, and `setImportPaths`.
+When you import a file using the `{% raw %}@{% endraw %}import` directive,
+the import is resolved relatively to the current file. The input of `compile`
+is considered to be in the current working directory (`getcwd()`) unless its
+path is provided.
+In case you want to load files from other folders, there are two methods for
+ manipulating the import path: `addImportPath`, and `setImportPaths`.
 
 * `addImportPath($path)` will append `$path` to the list of the import
   paths that are searched.
@@ -52,9 +54,6 @@ you want, so there are two methods for manipulating the import path:
 * `setImportPaths($pathArray)` will replace the entire import path with
   `$pathArray`. The value of `$pathArray` will be converted to an array if it
   isn't one already.
-
-If the import path is set to `array()` then importing is effectively disabled.
-The default import path is `array('')`, which means the current directory.
 
 {% highlight php startinline=true %}
 use ScssPhp\ScssPhp\Compiler;
