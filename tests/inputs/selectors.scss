@@ -296,3 +296,10 @@ ul, ol {
   display:inline;
   content:'↦';
 }
+
+// interpolated
+$selector: " ul li";
+$end: ' ';
+#{$selector} a .tocnumber #{$end} {
+        min-width: 100%;
+}

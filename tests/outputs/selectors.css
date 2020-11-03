@@ -385,3 +385,6 @@ ul ul, ol ul, ul ol, ol ol {
   display: inline;
   content: '↦';
 }
+ul li a .tocnumber {
+  min-width: 100%;
+}
