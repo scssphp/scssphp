@@ -6490,6 +6490,40 @@ class Compiler
     }
 
     /**
+     * Assert value is a number and has a given unit
+     *
+     * @api
+     *
+     * @param array|Number $value
+     * @param array $allowedUnits
+     *   null value stand for unitless
+     * @param string $varName
+     *
+     * @return Number
+     *
+     * @throws \Exception
+     */
+    public function assertUnit($value, $units, $varName = null)
+    {
+        $this->assertNumber($value, $varName);
+
+        foreach ($units as $unit) {
+            if ($unit && $value->hasUnit($unit)) {
+                return $value;
+            }
+            if (\is_null($unit) && $value->unitless()) {
+                return $value;
+            }
+        }
+
+        $value = $this->compileValue($value);
+        $var_display = ($varName ? " \${$varName}:" : '');
+        $unit_display = array_filter($units);
+        $unit_display = "'" . implode("' or '", $unit_display) . "'";
+        throw $this->error("Error:{$var_display} Expected $value to have unit $unit_display");
+    }
+
+    /**
      * Assert value is a integer
      *
      * @api
@@ -6511,6 +6545,24 @@ class Compiler
         }
 
         return intval($value);
+    }
+
+    /**
+     * Extract the  ... / alpha on the last argument of chanel arg
+     * in color functions
+     *
+     * @param array $args
+     * @return mixed
+     */
+    public function extractSlashAlphaInColorFunction($args)
+    {
+        $last = end($args);
+        if ($last[0] === Type::T_EXPRESSION && $last[1] === '/') {
+            array_pop($args);
+            $args[] = $last[2];
+            $args[] = $last[3];
+        }
+        return $args;
     }
 
 
@@ -6640,6 +6692,34 @@ class Compiler
 
         return $out;
     }
+
+    /**
+     * Convert HWB to RGB
+     * https://www.w3.org/TR/css-color-4/#hwb-to-rgb
+     *
+     * @api
+     *
+     * @param integer $hue        H from 0 to 360
+     * @param integer $whiteness W from 0 to 100
+     * @param integer $blackness  B from 0 to 100
+     *
+     * @return array
+     */
+    public function HWBtoRGB($hue, $whiteness, $blackness)
+    {
+        $w = min(100, max(0, $whiteness)) / 100;
+        $b = min(100, max(0, $blackness)) / 100;
+        $b = min(1.0 - $w, $b);
+
+        $rgb = $this->toRGB($hue, 100, 50);
+        for($i = 1; $i < 4; $i++) {
+          $rgb[$i] *= (1.0 - $w - $b);
+          $rgb[$i] += 255 * $w;
+        }
+
+        return $rgb;
+    }
+
 
     // Built in functions
 
@@ -7152,6 +7232,118 @@ class Compiler
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
 
         return new Number($hsl[3], '%');
+    }
+
+    protected static $libHwb = [
+        ['channels'],
+        ['hue', 'whiteness', 'blackness'],
+        ['hue', 'whiteness', 'blackness', 'alpha'] ];
+    protected function libHwb($args, $kwargs, $funcName = 'hwb')
+    {
+        $args_to_check = $args;
+
+        if (\count($args) == 1) {
+            if ($args[0][0] !== Type::T_LIST) {
+                throw $this->error("Missing elements \$whiteness and \$blackness");
+            }
+
+            if (\trim($args[0][1])) {
+                throw $this->error("\$channels must be a space-separated list.");
+            }
+
+            if (! empty($args[0]['enclosing'])) {
+                throw $this->error("\$channels must be an unbracketed list.");
+            }
+
+            $args = $args[0][2];
+            if (\count($args) > 3) {
+                throw $this->error("hwb() : Only 3 elements are allowed but ". \count($args) . "were passed");
+            }
+
+            $args_to_check = $this->extractSlashAlphaInColorFunction($kwargs['channels'][2]);
+            if (\count($args_to_check) !== \count($kwargs['channels'][2])) {
+                $args = $args_to_check;
+            }
+        }
+
+        if (\count($args_to_check) < 2) {
+            throw $this->error("Missing elements \$whiteness and \$blackness");
+        }
+        if (\count($args_to_check) < 3) {
+            throw $this->error("Missing element \$blackness");
+        }
+        if (\count($args_to_check) > 4) {
+            throw $this->error("hwb() : Only 4 elements are allowed but ". \count($args) . "were passed");
+        }
+
+        foreach ($kwargs as $k => $arg) {
+            if (in_array($arg[0], [Type::T_FUNCTION_CALL]) && in_array($arg[1], ['min', 'max'])) {
+                return null;
+            }
+        }
+
+        foreach ($args_to_check as $k => $arg) {
+            if (in_array($arg[0], [Type::T_FUNCTION_CALL]) && in_array($arg[1], ['min', 'max'])) {
+                if (count($kwargs) > 1 || ($k >= 2 && count($args) === 4)) {
+                    return null;
+                }
+
+                $args[$k] = $this->stringifyFncallArgs($arg);
+            }
+
+            if (
+                $k >= 2 && count($args) === 4 &&
+                in_array($arg[0], [Type::T_FUNCTION_CALL, Type::T_FUNCTION]) &&
+                in_array($arg[1], ['calc','env'])
+            ) {
+                return null;
+            }
+        }
+
+        $hue = $this->reduce($args[0]);
+        $whiteness = $this->reduce($args[1]);
+        $blackness = $this->reduce($args[2]);
+        $alpha = null;
+
+        if (\count($args) === 4) {
+            $alpha = $this->compileColorPartValue($args[3], 0, 1, false);
+
+            if (! \is_numeric($alpha)) {
+                $val = $this->compileValue($args[3]);
+                throw $this->error("\$alpha: $val is not a number");
+            }
+        }
+
+        $this->assertNumber($hue, 'hue');
+        $this->assertUnit($whiteness, ['%'], 'whiteness');
+        $this->assertUnit($blackness, ['%'], 'blackness');
+
+        $w = $whiteness->getDimension();
+        if ($w < 0 || $w > 100) {
+            $val = $this->compileValue($whiteness);
+            throw $this->error("\$whiteness: Expected $val to be within 0% and 100%.");
+        }
+
+        $b = $blackness->getDimension();
+        if ($b < 0 || $b > 100) {
+            $val = $this->compileValue($blackness);
+            throw $this->error("\$blackness: Expected $val to be within 0% and 100%.");
+        }
+
+
+        $hueValue = $hue->getDimension() % 360;
+
+        while ($hueValue < 0) {
+            $hueValue += 360;
+        }
+
+        $color = $this->HWBtoRGB($hueValue, $w, $b);
+
+        if (! \is_null($alpha)) {
+            $color[4] = $alpha;
+        }
+
+        return $color;
     }
 
     protected function adjustHsl($color, $idx, $amount)
