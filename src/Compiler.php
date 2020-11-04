@@ -6702,12 +6702,18 @@ class Compiler
     {
         $w = min(100, max(0, $whiteness)) / 100;
         $b = min(100, max(0, $blackness)) / 100;
+
+        $sum = $w + $b;
+        if ($sum > 1.0) {
+            $w = $w / $sum;
+            $b = $b / $sum;
+        }
         $b = min(1.0 - $w, $b);
 
         $rgb = $this->toRGB($hue, 100, 50);
         for($i = 1; $i < 4; $i++) {
           $rgb[$i] *= (1.0 - $w - $b);
-          $rgb[$i] += 255 * $w;
+          $rgb[$i] = round($rgb[$i] + 255 * $w + 0.0001);
         }
 
         return $rgb;
