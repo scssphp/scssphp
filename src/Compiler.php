@@ -6672,6 +6672,28 @@ class Compiler
     }
 
     /**
+     * Assert a value is whithin a range
+     * @param array|Number $value
+     * @param int|float $min
+     * @param int|float $max
+     * @param string $rangeText
+     * @param string $varName
+     * @return mixed
+     * @throws CompilerException
+     */
+    public function assertRange($value, $min, $max, $rangeText, $varName = null)
+    {
+        $v = $this->assertNumber($value, $varName)->getDimension();
+        if ($v < $min || $v > $max) {
+            $value = $this->compileValue($value);
+            $var_display = ($varName ? " \${$varName}:" : '');
+            throw $this->error("Error:{$var_display} expected $value to be within $rangeText.");
+        }
+
+        return $value;
+    }
+
+    /**
      * Assert value is a integer
      *
      * @api
@@ -7102,10 +7124,23 @@ class Compiler
      */
     protected function alterColor($args, $fn)
     {
+        /**
+         * 0 => color
+         * 1 => red, 2=> green, 3=> blue
+         * 4 => hue, 5=> saturation, 6 => lightness
+         * 7 => whiteness, 8=> blackness
+         * 9 => alpha
+         */
         $color = $this->assertColor($args[0]);
 
-        foreach ([1 => 1, 2 => 2, 3 => 3, 7 => 4] as $iarg => $irgba) {
+        $found = false;
+
+        // rgba
+        foreach ([1 => 1, 2 => 2, 3 => 3, 9 => 4] as $iarg => $irgba) {
             if (isset($args[$iarg])) {
+                if ($iarg < 9) {
+                    $found = "RGB";
+                }
                 $val = $this->assertNumber($args[$iarg])->getDimension();
 
                 if (! isset($color[$irgba])) {
@@ -7116,7 +7151,51 @@ class Compiler
             }
         }
 
-        if (! empty($args[4]) || ! empty($args[5]) || ! empty($args[6])) {
+        // hwb
+        if (! empty($args[7]) || ! empty($args[8])) {
+            if ($found) {
+                throw $this->error("Error: $found parameters may not be passed along with HWB parameters.");
+            }
+            $found = "HWB";
+
+            $hwb = $this->RGBtoHWB($color[1], $color[2], $color[3]);
+
+            foreach ([4 => 1, 7 => 2, 8 => 3] as $iarg => $ihwb) {
+                if (! empty($args[$iarg])) {
+                    switch ($iarg) {
+                        case 7:
+                            $this->assertUnit($args[$iarg], ['%'], 'whiteness');
+                            $val = $this->assertRange($args[$iarg], -100, 100, "-100% and 100%", "whiteness");
+                            break;
+                        case 8:
+                            $this->assertUnit($args[$iarg], ['%'], 'blackness');
+                            $val = $this->assertRange($args[$iarg], -100, 100, "-100% and 100%", "blackness");
+                            break;
+                        default:
+                            $val = $this->assertNumber($args[$iarg]);
+                            break;
+                    }
+                    $val = $val->getDimension();
+                    $hwb[$ihwb] = \call_user_func($fn, $hwb[$ihwb], $val, $iarg);
+                }
+            }
+
+            $rgb = $this->HWBtoRGB($hwb[1], $hwb[2], $hwb[3]);
+
+            if (isset($color[4])) {
+                $rgb[4] = $color[4];
+            }
+
+            $color = $rgb;
+        }
+
+        // hsl
+        if ((! empty($args[4]) && $found !== 'HWB') || ! empty($args[5]) || ! empty($args[6])) {
+            if ($found) {
+                throw $this->error("Error: $found parameters may not be passed along with HSL parameters.");
+            }
+            $found = "HSL";
+
             $hsl = $this->toHSL($color[1], $color[2], $color[3]);
 
             foreach ([4 => 1, 5 => 2, 6 => 3] as $iarg => $ihsl) {
@@ -7138,9 +7217,11 @@ class Compiler
         return $color;
     }
 
-    protected static $libAdjustColor = [
-        'color', 'red:null', 'green:null', 'blue:null',
-        'hue:null', 'saturation:null', 'lightness:null', 'alpha:null'
+    protected static $libAdjustColor = ['color',
+        'red:null', 'green:null', 'blue:null',
+        'hue:null', 'saturation:null', 'lightness:null',
+        'whiteness:null', 'blackness:null',
+        'alpha:null'
     ];
     protected function libAdjustColor($args)
     {
@@ -7149,27 +7230,44 @@ class Compiler
         });
     }
 
-    protected static $libChangeColor = [
-        'color', 'red:null', 'green:null', 'blue:null',
-        'hue:null', 'saturation:null', 'lightness:null', 'alpha:null'
+    protected static $libChangeColor = ['color',
+        'red:null', 'green:null', 'blue:null',
+        'hue:null', 'saturation:null', 'lightness:null',
+        'whiteness:null', 'blackness:null',
+        'alpha:null'
     ];
     protected function libChangeColor($args)
     {
         return $this->alterColor($args, function ($base, $alter, $i) {
+            switch ($i) {
+                case 7:
+                    if ($alter < 0) {
+                        $this->assertRange(new Number($alter, '%'), 0, 100, "0% and 100%", "whiteness");
+                    }
+                    break;
+                case 8:
+                    if ($alter < 0) {
+                        $this->assertRange(new Number($alter, '%'), 0, 100, "0% and 100%", "blackness");
+                    }
+                    break;
+            }
             return $alter;
         });
     }
 
-    protected static $libScaleColor = [
-        'color', 'red:null', 'green:null', 'blue:null',
-        'hue:null', 'saturation:null', 'lightness:null', 'alpha:null'
+    protected static $libScaleColor = ['color',
+        'red:null', 'green:null', 'blue:null',
+        'hue:null', 'saturation:null', 'lightness:null',
+        'whiteness:null', 'blackness:null',
+        'alpha:null'
     ];
     protected function libScaleColor($args)
     {
         return $this->alterColor($args, function ($base, $scale, $i) {
             // 1, 2, 3 - rgb
             // 4, 5, 6 - hsl
-            // 7 - a
+            // (4,)7,8 - (h)wb
+            // 9 - a
             switch ($i) {
                 case 1:
                 case 2:
@@ -7181,7 +7279,7 @@ class Compiler
                     $max = 360;
                     break;
 
-                case 7:
+                case 9:
                     $max = 1;
                     break;
 
@@ -7506,18 +7604,11 @@ class Compiler
         $this->assertUnit($whiteness, ['%'], 'whiteness');
         $this->assertUnit($blackness, ['%'], 'blackness');
 
+        $this->assertRange($whiteness, 0, 100, "0% and 100%", "whiteness");
+        $this->assertRange($blackness, 0, 100, "0% and 100%", "blackness");
+
         $w = $whiteness->getDimension();
-        if ($w < 0 || $w > 100) {
-            $val = $this->compileValue($whiteness);
-            throw $this->error("\$whiteness: Expected $val to be within 0% and 100%.");
-        }
-
         $b = $blackness->getDimension();
-        if ($b < 0 || $b > 100) {
-            $val = $this->compileValue($blackness);
-            throw $this->error("\$blackness: Expected $val to be within 0% and 100%.");
-        }
-
 
         $hueValue = $hue->getDimension() % 360;
 
