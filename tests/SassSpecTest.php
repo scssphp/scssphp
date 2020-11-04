@@ -214,8 +214,13 @@ class SassSpecTest extends TestCase
     }
 
     protected function derogateColorHWBTests($scss) {
-        if (strpos($scss, 'color.hwb(') !== false) {
-            $derogate = str_replace("color.hwb(", "hwb(", $scss);
+        if (strpos($scss, 'color.') !== false) {
+            $derogate = $scss;
+            foreach (['hwb', 'whiteness', 'blackness'] as $f) {
+                if (strpos($scss, "color.{$f}(") !== false) {
+                    $derogate = str_replace("color.{$f}(", "{$f}(", $derogate);
+                }
+            }
             if (strpos($derogate, 'color.') === false) {
                 $derogate = str_replace("@use 'sass:color';\n", "", $derogate);
                 return $derogate;
