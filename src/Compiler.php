@@ -6848,7 +6848,7 @@ class Compiler
      * @api
      *
      * @param integer $hue        H from 0 to 360
-     * @param integer $whiteness W from 0 to 100
+     * @param integer $whiteness  W from 0 to 100
      * @param integer $blackness  B from 0 to 100
      *
      * @return array
@@ -6872,6 +6872,40 @@ class Compiler
         }
 
         return $rgb;
+    }
+
+    /**
+     * Convert RGB to HWB
+     *
+     * @api
+     *
+     * @param integer $red
+     * @param integer $green
+     * @param integer $blue
+     *
+     * @return array
+     */
+    public function RGBtoHWB($red, $green, $blue)
+    {
+        $min = min($red, $green, $blue);
+        $max = max($red, $green, $blue);
+
+        $d = $max - $min;
+
+        if ((int) $d === 0) {
+            $h = 0;
+        } else {
+
+            if ($red == $max) {
+                $h = 60 * ($green - $blue) / $d;
+            } elseif ($green == $max) {
+                $h = 60 * ($blue - $red) / $d + 120;
+            } elseif ($blue == $max) {
+                $h = 60 * ($red - $green) / $d + 240;
+            }
+        }
+
+        return [Type::T_HWB, fmod($h, 360), $min / 255 * 100, 100 - $max / 255 *100];
     }
 
 
@@ -7498,6 +7532,24 @@ class Compiler
         }
 
         return $color;
+    }
+
+    protected static $libWhiteness = ['color'];
+    protected function libWhiteness($args, $kwargs, $funcName = 'whiteness') {
+
+        $color = $this->assertColor($args[0]);
+        $hwb = $this->RGBtoHWB($color[1], $color[2], $color[3]);
+
+        return new Number($hwb[2], '%');
+    }
+
+    protected static $libBlackness = ['color'];
+    protected function libBlackness($args, $kwargs, $funcName = 'blackness') {
+
+        $color = $this->assertColor($args[0]);
+        $hwb = $this->RGBtoHWB($color[1], $color[2], $color[3]);
+
+        return new Number($hwb[3], '%');
     }
 
     protected function adjustHsl($color, $idx, $amount)
