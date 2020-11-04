@@ -5700,14 +5700,7 @@ class Compiler
             // notation 100 127 255 / 0 is in fact a simple list of 4 values
             foreach ($args as $k => $arg) {
                 if ($arg[1][0] === Type::T_LIST && \count($arg[1][2]) === 3) {
-                    $last = end($arg[1][2]);
-
-                    if ($last[0] === Type::T_EXPRESSION && $last[1] === '/') {
-                        array_pop($arg[1][2]);
-                        $arg[1][2][] = $last[2];
-                        $arg[1][2][] = $last[3];
-                        $args[$k] = $arg;
-                    }
+                    $args[$k][1][2] = $this->extractSlashAlphaInColorFunction($arg[1][2]);
                 }
             }
         }
@@ -6557,7 +6550,7 @@ class Compiler
     public function extractSlashAlphaInColorFunction($args)
     {
         $last = end($args);
-        if ($last[0] === Type::T_EXPRESSION && $last[1] === '/') {
+        if (\count($args) === 3 && $last[0] === Type::T_EXPRESSION && $last[1] === '/') {
             array_pop($args);
             $args[] = $last[2];
             $args[] = $last[3];
