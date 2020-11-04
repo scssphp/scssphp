@@ -213,6 +213,17 @@ class SassSpecTest extends TestCase
         return false;
     }
 
+    protected function derogateColorHWBTests($scss) {
+        if (strpos($scss, 'color.hwb(') !== false) {
+            $derogate = str_replace("color.hwb(", "hwb(", $scss);
+            if (strpos($derogate, 'color.') === false) {
+                $derogate = str_replace("@use 'sass:color';\n", "", $derogate);
+                return $derogate;
+            }
+        }
+        return $scss;
+    }
+
     /**
      * @dataProvider provideTests
      */
@@ -247,6 +258,7 @@ class SassSpecTest extends TestCase
         list($options, $scss, $includes, $inputDir) = $input;
         list($css, $warning, $error, $alternativeCssOutputs) = $output;
 
+        $scss = $this->derogateColorHWBTests($scss);
         $fullInputs = $scss . "\n" . implode("\n", $includes);
 
         if (false !== strpos($fullInputs, '@forward ') || false !== strpos($fullInputs, '@use ')) {
