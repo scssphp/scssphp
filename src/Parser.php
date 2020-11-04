@@ -1255,6 +1255,7 @@ class Parser
                 'grayscale',
                 'hsl',
                 'hsla',
+                'hwb',
                 'invert',
                 'linear-gradient',
                 'min',
