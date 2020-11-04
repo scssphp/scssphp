@@ -7891,7 +7891,7 @@ class Compiler
         $string = $this->coerceString($args[0]);
         $stringContent = $this->compileStringContent($string);
 
-        $string[2] = [strtolower($stringContent)];
+        $string[2] = [$this->stringTransformAsciiOnly($stringContent, 'strtolower')];
 
         return $string;
     }
@@ -7902,9 +7902,36 @@ class Compiler
         $string = $this->coerceString($args[0]);
         $stringContent = $this->compileStringContent($string);
 
-        $string[2] = [strtoupper($stringContent)];
+        $string[2] = [$this->stringTransformAsciiOnly($stringContent, 'strtoupper')];
 
         return $string;
+    }
+
+    /**
+     * Apply a filter on a string content, only on ascii chars
+     * let extended chars untouched
+     *
+     * @param string $stringContent
+     * @param string $filter
+     * @return string
+     */
+    protected function stringTransformAsciiOnly($stringContent, $filter)
+    {
+        $mblength = Util::mbStrlen($stringContent);
+        if ($mblength === strlen($stringContent)) {
+            return $filter($stringContent);
+        }
+        $filteredString = "";
+        for ($i = 0; $i < $mblength; $i++) {
+            $char = Util::mbSubstr($stringContent, $i, 1);
+            if (strlen($char) > 1) {
+                $filteredString .= $char;
+            } else {
+                $filteredString .= $filter($char);
+            }
+        }
+
+        return $filteredString;
     }
 
     protected static $libFeatureExists = ['feature'];
