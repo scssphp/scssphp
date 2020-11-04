@@ -221,6 +221,11 @@ class SassSpecTest extends TestCase
                 return $derogate;
             }
         }
+        if (strpos($scss, "@use '../test-hue'") !== false) {
+            $derogate = str_replace("@use '../test-hue' as *;\n", "@import 'tests/specs/test-hue';\n", $scss);
+            return $derogate;
+        }
+
         return $scss;
     }
 
@@ -311,7 +316,7 @@ class SassSpecTest extends TestCase
             $compiler->setImportPaths([$basedir, $this->sassSpecDir()]);
         } else {
             // SassSpec use @import "core_functions/.../..."
-            $compiler->setImportPaths([$this->sassSpecDir()]);
+            $compiler->setImportPaths([getcwd(),$this->sassSpecDir()]);
         }
 
         $fp_err_stream = fopen("php://memory", 'r+');

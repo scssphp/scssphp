@@ -1,0 +1,10 @@
+@mixin test-hue($hue) {
+  @for $whiteness from 0 through 5 {
+    whiteness-#{$whiteness * 20} {
+      @for $blackness from 0 through 5 {
+        blackness-#{$blackness * 20}:
+            hwb($hue, $whiteness * 20%, $blackness * 20%);
+      }
+    }
+  }
+}
