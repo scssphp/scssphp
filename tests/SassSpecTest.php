@@ -469,6 +469,10 @@ class SassSpecTest extends TestCase
                             if (! $subNname && $subDir) {
                                 $subNname = '/' . $subDir;
                             }
+                            if ($hasInput) {
+                                echo "{$baseTestName}{$subNname} double input.scss ? Skipping...\n";
+                                continue 3; // 1 switch + 2 foreach
+                            }
 
                             $baseDir = $subDir;
                             $hasInput = true;
