@@ -5114,6 +5114,8 @@ class Compiler
      *
      * @param string $style One of the OutputStyle constants
      *
+     * @return void
+     *
      * @phpstan-param OutputStyle::* $style
      */
     public function setOutputStyle($style)
@@ -5339,6 +5341,12 @@ class Compiler
         throw $this->error("`$url` file not found for @import");
     }
 
+    /**
+     * @param string $url
+     * @param string $baseDir
+     *
+     * @return string|null
+     */
     private function resolveImportPath($url, $baseDir)
     {
         $path = rtrim($baseDir, '/').'/'.ltrim($url, '/');
@@ -8023,7 +8031,7 @@ class Compiler
      * let extended chars untouched
      *
      * @param string $stringContent
-     * @param string $filter
+     * @param callable $filter
      * @return string
      */
     protected function stringTransformAsciiOnly($stringContent, $filter)
