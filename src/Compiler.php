@@ -409,8 +409,8 @@ class Compiler
 
             $prefix = '';
 
-            if (!$this->charsetSeen && function_exists('mb_strlen')) {
-                if (strlen($out) !== mb_strlen($out)) {
+            if (!$this->charsetSeen) {
+                if (strlen($out) !== Util::mbStrlen($out)) {
                     $prefix = '@charset "UTF-8";' . "\n";
                     $out = $prefix . $out;
                 }
