@@ -5,6 +5,33 @@ title: Changelog
 
 ## Changelog
 
+### **1.4** -- Nov 7, 2020
+
+* fix the injection of the `@charset` rule without mbstring (stof)
+* Add a CI job running tests without mbstring (stof)
+* Stop changing current directory in pscss (stof)
+* Refactor the resolution of imports to be spec compliant (stof)
+* Add a factory method for SassScriptException with an argument name (stof)
+* Expose `SassScriptException` as a non internal class (stof)
+* Fix regression with whitespaces or comments at the beginning of interpolated selectors (Cerdic)
+* Fix the implementation of `to-uppercase` and `to-lowercase` to avoid being locale dependant (Cerdic)
+* Add a better error rendering of sass errors in `pscss` (stof)
+* Deprecate `setFormatter` in favor of `setOutputStyle` (stof)
+* Deprecate all formatters except `Expanded` and `Compressed`(stof)
+* Change the default formatter to be `Expanded` (stof)
+* Migrate CI to github actions (stof, robocoder)
+* Fix the generation of sourcemaps (stof)
+* Adjust the source map to account for the charset prefix (stof)
+* Improve the phpdoc (stof)
+* Fix the behavior of `str-index` (stof)
+* Deprecate color arithmetic (stof)
+* Fix spec compliance for the `call` function (stof)
+* Fix the matching of the space ending an escape sequence (stof)
+* Fix the behavior of `to-uppercase` and `to-lowercase` (stof)
+* Fix the implementation of `==` and `!=` between number and colors (stof)
+* Fix the implementation of modulo (stof)
+* Mark the `units-level-3` feature as implemented (stof)
+
 ### **1.3** -- Oct 29, 2020
   * Better `quote()` compliance (Cerdic)
   * Improve string compliance with sass-spec (Cerdic)
@@ -45,8 +72,7 @@ title: Changelog
   * Color function can be called with a var(..) argument (Cerdic)
   * Throw an error when passing too many arguments (stof, Cerdic)
   * Don't coerce anything into a map but throw an error if it's not at all matching a map (Cerdic)
-  * In the `@atroot (#{with: media})` the interpolation has to be reparsed in the compiler before tryin
-g to manipulate as a map (Cerdic)
+  * In the `@atroot (#{with: media})` the interpolation has to be reparsed in the compiler before trying to manipulate as a map (Cerdic)
   * Throw an error if positional and named passed, even on a splat... argument, except if this is the only one (Cerdic)
   * Fix map-remove() : second argument key can be a list of arguments (Cerdic)
   * Fix parsing value list in function call made of value list of 1 element (Cerdic)
