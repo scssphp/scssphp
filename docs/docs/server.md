@@ -12,14 +12,14 @@ a directory that you specify.
 
 Create a file, like `style.php`:
 
-{% highlight php startinline=true %}
+```php
 use ScssPhp\Server\Server;
 
 $directory = "stylesheets";
 
 $server = new Server($directory);
 $server->serve();
-{% endhighlight %}
+```
 
 Create the directory set in the script alongside the script, then add your
 `scss` files to it.
@@ -34,16 +34,16 @@ Going to the URL `example.com/style.php/style.scss` will attempt to compile
 
 If it can not find the file it will return an HTTP 404 page:
 
-{% highlight text %}
+```
 /* INPUT NOT FOUND scss v0.0.1 */
-{% endhighlight %}
+```
 
 If the file can't be compiled due to an error, then an HTTP 500 page is
 returned. Similar to the following:
 
-{% highlight text %}
+```
 Parse error: failed at 'height: ;' stylesheets/test.scss on line 8
-{% endhighlight %}
+```
 
 Also, because SCSS server writes headers, make sure no output is written before
 it runs.
@@ -62,7 +62,7 @@ Just call the `serve` method to let it render its output.
 
 Here's an example of creating a SCSS server that outputs compressed CSS:
 
-{% highlight php startinline=true %}
+```php
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\OutputStyle;
 use ScssPhp\Server\Server;
@@ -72,4 +72,4 @@ $scss->setOutputStyle(OutputStyle::COMPRESSED);
 
 $server = new Server('stylesheets', null, $scss);
 $server->serve();
-{% endhighlight %}
+```

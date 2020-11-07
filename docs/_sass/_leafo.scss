@@ -263,63 +263,10 @@ p {
 }
 
 .highlight {
-    background: #333;
-    color: white;
-    font-size: 14px;
-    padding: 10px;
-    margin: 0 0 15px;
-    box-shadow: 0px 1px 3px rgba(0,0,0, 0.7), inset 0px 0px 0px 1px rgba(255,255,255,0.3);
-    border-radius: 2px;
-    border: 1px solid #222;
-
-    @media (min-width: #{$desktop_width}) {
-        margin: 0 2em 15px;
-    }
-
     pre {
-        margin-top: 0px;
-        margin-bottom: 0px;
-    }
-
-    // builtins
-    .nb {
-        color: #FFA67C;
-    }
-
-    // strings
-    .s, .s1, .s2, .se, .nt {
-        color: #ffe898;
-    }
-
-    // proper names
-    .nc, .vc, .bp {
-        color: #98d9ff;
-    }
-
-    // true, false, nil
-    .kc {
-        color: #acfff0;
-    }
-
-    // function lit, braces, parens
-    .nf, .kt {
-        color: #9fff98;
-    }
-
-    .nv {
-        color: #ff9898;
-    }
-
-    // keywords
-    .k, .kd, .na {
-        color: #cb98ff;
-    }
-
-    .c1, .c2 {
-        color: #929292;
-    }
-
-    .m, .mi, .mf, .mh, .o {
-        color: #9495ff;
+        border-radius: 2px;
+        border: 1px solid #222;
+        padding: 10px;
+        margin: 0 0 15px;
     }
 }

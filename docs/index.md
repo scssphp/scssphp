@@ -27,13 +27,13 @@ You can also find the latest source online:
 
 If you use [Packagist][2] for installing packages, then you can update your `composer.json` like so:
 
-{% highlight json %}
+```json
 {
     "require": {
         "scssphp/scssphp": "^{{ site.current_version }}"
     }
 }
-{% endhighlight %}
+```
 
 Note: git archives of stable versions no longer include the `tests/` folder.
 To install the unit tests, download the complete package source using `composer`'s
@@ -63,9 +63,9 @@ If passed the flag `-T`, a formatted parse tree is returned instead of the compi
 
 The flag `-s` (or `--style`) can be used to set the [output style](docs/#output-formatting):
 
-{% highlight bash %}
+```bash
 $ bin/pscss -s compressed < styles.scss
-{% endhighlight %}
+```
 
 The flag `-I` (or `--load_path`) can be used to set import paths for the loader. On Unix/Linux systems,
 the paths are colon separated.
@@ -77,7 +77,7 @@ Complete documentation for **scssphp** is located at <a href="{{ site.baseurl }}
 To use the scssphp library either require `scss.inc.php` or use your `composer` generated auto-loader, and then
 invoke the `Compiler` class:
 
-{% highlight php startinline=true %}
+```php
 require_once "scssphp/scss.inc.php";
 
 use ScssPhp\ScssPhp\Compiler;
@@ -88,7 +88,7 @@ echo $scss->compile('
   $color: #abc;
   div { color: lighten($color, 20%); }
 ');
-{% endhighlight %}
+```
 
 The `compile` method takes `SCSS` as a string, and returns the `CSS`. If there
 is an error when compiling, an exception is thrown with an appropriate

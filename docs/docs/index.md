@@ -14,9 +14,9 @@ The project can be loaded through a `composer` generated auto-loader.
 Alternatively, the entire project can be loaded through a utility file.
 Just include it somewhere to start using it:
 
-{% highlight php startinline=true %}
+```php
 require_once 'scssphp/scss.inc.php';
-{% endhighlight %}
+```
 
 ### Compiling
 
@@ -24,7 +24,7 @@ In order to manually compile code from PHP you must create an instance of the
 `Compiler` class. The typical flow is to create the instance, set any compile time
 options, then run the compiler with the `compile` method.
 
-{% highlight php startinline=true %}
+```php
 use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
@@ -33,7 +33,7 @@ echo $scss->compile('
   $color: #abc;
   div { color: lighten($color, 20%); }
 ');
-{% endhighlight %}
+```
 
 * `compile($scssCode)` will attempt to compile a string of SCSS code. If it
   succeeds, the CSS will be returned as a string. If there is any error, an
@@ -55,7 +55,7 @@ In case you want to load files from other folders, there are two methods for
   `$pathArray`. The value of `$pathArray` will be converted to an array if it
   isn't one already.
 
-{% highlight php startinline=true %}
+```php
 use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
@@ -63,13 +63,13 @@ $scss->setImportPaths('assets/stylesheets/');
 
 // will search for 'assets/stylesheets/mixins.scss'
 echo $scss->compile('{% raw %}@{% endraw %}import "mixins.scss";');
-{% endhighlight %}
+```
 
 Besides adding static import paths, it's also possible to add custom import
 functions. This allows you to load paths from a database, or HTTP, or using
 files that SCSS would otherwise not process (such as vanilla CSS imports).
 
-{% highlight php startinline=true %}
+```php
 use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
@@ -80,7 +80,7 @@ $scss->addImportPath(function($path) {
 
 // will import 'stylesheets/vanilla.css'
 echo $scss->compile('{% raw %}@{% endraw %}import "vanilla.css";');
-{% endhighlight %}
+```
 
 A list of the compiled files (both the primary file and its imports) can be
 retrieved using the `getParsedFiles` method.
@@ -95,16 +95,16 @@ You can preset variables before compilation by using the `setVariables($vars)`
 method. If the variable is also defined in your scss source, use the `!default`
 flag to prevent your preset variables from being overridden.
 
-{% highlight php startinline=true %}
+```php
 use ScssPhp\ScssPhp\Compiler;
--
+
 $scss = new Compiler();
 $scss->setVariables(array(
     'var' => 'false',
 ));
 
 echo $scss->compile('$var: true !default;');
-{% endhighlight %}
+```
 
 Note: the value is the scss source to be parsed. If you want to parse a string,
 you have to represent it as a string, e.g. `'var' => '"string"'`.
@@ -120,7 +120,7 @@ The output formatting can be configured using the `setOutputStyle` method.
 
 Given the following SCSS:
 
-{% highlight scss %}
+```scss
 /*! Comment */
 .navigation {
     ul {
@@ -137,13 +137,13 @@ Given the following SCSS:
         color: silver;
     }
 }
-{% endhighlight %}
+```
 
 The output will look like that:
 
 `OutputStyle::EXPANDED`:
 
-{% highlight css %}
+```css
 /*! Comment */
 .navigation ul {
   line-height: 20px;
@@ -155,13 +155,13 @@ The output will look like that:
 .footer .copyright {
   color: silver;
 }
-{% endhighlight %}
+```
 
 `OutputStyle::COMPRESSED`:
 
-{% highlight css %}
+```css
 /* Comment*/.navigation ul{line-height:20px;color:blue;}.navigation ul a{color:red;}.footer .copyright{color:silver;}
-{% endhighlight %}
+```
 
 ### Source Maps
 
@@ -169,7 +169,7 @@ Source Maps are useful in debugging compiled css files using browser developer t
 
 To enable source maps, use the `setSourceMap()` and `setSourceMapOptions()` methods.
 
-{% highlight php startinline=true %}
+```php
 use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
@@ -192,7 +192,7 @@ $scss->setSourceMapOptions([
 ]);
 
 // use Compiler::SOURCE_MAP_INLINE for inline (comment-based) source maps
-{% endhighlight %}
+```
 
 ### Custom Functions
 
@@ -232,7 +232,7 @@ automatically to the corresponding SCSS type.
 As an example, a function called `add-two` is registered, which adds two numbers
 together. PHP's anonymous function syntax is used to define the function.
 
-{% highlight php startinline=true %}
+```php
 use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
@@ -247,12 +247,12 @@ $scss->registerFunction(
 );
 
 $scss->compile('.ex1 { result: add-two(10, 10); }');
-{% endhighlight %}
+```
 
 Using a prototype and kwargs, functions can take named parameters. In this next example,
 we register a function called `divide` which divides a named dividend by a named divisor.
 
-{% highlight php startinline=true %}
+```php
 use ScssPhp\ScssPhp\Compiler;
 
 $scss = new Compiler();
@@ -266,7 +266,7 @@ $scss->registerFunction(
 );
 
 $scss->compile('.ex2 { result: divide($divisor: 2, $dividend: 30); }');
-{% endhighlight %}
+```
 
 Note: in the above examples, we lose the units of the number, and we
 also don't do any type checking. This will have undefined results if we give it
@@ -279,7 +279,7 @@ exceptions thrown by the Compiler. This is especially important in a production
 environment where the content may be untrusted (e.g., user uploaded) because
 the exception stack trace may contain sensitive data.
 
-{% highlight php startinline=true %}
+```php
 use ScssPhp\ScssPhp\Compiler;
 
 try {
@@ -290,7 +290,7 @@ try {
     echo '';
     syslog(LOG_ERR, 'scssphp: Unable to compile content');
 }
-{% endhighlight %}
+```
 
 If your web application allows for arbitrary `@import` paths, you should
 tighten the `open_basedir` setting at run-time to mitigate vulnerability to
