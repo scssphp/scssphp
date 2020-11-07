@@ -242,7 +242,6 @@ class SassSpecTest extends TestCase
         }
 
         $compiler = new Compiler();
-        $compiler->setFormatter('ScssPhp\ScssPhp\Formatter\Expanded');
 
         list($options, $scss, $includes, $inputDir) = $input;
         list($css, $warning, $error, $alternativeCssOutputs) = $output;
