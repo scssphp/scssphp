@@ -5,7 +5,7 @@ title: Changelog
 
 ## Changelog
 
-* **1.3** -- Oct 29, 2020
+### **1.3** -- Oct 29, 2020
   * Better `quote()` compliance (Cerdic)
   * Improve string compliance with sass-spec (Cerdic)
   * Fix issue with argument values being swapped (jljr222, Cerdic)
@@ -20,7 +20,8 @@ title: Changelog
   * Deprecate `Compiler::addFeature()` (stof)
   * Move `gh-pages` to `/docs` folder on main branch (stof, robocoder)
   * Add php 8 support for phpunit (adlenton)
-* **1.2.1** -- Sep 7, 2020
+
+### **1.2.1** -- Sep 7, 2020
   * Fix `@import url()` parsing (leonardfischer, Cerdic)
   * Fix various directive parsing issues (zoglo, CatoTH, Cerdic)
   * Fix `min()`, `max()` (Cerdic)
@@ -29,7 +30,8 @@ title: Changelog
   * Fix `call()` argument name (Cerdic)
   * Fix `random()` (Cerdic)
   * Fix `list-separator()` on empty or one element list (Cerdic)
-* **1.2** -- Aug 26, 2020
+
+### **1.2** -- Aug 26, 2020
   * Many, many sass-spec test improvements (stof, Cerdic)
   * Partial fix of special cases in hsl/hsla functions (Cerdic)
   * In certain interpolations, the spec seems to prefer to force a double quote for output strings (Cerdic)
@@ -80,38 +82,44 @@ g to manipulate as a map (Cerdic)
   * Update sass-spec tests (2020.08.20)
   * Update to PSR-12 (robocoder)
   * Add php 8 nightly to Travis CI (robocoder)
-* **1.1.1** -- Jun 4, 2020
+
+### **1.1.1** -- Jun 4, 2020
   * Fix extend and class concatenation (develth, Cerdic)
   * Fix arguments selector issue (stempora, Cerdic)
   * Fix regression when members units are not normalizable (jszczypk, Cerdic)
   * Remove box.json.dist from .gitattributes (reedy)
   * 32-bit fixes for Base64VLQ `encode()` and `unique-id()` (remicollet, robocoder)
   * Fix index of map within list of maps (stempora, robocoder)
-* **1.1.0** -- Apr 21, 2020
+
+### **1.1.0** -- Apr 21, 2020
   * Fix the handling of call traces for exceptions of native functions (stof)
   * Add named call stack entries for imports (stof)
   * Fix leaks in the call stack (stof)
   * Qualify function calls when the compiler can optimize them (stof)
   * Remove deprecated Parser::to() and Parser::show() methods (robocoder)
-* **1.0.9** -- Apr 1, 2020
+
+### **1.0.9** -- Apr 1, 2020
   * Fix parsing issues around `#, +, -, --` (Cerdic)
   * Fix `@import` compatibility (Cerdic)
   * Add vendor-prefixed `scssphp-glob()` function (havutcuoglu, robocoder)
   * Remove PHP version and mbstring.func_overload checks (KryukovDS, robocoder)
   * Fix multiple issues with Bootstrap 4.4.1 and master (fuzegit, Cerdic)
   * Fix variables interpolation bug (Seonic, Cerdic)
-* **1.0.8** -- Feb 20, 2020
+
+### **1.0.8** -- Feb 20, 2020
   * Import of valid scss files fails silently (oyejorge, Cerdic)
   * Undefined $libName (enricobono, robocoder)
   * Fix division and modulo per sass-spec (Cerdic)
   * Fix expressions in at directives (Cerdic)
   * Introduce support for custom properties (Cerdic)
   * Function compatibility issues with functions (abs, ceil, floor, max, min, percentage, random, round), units, and conversions. (Cerdic)
-* **1.0.7** -- Jan 31, 2020
+
+### **1.0.7** -- Jan 31, 2020
   * Fix problem with Bootstrap 4.4 / Responsive containers (nvindice, Cerdic)
   * Fix issue with pseudoelement selectors order in `@extend`'ed elements (CrazyManLabs, Cerdic)
   * `example/Server.php` moved to https://github.com/scssphp/server
-* **1.0.6** -- Dec 12, 2019
+
+### **1.0.6** -- Dec 12, 2019
   * Many sass-spec compatibility fixes (Cerdic)
   * Discriminate shorthands vs real divisions in border-radius property (joakipe, Cerdic)
   * Base64VLQ - 32-bit overflow fixes from Closure implementation (remicollet, robocoder)
@@ -119,12 +127,14 @@ g to manipulate as a map (Cerdic)
   * Variables scope issues (jducro, Cerdic)
   * Using `@extend` creates invalid output with nested classnames (bmbrands, Cerdic)
   * Fixed sourceMapGenerator bug if semicolons are stripped. (ugogon)
-* **1.0.5** -- Oct 3, 2019
+
+### **1.0.5** -- Oct 3, 2019
   * interpolation fixes (Cerdic)
   * phpunit test updates (stof)
   * undefined sourceIndex (connerbw, robocoder)
   * using is_null(), is_dir(), is_file() for consistency (robocoder)
-* **1.0.4** -- Sep 6, 2019
+
+### **1.0.4** -- Sep 6, 2019
   * `border-radius` shorthand support (alex-shul, Cerdic)
   * allow `zip()` function to use all types as arguments (devdot, Cerdic)
   * `@each` forcing unwanted type conversion (devdot)
@@ -132,26 +142,31 @@ g to manipulate as a map (Cerdic)
   * `str-splice` broken in php 7.4
   * composer and travis configuration updates
   * remove obsolete `Base64VLQEncoder` class
-* **1.0.3** -- Aug 7, 2019
+
+### **1.0.3** -- Aug 7, 2019
   * `@at-root`, `@import`, and `url(//host/image.png)` fixes (Cerdic)
   * join operator with interpolated values vs vars or static values (julienmru, Cerdic)
   * Implemented passing Arguments to Content Blocks (jensniedling, Cerdic)
   * Support whitespaces inside :not() (schliesser)
   * Compile non-roots comments also (fabsn182, Cerdic)
-* **1.0.2** -- July 6, 2019
+
+### **1.0.2** -- July 6, 2019
   * Version: actually bump the version number
-* **1.0.1** -- July 6, 2019
+
+### **1.0.1** -- July 6, 2019
   * Fix iteration on map (alexsaalberg049 , Cerdic)
   * More compatibility with reference implementation (Cerdic)
   * Cache: bump `CACHE_VERSION` (Cerdic)
   * `bin/pscss` requires php 5.6+ (robocder)
   * travis updates and improved tests (Cerdic)
   * Nested formatted improvements (Cerdic)
-* **1.0.0** -- June 4, 2019
+
+### **1.0.0** -- June 4, 2019
   * Moving development to ScssPhp organization, https://github.com/scssphp/
   * Online documentation can be found at http://scssphp.github.com/scssphp/
   * Renamed namespace from Leafo to ScssPhp
-* **0.8.4** -- June 18, 2019
+
+### **0.8.4** -- June 18, 2019
   * This is the final tag on the leafo/scssphp repo; PHP requirements downgraded to 5.4+ for this repo/package only.
   * Support parent selector and selector functions (Cerdic)
   * Improve `and`/`or` compatibility (robocoder)
@@ -164,7 +179,8 @@ g to manipulate as a map (Cerdic)
   * Parsing missing http(s) protocol from `url()` (sebastianwebb, robocoder)
   * Add source column to thrown error message (slprime, robocoder)
   * Detect invalid CSS outside of selector (JMitnik, robocoder)
-* **0.8.3** -- May 31, 2019
+
+### **0.8.3** -- May 31, 2019
   * grid-template-columns (gKreator, Cerdic)
   * `self` in selector and parse improvements (designerno1, Cerdic)
   * invalid css output when using interpolation with mixins (Jasonkoolman, Cerdic)
@@ -180,9 +196,11 @@ g to manipulate as a map (Cerdic)
   * line comments for `@media` statements (gajcapuder, Cerdic)
   * failed interpolation in placeholder (GuidoJansen, Cerdic)
   * parentheses in selector causes loss of whitespace (Netmosfera, Cerdic)
-* **0.8.2** -- May 9, 2019
+
+### **0.8.2** -- May 9, 2019
   * requires php 5.6+
-* **0.8.1** -- May 9, 2019
+
+### **0.8.1** -- May 9, 2019
   * grid-row & grid-column shorthand (claytron5000, Cerdic)
   * `@`mixin `@`supports `@`include compilation error (geoidesic, Cerdic)
   * `@`media expression slicing (tdutrion, Cerdic)
@@ -192,7 +210,8 @@ g to manipulate as a map (Cerdic)
   * wrap successive inline assign into one block (Cerdic)
   * :not(), :nth-child() and other selectors before `@`extend (STV11C, Cerdic)
   * commentsSeen and phpdoc update (nextend)
-* **0.8.0** -- May 2, 2019
+
+### **0.8.0** -- May 2, 2019
   * Variables from inner override variables in parents (Daijobou, Cerdic)
   * Bootstrap issues with `@`at-root, self (l2a, Cerdic)
   * `@`supports inside rule (Marat-Tanalin, Cerdic)
@@ -200,7 +219,8 @@ g to manipulate as a map (Cerdic)
   * Number parsing (ange007, robocoder)
   * Travis test updates (Cerdic)
   * Add Bootstrap and Foundation framework tests (Cerdic)
-* **0.7.8** -- April 24, 2019
+
+### **0.7.8** -- April 24, 2019
   * Partial support for #rrggbbaa CSS Level 4 colors with alpha (charlymz)
   * Avoid infinitely duplicating parts when extending selector (cyberalien)
   * Fix rooted SCSS URIs normalized incorrectly with double slashes (evanceit)
@@ -216,77 +236,94 @@ g to manipulate as a map (Cerdic)
   * Change Base64 VLQ encoder/decoder implementation
   * Generate inline sourcemap in command-line (dexxa)
   * Fix backslash escape (bastianjoel)
-* **0.7.7** -- July 21, 2018
+
+### **0.7.7** -- July 21, 2018
   * Actually merge maps instead of concatenating (s7eph4n)
   * Treat 0 as special unitless number (of2607)
   * Partial fix for call() with ellipsis (gabor-udvari)
   * Misc peephole optimization
-* **0.7.6** -- May 23, 2018
+
+### **0.7.6** -- May 23, 2018
   * `mix()` alpha fix (Uriziel01)
   * `transparentize()` alpha sensitive to locale (leonardfischer, timelsass)
   * notices when compiling UIKit (azjezz)
   * faster parsing for base64 data: url()s (wout)
-* **0.7.5** -- February 8, 2018
+
+### **0.7.5** -- February 8, 2018
   * Fix `for` loop with units (of2607)
   * Fix side-effects in abs(), ceil(), floor(), and round() (jugyhead)
   * Add option for custom SourceMapGenerator (dleffler)
-* **0.7.4** -- December 21, 2017
+
+### **0.7.4** -- December 21, 2017
   * Fat fingered cleanup; broke source maps (dleffler)
-* **0.7.3** -- December 19, 2017
+
+### **0.7.3** -- December 19, 2017
   * Add inline sourcemaps (oyejorge, NicolaF)
   * Add file-based sourcemaps (dleffler)
-* **0.7.2** -- December 14, 2017
+
+### **0.7.2** -- December 14, 2017
   * Change default precision to 10 to match scss 3.5.0
   * Use number_format instead of locale (Arlisaha)
-* **0.7.1** -- October 13, 2017
+
+### **0.7.1** -- October 13, 2017
   * Server moved to exoample/ folder
   * Server::serveFrom() helper removed
   * Removed .phar build
   * Workaround `each()` deprecated in PHP 7.2RC (marinaglancy)
-* **0.6.7** -- February 23, 2017
+
+### **0.6.7** -- February 23, 2017
   * fix list interpolation
   * pscss: enable --line-numbers and --debug-info for stdin
   * checkRange() throws RangeException
-* **0.6.6** -- September 10, 2016
+
+### **0.6.6** -- September 10, 2016
   * Do not extend decorated tags with another tag (FMCorz)
   * Merge shared direct relationship when extending (FMCorz)
   * Extend resolution was generating invalid selectors (FMCorz)
   * Resolve function arguments using mixin content scope (FMCorz)
   * Let `@`content work when a block isn’t passed in. (diemer)
-* **0.6.5** -- June 20, 2016
+
+### **0.6.5** -- June 20, 2016
   * ignore BOM (nwiborg)
   * fix another mixin and variable scope issue (mahagr)
   * Compiler: coerceValue support for #rgb values (thesjg)
   * preserve un-normalized variable name for error message (kissifrot)
-* **0.6.4** -- June 15, 2016
+
+### **0.6.4** -- June 15, 2016
   * parsing multiple assignment flags (Limych)
   * `@`warn should not write to stdout (atomicalnet)
   * evaluating null and/or 'foo' (micranet)
   * case insensitive directives regression (Limych)
   * Compiler: scope change to some properties and methods to facilitate subclassing (jo)
-* **0.6.3** -- January 14, 2016
+
+### **0.6.3** -- January 14, 2016
   * extend + parent + placeholder fix (atna)
   * nested content infinite loop (Lusito)
   * only divide by 100 if percent (jkrehm)
   * Parser: refactoring and performance optimizations (oyejorge)
-* **0.6.2** -- December 16, 2015
+
+### **0.6.2** -- December 16, 2015
   * bin/pscss --iso8859-1
   * add rebeccapurple (from css color draft)
   * improve utf-8 support
-* **0.6.1** -- December 13, 2015
+
+### **0.6.1** -- December 13, 2015
   * bin/pscss --continue-on-error
   * fix BEM and `@`extend infinite loop
   * Compiler: setIgnoreErrors(boolean)
   * exception refactoring
   * implement `@`extend !optional and `keywords($args)` built-in
-* **0.6.0** -- December 5, 2015
+
+### **0.6.0** -- December 5, 2015
   * handle escaped quotes inside quoted strings (with and without interpolation present)
   * Compiler: undefined sourceParser when re-using a single Compiler instance
   * Parser: `getLineNo()` removed
-* **0.5.1** -- November 11, 2015
+
+### **0.5.1** -- November 11, 2015
   * `@`scssphp-import-once
   * avoid notices with custom error handlers that don't check if `error_reporting()` returns 0
-* **0.5.0** -- November 11, 2015
+
+### **0.5.0** -- November 11, 2015
   * Raise minimum supported version to PHP 5.4
   * Drop HHVM support/hacks
   * Remove deprecated classmap.php
@@ -294,7 +331,8 @@ g to manipulate as a map (Cerdic)
   * Compiler: treat `! null === true`
   * Compiler: `str-splice()` fixes
   * Node\Number: fixes incompatible units
-* **0.4.0** -- November 8, 2015
+
+### **0.4.0** -- November 8, 2015
   * Parser: remove deprecated `show()` and `to()` methods
   * Parser, Compiler: convert stdClass to Block, Node, and OutputBlock abstractions
   * New control directives: `@`break, `@`continue, and naked `@`return
@@ -304,14 +342,16 @@ g to manipulate as a map (Cerdic)
   * Compiler: output literal string instead of division-by-zero exception
   * Compiler: `str-slice()` - handle negative index
   * Compiler: pass kwargs to built-ins and user registered functions as 2nd argument (instead of Compiler instance)
-* **0.3.3** -- October 23, 2015
+
+### **0.3.3** -- October 23, 2015
   * Compiler: add `getVariables()` and `addFeature()` API methods
   * Compiler: can pass negative indices to `nth()` and `set-nth()`
   * Compiler: can pass map as args to mixin expecting varargs
   * Compiler: add coerceList(map)
   * Compiler: improve `@`at-root support
   * Nested formatter: suppress empty blocks
-* **0.3.2** -- October 4, 2015
+
+### **0.3.2** -- October 4, 2015
   * Fix `@`extend behavior when interpolating a variable that contains a selector list
   * Hoist `@`keyframes so children selectors are not prefixed by parent selector
   * Don't wrap `@`import inside `@`media query
@@ -320,31 +360,38 @@ g to manipulate as a map (Cerdic)
   * String-based keys mismatch in map functions
   * Short-circuit evaluation for `and`, `or`, and `if()`
   * Compiler: getParsedFiles() now includes the main file
-* **0.3.1** -- September 11, 2015
+
+### **0.3.1** -- September 11, 2015
   * Fix bootstrap v4-dev regression from 0.3.0
-* **0.3.0** -- September 6, 2015
+
+### **0.3.0** -- September 6, 2015
   * Compiler getParsedFiles() now returns a map of imported files and their corresponding timestamps
   * Fix multiple variable scope bugs, including `@`each
   * Fix regression from 0.2.1
-* **0.2.1** -- September 5, 2015
+
+### **0.2.1** -- September 5, 2015
   * Fix map-get(null)
   * Fix nested function definition (variable scoping)
   * Fix extend bug with BEM syntax
   * Fix selector regression from 0.1.9
-* **0.2.0** -- August 25, 2015
+
+### **0.2.0** -- August 25, 2015
   * Smaller git archives
   * Detect `@`import loops
   * Doc blocks everywhere!
-* **0.1.10** -- August 23, 2015
+
+### **0.1.10** -- August 23, 2015
   * Fix 3 year old `@`extend bug
   * Fix autoloader. (ext)
-* **0.1.9** -- August 1, 2015
+
+### **0.1.9** -- August 1, 2015
   * Adoption of the Sass Community Guidelines
   * Nested selector fixes with lists, interpolated string, and parent selector
   * Implement list-separator() and set-nth() built-ins
   * Implement `@`warn and `@`error
   * Removed spaceship operator pending discussion with reference implementators
-* **0.1.8** -- July 18, 2015
+
+### **0.1.8** -- July 18, 2015
   * Online documentation moved to http://leafo.github.com/scssphp/
   * Fix index() - map support; now returns null (instead of false) when value not found
   * Fix lighten(), darken() - percentages don't require % unit
@@ -353,58 +400,72 @@ g to manipulate as a map (Cerdic)
   * Fix !=
   * Fix `@`return inside `@`each
   * Add box support to generate .phar
-* **0.1.7** -- July 1, 2015
+
+### **0.1.7** -- July 1, 2015
   * bin/pscss: added --line-numbers and --debug-info options
   * Compiler: added setLineNumberStyle() and 'q' unit
   * Parser: deprecated show() and to() methods
   * simplified licensing (MIT)
   * refactoring internals and misc bug fixes (maps, empty list, function-exists())
-* **0.1.6** -- June 22, 2015
+
+### **0.1.6** -- June 22, 2015
   * !global
   * more built-in functions
   * Server: checkedCachedCompile() (zimzat)
   * Server: showErrorsAsCSS() to display errors in a pseudo-element (khamer)
   * misc bug fixes
-* **0.1.5** -- June 2, 2015
+
+### **0.1.5** -- June 2, 2015
   * misc bug fixes
-* **0.1.4** -- June 2, 2015
+
+### **0.1.4** -- June 2, 2015
   * add new string functions (okj579)
   * add compileFile() and checkCompile() (NoxNebula, saas786, panique)
   * fix regular expression in findImport() (lucvn)
   * needsCompile() shouldn't compare meta-etag with browser etag (edwinveldhuizen)
-* **0.1.3** -- May 31, 2015
+
+### **0.1.3** -- May 31, 2015
   * map support (okj579)
   * misc bug fixes (etu, bgarret, aaukt)
-* **0.1.1** -- Aug 12, 2014
+
+### **0.1.1** -- Aug 12, 2014
   * add stub classes -- a backward compatibility layer (vladimmi)
-* **0.1.0** -- Aug 9, 2014
+
+### **0.1.0** -- Aug 9, 2014
   * raise PHP requirement (5.3+)
   * reformat/reorganize source files to be PSR-2 compliant
-* **0.0.15** -- Aug 6, 2014
+
+### **0.0.15** -- Aug 6, 2014
   * fix regression with default values in functions (torkiljohnsen)
-* **0.0.14** -- Aug 5, 2014
+
+### **0.0.14** -- Aug 5, 2014
   * `@`keyframes $name - didn't work inside mixin (sergeylukin)
   * Bourbon transform(translateX()) didn't work (dovy and greynor)
-* **0.0.13** -- Aug 4, 2014
+
+### **0.0.13** -- Aug 4, 2014
   * handle If-None-Match in client request, and send ETag in response (NSmithUK)
   * normalize quotation marks (NoxNebula)
   * improve handling of escape sequence in selectors (matt3224)
   * add "scss_formatter_crunched" which strips comments
   * internal: generate more accurate parse tree
-* **0.0.12** -- July 6, 2014
+
+### **0.0.12** -- July 6, 2014
   * revert erroneous import-partials-fix (smuuf)
   * handle If-Modified-Since in client request, and send Last-Modified in response (braver)
   * add hhvm to travis-ci testing
-* **0.0.11** -- July 5, 2014
+
+### **0.0.11** -- July 5, 2014
   * support multi-line continuation character (backslash) per CSS2.1 and CSS3 spec (caiosm1005)
   * imported partials should not be compiled (squarestar)
   * add setVariables() and unsetVariable() to interface (leafo/lessphp)
   * micro-optimizing is_null() (Yahasana)
-* **0.0.10** -- April 14, 2014
+
+### **0.0.10** -- April 14, 2014
   * fix media query merging (timonbaetz)
   * inline if should treat null as false (wonderslug)
   * optimizing toHSL() (jfsullivan)
-* **0.0.9** -- December 23, 2013
+
+### **0.0.9** -- December 23, 2013
   * fix `@`for/`@`while inside `@`content block (sergeylukin)
   * fix functions in mixin_content (timonbaetz)
   * fix infinite loop when target extends itself (oscherler)
@@ -412,12 +473,14 @@ g to manipulate as a map (Cerdic)
   * allow setting number precision (kasperisager)
   * add public function helpers (toBool, get, findImport, assertList, assertColor, assertNumber, throwError) (Burgov, atdt)
   * add optional cache buster prefix to serve() method (iMoses)
-* **0.0.8** -- September 16, 2013
+
+### **0.0.8** -- September 16, 2013
   * Avoid IE7 content: counter bug
   * Support transparent as color name
   * Recursively create cache dir (turksheadsw)
   * Fix for INPUT NOT FOUND (morgen32)
-* **0.0.7** -- May 24, 2013
+
+### **0.0.7** -- May 24, 2013
   * Port various fixes from leafo/lessphp.
   * Improve filter precision.
   * Parsing large image data-urls does not work.
@@ -428,7 +491,8 @@ g to manipulate as a map (Cerdic)
   * Fix mixin content includes (James Shannon, Christian Brandt).
   * Fix passing of varargs to another mixin.
   * Fix interpolation bug in expToString() (Matti Jarvinen).
-* **0.0.5** -- March 11, 2013
+
+### **0.0.5** -- March 11, 2013
   * Better compile time errors
   * Fix top level properties inside of a nested `@media` (Anthon Pang)
   * Fix some issues with `@extends` (Anthon Pang)
@@ -439,7 +503,8 @@ g to manipulate as a map (Cerdic)
   * Add variable argument support (Martin Hasoň)
   * Add zip, index, comparable functions (Martin Hasoň)
   * A bunch of parser and bug fixes
-* **0.0.4** -- Nov 3nd, 2012
+
+### **0.0.4** -- Nov 3nd, 2012
   * [Import path can be a function](docs/#import-paths) (Christian Lück).
   * Correctly parse media queries with more than one item (Christian Lück).
   * Add `ie_hex_str`, `abs`, `min`, `max` functions (Martin Hasoň)
@@ -447,14 +512,17 @@ g to manipulate as a map (Cerdic)
   * Improve operator evaluation (Martin Hasoň)
   * Add [`@content`](http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#mixin-content) support.
   * Misc bug fixes.
-* **0.0.3** -- August 2nd, 2012
+
+### **0.0.3** -- August 2nd, 2012
   * Add missing and/or/not operators.
   * Expression evaluation happens correctly.
   * Import file caching and _partial filename support.
   * Misc bug fixes.
-* **0.0.2** -- July 30th, 2012
+
+### **0.0.2** -- July 30th, 2012
   * SCSS server is aware of imports
   * added custom function interface
   * compressed formatter
   * wrote <a href="{{ site.baseurl }}/docs/">documentation</a>
-* **0.0.1** -- July 29th, 2012 -- Initial Release
+
+### **0.0.1** -- July 29th, 2012 -- Initial Release
