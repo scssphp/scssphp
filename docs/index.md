@@ -68,7 +68,7 @@ $ bin/pscss -s compressed < styles.scss
 ```
 
 The flag `-I` (or `--load_path`) can be used to set import paths for the loader. On Unix/Linux systems,
-the paths are colon separated.
+the paths are colon separated. On Windows, they are separate by a semi-colon.
 
 ## SCSSPHP Library Reference
 
