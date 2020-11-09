@@ -375,7 +375,8 @@ class Compiler
         $this->ignoreCallStackMessage = false;
 
         if (!\is_null($path) && is_file($path)) {
-            $this->currentDirectory = dirname(realpath($path) ?: $path);
+            $path = realpath($path) ?: $path;
+            $this->currentDirectory = dirname($path);
         } else {
             $this->currentDirectory = getcwd();
         }
