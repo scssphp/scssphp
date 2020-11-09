@@ -6672,6 +6672,33 @@ class Compiler
     }
 
     /**
+     * Assert a value is % or unitless and optionnaly force it to one or the other
+     * @param array|Number $value
+     * @param null $varName
+     * @param null|string $forceTo
+     * @return Number
+     * @throws CompilerException
+     */
+    public function assertPercentOrUnitless($value, $varName=null, $forceTo = null) {
+        $this->assertNumber($value, $varName);
+        if ($value->unitless()) {
+            if ($forceTo === 'percent') {
+                $value = new Number($value->getDimension() * 100, '%');
+            }
+            return $value;
+        }
+        if ($value->hasUnit('%')) {
+            if ($forceTo === 'unitless') {
+                $value = new Number($value->getDimension() / 100, '');
+            }
+            return $value;
+        }
+
+        $var_display = ($varName ? " \${$varName}:" : '');
+        throw $this->error("Error:{$var_display} Expected $value to be unitless or '%'");
+    }
+
+    /**
      * Assert a value is whithin a range
      * @param array|Number $value
      * @param int|float $min
@@ -7118,12 +7145,25 @@ class Compiler
      * Helper function for adjust_color, change_color, and scale_color
      *
      * @param array<array|Number> $args
+     * @param string $operation
      * @param callable $fn
      *
      * @return array
      */
-    protected function alterColor($args, $fn)
+    protected function alterColor($args, $operation, $fn)
     {
+        $varNames = [
+            0 => 'color',
+            1 => 'red',
+            2 => 'green',
+            3 => 'blue',
+            4 => 'hue',
+            5 => 'saturation',
+            6 => 'lightness',
+            7 => 'whiteness',
+            8 => 'blackness',
+            9 => 'alpha'
+        ];
         /**
          * 0 => color
          * 1 => red, 2=> green, 3=> blue
@@ -7141,7 +7181,27 @@ class Compiler
                 if ($iarg < 9) {
                     $found = "RGB";
                 }
-                $val = $this->assertNumber($args[$iarg])->getDimension();
+                if ($operation === 'scale') {
+                    $val = $this->assertUnit($args[$iarg], ['%'], $varNames[$iarg]);
+                    $val = $this->assertRange($val, -100, 100, "100% and 100%", $varNames[$iarg]);
+                }
+                else {
+                    switch ($iarg) {
+                        case 1:
+                        case 2:
+                        case 3:
+                            $this->assertUnit($args[$iarg], [null], $varNames[$iarg]);
+                            $min = ($operation === 'change' ? 0 : -255);
+                            $val = $this->assertRange($args[$iarg], $min, 255, "{$min} and 255", $varNames[$iarg]);
+                            break;
+                        case 9:
+                            $val = $this->assertPercentOrUnitless($args[$iarg], $varNames[$iarg], 'unitless');
+                            $min = ($operation === 'change' ? 0 : -1);
+                            $val = $this->assertRange($val, $min, 1, "{$min} and 1", $varNames[$iarg]);
+                            break;
+                    }
+                }
+                $val = $val->getDimension();
 
                 if (! isset($color[$irgba])) {
                     $color[$irgba] = (($irgba < 4) ? 0 : 1);
@@ -7162,18 +7222,23 @@ class Compiler
 
             foreach ([4 => 1, 7 => 2, 8 => 3] as $iarg => $ihwb) {
                 if (! empty($args[$iarg])) {
-                    switch ($iarg) {
-                        case 7:
-                            $this->assertUnit($args[$iarg], ['%'], 'whiteness');
-                            $val = $this->assertRange($args[$iarg], -100, 100, "-100% and 100%", "whiteness");
-                            break;
-                        case 8:
-                            $this->assertUnit($args[$iarg], ['%'], 'blackness');
-                            $val = $this->assertRange($args[$iarg], -100, 100, "-100% and 100%", "blackness");
-                            break;
-                        default:
-                            $val = $this->assertNumber($args[$iarg]);
-                            break;
+                    if ($operation === 'scale') {
+                        $val = $this->assertUnit($args[$iarg], ['%'], $varNames[$iarg]);
+                        $val = $this->assertRange($val, -100, 100, "100% and 100%", $varNames[$iarg]);
+                    }
+                    else {
+                        switch ($iarg) {
+                            case 7:
+                            case 8:
+                                $this->assertUnit($args[$iarg], ['%'], $varNames[$iarg]);
+                                $min = ($operation === 'change' ? 0 : -100);
+                                $val = $this->assertRange($args[$iarg], $min, 100, "{$min}% and 100%",
+                                    $varNames[$iarg]);
+                                break;
+                            default:
+                                $val = $this->assertNumber($args[$iarg]);
+                                break;
+                        }
                     }
                     $val = $val->getDimension();
                     $hwb[$ihwb] = \call_user_func($fn, $hwb[$ihwb], $val, $iarg);
@@ -7200,7 +7265,24 @@ class Compiler
 
             foreach ([4 => 1, 5 => 2, 6 => 3] as $iarg => $ihsl) {
                 if (! empty($args[$iarg])) {
-                    $val = $this->assertNumber($args[$iarg])->getDimension();
+                    if ($operation === 'scale') {
+                        $val = $this->assertUnit($args[$iarg], ['%'], $varNames[$iarg]);
+                        $val = $this->assertRange($val, -100, 100, "100% and 100%", $varNames[$iarg]);
+                    }
+                    else {
+                        switch ($iarg) {
+                            case 5:
+                            case 6:
+                                $this->assertPercentOrUnitless($args[$iarg], $varNames[$iarg]);
+                                $min = ($operation === 'change' ? 0 : -100);
+                                $val = $this->assertRange($args[$iarg], $min, 100, "{$min}% and 100%", $varNames[$iarg]);
+                                break;
+                            default:
+                                $val = $this->assertNumber($args[$iarg]);
+                                break;
+                        }
+                    }
+                    $val = $val->getDimension();
                     $hsl[$ihsl] = \call_user_func($fn, $hsl[$ihsl], $val, $iarg);
                 }
             }
@@ -7225,7 +7307,7 @@ class Compiler
     ];
     protected function libAdjustColor($args)
     {
-        return $this->alterColor($args, function ($base, $alter, $i) {
+        return $this->alterColor($args, 'adjust', function ($base, $alter, $i) {
             return $base + $alter;
         });
     }
@@ -7238,19 +7320,7 @@ class Compiler
     ];
     protected function libChangeColor($args)
     {
-        return $this->alterColor($args, function ($base, $alter, $i) {
-            switch ($i) {
-                case 7:
-                    if ($alter < 0) {
-                        $this->assertRange(new Number($alter, '%'), 0, 100, "0% and 100%", "whiteness");
-                    }
-                    break;
-                case 8:
-                    if ($alter < 0) {
-                        $this->assertRange(new Number($alter, '%'), 0, 100, "0% and 100%", "blackness");
-                    }
-                    break;
-            }
+        return $this->alterColor($args, 'change', function ($base, $alter, $i) {
             return $alter;
         });
     }
@@ -7263,7 +7333,7 @@ class Compiler
     ];
     protected function libScaleColor($args)
     {
-        return $this->alterColor($args, function ($base, $scale, $i) {
+        return $this->alterColor($args, 'scale', function ($base, $scale, $i) {
             // 1, 2, 3 - rgb
             // 4, 5, 6 - hsl
             // (4,)7,8 - (h)wb
