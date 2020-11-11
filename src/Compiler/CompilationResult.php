@@ -115,6 +115,7 @@ class CompilationResult
     public function addImportedFile($currentDirectory, $path, $filePath)
     {
         $this->importedFiles[] = ['currentDir' => $currentDirectory, 'path' => $path, 'filePath' => $filePath];
+        $this->addIncludedFile($filePath);
     }
 
 
@@ -128,16 +129,32 @@ class CompilationResult
         return array_column($this->importedFiles, 'filePath');
     }
 
+    /**
+     * Save the included files
+     * @param string $path
+     */
+    public function addIncludedFile($path)
+    {
+        // unquote the included path if needed
+        foreach (['"', '"'] as $quote) {
+            if (strpos($path, $quote) === 0 && substr($path, -1) === $quote) {
+                $path = substr($path, 1, -1);
+                break;
+            }
+        }
 
-    // name matching the JS API
-    // The set that will eventually populate the JS API's
-    // `result.stats.includedFiles` field.
-    //
-    // For filesystem imports, this contains the import path. For all other
-    // imports, it contains the URL passed to the `@import`.
+        $this->includedFiles[] = $path;
+    }
+
+    /**
+     * For filesystem imports, this contains the import path. For all other
+     * imports, it contains the URL passed to the `@import`.
+     *
+     * @return array
+     */
     public function getIncludedFiles()
     {
-        // ...
+        return $this->includedFiles;
     }
 
     // A map from source file URLs to the corresponding [SourceFile]s.
