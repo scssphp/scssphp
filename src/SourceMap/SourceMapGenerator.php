@@ -129,6 +129,7 @@ class SourceMapGenerator
      * @return string
      *
      * @throws \ScssPhp\ScssPhp\Exception\CompilerException If the file could not be saved
+     * @deprecated
      */
     public function saveMap($content)
     {
