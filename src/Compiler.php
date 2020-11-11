@@ -224,11 +224,6 @@ class Compiler
     protected $extendsMap;
 
     /**
-     * @var string[]
-     */
-    protected $importedFiles = [];
-
-    /**
      * @var CompilationResult
      */
     protected $compilationResult;
@@ -2472,10 +2467,10 @@ class Compiler
         if ($rawPath[0] === Type::T_STRING) {
             $path = $this->compileStringContent($rawPath);
 
-            if (strpos($path, 'url(') !== 0 && $path = $this->findImport($path)) {
-                if (! $once || ! \in_array($path, $this->importedFiles)) {
-                    $this->importFile($path, $out);
-                    $this->importedFiles[] = $path;
+            if (strpos($path, 'url(') !== 0 && $filePath = $this->findImport($path, $this->currentDirectory)) {
+                if (! $once || ! \in_array($filePath, $this->compilationResult->getImportedFiles())) {
+                    $this->importFile($filePath, $out);
+                    $this->compilationResult->addImportedFile($this->currentDirectory, $path, $filePath);
                 }
 
                 return true;
@@ -5316,10 +5311,11 @@ class Compiler
      * @api
      *
      * @param string $url
+     * @param string $currentDir
      *
      * @return string|null
      */
-    public function findImport($url)
+    public function findImport($url, $currentDir = null)
     {
         // for "normal" scss imports (ignore vanilla css and external requests)
         // Callback importers are still called for BC.
@@ -5341,8 +5337,8 @@ class Compiler
             return null;
         }
 
-        if (!\is_null($this->currentDirectory)) {
-            $relativePath = $this->resolveImportPath($url, $this->currentDirectory);
+        if (!\is_null($currentDir)) {
+            $relativePath = $this->resolveImportPath($url, $currentDir);
 
             if (!\is_null($relativePath)) {
                 return $relativePath;

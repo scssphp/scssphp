@@ -42,7 +42,7 @@ class CompilationResult
     protected $parsedFiles = [];
 
     /**
-     * All the @import files and urls seen in the compilation result
+     * All the @import files and urls seen in the compilation process
      * @var array
      */
     protected $includedFiles = [];
@@ -106,6 +106,27 @@ class CompilationResult
         return $this->parsedFiles;
     }
 
+    /**
+     * Save the imported files with their resolving path context
+     * @param string $currentDirectory
+     * @param string $path
+     * @param string $filePath
+     */
+    public function addImportedFile($currentDirectory, $path, $filePath)
+    {
+        $this->importedFiles[] = ['currentDir' => $currentDirectory, 'path' => $path, 'filePath' => $filePath];
+    }
+
+
+    /**
+     * Get the list of the already imported Files
+     * used by the compiler to check the once condition on @import
+     * @return array
+     */
+    public function getImportedFiles()
+    {
+        return array_column($this->importedFiles, 'filePath');
+    }
 
 
     // name matching the JS API
