@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp;
 
 use ScssPhp\ScssPhp\Base\Range;
+use ScssPhp\ScssPhp\Compiler\CompilationResult;
 use ScssPhp\ScssPhp\Compiler\Environment;
 use ScssPhp\ScssPhp\Exception\CompilerException;
 use ScssPhp\ScssPhp\Exception\ParserException;
@@ -140,10 +141,7 @@ class Compiler
      * @var array<string, Block>
      */
     protected $importCache = [];
-    /**
-     * @var string[]
-     */
-    protected $importedFiles = [];
+
     protected $userFunctions = [];
     protected $registeredVars = [];
     /**
@@ -224,10 +222,17 @@ class Compiler
      * @var array<string, int[]>
      */
     protected $extendsMap;
+
     /**
-     * @var array<string, int>
+     * @var string[]
      */
-    protected $parsedFiles;
+    protected $importedFiles = [];
+
+    /**
+     * @var CompilationResult
+     */
+    protected $compilationResult;
+
     /**
      * @var Parser|null
      */
@@ -290,7 +295,7 @@ class Compiler
      */
     public function __construct($cacheOptions = null)
     {
-        $this->parsedFiles = [];
+        $this->compilationResult = new CompilationResult();
         $this->sourceNames = [];
 
         if ($cacheOptions) {
@@ -350,18 +355,8 @@ class Compiler
             $compileOptions = $this->getCompileOptions();
             $cache          = $this->cache->getCache('compile', $cacheKey, $compileOptions);
 
-            if (\is_array($cache) && isset($cache['dependencies']) && isset($cache['out'])) {
-                // check if any dependency file changed before accepting the cache
-                foreach ($cache['dependencies'] as $file => $mtime) {
-                    if (! is_file($file) || filemtime($file) !== $mtime) {
-                        unset($cache);
-                        break;
-                    }
-                }
-
-                if (isset($cache)) {
-                    return $cache['out'];
-                }
+            if (!empty($cache) && $cache instanceof CompilationResult && $cache->checkValid()) {
+                return $cache;
             }
         }
 
@@ -378,6 +373,8 @@ class Compiler
         $this->charsetSeen    = null;
         $this->shouldEvaluate = null;
         $this->ignoreCallStackMessage = false;
+
+        $this->compilationResult = new CompilationResult();
 
         if (!\is_null($path) && is_file($path)) {
             $path = realpath($path) ?: $path;
@@ -419,9 +416,11 @@ class Compiler
             if (!$this->charsetSeen) {
                 if (strlen($out) !== Util::mbStrlen($out)) {
                     $prefix = '@charset "UTF-8";' . "\n";
-                    $out = $prefix . $out;
                 }
             }
+
+            $this->compilationResult->setCss($prefix);
+            $this->compilationResult->appendCss($out);
 
             if (! empty($out) && $this->sourceMap && $this->sourceMap !== self::SOURCE_MAP_NONE) {
                 $sourceMap    = $sourceMapGenerator->generateJson($prefix);
@@ -429,30 +428,31 @@ class Compiler
 
                 switch ($this->sourceMap) {
                     case self::SOURCE_MAP_INLINE:
-                        $sourceMapUrl = sprintf('data:application/json,%s', Util::encodeURIComponent($sourceMap));
+                        $this->compilationResult->setSourceMap($sourceMap);
                         break;
 
                     case self::SOURCE_MAP_FILE:
-                        $sourceMapUrl = $sourceMapGenerator->saveMap($sourceMap);
+                        $options = array_merge(
+                            ['sourceMapWriteTo' => null, 'sourceMapURL' => null],
+                            $this->sourceMapOptions
+                        );
+                        $this->compilationResult->setSourceMap(
+                            $sourceMap,
+                            $options['sourceMapWriteTo'],
+                            $options['sourceMapURL']
+                        );
                         break;
                 }
-
-                $out .= sprintf('/*# sourceMappingURL=%s */', $sourceMapUrl);
             }
         } catch (SassScriptException $e) {
             throw $this->error($e->getMessage());
         }
 
         if ($this->cache && isset($cacheKey) && isset($compileOptions)) {
-            $v = [
-                'dependencies' => $this->getParsedFiles(),
-                'out' => &$out,
-            ];
-
-            $this->cache->setCache('compile', $cacheKey, $v, $compileOptions);
+            $this->cache->setCache('compile', $cacheKey, $this->compilationResult, $compileOptions);
         }
 
-        return $out;
+        return $this->compilationResult;
     }
 
     /**
@@ -478,7 +478,7 @@ class Compiler
         $parser = new Parser($path, \count($this->sourceNames), $this->encoding, $this->cache, $cssOnly);
 
         $this->sourceNames[] = $path;
-        $this->addParsedFile($path);
+        $this->compilationResult->addParsedFile($path);
 
         return $parser;
     }
@@ -5052,12 +5052,13 @@ class Compiler
      *
      * @param string $path
      *
+     * @deprecated
      * @return void
      */
     public function addParsedFile($path)
     {
-        if (isset($path) && is_file($path)) {
-            $this->parsedFiles[realpath($path)] = filemtime($path);
+        if ($this->compilationResult) {
+            $this->compilationResult->addParsedFile($path);
         }
     }
 
@@ -5066,11 +5067,12 @@ class Compiler
      *
      * @api
      *
+     * @deprecated
      * @return array
      */
     public function getParsedFiles()
     {
-        return $this->parsedFiles;
+        return $this->compilationResult ? $this->compilationResult->getParsedFiles() : [];
     }
 
     /**
