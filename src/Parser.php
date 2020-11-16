@@ -3030,6 +3030,11 @@ class Parser
         return false;
     }
 
+    /**
+     * @param string $out
+     * @param bool $inKeywords
+     * @return bool
+     */
     protected function matchEscapeCharacter(&$out, $inKeywords = false)
     {
         $s = $this->count;
@@ -3457,6 +3462,49 @@ class Parser
     }
 
     /**
+     * parsing escaped chars in selectors:
+     * - escaped single chars are kept escaped in the selector but in a normalized form
+     *   (if not in 0-9a-f range as this would be ambigous)
+     * - other escaped sequences (multibyte chars or 0-9a-f) are kept in their initial escaped form,
+     *   normalized to lowercase
+     *
+     * TODO: this is a fallback solution. Ideally escaped chars in selectors should be encoded as the genuine chars,
+     * and escaping added when printing in the Compiler, where/if it's mandatory
+     * - but this require a better formal selector representation instead of the array we have now
+     *
+     * @param string $out
+     * @return bool
+     */
+    protected function matchEscapeCharacterInSelector(&$out)
+    {
+        $s_escape = $this->count;
+        if ($this->match('\\\\', $m)) {
+            $out = '\\' . $m[0];
+            return true;
+        }
+
+        if ($this->matchEscapeCharacter($escapedout, true)) {
+            if (strlen($escapedout) === 1 && !preg_match(",[\da-f],i", $escapedout)) {
+                $out = '\\' . $escapedout;
+            } else {
+                $escape_sequence = rtrim(substr($this->buffer, $s_escape, $this->count - $s_escape));
+                if (strlen($escape_sequence) < 6) {
+                    $escape_sequence .= ' ';
+                }
+                $out = '\\' . strtolower($escape_sequence);
+            }
+            return true;
+        }
+        if ($this->match('\\S', $m)) {
+            $out = '\\' . $m[0];
+            return true;
+        }
+
+
+        return false;
+    }
+
+    /**
      * Parse the parts that make up a selector
      *
      * {@internal
@@ -3516,9 +3564,14 @@ class Parser
                     continue 2;
             }
 
-            if ($char === '\\' && $this->match('\\\\\S', $m)) {
-                $parts[] = $m[0];
-                continue;
+            // handling of escaping in selectors : get the escaped char
+            if ($char === '\\') {
+                $this->count++;
+                if ($this->matchEscapeCharacterInSelector($escaped)) {
+                    $parts[] = $escaped;
+                    continue;
+                }
+                $this->count--;
             }
 
             if ($char === '%') {
@@ -3661,7 +3714,7 @@ class Parser
                 continue;
             }
 
-            if ($this->restrictedKeyword($name)) {
+            if ($this->restrictedKeyword($name, false, true)) {
                 $parts[] = $name;
                 continue;
             }
@@ -3714,10 +3767,11 @@ class Parser
      *
      * @param string  $word
      * @param boolean $eatWhitespace
+     * @param boolean $inSelector
      *
      * @return boolean
      */
-    protected function keyword(&$word, $eatWhitespace = null)
+    protected function keyword(&$word, $eatWhitespace = null, $inSelector = false)
     {
         $s = $this->count;
         $match = $this->match(
@@ -3744,7 +3798,12 @@ class Parser
                         $this->count < $send
                         && $char === '\\'
                         && !$previousEscape
-                        && $this->matchEscapeCharacter($out, true)
+                        && (
+                            $inSelector ?
+                                $this->matchEscapeCharacterInSelector($out)
+                                :
+                                $this->matchEscapeCharacter($out, true)
+                        )
                     ) {
                         $escapedWord[] = $out;
                     } else {
@@ -3775,14 +3834,15 @@ class Parser
      *
      * @param string  $word
      * @param boolean $eatWhitespace
+     * @param boolean $inSelector
      *
      * @return boolean
      */
-    protected function restrictedKeyword(&$word, $eatWhitespace = null)
+    protected function restrictedKeyword(&$word, $eatWhitespace = null, $inSelector = false)
     {
         $s = $this->count;
 
-        if ($this->keyword($word, $eatWhitespace) && (\ord($word[0]) > 57 || \ord($word[0]) < 48)) {
+        if ($this->keyword($word, $eatWhitespace, $inSelector) && (\ord($word[0]) > 57 || \ord($word[0]) < 48)) {
             return true;
         }
 

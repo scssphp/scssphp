@@ -1233,7 +1233,6 @@ non_conformant/extend-tests/237_extend_with_universal_selector_different_namespa
 non_conformant/extend-tests/238_unify_root_pseudoelement
 non_conformant/extend-tests/compound-unification-in-not
 non_conformant/extend-tests/does_not_move_page_block_in_media
-non_conformant/extend-tests/escaped_selector
 non_conformant/extend-tests/extend-loop
 non_conformant/extend-tests/extend-result-of-extend
 non_conformant/extend-tests/extend-self
