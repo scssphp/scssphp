@@ -388,3 +388,23 @@ ul ul, ol ul, ul ol, ol ol {
 ul li a .tocnumber {
   min-width: 100%;
 }
+.\31 u\$ {
+  clear: left;
+}
+.\31 u\$ {
+  clear: left;
+}
+.\31 u\$ {
+  clear: right;
+}
+.\31 u\$ {
+  clear: right;
+}
+.a\31 u\$ {
+  clear: both;
+}
+.\31 2u\(xlarge\), .\31 2u\$\(xlarge\) {
+  width: 100%;
+  clear: none;
+  margin-left: 0;
+}

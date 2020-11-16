@@ -303,3 +303,13 @@ $end: ' ';
 #{$selector} a .tocnumber #{$end} {
         min-width: 100%;
 }
+
+
+// escaped
+.\31u\$ {clear: left;}
+.\31 u\$ {clear: left;}
+.\31u\24 {  clear: right;}
+.\31 u\24 {  clear: right;}
+.a\31 u\24 {  clear: both;}
+$x: '\\28' + 'xlarge' + '\\29';
+.\31 2u#{$x}, .\31 2u\24#{$x} { width: 100%; clear: none; margin-left: 0; }
