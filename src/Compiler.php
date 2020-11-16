@@ -1807,7 +1807,13 @@ class Compiler
             $buffer    = $this->collapseSelectors($selectors);
             $parser    = $this->parserFactory(__METHOD__);
 
-            if ($parser->parseSelector($buffer, $newSelectors, true)) {
+            try {
+                $isValid = $parser->parseSelector($buffer, $newSelectors, true);
+            } catch (\Exception $e) {
+                throw $this->error($e->getMessage());
+            }
+
+            if ($isValid) {
                 $selectors = array_map([$this, 'evalSelector'], $newSelectors);
             }
         }
