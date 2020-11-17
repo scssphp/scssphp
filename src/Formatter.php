@@ -342,7 +342,7 @@ abstract class Formatter
                 );
             }
 
-            $this->currentColumn = \strlen($lastLine);
+            $this->currentColumn += \strlen($lastLine);
         }
 
         echo $str;
