@@ -15,6 +15,7 @@ namespace ScssPhp\ScssPhp;
 use ScssPhp\ScssPhp\Base\Range;
 use ScssPhp\ScssPhp\Compiler\Environment;
 use ScssPhp\ScssPhp\Exception\CompilerException;
+use ScssPhp\ScssPhp\Exception\ParserException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Formatter\Compressed;
 use ScssPhp\ScssPhp\Formatter\Expanded;
@@ -1809,7 +1810,7 @@ class Compiler
 
             try {
                 $isValid = $parser->parseSelector($buffer, $newSelectors, true);
-            } catch (\Exception $e) {
+            } catch (ParserException $e) {
                 throw $this->error($e->getMessage());
             }
 
