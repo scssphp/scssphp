@@ -3473,9 +3473,10 @@ class Parser
      * - but this require a better formal selector representation instead of the array we have now
      *
      * @param string $out
+     * @param bool $keepEscapedNumber
      * @return bool
      */
-    protected function matchEscapeCharacterInSelector(&$out)
+    protected function matchEscapeCharacterInSelector(&$out, $keepEscapedNumber = false)
     {
         $s_escape = $this->count;
         if ($this->match('\\\\', $m)) {
@@ -3484,15 +3485,20 @@ class Parser
         }
 
         if ($this->matchEscapeCharacter($escapedout, true)) {
-            if (strlen($escapedout) === 1 && !preg_match(",[\da-f],i", $escapedout)) {
-                $out = '\\' . $escapedout;
-            } else {
-                $escape_sequence = rtrim(substr($this->buffer, $s_escape, $this->count - $s_escape));
-                if (strlen($escape_sequence) < 6) {
-                    $escape_sequence .= ' ';
+            if (strlen($escapedout) === 1) {
+                if (!preg_match(",\w,", $escapedout)) {
+                    $out = '\\' . $escapedout;
+                    return true;
+                } elseif (! $keepEscapedNumber || ! \is_numeric($escapedout)) {
+                    $out = $escapedout;
+                    return true;
                 }
-                $out = '\\' . strtolower($escape_sequence);
             }
+            $escape_sequence = rtrim(substr($this->buffer, $s_escape, $this->count - $s_escape));
+            if (strlen($escape_sequence) < 6) {
+                $escape_sequence .= ' ';
+            }
+            $out = '\\' . strtolower($escape_sequence);
             return true;
         }
         if ($this->match('\\S', $m)) {
@@ -3567,7 +3573,7 @@ class Parser
             // handling of escaping in selectors : get the escaped char
             if ($char === '\\') {
                 $this->count++;
-                if ($this->matchEscapeCharacterInSelector($escaped)) {
+                if ($this->matchEscapeCharacterInSelector($escaped, true)) {
                     $parts[] = $escaped;
                     continue;
                 }
