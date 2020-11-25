@@ -269,7 +269,7 @@ class Compiler
     /**
      * The directory of the currently processed file
      *
-     * @var string
+     * @var string|null
      */
     private $currentDirectory;
 
@@ -279,6 +279,8 @@ class Compiler
      * @var string
      */
     private $rootDirectory;
+
+    private $legacyCwdImportPath = true;
 
     /**
      * Constructor
@@ -312,6 +314,7 @@ class Compiler
             'sourceMap'          => serialize($this->sourceMap),
             'sourceMapOptions'   => $this->sourceMapOptions,
             'formatter'          => $this->formatter,
+            'legacyImportPath'   => $this->legacyCwdImportPath,
         ];
 
         return $options;
@@ -378,10 +381,11 @@ class Compiler
         if (!\is_null($path) && is_file($path)) {
             $path = realpath($path) ?: $path;
             $this->currentDirectory = dirname($path);
+            $this->rootDirectory = $this->currentDirectory;
         } else {
-            $this->currentDirectory = getcwd();
+            $this->currentDirectory = null;
+            $this->rootDirectory = getcwd();
         }
-        $this->rootDirectory = $this->currentDirectory;
 
         try {
             $this->parser = $this->parserFactory($path);
@@ -5095,7 +5099,18 @@ class Compiler
      */
     public function setImportPaths($path)
     {
-        $this->importPaths = (array) $path;
+        $paths = (array) $path;
+        $actualImportPaths = array_filter($paths, function ($path) {
+            return $path !== '';
+        });
+
+        $this->legacyCwdImportPath = \count($actualImportPaths) !== \count($paths);
+
+        if ($this->legacyCwdImportPath) {
+            @trigger_error('Passing an empty string in the import paths to refer to the current working directory is deprecated. If that\'s the intended behavior, the value of "getcwd()" should be used directly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compile()" instead.', E_USER_DEPRECATED);
+        }
+
+        $this->importPaths = $actualImportPaths;
     }
 
     /**
@@ -5323,10 +5338,12 @@ class Compiler
             return null;
         }
 
-        $relativePath = $this->resolveImportPath($url, $this->currentDirectory);
+        if (!\is_null($this->currentDirectory)) {
+            $relativePath = $this->resolveImportPath($url, $this->currentDirectory);
 
-        if (!\is_null($relativePath)) {
-            return $relativePath;
+            if (!\is_null($relativePath)) {
+                return $relativePath;
+            }
         }
 
         foreach ($this->importPaths as $dir) {
@@ -5343,6 +5360,16 @@ class Compiler
                 if (! \is_null($file)) {
                     return $file;
                 }
+            }
+        }
+
+        if ($this->legacyCwdImportPath) {
+            $path = $this->resolveImportPath($url, getcwd());
+
+            if (!\is_null($path)) {
+                @trigger_error('Resolving imports relatively to the current working directory is deprecated. If that\'s the intended behavior, the value of "getcwd()" should be added as an import path explicitly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compile()" instead.', E_USER_DEPRECATED);
+
+                return $path;
             }
         }
 
