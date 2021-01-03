@@ -1366,6 +1366,7 @@ class Parser
                     ]
                 ];
 
+            case Type::T_CUSTOM_PROPERTY:
             case Type::T_UNARY:
                 $parsed[2] = $this->isPlainCssValidElement($parsed[2]);
                 if (! $parsed[2]) {
