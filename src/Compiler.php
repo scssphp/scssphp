@@ -22,6 +22,7 @@ use ScssPhp\ScssPhp\Formatter\Expanded;
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
 use ScssPhp\ScssPhp\Node\Number;
 use ScssPhp\ScssPhp\SourceMap\SourceMapGenerator;
+use ScssPhp\ScssPhp\Util\Path;
 
 /**
  * The scss compiler and parser.
@@ -5384,7 +5385,7 @@ class Compiler
      */
     private function resolveImportPath($url, $baseDir)
     {
-        $path = rtrim($baseDir, '/').'/'.ltrim($url, '/');
+        $path = Path::join($baseDir, $url);
 
         $hasExtension = preg_match('/.scss$/', $url);
 
