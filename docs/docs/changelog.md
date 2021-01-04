@@ -5,6 +5,17 @@ title: Changelog
 
 ## Changelog
 
+### **1.4.1** -- Jan 4, 2021
+
+* Fix support for absolute paths in imports (stof)
+* Fix support for custom properties in plain CSS imports (willpower232)
+* Fix the BC layer for cwd-based import resolution to support code disabling it in the old API (stof)
+* Fix sourcemaps for the compressed output (stof)
+* Fix the escaping in selectors (Cerdic)
+* Add the library version as a cache busting criteria (Cerdic)
+* Fix the parser to apply `realpath` to the path used for error reporting as well (Cerdic)
+* Fix the phpdoc in the Compiler (stof)
+
 ### **1.4** -- Nov 7, 2020
 
 * fix the injection of the `@charset` rule without mbstring (stof)
