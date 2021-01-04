@@ -748,10 +748,6 @@ css/media/range/error/mismatched_range/lte_gte
 css/media/range/static
 css/media/range/with_expressions
 css/moz_document/multi_function
-css/plain/custom_properties/arbitrary_tokens
-css/plain/custom_properties/color
-css/plain/custom_properties/identifier
-css/plain/custom_properties/nested
 css/plain/import/sass_takes_precedence
 css/selector/attribute/modifier/after_string
 css/selector/error/attribute/modifier/digit
