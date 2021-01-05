@@ -27,6 +27,9 @@ if (! class_exists('ScssPhp\ScssPhp\Version', false)) {
     include_once __DIR__ . '/src/Formatter/Expanded.php';
     include_once __DIR__ . '/src/Formatter/Nested.php';
     include_once __DIR__ . '/src/Formatter/OutputBlock.php';
+    include_once __DIR__ . '/src/Logger/LoggerInterface.php';
+    include_once __DIR__ . '/src/Logger/QuietLogger.php';
+    include_once __DIR__ . '/src/Logger/StreamLogger.php';
     include_once __DIR__ . '/src/Node.php';
     include_once __DIR__ . '/src/Node/Number.php';
     include_once __DIR__ . '/src/Parser.php';

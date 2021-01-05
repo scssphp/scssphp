@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Tests;
 
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Logger\QuietLogger;
 
 /**
  * Exception test
@@ -143,15 +144,9 @@ END_OF_SCSS
 
     private function compile($str)
     {
-        $errorStream = fopen("php://memory", 'r+');
-
         $scss = new Compiler();
-        $scss->setErrorOuput($errorStream);
+        $scss->setLogger(new QuietLogger());
 
-        try {
-            return trim($scss->compile($str));
-        } finally {
-            fclose($errorStream);
-        }
+        return trim($scss->compile($str));
     }
 }

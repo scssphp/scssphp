@@ -15,6 +15,7 @@ namespace ScssPhp\ScssPhp\Tests;
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Formatter\Expanded;
+use ScssPhp\ScssPhp\Logger\QuietLogger;
 
 function _dump($value)
 {
@@ -48,9 +49,7 @@ class InputTest extends TestCase
 
         $this->scss = new Compiler();
         $this->scss->addImportPath(self::$inputDir);
-
-        $fp_err_stream = fopen("php://memory", 'r+');
-        $this->scss->setErrorOuput($fp_err_stream);
+        $this->scss->setLogger(new QuietLogger());
 
         if (getenv('BUILD')) {
             $this->buildInput($inFname, $outFname);
@@ -66,7 +65,6 @@ class InputTest extends TestCase
         $output = file_get_contents($outFname);
 
         $css = $this->scss->compile($input, substr($inFname, strlen(__DIR__) + 1));
-        fclose($fp_err_stream);
         $this->assertEquals($output, $css);
     }
 

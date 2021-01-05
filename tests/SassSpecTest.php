@@ -15,6 +15,7 @@ namespace ScssPhp\ScssPhp\Tests;
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Exception\SassException;
+use ScssPhp\ScssPhp\Logger\StreamLogger;
 
 /**
  * Sass Spec Test - extracts tests from https://github.com/sass/sass-spec
@@ -302,7 +303,7 @@ class SassSpecTest extends TestCase
         $compiler->addImportPath($this->sassSpecDir());
 
         $fp_err_stream = fopen("php://memory", 'r+');
-        $compiler->setErrorOuput($fp_err_stream);
+        $compiler->setLogger(new StreamLogger($fp_err_stream));
 
         if (! strlen($error)) {
             if (getenv('BUILD')) {
