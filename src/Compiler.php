@@ -20,6 +20,8 @@ use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Formatter\Compressed;
 use ScssPhp\ScssPhp\Formatter\Expanded;
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
+use ScssPhp\ScssPhp\Logger\LoggerInterface;
+use ScssPhp\ScssPhp\Logger\StreamLogger;
 use ScssPhp\ScssPhp\Node\Number;
 use ScssPhp\ScssPhp\SourceMap\SourceMapGenerator;
 use ScssPhp\ScssPhp\Util\Path;
@@ -245,10 +247,6 @@ class Compiler
      */
     protected $sourceColumn;
     /**
-     * @var resource
-     */
-    protected $stderr;
-    /**
      * @var bool|null
      */
     protected $shouldEvaluate;
@@ -284,6 +282,11 @@ class Compiler
     private $legacyCwdImportPath = true;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param array|null $cacheOptions
@@ -297,7 +300,7 @@ class Compiler
             $this->cache = new Cache($cacheOptions);
         }
 
-        $this->stderr = fopen('php://stderr', 'w');
+        $this->logger = new StreamLogger(fopen('php://stderr', 'w'), true);
     }
 
     /**
@@ -322,15 +325,34 @@ class Compiler
     }
 
     /**
+     * Sets an alternative logger.
+     *
+     * Changing the logger in the middle of the compilation is not
+     * supported and will result in an undefined behavior.
+     *
+     * @param LoggerInterface $logger
+     *
+     * @return void
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
      * Set an alternative error output stream, for testing purpose only
      *
      * @param resource $handle
      *
      * @return void
+     *
+     * @deprecated Use {@see setLogger} instead
      */
     public function setErrorOuput($handle)
     {
-        $this->stderr = $handle;
+        @trigger_error('The method "setErrorOuput" is deprecated. Use "setLogger" instead.', E_USER_DEPRECATED);
+
+        $this->logger = new StreamLogger($handle);
     }
 
     /**
@@ -3131,7 +3153,7 @@ class Compiler
                 $line  = $this->sourceLine;
                 $value = $this->compileDebugValue($value);
 
-                fwrite($this->stderr, "$fname:$line DEBUG: $value\n");
+                $this->logger->debug("$fname:$line DEBUG: $value");
                 break;
 
             case Type::T_WARN:
@@ -3141,7 +3163,7 @@ class Compiler
                 $line  = $this->sourceLine;
                 $value = $this->compileDebugValue($value);
 
-                fwrite($this->stderr, "WARNING: $value\n         on line $line of $fname\n\n");
+                $this->logger->warn("$value\n         on line $line of $fname");
                 break;
 
             case Type::T_ERROR:
@@ -3864,7 +3886,7 @@ class Compiler
             $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
             $line  = $this->sourceLine;
 
-            fwrite($this->stderr, "DEPRECATION WARNING: $warning\n         on line $line of $fname\n\n");
+            $this->logger->warn("$warning\n         on line $line of $fname", true);
         }
 
         $out = [Type::T_COLOR];
@@ -6805,9 +6827,9 @@ class Compiler
 
         if (in_array($functionReference[0], [Type::T_STRING, Type::T_KEYWORD])) {
             $name = $this->compileStringContent($this->coerceString($functionReference));
-            $warning = "DEPRECATION WARNING: Passing a string to call() is deprecated and will be illegal\n"
+            $warning = "Passing a string to call() is deprecated and will be illegal\n"
                 . "in Sass 4.0. Use call(function-reference($name)) instead.";
-            fwrite($this->stderr, "$warning\n\n");
+            $this->logger->warn($warning, true);
             $functionReference = $this->libGetFunction([$functionReference]);
         }
 
