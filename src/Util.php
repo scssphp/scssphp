@@ -105,6 +105,43 @@ final class Util
     }
 
     /**
+     * mb_ord() wrapper
+     *
+     * @param string $string
+     *
+     * @return int
+     */
+    public static function mbOrd(string $string): int
+    {
+        if (\function_exists('mb_ord')) {
+            return mb_ord($string, 'UTF-8');
+        }
+
+        if (1 === \strlen($string)) {
+            return \ord($string);
+        }
+
+        $s = unpack('C*', substr($string, 0, 4));
+
+        if (!$s) {
+            return 0;
+        }
+
+        $code = $s[1];
+        if (0xF0 <= $code) {
+            return (($code - 0xF0) << 18) + (($s[2] - 0x80) << 12) + (($s[3] - 0x80) << 6) + $s[4] - 0x80;
+        }
+        if (0xE0 <= $code) {
+            return (($code - 0xE0) << 12) + (($s[2] - 0x80) << 6) + $s[3] - 0x80;
+        }
+        if (0xC0 <= $code) {
+            return (($code - 0xC0) << 6) + $s[2] - 0x80;
+        }
+
+        return $code;
+    }
+
+    /**
      * mb_strlen() wrapper
      *
      * @param string $string
