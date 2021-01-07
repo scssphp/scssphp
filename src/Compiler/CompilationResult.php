@@ -79,14 +79,6 @@ class CompilationResult
     }
 
     /**
-     * @param string $css
-     */
-    public function appendCss($css)
-    {
-        $this->css .= $css;
-    }
-
-    /**
      * @return string
      */
     public function getCss()
