@@ -101,7 +101,7 @@ class CompilationResult
      *
      * @api
      *
-     * @param string $path
+     * @param string|null $path
      *
      * @return void
      */
@@ -193,7 +193,7 @@ class CompilationResult
 
     /**
      * Store the sourceMap and its storage data
-     * @param $sourceMap
+     * @param string $sourceMap
      * @param null|string $sourceMapFile
      * @param null|string $sourceMapUrl
      */
@@ -211,7 +211,7 @@ class CompilationResult
     /**
      * The sourceMap content, if it was generated
      *
-     * @return string
+     * @return null|string
      */
     public function getSourceMap()
     {
