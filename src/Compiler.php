@@ -5069,6 +5069,8 @@ class Compiler
      */
     public function addParsedFile($path)
     {
+        @trigger_error('addParsedFile() is no longer a method from Compiler but from CompilationResult.'
+            . ' Please update your code', E_USER_DEPRECATED);
         if ($this->compilationResult) {
             $this->compilationResult->addParsedFile($path);
         }
@@ -5084,6 +5086,8 @@ class Compiler
      */
     public function getParsedFiles()
     {
+        @trigger_error('addParsedFile() is no longer a method from Compiler but from CompilationResult.'
+            . ' Please update your code', E_USER_DEPRECATED);
         return $this->compilationResult ? $this->compilationResult->getParsedFiles() : [];
     }
 
