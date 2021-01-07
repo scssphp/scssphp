@@ -21,41 +21,41 @@ use ScssPhp\ScssPhp\Exception\CompilerException;
  */
 class CompilationResult
 {
-    protected static $resolvedImport = [];
+    private static $resolvedImport = [];
 
-    protected $isCached = false;
-
-    /**
-     * @var string
-     */
-    protected $css = '';
+    private $isCached = false;
 
     /**
      * @var string
      */
-    protected $sourceMap = '';
+    private $css = '';
 
-    protected $sourceMapFile;
-    protected $sourceMapUrl;
+    /**
+     * @var string
+     */
+    private $sourceMap = '';
+
+    private $sourceMapFile;
+    private $sourceMapUrl;
 
 
     /**
      * All the effective parsedfiles
      * @var array
      */
-    protected $parsedFiles = [];
+    private $parsedFiles = [];
 
     /**
      * All the @import files and urls seen in the compilation process
      * @var array
      */
-    protected $includedFiles = [];
+    private $includedFiles = [];
 
     /**
      * All the @import files resolved and imported (use to check the once condition)
      * @var array
      */
-    protected $importedFiles = [];
+    private $importedFiles = [];
 
 
     /**
