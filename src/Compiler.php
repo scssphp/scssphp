@@ -425,8 +425,7 @@ class Compiler
                 }
             }
 
-            $this->compilationResult->setCss($prefix);
-            $this->compilationResult->appendCss($out);
+            $this->compilationResult->setCss($prefix . $out);
 
             if (! empty($out) && $this->sourceMap && $this->sourceMap !== self::SOURCE_MAP_NONE) {
                 $sourceMap    = $sourceMapGenerator->generateJson($prefix);
