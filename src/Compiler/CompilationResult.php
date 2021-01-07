@@ -21,8 +21,6 @@ use ScssPhp\ScssPhp\Exception\CompilerException;
  */
 class CompilationResult
 {
-    private static $resolvedImport = [];
-
     private $isCached = false;
 
     /**
@@ -271,10 +269,7 @@ class CompilationResult
 
         // check that all the findImport would resolve the same way
         if ($deepCheck && $compiler) {
-            // hash is linked to the compiler options, including the importPath
-            // use json_encode and not serialize as the importPath can include a Closure
-            // thus we can not distinguish two different importPath differing only by a different Closure
-            $hash = md5(json_encode($compiler->getCompileOptions()));
+            $resolvedImport = [];
             foreach ($this->importedFiles as $imported) {
 
                 $currentDir = $imported['currentDir'];
@@ -282,11 +277,11 @@ class CompilationResult
                 // store the check accros all the results in memory to avoid multiple findImport() on the same path
                 // with same context
                 // this is happening in a same hit with multiples compilation (especially with big frameworks)
-                if (empty(CompilationResult::$resolvedImport[$hash][$currentDir][$path])) {
-                    CompilationResult::$resolvedImport[$hash][$currentDir][$path] = $compiler->findImport($path, $currentDir);
+                if (empty($resolvedImport[$currentDir][$path])) {
+                    $resolvedImport[$currentDir][$path] = $compiler->findImport($path, $currentDir);
                 }
 
-                if (CompilationResult::$resolvedImport[$hash][$currentDir][$path] !== $imported['filePath']) {
+                if ($resolvedImport[$currentDir][$path] !== $imported['filePath']) {
                     return false;
                 }
             }
