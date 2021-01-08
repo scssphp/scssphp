@@ -97,7 +97,7 @@ class CompilationResult
      */
     public function addParsedFile($path)
     {
-        if (isset($path) && is_file($path)) {
+        if (! \is_null($path) && is_file($path)) {
             $this->parsedFiles[realpath($path)] = filemtime($path);
         }
     }
