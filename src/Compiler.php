@@ -6679,8 +6679,19 @@ class Compiler
      * @return Number
      * @throws CompilerException
      */
-    public function assertPercentOrUnitless($value, $varName=null, $forceTo = null) {
+    public function assertPercentOrUnitless($value, $varName=null, $forceTo = null, $acceptButDeprecated = false) {
         $this->assertNumber($value, $varName);
+
+        if ($acceptButDeprecated) {
+            if (! $value->unitless() && ! $value->hasUnit('%')) {
+                $var_display = ($varName ? " \${$varName}:" : '');
+                $warning = $this->error("{$var_display} Passing a number `$value` without unit % is deprecated.");
+                fwrite($this->stderr, "DEPRECATION WARNING: " . $warning->getMessage() . "\n");
+                $value = new Number($value->getDimension(), '');
+                return $value;
+            }
+        }
+
         if ($value->unitless()) {
             if ($forceTo === 'percent') {
                 $value = new Number($value->getDimension() * 100, '%');
@@ -7273,7 +7284,7 @@ class Compiler
                         switch ($iarg) {
                             case 5:
                             case 6:
-                                $this->assertPercentOrUnitless($args[$iarg], $varNames[$iarg]);
+                                $this->assertPercentOrUnitless($args[$iarg], $varNames[$iarg], null, \in_array($operation, ['adjust', 'change']));
                                 $min = ($operation === 'change' ? 0 : -100);
                                 $val = $this->assertRange($args[$iarg], $min, 100, "{$min}% and 100%", $varNames[$iarg]);
                                 break;
