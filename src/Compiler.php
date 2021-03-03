@@ -6723,7 +6723,7 @@ class Compiler
      * @return Number
      * @throws CompilerException
      */
-    public function assertPercentOrUnitless($value, $varName = null, $forceTo = null, $acceptButDeprecated = false)
+    private function assertPercentOrUnitless($value, $varName = null, $forceTo = null, $acceptButDeprecated = false)
     {
         $this->assertNumber($value, $varName);
 
