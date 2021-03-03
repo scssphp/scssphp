@@ -6726,7 +6726,7 @@ class Compiler
             if (! $value->unitless() && ! $value->hasUnit('%')) {
                 $var_display = ($varName ? " \${$varName}:" : '');
                 $warning = $this->error("{$var_display} Passing a number `$value` without unit % is deprecated.");
-                fwrite($this->stderr, "DEPRECATION WARNING: " . $warning->getMessage() . "\n");
+                $this->logger->warn($warning->getMessage(), true);
                 $value = new Number($value->getDimension(), '');
                 return $value;
             }
