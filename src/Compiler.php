@@ -6735,9 +6735,6 @@ class Compiler
         }
 
         if ($value->unitless()) {
-            if ($forceTo === 'percent') {
-                $value = new Number($value->getDimension() * 100, '%');
-            }
             return $value;
         }
         if ($value->hasUnit('%')) {
