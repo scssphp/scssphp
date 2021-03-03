@@ -6715,14 +6715,16 @@ class Compiler
     }
 
     /**
-     * Assert a value is % or unitless and optionnaly force it to one or the other
+     * Assert a value is % or unitless and optionally force it to one or the other
+     *
      * @param array|Number $value
-     * @param null $varName
+     * @param string|null $varName
      * @param null|string $forceTo
      * @return Number
      * @throws CompilerException
      */
-    public function assertPercentOrUnitless($value, $varName=null, $forceTo = null, $acceptButDeprecated = false) {
+    public function assertPercentOrUnitless($value, $varName = null, $forceTo = null, $acceptButDeprecated = false)
+    {
         $this->assertNumber($value, $varName);
 
         if ($acceptButDeprecated) {
