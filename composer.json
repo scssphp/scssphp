@@ -30,6 +30,10 @@
         "ext-json": "*",
         "ext-ctype": "*"
     },
+    "suggest": {
+        "ext-mbstring": "For best performance, mbstring should be installed as it is faster than ext-iconv",
+        "ext-iconv": "Can be used as fallback when ext-mbstring is not available"
+    },
     "require-dev": {
         "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.3 || ^9.4",
         "sass/sass-spec": "2021.01.20",

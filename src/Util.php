@@ -16,7 +16,7 @@ use ScssPhp\ScssPhp\Base\Range;
 use ScssPhp\ScssPhp\Exception\RangeException;
 
 /**
- * Utilty functions
+ * Utility functions
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
  */
@@ -118,7 +118,7 @@ class Util
             return @iconv_strlen($string, 'UTF-8');
         }
 
-        return strlen($string);
+        throw new \LogicException('Either mbstring (recommended) or iconv is necessary to use Scssphp.');
     }
 
     /**
@@ -155,7 +155,7 @@ class Util
             return (string)iconv_substr($string, $start, $length, 'UTF-8');
         }
 
-        return substr($string, $start, $length);
+        throw new \LogicException('Either mbstring (recommended) or iconv is necessary to use Scssphp.');
     }
 
     /**
@@ -176,6 +176,6 @@ class Util
             return iconv_strpos($haystack, $needle, $offset, 'UTF-8');
         }
 
-        return strpos($haystack, $needle, $offset);
+        throw new \LogicException('Either mbstring (recommended) or iconv is necessary to use Scssphp.');
     }
 }
