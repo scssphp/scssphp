@@ -32,6 +32,8 @@ interface LoggerInterface
      *
      * @param string $message
      * @param bool  $deprecation
+     *
+     * @return void
      */
     public function warn($message, $deprecation = false);
 
@@ -39,6 +41,8 @@ interface LoggerInterface
      * Emits a debugging message.
      *
      * @param string $message
+     *
+     * @return void
      */
     public function debug($message);
 }

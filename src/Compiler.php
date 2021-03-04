@@ -284,6 +284,9 @@ class Compiler
      */
     private $rootDirectory;
 
+    /**
+     * @var bool
+     */
     private $legacyCwdImportPath = true;
 
     /**
@@ -3281,7 +3284,7 @@ class Compiler
     /**
      * Reduce value
      *
-     * @param array|Number $value
+     * @param array|Number|null $value
      * @param boolean $inExp
      *
      * @return null|string|array|Number
