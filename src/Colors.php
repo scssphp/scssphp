@@ -205,7 +205,7 @@ class Colors
      * @param integer $r
      * @param integer $g
      * @param integer $b
-     * @param integer $a
+     * @param integer|float $a
      *
      * @return string|null
      */

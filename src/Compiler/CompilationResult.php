@@ -21,6 +21,9 @@ use ScssPhp\ScssPhp\Exception\CompilerException;
  */
 class CompilationResult
 {
+    /**
+     * @var bool
+     */
     private $isCached = false;
 
     /**
@@ -33,13 +36,20 @@ class CompilationResult
      */
     private $sourceMap = '';
 
+    /**
+     * @var string|null
+     */
     private $sourceMapFile;
+
+    /**
+     * @var string|null
+     */
     private $sourceMapUrl;
 
 
     /**
-     * All the effective parsedfiles
-     * @var array
+     * All the effective parsed files
+     * @var array<string, int>
      */
     private $parsedFiles = [];
 
@@ -58,6 +68,8 @@ class CompilationResult
 
     /**
      * @param bool $isCached
+     *
+     * @return void
      */
     public function setIsCached($isCached) {
         $this->isCached = $isCached;
@@ -72,6 +84,8 @@ class CompilationResult
 
     /**
      * @param string $css
+     *
+     * @return void
      */
     public function setCss($css)
     {
@@ -119,6 +133,8 @@ class CompilationResult
      * @param string $currentDirectory
      * @param string $path
      * @param string $filePath
+     *
+     * @return void
      */
     public function addImportedFile($currentDirectory, $path, $filePath)
     {
@@ -140,6 +156,8 @@ class CompilationResult
     /**
      * Save the included files
      * @param string $path
+     *
+     * @return void
      */
     public function addIncludedFile($path)
     {
@@ -186,6 +204,8 @@ class CompilationResult
      * @param string $sourceMap
      * @param null|string $sourceMapFile
      * @param null|string $sourceMapUrl
+     *
+     * @return void
      */
     public function setSourceMap($sourceMap, $sourceMapFile = null, $sourceMapUrl = null)
     {
