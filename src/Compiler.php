@@ -484,9 +484,18 @@ class Compiler
             $this->rootBlock = null;
             $this->rootEnv   = $this->pushEnv($tree);
 
-            $this->injectVariables($this->registeredVars);
-            $this->compileRoot($tree);
-            $this->popEnv();
+            $warnCallback = function ($message, $deprecation) {
+                $this->logger->warn($message, $deprecation);
+            };
+            $previousWarnCallback = Warn::setCallback($warnCallback);
+
+            try {
+                $this->injectVariables($this->registeredVars);
+                $this->compileRoot($tree);
+                $this->popEnv();
+            } finally {
+                Warn::setCallback($previousWarnCallback);
+            }
 
             $sourceMapGenerator = null;
 
@@ -4045,7 +4054,7 @@ class Compiler
             $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
             $line  = $this->sourceLine;
 
-            $this->logger->warn("$warning\n         on line $line of $fname", true);
+            Warn::deprecation("$warning\n         on line $line of $fname");
         }
 
         $out = [Type::T_COLOR];
@@ -7378,7 +7387,7 @@ class Compiler
             $name = $this->compileStringContent($this->coerceString($functionReference));
             $warning = "Passing a string to call() is deprecated and will be illegal\n"
                 . "in Sass 4.0. Use call(function-reference($name)) instead.";
-            $this->logger->warn($warning, true);
+            Warn::deprecation($warning);
             $functionReference = $this->libGetFunction([$functionReference]);
         }
 
