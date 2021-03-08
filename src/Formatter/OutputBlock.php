@@ -30,17 +30,17 @@ class OutputBlock
     public $depth;
 
     /**
-     * @var array
+     * @var array|null
      */
     public $selectors;
 
     /**
-     * @var array
+     * @var string[]
      */
     public $lines;
 
     /**
-     * @var array
+     * @var OutputBlock[]
      */
     public $children;
 
