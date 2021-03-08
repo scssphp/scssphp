@@ -2134,7 +2134,7 @@ class Compiler
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
      * @param string                                 $traceName
      *
-     * @return array|null
+     * @return array|Number|null
      */
     protected function compileChildren($stms, OutputBlock $out, $traceName = '')
     {
@@ -2652,7 +2652,7 @@ class Compiler
      *
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
      * @param string                                 $type
-     * @param string|mixed                           $line
+     * @param string                                 $line
      *
      * @return void
      */
@@ -3443,7 +3443,7 @@ class Compiler
     /**
      * Function caller
      *
-     * @param string $name
+     * @param string $functionReference
      * @param array  $argValues
      *
      * @return array|Number
