@@ -78,7 +78,7 @@ abstract class Formatter
     protected $currentColumn;
 
     /**
-     * @var \ScssPhp\ScssPhp\SourceMap\SourceMapGenerator
+     * @var \ScssPhp\ScssPhp\SourceMap\SourceMapGenerator|null
      */
     protected $sourceMapGenerator;
 
@@ -139,6 +139,8 @@ abstract class Formatter
      * Output lines inside a block
      *
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     *
+     * @return void
      */
     protected function blockLines(OutputBlock $block)
     {
@@ -156,9 +158,13 @@ abstract class Formatter
      * Output block selectors
      *
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     *
+     * @return void
      */
     protected function blockSelectors(OutputBlock $block)
     {
+        assert(! empty($block->selectors));
+
         $inner = $this->indentStr();
 
         $this->write($inner
@@ -170,6 +176,8 @@ abstract class Formatter
      * Output block children
      *
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     *
+     * @return void
      */
     protected function blockChildren(OutputBlock $block)
     {
@@ -182,6 +190,8 @@ abstract class Formatter
      * Output non-empty block
      *
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
+     *
+     * @return void
      */
     protected function block(OutputBlock $block)
     {
@@ -285,6 +295,8 @@ abstract class Formatter
      * Output content
      *
      * @param string $str
+     *
+     * @return void
      */
     protected function write($str)
     {

@@ -67,6 +67,8 @@ class Compressed extends Formatter
      */
     protected function blockSelectors(OutputBlock $block)
     {
+        assert(! empty($block->selectors));
+
         $inner = $this->indentStr();
 
         $this->write(
