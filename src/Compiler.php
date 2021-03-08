@@ -6725,7 +6725,7 @@ class Compiler
      */
     private function assertPercentOrUnitless($value, $varName = null, $forceTo = null, $acceptButDeprecated = false)
     {
-        $this->assertNumber($value, $varName);
+        $value = $this->assertNumber($value, $varName);
 
         if ($acceptButDeprecated) {
             if (! $value->unitless() && ! $value->hasUnit('%')) {
