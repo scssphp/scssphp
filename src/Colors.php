@@ -24,7 +24,7 @@ class Colors
      *
      * @see http://www.w3.org/TR/css3-color
      *
-     * @var array
+     * @var array<string, string>
      */
     protected static $cssColors = [
         'aliceblue' => '240,248,255',
@@ -183,7 +183,7 @@ class Colors
      *
      * @param string $colorName
      *
-     * @return array|null
+     * @return int[]|null
      */
     public static function colorNameToRGBa($colorName)
     {
