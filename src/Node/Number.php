@@ -27,6 +27,8 @@ use ScssPhp\ScssPhp\Type;
  * }}
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
+ *
+ * @template-implements \ArrayAccess<int, mixed>
  */
 class Number extends Node implements \ArrayAccess
 {
@@ -42,6 +44,7 @@ class Number extends Node implements \ArrayAccess
      * @see http://www.w3.org/TR/2012/WD-css3-values-20120308/
      *
      * @var array
+     * @phpstan-var array<string, array<string, float|int>>
      */
     protected static $unitTable = [
         'in' => [
