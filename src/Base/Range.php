@@ -19,7 +19,14 @@ namespace ScssPhp\ScssPhp\Base;
  */
 class Range
 {
+    /**
+     * @var float|int
+     */
     public $first;
+
+    /**
+     * @var float|int
+     */
     public $last;
 
     /**
