@@ -4239,7 +4239,7 @@ class Compiler
      *
      * @api
      *
-     * @param array|Number|string $value
+     * @param array|Number $value
      *
      * @return string
      */

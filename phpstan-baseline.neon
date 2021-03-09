@@ -986,11 +986,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:reduce\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|string given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Parameter \\#1 \\$var of function count expects array\\|Countable, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
 			count: 1
 			path: src/Compiler.php
