@@ -476,11 +476,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:replaceSelfSelector\\(\\) has parameter \\$replace with no typehint specified\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:replaceSelfSelector\\(\\) has parameter \\$selectors with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -762,12 +757,7 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$exp of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:expToString\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:reduce\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|ArrayAccess given\\.$#"
-			count: 1
+			count: 4
 			path: src/Compiler.php
 
 		-
@@ -786,47 +776,27 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:reduce\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|ArrayAccess\\|string\\|null given\\.$#"
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:cssValidArg\\(\\) has parameter \\$arg with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:cssValidArg\\(\\) has no return typehint specified\\.$#"
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:cssValidArg\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:cssValidArg\\(\\) has parameter \\$allowed_function with no typehint specified\\.$#"
+			message: "#^Cannot assign offset 'enclosing' to array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:cssValidArg\\(\\) has parameter \\$arg with no typehint specified\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:cssValidArg\\(\\) has parameter \\$inFunction with no typehint specified\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:stringifyFncallArgs\\(\\) has parameter \\$arg with no typehint specified\\.$#"
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:stringifyFncallArgs\\(\\) has parameter \\$arg with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:stringifyFncallArgs\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:stringifyFncallArgs\\(\\) return type with generic interface ArrayAccess does not specify its types\\: TKey, TValue$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$arg\\)\\: Unexpected token \"\\$arg\", expected type at offset 88$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1077,11 +1047,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileStringContent\\(\\) has parameter \\$string with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileValue\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|string, array\\|ArrayAccess given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1342,11 +1307,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:coerceValue\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:coerceValue\\(\\) should return array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number but returns array\\|ArrayAccess\\.$#"
 			count: 1
 			path: src/Compiler.php
 
