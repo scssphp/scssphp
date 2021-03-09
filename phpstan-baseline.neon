@@ -491,11 +491,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileValue\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|string, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null given\\.$#"
-			count: 4
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:flattenSelectorSingle\\(\\) has parameter \\$single with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -631,7 +626,7 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$path of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:escapeImportPathString\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$path of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:escapeImportPathString\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -686,13 +681,8 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$rawPath of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileImport\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$rawPath of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileImport\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
 			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Offset 0 does not exist on array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null\\.$#"
-			count: 7
 			path: src/Compiler.php
 
 		-
@@ -711,18 +701,8 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:isTruthy\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null given\\.$#"
-			count: 4
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$item of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:coerceList\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$item of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:coerceList\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
 			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Offset 0 does not exist on array\\|null\\.$#"
-			count: 2
 			path: src/Compiler.php
 
 		-
@@ -786,12 +766,7 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:coerceForExpression\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null given\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:reduce\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null, array\\|ArrayAccess given\\.$#"
+			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:reduce\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|ArrayAccess given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -811,7 +786,7 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:reduce\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null, array\\|ArrayAccess\\|string\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:reduce\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|ArrayAccess\\|string\\|null given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -872,12 +847,12 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$list of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:extractInterpolation\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
-			count: 1
+			count: 3
 			path: src/Compiler.php
 
 		-
 			message: "#^Parameter \\#1 \\$string of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileStringContent\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
-			count: 1
+			count: 4
 			path: src/Compiler.php
 
 		-
@@ -1041,22 +1016,12 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:reduce\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|string given\\.$#"
+			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:reduce\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|string given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Offset 1 does not exist on array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null\\.$#"
-			count: 16
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$var of function count expects array\\|Countable, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Offset 4 does not exist on array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null\\.$#"
+			message: "#^Parameter \\#1 \\$var of function count expects array\\|Countable, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1081,23 +1046,8 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Cannot call method output\\(\\) on array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null\\.$#"
+			message: "#^Cannot call method output\\(\\) on array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\.$#"
 			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileStringContent\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null given\\.$#"
-			count: 3
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$list of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:extractInterpolation\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null given\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Offset 2 does not exist on array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null\\.$#"
-			count: 3
 			path: src/Compiler.php
 
 		-
@@ -1106,7 +1056,7 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileCommentValue\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileCommentValue\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
