@@ -80,7 +80,7 @@ class Parser
      */
     private $count;
     /**
-     * @var Block
+     * @var Block|null
      */
     private $env;
     /**
@@ -167,6 +167,8 @@ class Parser
      * @api
      *
      * @param string $msg
+     *
+     * @phpstan-return never-return
      *
      * @throws ParserException
      *
@@ -4076,6 +4078,8 @@ class Parser
 
     /**
      * Save internal encoding
+     *
+     * @return void
      */
     private function saveEncoding()
     {
@@ -4088,6 +4092,8 @@ class Parser
 
     /**
      * Restore internal encoding
+     *
+     * @return void
      */
     private function restoreEncoding()
     {
