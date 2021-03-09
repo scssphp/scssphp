@@ -5836,7 +5836,7 @@ class Compiler
      * Call built-in and registered (PHP) functions
      *
      * @param string $name
-     * @param string|array $function
+     * @param callable $function
      * @param array  $prototype
      * @param array  $args
      *
@@ -8721,6 +8721,12 @@ class Compiler
         return [Type::T_STRING, '', ['u' . str_pad(base_convert($id, 10, 36), 8, '0', STR_PAD_LEFT)]];
     }
 
+    /**
+     * @param array|Number $value
+     * @param bool         $force_enclosing_display
+     *
+     * @return array
+     */
     protected function inspectFormatValue($value, $force_enclosing_display = false)
     {
         if ($value === static::$null) {
@@ -8773,7 +8779,7 @@ class Compiler
      *
      * @param array $arg
      *
-     * @return array|boolean
+     * @return array
      */
     protected function getSelectorArg($arg, $varname = null, $allowParent = false)
     {

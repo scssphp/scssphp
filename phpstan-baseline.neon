@@ -1171,22 +1171,12 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:callNativeFunction\\(\\) has parameter \\$function with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:callNativeFunction\\(\\) has parameter \\$prototype with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:callNativeFunction\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$function of function call_user_func expects callable\\(\\)\\: mixed, array\\|string given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1511,17 +1501,12 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:inspectFormatValue\\(\\) has no return typehint specified\\.$#"
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:inspectFormatValue\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:inspectFormatValue\\(\\) has parameter \\$force_enclosing_display with no typehint specified\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:inspectFormatValue\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:inspectFormatValue\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1561,16 +1546,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$super of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:isSuperSelector\\(\\) expects array, array\\|bool given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#2 \\$sub of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:isSuperSelector\\(\\) expects array, array\\|bool given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:isSuperSelector\\(\\) has parameter \\$sub with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1601,21 +1576,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$selectors of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:extendOrReplaceSelectors\\(\\) expects array, array\\|true given\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#2 \\$extendee of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:extendOrReplaceSelectors\\(\\) expects array, array\\|true given\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#3 \\$extender of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:extendOrReplaceSelectors\\(\\) expects array, array\\|true given\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:extendOrReplaceSelectors\\(\\) has parameter \\$extendee with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1638,16 +1598,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$envs of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:extractEnv\\(\\) expects array\\<ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\>&nonEmpty, array\\<int, ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\> given\\.$#"
 			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$selectors of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:formatOutputSelector\\(\\) expects array, array\\|bool given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$array of function reset expects array, array\\|true given\\.$#"
-			count: 2
 			path: src/Compiler.php
 
 		-
@@ -1712,11 +1662,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:findTagName\\(\\) has parameter \\$parts with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$array of function reset expects array, array\\|bool given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
