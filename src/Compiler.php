@@ -515,7 +515,7 @@ class Compiler
         // Otherwise, the CSS will be rendered as-is. It can even be extended!
         $cssOnly = false;
 
-        if (substr($path, '-4') === '.css') {
+        if (substr($path, -4) === '.css') {
             $cssOnly = true;
         }
 
@@ -1163,7 +1163,7 @@ class Compiler
 
         $mediaQueries = $this->compileMediaQuery($this->multiplyMedia($this->env));
 
-        if (! empty($mediaQueries) && $mediaQueries) {
+        if (! empty($mediaQueries)) {
             $previousScope = $this->scope;
             $parentScope = $this->mediaParent($this->scope);
 
@@ -6711,7 +6711,7 @@ class Compiler
      */
     public function assertUnit($value, $units, $varName = null)
     {
-        $this->assertNumber($value, $varName);
+        $value = $this->assertNumber($value, $varName);
 
         foreach ($units as $unit) {
             if ($unit && $value->hasUnit($unit)) {
