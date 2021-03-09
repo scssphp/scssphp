@@ -170,6 +170,11 @@ class Compiler
      * @phpstan-var self::SOURCE_MAP_*|SourceMapGenerator
      */
     protected $sourceMap = self::SOURCE_MAP_NONE;
+
+    /**
+     * @var array
+     * @phpstan-var array{sourceRoot?: string, sourceMapFilename?: string|null, sourceMapURL?: string|null, sourceMapWriteTo?: string|null, outputSourceFiles?: bool, sourceMapRootpath?: string, sourceMapBasepath?: string}
+     */
     protected $sourceMapOptions = [];
 
     /**
@@ -5260,6 +5265,8 @@ class Compiler
      * @api
      *
      * @param array $sourceMapOptions
+     *
+     * @phpstan-param  array{sourceRoot?: string, sourceMapFilename?: string|null, sourceMapURL?: string|null, sourceMapWriteTo?: string|null, outputSourceFiles?: bool, sourceMapRootpath?: string, sourceMapBasepath?: string} $sourceMapOptions
      *
      * @return void
      */
