@@ -2016,21 +2016,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:parseValue\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:parseSelector\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:parseMediaQueryList\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Right side of \\|\\| is always true\\.$#"
 			count: 14
 			path: src/Parser.php
@@ -2171,11 +2156,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:peek\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:peek\\(\\) should return int but returns int\\|false\\.$#"
 			count: 1
 			path: src/Parser.php
@@ -2221,11 +2201,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:match\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:appendComment\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Parser.php
@@ -2256,48 +2231,8 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:mediaQueryList\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:mediaQuery\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:supportsQuery\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:mediaExpression\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:argValues\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:argValue\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:directiveValue\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Parameter \\#1 \\$char of method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:matchChar\\(\\) expects string, string\\|true given\\.$#"
 			count: 3
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:valueList\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
 			path: src/Parser.php
 
 		-
@@ -2307,16 +2242,6 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @param has invalid value \\(\\$out\\)\\: Unexpected token \"\\$out\", expected type at offset 128$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:spaceList\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:genericList\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Parser.php
 
@@ -2341,17 +2266,7 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:expression\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:enclosedExpression\\(\\) has parameter \\$allowedTypes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:enclosedExpression\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Parser.php
 
@@ -2366,42 +2281,7 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:value\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:parenValue\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:progid\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:func\\(\\) has parameter \\$func with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:argumentList\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:argumentDef\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:map\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:color\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Parser.php
 
@@ -2416,11 +2296,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:string\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Parameter \\#1 \\$code of static method ScssPhp\\\\ScssPhp\\\\Util\\:\\:mbChr\\(\\) expects int, float\\|int\\<min, 31\\> given\\.$#"
 			count: 1
 			path: src/Parser.php
@@ -2431,62 +2306,12 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:mixedKeyword\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:openString\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Variable \\$tok might not be defined\\.$#"
 			count: 1
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:interpolation\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:propertyName\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:customProperty\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:selectors\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:selector\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:selectorSingle\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:variable\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:placeholder\\(\\) has parameter \\$placeholder with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:url\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Parser.php
 
