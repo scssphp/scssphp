@@ -6341,15 +6341,19 @@ class Compiler
     /**
      * Coerce something to list
      *
-     * @param array   $item
-     * @param string  $delim
-     * @param boolean $removeTrailingNull
+     * @param array|Number $item
+     * @param string       $delim
+     * @param boolean      $removeTrailingNull
      *
      * @return array
      */
     protected function coerceList($item, $delim = ',', $removeTrailingNull = false)
     {
-        if (isset($item) && $item[0] === Type::T_LIST) {
+        if ($item instanceof Number) {
+            return [Type::T_LIST, $delim, [$item]];
+        }
+
+        if ($item[0] === Type::T_LIST) {
             // remove trailing null from the list
             if ($removeTrailingNull && end($item[2]) === static::$null) {
                 array_pop($item[2]);
@@ -6358,7 +6362,7 @@ class Compiler
             return $item;
         }
 
-        if (isset($item) && $item[0] === Type::T_MAP) {
+        if ($item[0] === Type::T_MAP) {
             $keys = $item[1];
             $values = $item[2];
             $list = [];
@@ -6389,7 +6393,7 @@ class Compiler
             return [Type::T_LIST, ',', $list];
         }
 
-        return [Type::T_LIST, $delim, ! isset($item) ? [] : [$item]];
+        return [Type::T_LIST, $delim, [$item]];
     }
 
     /**

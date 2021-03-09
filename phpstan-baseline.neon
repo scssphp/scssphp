@@ -686,11 +686,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$item of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:coerceList\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$marker\\.$#"
 			count: 2
 			path: src/Compiler.php
@@ -1248,11 +1243,6 @@ parameters:
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:coerceList\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Variable \\$item in isset\\(\\) always exists and is not nullable\\.$#"
-			count: 3
 			path: src/Compiler.php
 
 		-
