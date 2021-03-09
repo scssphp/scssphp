@@ -144,7 +144,14 @@ class Compiler
      */
     protected $importCache = [];
 
+    /**
+     * @var array
+     * @phpstan-var array<string, array{0: callable, 1: array|null}>
+     */
     protected $userFunctions = [];
+    /**
+     * @var array<string, mixed>
+     */
     protected $registeredVars = [];
     /**
      * @var array<string, bool>
@@ -161,6 +168,7 @@ class Compiler
      */
     protected $encoding = null;
     /**
+     * @var null
      * @deprecated
      */
     protected $lineNumberStyle = null;
@@ -303,6 +311,7 @@ class Compiler
      * Constructor
      *
      * @param array|null $cacheOptions
+     * @phpstan-param array{cacheDir?: string, prefix?: string, forceRefresh?: string, checkImportResolutions?: bool}|null $cacheOptions
      */
     public function __construct($cacheOptions = null)
     {
@@ -563,8 +572,8 @@ class Compiler
     /**
      * Make output block
      *
-     * @param string $type
-     * @param array  $selectors
+     * @param string|null   $type
+     * @param string[]|null $selectors
      *
      * @return \ScssPhp\ScssPhp\Formatter\OutputBlock
      */
@@ -696,7 +705,7 @@ class Compiler
     }
 
     /**
-     * Glue parts of :not( or :nth-child( ... that are in general splitted in selectors parts
+     * Glue parts of :not( or :nth-child( ... that are in general split in selectors parts
      *
      * @param array $parts
      *
@@ -1227,7 +1236,7 @@ class Compiler
     /**
      * Compile directive
      *
-     * @param \ScssPhp\ScssPhp\Block|array $block
+     * @param \ScssPhp\ScssPhp\Block|array $directive
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
      *
      * @return void
@@ -1272,7 +1281,7 @@ class Compiler
      * directive names can include some interpolation
      *
      * @param string|array $directiveName
-     * @return array|string
+     * @return string
      * @throws CompilerException
      */
     protected function compileDirectiveName($directiveName)
@@ -1613,7 +1622,7 @@ class Compiler
      * Compile keyframe block
      *
      * @param \ScssPhp\ScssPhp\Block $block
-     * @param array                  $selectors
+     * @param string[]               $selectors
      *
      * @return void
      */
@@ -1679,7 +1688,7 @@ class Compiler
      * Compile nested block
      *
      * @param \ScssPhp\ScssPhp\Block $block
-     * @param array                  $selectors
+     * @param string[]               $selectors
      *
      * @return void
      */
@@ -2269,7 +2278,7 @@ class Compiler
      *
      * @param array $queryList
      *
-     * @return array
+     * @return string[]
      */
     protected function compileMediaQuery($queryList)
     {
@@ -3448,8 +3457,8 @@ class Compiler
     /**
      * Function caller
      *
-     * @param string $functionReference
-     * @param array  $argValues
+     * @param string|array $functionReference
+     * @param array        $argValues
      *
      * @return array|Number
      */
@@ -5869,7 +5878,7 @@ class Compiler
      * Sorts keyword arguments
      *
      * @param string $functionName
-     * @param array  $prototypes
+     * @param array|null  $prototypes
      * @param array  $args
      *
      * @return array|null
@@ -6693,8 +6702,7 @@ class Compiler
      * @api
      *
      * @param array|Number $value
-     * @param array $allowedUnits
-     *   null value stand for unitless
+     * @param array<string|null> $units null value stand for unitless
      * @param string $varName
      *
      * @return Number

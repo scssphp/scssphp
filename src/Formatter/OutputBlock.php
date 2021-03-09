@@ -50,17 +50,17 @@ class OutputBlock
     public $parent;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $sourceName;
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public $sourceLine;
 
     /**
-     * @var integer
+     * @var integer|null
      */
     public $sourceColumn;
 }
