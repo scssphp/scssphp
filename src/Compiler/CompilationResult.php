@@ -55,13 +55,14 @@ class CompilationResult
 
     /**
      * All the @import files and urls seen in the compilation process
-     * @var array
+     * @var string[]
      */
     private $includedFiles = [];
 
     /**
      * All the @import files resolved and imported (use to check the once condition)
      * @var array
+     * @phpstan-var list<array{currentDir: string, path: string, filePath: string}>
      */
     private $importedFiles = [];
 
@@ -121,7 +122,7 @@ class CompilationResult
      *
      * @api
      *
-     * @return array
+     * @return array<string, int>
      */
     public function getParsedFiles()
     {
@@ -146,7 +147,7 @@ class CompilationResult
     /**
      * Get the list of the already imported Files
      * used by the compiler to check the once condition on @import
-     * @return array
+     * @return string[]
      */
     public function getImportedFiles()
     {
@@ -176,7 +177,7 @@ class CompilationResult
      * For filesystem imports, this contains the import path. For all other
      * imports, it contains the URL passed to the `@import`.
      *
-     * @return array
+     * @return string[]
      */
     public function getIncludedFiles()
     {
