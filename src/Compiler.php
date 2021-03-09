@@ -3316,17 +3316,13 @@ class Compiler
     /**
      * Reduce value
      *
-     * @param array|Number|null $value
+     * @param array|Number $value
      * @param boolean $inExp
      *
-     * @return null|array|Number
+     * @return array|Number
      */
     protected function reduce($value, $inExp = false)
     {
-        if (\is_null($value)) {
-            return null;
-        }
-
         switch ($value[0]) {
             case Type::T_EXPRESSION:
                 list(, $op, $left, $right, $inParens) = $value;
@@ -5838,7 +5834,9 @@ class Compiler
             }
 
             foreach ($sorted as &$val) {
-                $val = $this->reduce($val, $inExp);
+                if ($val !== null) {
+                    $val = $this->reduce($val, $inExp);
+                }
             }
         }
 
