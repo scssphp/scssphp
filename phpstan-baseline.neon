@@ -661,11 +661,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$sourceIndex \\(int\\|null\\) does not accept int\\|false\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileChild\\(\\) should return array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null but return statement is missing\\.$#"
 			count: 1
 			path: src/Compiler.php
