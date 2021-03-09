@@ -1324,9 +1324,10 @@ class Compiler
         }
 
         $selfParent = $block->selfParent;
+        assert($selfParent !== null, 'at-root blocks must have a selfParent set.');
 
         if (
-            ! $block->selfParent->selectors &&
+            ! $selfParent->selectors &&
             isset($block->parent) && $block->parent &&
             isset($block->parent->selectors) && $block->parent->selectors
         ) {
@@ -5714,8 +5715,8 @@ class Compiler
     /**
      * Beautify call stack for output
      *
-     * @param boolean $all
-     * @param null    $limit
+     * @param boolean  $all
+     * @param int|null $limit
      *
      * @return string
      */
