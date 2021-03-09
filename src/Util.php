@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp;
 
 use ScssPhp\ScssPhp\Base\Range;
 use ScssPhp\ScssPhp\Exception\RangeException;
+use ScssPhp\ScssPhp\Node\Number;
 
 /**
  * Utility functions
@@ -26,10 +27,10 @@ class Util
      * Asserts that `value` falls within `range` (inclusive), leaving
      * room for slight floating-point errors.
      *
-     * @param string                    $name  The name of the value. Used in the error message.
-     * @param \ScssPhp\ScssPhp\Base\Range $range Range of values.
-     * @param array                     $value The value to check.
-     * @param string                    $unit  The unit of the value. Used in error reporting.
+     * @param string       $name  The name of the value. Used in the error message.
+     * @param Range        $range Range of values.
+     * @param array|Number $value The value to check.
+     * @param string       $unit  The unit of the value. Used in error reporting.
      *
      * @return mixed `value` adjusted to fall within range, if it was outside by a floating-point margin.
      *
@@ -115,7 +116,7 @@ class Util
         }
 
         if (\function_exists('iconv_strlen')) {
-            return @iconv_strlen($string, 'UTF-8');
+            return (int) @iconv_strlen($string, 'UTF-8');
         }
 
         throw new \LogicException('Either mbstring (recommended) or iconv is necessary to use Scssphp.');
