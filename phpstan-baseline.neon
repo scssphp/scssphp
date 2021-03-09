@@ -416,6 +416,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Cannot access property \\$selectors on ScssPhp\\\\ScssPhp\\\\Block\\|null\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileCommentValue\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -511,11 +516,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#2 \\$limit of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:callStackMessage\\(\\) expects null, int given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileChildren\\(\\) has parameter \\$stms with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -527,11 +527,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileChildrenNoReturn\\(\\) has parameter \\$stms with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$selfParent \\(ScssPhp\\\\ScssPhp\\\\Block\\) does not accept null\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1197,11 +1192,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:errorArgsNumber\\(\\) has parameter \\$ExpectedArgs with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Result of && is always false\\.$#"
 			count: 1
 			path: src/Compiler.php
 
