@@ -4511,9 +4511,9 @@ class Compiler
     }
 
     /**
-     * @param array $value
+     * @param array|Number $value
      *
-     * @return array|string
+     * @return string
      */
     protected function compileDebugValue($value)
     {

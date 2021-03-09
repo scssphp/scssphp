@@ -711,11 +711,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Part \\$value \\(array\\|string\\) of encapsed string cannot be cast to string\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:expToString\\(\\) has parameter \\$exp with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1012,11 +1007,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileDebugValue\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileDebugValue\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
