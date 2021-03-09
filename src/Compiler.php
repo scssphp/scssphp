@@ -3326,6 +3326,10 @@ class Compiler
      */
     protected function reduce($value, $inExp = false)
     {
+        if ($value instanceof Number) {
+            return $value;
+        }
+
         switch ($value[0]) {
             case Type::T_EXPRESSION:
                 list(, $op, $left, $right, $inParens) = $value;
@@ -3553,6 +3557,10 @@ class Compiler
      */
     protected function cssValidArg($arg, $allowed_function = [], $inFunction = false)
     {
+        if ($arg instanceof Number) {
+            return $this->stringifyFncallArgs($arg);
+        }
+
         switch ($arg[0]) {
             case Type::T_INTERPOLATE:
                 return [Type::T_KEYWORD, $this->CompileValue($arg)];
@@ -3595,9 +3603,6 @@ class Compiler
                 if (!$inFunction or !\in_array($inFunction, ['calc', 'env', 'var'])) {
                     return false;
                 }
-                return $this->stringifyFncallArgs($arg);
-
-            case Type::T_NUMBER:
                 return $this->stringifyFncallArgs($arg);
 
             case Type::T_LIST:
@@ -3644,6 +3649,9 @@ class Compiler
      */
     protected function stringifyFncallArgs($arg)
     {
+        if ($arg instanceof Number) {
+            return $arg;
+        }
 
         switch ($arg[0]) {
             case Type::T_LIST:
@@ -3737,6 +3745,10 @@ class Compiler
     public function normalizeValue($value)
     {
         $value = $this->coerceForExpression($this->reduce($value));
+
+        if ($value instanceof Number) {
+            return $value;
+        }
 
         switch ($value[0]) {
             case Type::T_LIST:
@@ -4249,6 +4261,10 @@ class Compiler
     {
         $value = $this->reduce($value);
 
+        if ($value instanceof Number) {
+            return $value->output($this);
+        }
+
         switch ($value[0]) {
             case Type::T_KEYWORD:
                 return $this->escapeNonPrintableChars($value[1], true);
@@ -4302,9 +4318,6 @@ class Compiler
                 }
 
                 return $h;
-
-            case Type::T_NUMBER:
-                return $value->output($this);
 
             case Type::T_STRING:
                 $content = $this->compileStringContent($value);
@@ -4456,6 +4469,10 @@ class Compiler
                 // strip quotes if it's a string
                 $reduced = $this->reduce($value[1]);
 
+                if ($reduced instanceof Number) {
+                    return $this->compileValue($reduced);
+                }
+
                 switch ($reduced[0]) {
                     case Type::T_LIST:
                         $reduced = $this->extractInterpolation($reduced);
@@ -4518,6 +4535,10 @@ class Compiler
     protected function compileDebugValue($value)
     {
         $value = $this->reduce($value, true);
+
+        if ($value instanceof Number) {
+            return $this->compileValue($value);
+        }
 
         switch ($value[0]) {
             case Type::T_STRING:
@@ -6397,6 +6418,10 @@ class Compiler
      */
     protected function coerceColor($value, $inRGBFunction = false)
     {
+        if ($value instanceof Number) {
+            return null;
+        }
+
         switch ($value[0]) {
             case Type::T_COLOR:
                 for ($i = 1; $i <= 3; $i++) {
@@ -8703,6 +8728,10 @@ class Compiler
         }
 
         $stringValue = [$value];
+
+        if ($value instanceof Number) {
+            return [Type::T_STRING, '', $stringValue];
+        }
 
         if ($value[0] === Type::T_LIST) {
             if (end($value[2]) === static::$null) {

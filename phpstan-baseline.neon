@@ -741,11 +741,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$exp of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:expToString\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
-			count: 4
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:fncall\\(\\) has parameter \\$argValues with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -767,11 +762,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:cssValidArg\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Cannot assign offset 'enclosing' to array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -798,16 +788,6 @@ parameters:
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:normalizeValue\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$list of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:extractInterpolation\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
-			count: 3
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileStringContent\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
-			count: 4
 			path: src/Compiler.php
 
 		-
@@ -971,11 +951,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$var of function count expects array\\|Countable, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Parameter \\#1 \\$dimension of class ScssPhp\\\\ScssPhp\\\\Node\\\\Number constructor expects float\\|int, float\\|int\\|string given\\.$#"
 			count: 2
 			path: src/Compiler.php
@@ -992,16 +967,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#3 \\$b of static method ScssPhp\\\\ScssPhp\\\\Colors\\:\\:RGBaToColorName\\(\\) expects int, float\\|int\\|string given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Cannot call method output\\(\\) on array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileCommentValue\\(\\) expects array, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1317,11 +1282,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:coerceColor\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:coerceColor\\(\\) should return array\\|null but returns array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\.$#"
 			count: 1
 			path: src/Compiler.php
 
