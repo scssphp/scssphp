@@ -2737,12 +2737,13 @@ class Compiler
             $this->sourceColumn = $child[1]->sourceColumn;
         } elseif (! empty($out->sourceLine) && ! empty($out->sourceName)) {
             $this->sourceLine   = $out->sourceLine;
-            $this->sourceIndex  = array_search($out->sourceName, $this->sourceNames);
+            $sourceIndex  = array_search($out->sourceName, $this->sourceNames);
             $this->sourceColumn = $out->sourceColumn;
 
-            if ($this->sourceIndex === false) {
-                $this->sourceIndex = null;
+            if ($sourceIndex === false) {
+                $sourceIndex = null;
             }
+            $this->sourceIndex = $sourceIndex;
         }
 
         switch ($child[0]) {
