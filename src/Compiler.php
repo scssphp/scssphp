@@ -1999,7 +1999,8 @@ class Compiler
     /**
      * Parse down the selector and revert [self] to "&" before a reparsing
      *
-     * @param array $selectors
+     * @param array       $selectors
+     * @param string|null $replace
      *
      * @return array
      */
@@ -3437,7 +3438,7 @@ class Compiler
 
             case Type::T_STRING:
                 foreach ($value[2] as &$item) {
-                    if (\is_array($item) || $item instanceof \ArrayAccess) {
+                    if (\is_array($item) || $item instanceof Number) {
                         $item = $this->reduce($item);
                     }
                 }
@@ -3541,6 +3542,13 @@ class Compiler
         }
     }
 
+    /**
+     * @param array|Number $arg
+     * @param string[]     $allowed_function
+     * @param bool         $inFunction
+     *
+     * @return array|Number|false
+     */
     protected function cssValidArg($arg, $allowed_function = [], $inFunction = false)
     {
         switch ($arg[0]) {
@@ -3628,9 +3636,9 @@ class Compiler
     /**
      * Reformat fncall arguments to proper css function output
      *
-     * @param $arg
+     * @param array|Number $arg
      *
-     * @return array|\ArrayAccess|Number|string|null
+     * @return array|Number
      */
     protected function stringifyFncallArgs($arg)
     {
@@ -4547,7 +4555,7 @@ class Compiler
         $parts = [];
 
         foreach ($string[2] as $part) {
-            if (\is_array($part) || $part instanceof \ArrayAccess) {
+            if (\is_array($part) || $part instanceof Number) {
                 $parts[] = $this->compileValue($part);
             } else {
                 $parts[] = $part;
@@ -5770,7 +5778,7 @@ class Compiler
      * @param Object $func
      * @param array  $argValues
      *
-     * @return array
+     * @return array|Number
      */
     protected function callScssFunction($func, $argValues)
     {
@@ -6258,7 +6266,7 @@ class Compiler
      */
     protected function coerceValue($value)
     {
-        if (\is_array($value) || $value instanceof \ArrayAccess) {
+        if (\is_array($value) || $value instanceof Number) {
             return $value;
         }
 
