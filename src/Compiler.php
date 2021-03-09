@@ -3319,7 +3319,7 @@ class Compiler
      * @param array|Number|null $value
      * @param boolean $inExp
      *
-     * @return null|string|array|Number
+     * @return null|array|Number
      */
     protected function reduce($value, $inExp = false)
     {
