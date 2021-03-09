@@ -4249,10 +4249,7 @@ class Compiler
 
         switch ($value[0]) {
             case Type::T_KEYWORD:
-                if (is_string($value[1])) {
-                    $value[1] = $this->escapeNonPrintableChars($value[1], true);
-                }
-                return $value[1];
+                return $this->escapeNonPrintableChars($value[1], true);
 
             case Type::T_COLOR:
                 // [1] - red component (either number for a %)
@@ -4478,14 +4475,12 @@ class Compiler
                                 continue;
                             }
 
-                            $temp = $this->compileValue([Type::T_KEYWORD, $item]);
-
-                            if ($temp[0] === Type::T_STRING) {
-                                $filtered[] = $this->compileStringContent($temp);
-                            } elseif ($temp[0] === Type::T_KEYWORD) {
-                                $filtered[] = $temp[1];
+                            if ($item[0] === Type::T_STRING) {
+                                $filtered[] = $this->compileStringContent($item);
+                            } elseif ($item[0] === Type::T_KEYWORD) {
+                                $filtered[] = $item[1];
                             } else {
-                                $filtered[] = $this->compileValue($temp);
+                                $filtered[] = $this->compileValue($item);
                             }
                         }
 
