@@ -3,3 +3,20 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
     paths:
         - ./src/
+    ignoreErrors:
+        # Ignore errors about not having typehints for definitions of builtin functions. These won't be typed until they are extracted.
+        -
+            message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$lib[\\w]+ has no typehint specified\\.$#"
+            path: src/Compiler.php
+
+        -
+            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:lib[^(]+\\(\\) has no return typehint specified\\.$#"
+            path: src/Compiler.php
+
+        -
+            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:lib[^(]+\\(\\) has parameter \\$args with no typehint specified\\.$#"
+            path: src/Compiler.php
+
+        -
+            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:lib[^(]+\\(\\) has parameter \\$kwargs with no typehint specified\\.$#"
+            path: src/Compiler.php
