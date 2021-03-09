@@ -1353,12 +1353,12 @@ class Compiler
         $filteredScopes = [];
         $childStash = [];
 
-        if ($scope->type === TYPE::T_ROOT) {
+        if ($scope->type === Type::T_ROOT) {
             return $scope;
         }
 
         // start from the root
-        while ($scope->parent && $scope->parent->type !== TYPE::T_ROOT) {
+        while ($scope->parent && $scope->parent->type !== Type::T_ROOT) {
             array_unshift($childStash, $scope);
             $scope = $scope->parent;
         }
@@ -2181,7 +2181,7 @@ class Compiler
                 $stm[1]->selfParent = $selfParent;
                 $ret = $this->compileChild($stm, $out);
                 $stm[1]->selfParent = null;
-            } elseif ($selfParent && \in_array($stm[0], [TYPE::T_INCLUDE, TYPE::T_EXTEND])) {
+            } elseif ($selfParent && \in_array($stm[0], [Type::T_INCLUDE, Type::T_EXTEND])) {
                 $stm['selfParent'] = $selfParent;
                 $ret = $this->compileChild($stm, $out);
                 unset($stm['selfParent']);
