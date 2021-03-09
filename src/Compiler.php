@@ -1915,14 +1915,44 @@ class Compiler
     /**
      * Collapse selectors
      *
-     * @param array   $selectors
-     * @param boolean $selectorFormat
-     *   if false return a collapsed string
-     *   if true return an array description of a structured selector
+     * @param array $selectors
      *
      * @return string
      */
-    protected function collapseSelectors($selectors, $selectorFormat = false)
+    protected function collapseSelectors($selectors)
+    {
+        $parts = [];
+
+        foreach ($selectors as $selector) {
+            $output = [];
+
+            foreach ($selector as $node) {
+                $compound = '';
+
+                array_walk_recursive(
+                    $node,
+                    function ($value, $key) use (&$compound) {
+                        $compound .= $value;
+                    }
+                );
+
+                $output[] = $compound;
+            }
+
+            $parts[] = implode(' ', $output);
+        }
+
+        return implode(', ', $parts);
+    }
+
+    /**
+     * Collapse selectors
+     *
+     * @param array $selectors
+     *
+     * @return array
+     */
+    private function collapseSelectorsAsList($selectors)
     {
         $parts = [];
 
@@ -1940,7 +1970,7 @@ class Compiler
                     }
                 );
 
-                if ($selectorFormat && $this->isImmediateRelationshipCombinator($compound)) {
+                if ($this->isImmediateRelationshipCombinator($compound)) {
                     if (\count($output)) {
                         $output[\count($output) - 1] .= ' ' . $compound;
                     } else {
@@ -1956,26 +1986,14 @@ class Compiler
                 }
             }
 
-            if ($selectorFormat) {
-                foreach ($output as &$o) {
-                    $o = [Type::T_STRING, '', [$o]];
-                }
-
-                $output = [Type::T_LIST, ' ', $output];
-            } else {
-                $output = implode(' ', $output);
+            foreach ($output as &$o) {
+                $o = [Type::T_STRING, '', [$o]];
             }
 
-            $parts[] = $output;
+            $parts[] = [Type::T_LIST, ' ', $output];
         }
 
-        if ($selectorFormat) {
-            $parts = [Type::T_LIST, ',', $parts];
-        } else {
-            $parts = implode(', ', $parts);
-        }
-
-        return $parts;
+        return [Type::T_LIST, ',', $parts];
     }
 
     /**
@@ -3445,7 +3463,7 @@ class Compiler
             case Type::T_SELF:
                 $selfParent = ! empty($this->env->block->selfParent) ? $this->env->block->selfParent : null;
                 $selfSelector = $this->multiplySelectors($this->env, $selfParent);
-                $selfSelector = $this->collapseSelectors($selfSelector, true);
+                $selfSelector = $this->collapseSelectorsAsList($selfSelector);
 
                 return $selfSelector;
 
@@ -8794,11 +8812,11 @@ class Compiler
      *
      * @param array $selectors
      *
-     * @return string
+     * @return array
      */
     protected function formatOutputSelector($selectors)
     {
-        $selectors = $this->collapseSelectors($selectors, true);
+        $selectors = $this->collapseSelectorsAsList($selectors);
 
         return $selectors;
     }

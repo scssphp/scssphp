@@ -466,7 +466,12 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:collapseSelectors\\(\\) should return string but returns array\\<int, array\\<int, array\\<int, array\\<int, string\\>\\|string\\>\\|string\\>\\|string\\>\\|string\\.$#"
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:collapseSelectorsAsList\\(\\) has parameter \\$selectors with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:collapseSelectorsAsList\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1727,6 +1732,11 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:formatOutputSelector\\(\\) has parameter \\$selectors with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:formatOutputSelector\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
