@@ -21,11 +21,6 @@ use ScssPhp\ScssPhp\Exception\CompilerException;
 class CompilationResult
 {
     /**
-     * @var bool
-     */
-    private $isCached = false;
-
-    /**
      * @var string
      */
     private $css = '';
@@ -64,23 +59,6 @@ class CompilationResult
      * @phpstan-var list<array{currentDir: string, path: string, filePath: string}>
      */
     private $importedFiles = [];
-
-
-    /**
-     * @param bool $isCached
-     *
-     * @return void
-     */
-    public function setIsCached($isCached) {
-        $this->isCached = $isCached;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsCached() {
-        return $this->isCached;
-    }
 
     /**
      * @param string $css
@@ -151,6 +129,17 @@ class CompilationResult
     public function getImportedFiles()
     {
         return array_column($this->importedFiles, 'filePath');
+    }
+
+    /**
+     * @return array
+     * @phpstan-return list<array{currentDir: string, path: string, filePath: string}>
+     *
+     * @internal
+     */
+    public function getImports()
+    {
+        return $this->importedFiles;
     }
 
     /**
@@ -263,50 +252,4 @@ class CompilationResult
 
         return '';
     }
-
-    /**
-     * Check if this result is still valid
-     * ie no file has been modified
-     *
-     * @param bool $deepCheck
-     * @param \ScssPhp\ScssPhp\Compiler $compiler
-     * @return bool
-     */
-    public function checkValid($deepCheck = false, $compiler = null)
-    {
-        // only check for cached results
-        if (! $this->isCached) {
-            return true;
-        }
-
-        // check that all the findImport would resolve the same way
-        if ($deepCheck && $compiler) {
-            $resolvedImport = [];
-            foreach ($this->importedFiles as $imported) {
-
-                $currentDir = $imported['currentDir'];
-                $path = $imported['path'];
-                // store the check accros all the results in memory to avoid multiple findImport() on the same path
-                // with same context
-                // this is happening in a same hit with multiples compilation (especially with big frameworks)
-                if (empty($resolvedImport[$currentDir][$path])) {
-                    $resolvedImport[$currentDir][$path] = $compiler->findImport($path, $currentDir);
-                }
-
-                if ($resolvedImport[$currentDir][$path] !== $imported['filePath']) {
-                    return false;
-                }
-            }
-        }
-
-        // check if any dependency file changed since the result was compiled
-        foreach ($this->parsedFiles as $file => $mtime) {
-            if (! is_file($file) || filemtime($file) !== $mtime) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
 }
