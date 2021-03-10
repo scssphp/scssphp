@@ -10,9 +10,8 @@
  * @link http://scssphp.github.io/scssphp
  */
 
-namespace ScssPhp\ScssPhp\Compiler;
+namespace ScssPhp\ScssPhp;
 
-use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Exception\CompilerException;
 
 /**
