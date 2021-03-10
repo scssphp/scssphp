@@ -1,4 +1,5 @@
 Makefile export-ignore
+MAINTENANCE.md export-ignore
 .editorconfig export-ignore
 .gitattributes export-ignore
 .github/ export-ignore
