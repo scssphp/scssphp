@@ -283,6 +283,29 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
+     * Returns a copy of this number, converted to the units represented by $newNumeratorUnits and $newDenominatorUnits.
+     *
+     * This does not throw an error if this number is unitless and
+     * $newNumeratorUnits/$newDenominatorUnits are not empty, or vice versa. Instead,
+     * it treats all unitless numbers as convertible to and from all units without
+     * changing the value.
+     *
+     * @param string[] $newNumeratorUnits
+     * @param string[] $newDenominatorUnits
+     *
+     * @return Number
+     *
+     * @phpstan-param list<string> $newNumeratorUnits
+     * @phpstan-param list<string> $newDenominatorUnits
+     *
+     * @throws SassScriptException if this number's units are not compatible with $newNumeratorUnits and $newDenominatorUnits
+     */
+    public function coerce(array $newNumeratorUnits, array $newDenominatorUnits)
+    {
+        return new Number($this->valueInUnits($newNumeratorUnits, $newDenominatorUnits), $newNumeratorUnits, $newDenominatorUnits);
+    }
+
+    /**
      * @param Number $other
      *
      * @return bool
@@ -563,6 +586,8 @@ class Number extends Node implements \ArrayAccess
      *
      * @phpstan-param list<string> $numeratorUnits
      * @phpstan-param list<string> $denominatorUnits
+     *
+     * @throws SassScriptException if this number's units are not compatible with $numeratorUnits and $denominatorUnits
      */
     private function valueInUnits(array $numeratorUnits, array $denominatorUnits)
     {
