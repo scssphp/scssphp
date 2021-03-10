@@ -260,8 +260,6 @@ class SassSpecTest extends TestCase
         }
 
         if (
-            strpos($name, 'directives/for/error/from_float') ||
-            strpos($name, 'directives/for/error/to_float') ||
             strpos($name, 'libsass-closed-issues/issue_1801/import-cycle') ||
             strpos($name, 'libsass-todo-issues/issue_1801/simple-import-loop') ||
             // The loop in issue_221260 is not technically infinite, but we go over the xdebug

@@ -3033,24 +3033,15 @@ class Compiler
             case Type::T_FOR:
                 list(, $for) = $child;
 
-                $start = $this->reduce($for->start, true);
-                $end   = $this->reduce($for->end, true);
+                $startNumber = $this->assertNumber($this->reduce($for->start, true));
+                $endNumber = $this->assertNumber($this->reduce($for->end, true));
 
-                if (! $start instanceof Number) {
-                    throw $this->error('%s is not a number', $start[0]);
-                }
+                $start = $this->assertInteger($startNumber);
 
-                if (! $end instanceof Number) {
-                    throw $this->error('%s is not a number', $end[0]);
-                }
+                $numeratorUnits = $startNumber->getNumeratorUnits();
+                $denominatorUnits = $startNumber->getDenominatorUnits();
 
-                $start->assertSameUnitOrUnitless($end);
-
-                $numeratorUnits = $start->getNumeratorUnits();
-                $denominatorUnits = $start->getDenominatorUnits();
-
-                $start = $start->getDimension();
-                $end   = $end->getDimension();
+                $end = $this->assertInteger($endNumber->coerce($numeratorUnits, $denominatorUnits));
 
                 $d = $start < $end ? 1 : -1;
 
