@@ -30,7 +30,7 @@ If you use [Packagist][2] for installing packages, then you can update your `com
 ```json
 {
     "require": {
-        "scssphp/scssphp": "^{{ site.current_version }}"
+        "scssphp/scssphp": "^{{ site.current_version |replace: 'v', '' }}"
     }
 }
 ```
