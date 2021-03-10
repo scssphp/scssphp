@@ -51,6 +51,21 @@ parameters:
 			path: src/Colors.php
 
 		-
+			message: "#^Array \\(array\\<string, int\\>\\) does not accept int\\|false\\.$#"
+			count: 1
+			path: src/CompilationResult.php
+
+		-
+			message: "#^Array \\(array\\<string, int\\>\\) does not accept key 0\\|string\\.$#"
+			count: 1
+			path: src/CompilationResult.php
+
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\CompilationResult\\:\\:getSourceFiles\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/CompilationResult.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$true has no typehint specified\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -146,12 +161,12 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#2 \\$sourceMapFile of method ScssPhp\\\\ScssPhp\\\\Compiler\\\\CompilationResult\\:\\:setSourceMap\\(\\) expects string\\|null, bool\\|string\\|null given\\.$#"
+			message: "#^Parameter \\#2 \\$sourceMapFile of method ScssPhp\\\\ScssPhp\\\\CompilationResult\\:\\:setSourceMap\\(\\) expects string\\|null, bool\\|string\\|null given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#3 \\$sourceMapUrl of method ScssPhp\\\\ScssPhp\\\\Compiler\\\\CompilationResult\\:\\:setSourceMap\\(\\) expects string\\|null, bool\\|string\\|null given\\.$#"
+			message: "#^Parameter \\#3 \\$sourceMapUrl of method ScssPhp\\\\ScssPhp\\\\CompilationResult\\:\\:setSourceMap\\(\\) expects string\\|null, bool\\|string\\|null given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -606,7 +621,7 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$currentDirectory of method ScssPhp\\\\ScssPhp\\\\Compiler\\\\CompilationResult\\:\\:addImportedFile\\(\\) expects string, string\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$currentDirectory of method ScssPhp\\\\ScssPhp\\\\CompilationResult\\:\\:addImportedFile\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1659,21 +1674,6 @@ parameters:
 			message: "#^Argument of an invalid type array\\<int, string\\>\\|false supplied for foreach, only iterables are supported\\.$#"
 			count: 1
 			path: src/Compiler.php
-
-		-
-			message: "#^Array \\(array\\<string, int\\>\\) does not accept int\\|false\\.$#"
-			count: 1
-			path: src/Compiler/CompilationResult.php
-
-		-
-			message: "#^Array \\(array\\<string, int\\>\\) does not accept key 0\\|string\\.$#"
-			count: 1
-			path: src/Compiler/CompilationResult.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\\\CompilationResult\\:\\:getSourceFiles\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Compiler/CompilationResult.php
 
 		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$store type has no value type specified in iterable type array\\.$#"
