@@ -394,13 +394,10 @@ class Compiler
         if ($this->cache) {
             $cacheKey       = ($path ? $path : '(stdin)') . ':' . md5($code);
             $compileOptions = $this->getCompileOptions();
-            $cache          = $this->cache->getCache('compile', $cacheKey, $compileOptions);
+            $cachedResult = $this->cache->getCache('compile', $cacheKey, $compileOptions);
 
-            if (!empty($cache) && $cache instanceof CompilationResult) {
-                $cache->setIsCached(true);
-                if ($cache->checkValid($this->cacheCheckImportResolutions, $this)) {
-                    return $cache;
-                }
+            if ($cachedResult instanceof CompilationResult && $this->isFreshCachedResult($cachedResult)) {
+                return $cachedResult;
             }
         }
 
@@ -496,6 +493,42 @@ class Compiler
         }
 
         return $this->compilationResult;
+    }
+
+    /**
+     * @param CompilationResult $result
+     *
+     * @return bool
+     */
+    private function isFreshCachedResult(CompilationResult $result)
+    {
+        // check if any dependency file changed since the result was compiled
+        foreach ($result->getParsedFiles() as $file => $mtime) {
+            if (! is_file($file) || filemtime($file) !== $mtime) {
+                return false;
+            }
+        }
+
+        if ($this->cacheCheckImportResolutions) {
+            $resolvedImports = [];
+
+            foreach ($result->getImports() as $import) {
+                $currentDir = $import['currentDir'];
+                $path = $import['path'];
+                // store the check across all the results in memory to avoid multiple findImport() on the same path
+                // with same context.
+                // this is happening in a same hit with multiple compilations (especially with big frameworks)
+                if (empty($resolvedImports[$currentDir][$path])) {
+                    $resolvedImports[$currentDir][$path] = $this->findImport($path, $currentDir);
+                }
+
+                if ($resolvedImports[$currentDir][$path] !== $import['filePath']) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
