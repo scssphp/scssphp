@@ -14,48 +14,39 @@ namespace ScssPhp\ScssPhp\Tests;
 
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Logger\QuietLogger;
 
 class FrameworkTest extends TestCase
 {
-    protected static $frameworks = [
-        [
-            "frameworkVersion" => "twbs/bootstrap4.3",
-            "inputdirectory" => "../vendor/twbs/bootstrap/scss/",
-            "inputfiles" => "bootstrap.scss",
-        ],
-        [
-            "frameworkVersion" => "zurb/foundation6.5",
-            "inputdirectory" => "../vendor/zurb/foundation/assets/",
-            "inputfiles" => "foundation.scss",
-        ],
-    ];
-
-    /**
-     * @dataProvider frameworkProvider
-     */
-    public function testFramework($frameworkVersion, $inputdirectory, $inputfiles)
+    public function testBootstrap()
     {
-        chdir(__DIR__);
+        $compiler = new Compiler();
+        $compiler->setLogger(new QuietLogger());
 
-        $scss = new Compiler();
-        $scss->addImportPath(__DIR__ . '/' . $inputdirectory);
+        $entrypoint = dirname(__DIR__) . '/vendor/twbs/bootstrap/scss/bootstrap.scss';
 
-        $input = file_get_contents(__DIR__ . '/' . $inputdirectory . $inputfiles);
+        $result = $compiler->compile(file_get_contents($entrypoint), $entrypoint);
 
-        // Test if no exceptions are raised for the given framework
-        $e = null;
-
-        try {
-            $scss->compile($input, $inputfiles);
-        } catch (\Exception $e) {
-            // test fail
-        }
-
-        $this->assertNull($e);
+        $this->assertNotEmpty($result->getCss());
     }
 
-    public function frameworkProvider()
+    public function testFoundation()
     {
-        return self::$frameworks;
+        $compiler = new Compiler();
+        $compiler->addImportPath(dirname(__DIR__) . '/vendor/zurb/foundation/scss');
+        $compiler->setLogger(new QuietLogger());
+
+        // The Foundation entrypoint only define mixins. To get a useful compilation
+        // executing their code, we need to actually use the mixin.
+        $scss = <<<'SCSS'
+@import "settings/settings";
+@import "foundation";
+
+@include foundation-everything;
+SCSS;
+
+        $result = $compiler->compile($scss);
+
+        $this->assertNotEmpty($result->getCss());
     }
 }
