@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp;
 
 use ScssPhp\ScssPhp\Base\Range;
+use ScssPhp\ScssPhp\Compiler\CachedResult;
 use ScssPhp\ScssPhp\Compiler\Environment;
 use ScssPhp\ScssPhp\Exception\CompilerException;
 use ScssPhp\ScssPhp\Exception\ParserException;
@@ -144,6 +145,11 @@ class Compiler
     protected $importCache = [];
 
     /**
+     * @var string[]
+     */
+    protected $importedFiles = [];
+
+    /**
      * @var array
      * @phpstan-var array<string, array{0: callable, 1: array|null}>
      */
@@ -243,9 +249,9 @@ class Compiler
     protected $extendsMap;
 
     /**
-     * @var CompilationResult
+     * @var array<string, int>
      */
-    protected $compilationResult;
+    protected $parsedFiles = [];
 
     /**
      * @var Parser|null
@@ -283,6 +289,12 @@ class Compiler
     protected $callStack = [];
 
     /**
+     * @var array
+     * @phpstan-var list<array{currentDir: string|null, path: string, filePath: string}>
+     */
+    private $resolvedImports = [];
+
+    /**
      * The directory of the currently processed file
      *
      * @var string|null
@@ -314,7 +326,6 @@ class Compiler
      */
     public function __construct($cacheOptions = null)
     {
-        $this->compilationResult = new CompilationResult();
         $this->sourceNames = [];
 
         if ($cacheOptions) {
@@ -396,8 +407,8 @@ class Compiler
             $compileOptions = $this->getCompileOptions();
             $cachedResult = $this->cache->getCache('compile', $cacheKey, $compileOptions);
 
-            if ($cachedResult instanceof CompilationResult && $this->isFreshCachedResult($cachedResult)) {
-                return $cachedResult;
+            if ($cachedResult instanceof CachedResult && $this->isFreshCachedResult($cachedResult)) {
+                return $cachedResult->getResult();
             }
         }
 
@@ -414,8 +425,9 @@ class Compiler
         $this->charsetSeen    = null;
         $this->shouldEvaluate = null;
         $this->ignoreCallStackMessage = false;
-
-        $this->compilationResult = new CompilationResult();
+        $this->parsedFiles = [];
+        $this->importedFiles = [];
+        $this->resolvedImports = [];
 
         if (!\is_null($path) && is_file($path)) {
             $path = realpath($path) ?: $path;
@@ -457,50 +469,56 @@ class Compiler
             if (!$this->charsetSeen) {
                 if (strlen($out) !== Util::mbStrlen($out)) {
                     $prefix = '@charset "UTF-8";' . "\n";
+                    $out = $prefix . $out;
                 }
             }
 
-            $this->compilationResult->setCss($prefix . $out);
+            $sourceMap = null;
+            $sourceMapFile = null;
+            $sourceMapUrl = null;
 
             if (! empty($out) && $this->sourceMap && $this->sourceMap !== self::SOURCE_MAP_NONE) {
-                $sourceMap    = $sourceMapGenerator->generateJson($prefix);
-                $sourceMapUrl = null;
+                $sourceMap = $sourceMapGenerator->generateJson($prefix);
 
-                switch ($this->sourceMap) {
-                    case self::SOURCE_MAP_INLINE:
-                        $this->compilationResult->setSourceMap($sourceMap);
-                        break;
-
-                    case self::SOURCE_MAP_FILE:
-                        $options = array_merge(
-                            ['sourceMapWriteTo' => null, 'sourceMapURL' => null],
-                            $this->sourceMapOptions
-                        );
-                        $this->compilationResult->setSourceMap(
-                            $sourceMap,
-                            $options['sourceMapWriteTo'],
-                            $options['sourceMapURL']
-                        );
-                        break;
+                if ($this->sourceMap === self::SOURCE_MAP_FILE) {
+                    $options = array_merge(
+                        ['sourceMapWriteTo' => null, 'sourceMapURL' => null],
+                        $this->sourceMapOptions
+                    );
+                    $sourceMapFile = $options['sourceMapWriteTo'];
+                    $sourceMapUrl = $options['sourceMapURL'];
                 }
             }
         } catch (SassScriptException $e) {
             throw $this->error($e->getMessage());
         }
 
-        if ($this->cache && isset($cacheKey) && isset($compileOptions)) {
-            $this->cache->setCache('compile', $cacheKey, $this->compilationResult, $compileOptions);
+        $includedFiles = [];
+
+        foreach ($this->resolvedImports as $resolvedImport) {
+            $includedFiles[$resolvedImport['filePath']] = $resolvedImport['filePath'];
         }
 
-        return $this->compilationResult;
+        $result = new CompilationResult($out, $sourceMap, $sourceMapFile, $sourceMapUrl, array_values($includedFiles));
+
+        if ($this->cache && isset($cacheKey) && isset($compileOptions)) {
+            $this->cache->setCache('compile', $cacheKey, new CachedResult($result, $this->parsedFiles, $this->resolvedImports), $compileOptions);
+        }
+
+        // Reset state to free memory
+        // TODO in 2.0, reset parsedFiles as well when the getter is removed.
+        $this->resolvedImports = [];
+        $this->importedFiles = [];
+
+        return $result;
     }
 
     /**
-     * @param CompilationResult $result
+     * @param CachedResult $result
      *
      * @return bool
      */
-    private function isFreshCachedResult(CompilationResult $result)
+    private function isFreshCachedResult(CachedResult $result)
     {
         // check if any dependency file changed since the result was compiled
         foreach ($result->getParsedFiles() as $file => $mtime) {
@@ -512,7 +530,7 @@ class Compiler
         if ($this->cacheCheckImportResolutions) {
             $resolvedImports = [];
 
-            foreach ($result->getImports() as $import) {
+            foreach ($result->getResolvedImports() as $import) {
                 $currentDir = $import['currentDir'];
                 $path = $import['path'];
                 // store the check across all the results in memory to avoid multiple findImport() on the same path
@@ -554,7 +572,7 @@ class Compiler
         $parser = new Parser($path, \count($this->sourceNames), $this->encoding, $this->cache, $cssOnly);
 
         $this->sourceNames[] = $path;
-        $this->compilationResult->addParsedFile($path);
+        $this->addParsedFile($path);
 
         return $parser;
     }
@@ -2569,9 +2587,11 @@ class Compiler
             $path = $this->compileStringContent($rawPath);
 
             if (strpos($path, 'url(') !== 0 && $filePath = $this->findImport($path, $this->currentDirectory)) {
-                if (! $once || ! \in_array($filePath, $this->compilationResult->getImportedFiles())) {
+                $this->registerImport($this->currentDirectory, $path, $filePath);
+
+                if (! $once || ! \in_array($filePath, $this->importedFiles)) {
                     $this->importFile($filePath, $out);
-                    $this->compilationResult->addImportedFile($this->currentDirectory, $path, $filePath);
+                    $this->importedFiles[] = $filePath;
                 }
 
                 return true;
@@ -5168,15 +5188,12 @@ class Compiler
      *
      * @param string|null $path
      *
-     * @deprecated
      * @return void
      */
     public function addParsedFile($path)
     {
-        @trigger_error('addParsedFile() is no longer a method from Compiler but from CompilationResult.'
-            . ' Please update your code', E_USER_DEPRECATED);
-        if ($this->compilationResult) {
-            $this->compilationResult->addParsedFile($path);
+        if (! \is_null($path) && is_file($path)) {
+            $this->parsedFiles[realpath($path)] = filemtime($path);
         }
     }
 
@@ -5186,13 +5203,12 @@ class Compiler
      * @api
      *
      * @deprecated
-     * @return array
+     * @return array<string, int>
      */
     public function getParsedFiles()
     {
-        @trigger_error('addParsedFile() is no longer a method from Compiler but from CompilationResult.'
-            . ' Please update your code', E_USER_DEPRECATED);
-        return $this->compilationResult ? $this->compilationResult->getParsedFiles() : [];
+        @trigger_error('The method "getParsedFiles" of the Compiler is deprecated. Use the "getIncludedFiles" method on the CompilationResult instance returned by compile() instead. Be careful that the signature of the method is different.', E_USER_DEPRECATED);
+        return $this->parsedFiles;
     }
 
     /**
@@ -5433,12 +5449,26 @@ class Compiler
     }
 
     /**
+     * Save the imported files with their resolving path context
+     *
+     * @param string|null $currentDirectory
+     * @param string      $path
+     * @param string      $filePath
+     *
+     * @return void
+     */
+    private function registerImport($currentDirectory, $path, $filePath)
+    {
+        $this->resolvedImports[] = ['currentDir' => $currentDirectory, 'path' => $path, 'filePath' => $filePath];
+    }
+
+    /**
      * Return the file path for an import url if it exists
      *
      * @api
      *
-     * @param string $url
-     * @param string $currentDir
+     * @param string      $url
+     * @param string|null $currentDir
      *
      * @return string|null
      */
