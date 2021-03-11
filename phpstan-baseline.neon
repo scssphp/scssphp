@@ -61,11 +61,6 @@ parameters:
 			path: src/CompilationResult.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\CompilationResult\\:\\:getSourceFiles\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/CompilationResult.php
-
-		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$true has no typehint specified\\.$#"
 			count: 1
 			path: src/Compiler.php

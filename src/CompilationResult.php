@@ -40,7 +40,6 @@ class CompilationResult
      */
     private $sourceMapUrl;
 
-
     /**
      * All the effective parsed files
      * @var array<string, int>
@@ -172,21 +171,10 @@ class CompilationResult
         return $this->includedFiles;
     }
 
-    // A map from source file URLs to the corresponding [SourceFile]s.
-    //
-    // This can be passed to [sourceMap]'s [Mapping.spanFor] method. It's `null`
-    // if source mapping was disabled for this compilation.
-    public function getSourceFiles()
-    {
-
-    }
-
-
     public function __toString()
     {
         return $this->getCss(); // To reduce the impact of the BC break
     }
-
 
     /**
      * Store the sourceMap and its storage data
