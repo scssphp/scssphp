@@ -387,7 +387,7 @@ class Compiler
      * @param string $code
      * @param string $path
      *
-     * @return string
+     * @return CompilationResult
      */
     public function compile($code, $path = null)
     {
@@ -5166,7 +5166,7 @@ class Compiler
      *
      * @api
      *
-     * @param string $path
+     * @param string|null $path
      *
      * @deprecated
      * @return void
