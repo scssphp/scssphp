@@ -47,12 +47,6 @@ class CompilationResult
     private $parsedFiles = [];
 
     /**
-     * All the @import files and urls seen in the compilation process
-     * @var string[]
-     */
-    private $includedFiles = [];
-
-    /**
      * All the @import files resolved and imported (use to check the once condition)
      * @var array
      * @phpstan-var list<array{currentDir: string, path: string, filePath: string}>
@@ -116,7 +110,6 @@ class CompilationResult
     public function addImportedFile($currentDirectory, $path, $filePath)
     {
         $this->importedFiles[] = ['currentDir' => $currentDirectory, 'path' => $path, 'filePath' => $filePath];
-        $this->addIncludedFile($filePath);
     }
 
 
@@ -142,33 +135,11 @@ class CompilationResult
     }
 
     /**
-     * Save the included files
-     * @param string $path
-     *
-     * @return void
-     */
-    public function addIncludedFile($path)
-    {
-        // unquote the included path if needed
-        foreach (['"', '"'] as $quote) {
-            if (strpos($path, $quote) === 0 && substr($path, -1) === $quote) {
-                $path = substr($path, 1, -1);
-                break;
-            }
-        }
-
-        $this->includedFiles[] = $path;
-    }
-
-    /**
-     * For filesystem imports, this contains the import path. For all other
-     * imports, it contains the URL passed to the `@import`.
-     *
      * @return string[]
      */
     public function getIncludedFiles()
     {
-        return $this->includedFiles;
+        return array_column($this->importedFiles, 'filePath');
     }
 
     public function __toString()

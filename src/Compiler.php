@@ -2577,9 +2577,7 @@ class Compiler
                 return true;
             }
 
-            $path = $this->compileImportPath($rawPath);
-            $this->appendRootDirective('@import ' . $path . ';', $out);
-            $this->compilationResult->addIncludedFile($path);
+            $this->appendRootDirective('@import ' . $this->compileImportPath($rawPath) . ';', $out);
 
             return false;
         }
@@ -2592,9 +2590,7 @@ class Compiler
 
             foreach ($rawPath[2] as $path) {
                 if ($path[0] !== Type::T_STRING) {
-                    $path = $this->compileImportPath($rawPath);
-                    $this->appendRootDirective('@import ' . $path . ';', $out);
-                    $this->compilationResult->addIncludedFile($path);
+                    $this->appendRootDirective('@import ' . $this->compileImportPath($rawPath) . ';', $out);
 
                     return false;
                 }
@@ -2607,9 +2603,7 @@ class Compiler
             return true;
         }
 
-        $path = $this->compileImportPath($rawPath);
-        $this->appendRootDirective('@import ' . $path . ';', $out);
-        $this->compilationResult->addIncludedFile($path);
+        $this->appendRootDirective('@import ' . $this->compileImportPath($rawPath) . ';', $out);
 
         return false;
     }
