@@ -14,21 +14,17 @@ namespace ScssPhp\ScssPhp;
 
 use ScssPhp\ScssPhp\Exception\CompilerException;
 
-/**
- * Compiler environment
- *
- */
 class CompilationResult
 {
     /**
      * @var string
      */
-    private $css = '';
+    private $css;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $sourceMap = '';
+    private $sourceMap;
 
     /**
      * @var string|null
@@ -41,26 +37,24 @@ class CompilationResult
     private $sourceMapUrl;
 
     /**
-     * All the effective parsed files
-     * @var array<string, int>
+     * @var string[]
      */
-    private $parsedFiles = [];
-
-    /**
-     * All the @import files resolved and imported (use to check the once condition)
-     * @var array
-     * @phpstan-var list<array{currentDir: string, path: string, filePath: string}>
-     */
-    private $importedFiles = [];
+    private $includedFiles;
 
     /**
      * @param string $css
-     *
-     * @return void
+     * @param string|null $sourceMap
+     * @param string|null $sourceMapFile
+     * @param string|null $sourceMapUrl
+     * @param string[] $includedFiles
      */
-    public function setCss($css)
+    public function __construct($css, $sourceMap, $sourceMapFile, $sourceMapUrl, array $includedFiles)
     {
         $this->css = $css;
+        $this->sourceMap = $sourceMap;
+        $this->sourceMapFile = $sourceMapFile;
+        $this->sourceMapUrl = $sourceMapUrl;
+        $this->includedFiles = $includedFiles;
     }
 
     /**
@@ -72,98 +66,16 @@ class CompilationResult
     }
 
     /**
-     * Adds to list of parsed files
-     *
-     * @api
-     *
-     * @param string|null $path
-     *
-     * @return void
-     */
-    public function addParsedFile($path)
-    {
-        if (! \is_null($path) && is_file($path)) {
-            $this->parsedFiles[realpath($path)] = filemtime($path);
-        }
-    }
-
-    /**
-     * Returns list of parsed files
-     *
-     * @api
-     *
-     * @return array<string, int>
-     */
-    public function getParsedFiles()
-    {
-        return $this->parsedFiles;
-    }
-
-    /**
-     * Save the imported files with their resolving path context
-     * @param string $currentDirectory
-     * @param string $path
-     * @param string $filePath
-     *
-     * @return void
-     */
-    public function addImportedFile($currentDirectory, $path, $filePath)
-    {
-        $this->importedFiles[] = ['currentDir' => $currentDirectory, 'path' => $path, 'filePath' => $filePath];
-    }
-
-
-    /**
-     * Get the list of the already imported Files
-     * used by the compiler to check the once condition on @import
-     * @return string[]
-     */
-    public function getImportedFiles()
-    {
-        return array_column($this->importedFiles, 'filePath');
-    }
-
-    /**
-     * @return array
-     * @phpstan-return list<array{currentDir: string, path: string, filePath: string}>
-     *
-     * @internal
-     */
-    public function getImports()
-    {
-        return $this->importedFiles;
-    }
-
-    /**
      * @return string[]
      */
     public function getIncludedFiles()
     {
-        return array_column($this->importedFiles, 'filePath');
+        return $this->includedFiles;
     }
 
     public function __toString()
     {
         return $this->getCss(); // To reduce the impact of the BC break
-    }
-
-    /**
-     * Store the sourceMap and its storage data
-     * @param string $sourceMap
-     * @param null|string $sourceMapFile
-     * @param null|string $sourceMapUrl
-     *
-     * @return void
-     */
-    public function setSourceMap($sourceMap, $sourceMapFile = null, $sourceMapUrl = null)
-    {
-        $this->sourceMap = $sourceMap;
-        if (empty($sourceMapFile) || empty($sourceMapUrl)) {
-            $this->sourceMapUrl = $this->sourceMapFile = null;
-        } else {
-            $this->sourceMapFile = $sourceMapFile;
-            $this->sourceMapUrl = $sourceMapUrl;
-        }
     }
 
     /**

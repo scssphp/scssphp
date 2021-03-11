@@ -51,16 +51,6 @@ parameters:
 			path: src/Colors.php
 
 		-
-			message: "#^Array \\(array\\<string, int\\>\\) does not accept int\\|false\\.$#"
-			count: 1
-			path: src/CompilationResult.php
-
-		-
-			message: "#^Array \\(array\\<string, int\\>\\) does not accept key 0\\|string\\.$#"
-			count: 1
-			path: src/CompilationResult.php
-
-		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$true has no typehint specified\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -156,12 +146,12 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#2 \\$sourceMapFile of method ScssPhp\\\\ScssPhp\\\\CompilationResult\\:\\:setSourceMap\\(\\) expects string\\|null, bool\\|string\\|null given\\.$#"
+			message: "#^Parameter \\#3 \\$sourceMapFile of class ScssPhp\\\\ScssPhp\\\\CompilationResult constructor expects string\\|null, bool\\|string\\|null given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#3 \\$sourceMapUrl of method ScssPhp\\\\ScssPhp\\\\CompilationResult\\:\\:setSourceMap\\(\\) expects string\\|null, bool\\|string\\|null given\\.$#"
+			message: "#^Parameter \\#4 \\$sourceMapUrl of class ScssPhp\\\\ScssPhp\\\\CompilationResult constructor expects string\\|null, bool\\|string\\|null given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -612,11 +602,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileImport\\(\\) has parameter \\$rawPath with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$currentDirectory of method ScssPhp\\\\ScssPhp\\\\CompilationResult\\:\\:addImportedFile\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1091,17 +1076,12 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^If condition is always true\\.$#"
+			message: "#^Array \\(array\\<string, int\\>\\) does not accept int\\|false\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:getParsedFiles\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Ternary operator condition is always true\\.$#"
+			message: "#^Array \\(array\\<string, int\\>\\) does not accept key 0\\|string\\.$#"
 			count: 1
 			path: src/Compiler.php
 
