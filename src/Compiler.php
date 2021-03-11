@@ -307,6 +307,11 @@ class Compiler
     private $logger;
 
     /**
+     * @var array<string, bool>
+     */
+    private $warnedChildFunctions = [];
+
+    /**
      * Constructor
      *
      * @param array|null $cacheOptions
@@ -3714,6 +3719,21 @@ class Compiler
         if (($f = $this->getBuiltinFunction($normalizedName)) && \is_callable($f)) {
             $libName   = $f[1];
             $prototype = isset(static::$$libName) ? static::$$libName : null;
+
+            if (\get_class($this) !== __CLASS__ && !isset($this->warnedChildFunctions[$libName])) {
+                $r = new \ReflectionMethod($this, $libName);
+                $declaringClass = $r->getDeclaringClass()->name;
+
+                $needsWarning = $this->warnedChildFunctions[$libName] = $declaringClass !== __CLASS__;
+
+                if ($needsWarning) {
+                    if (method_exists(__CLASS__, $libName)) {
+                        @trigger_error(sprintf('Overriding the "%s" core function by extending the Compiler is deprecated and will be unsupported in 2.0. Remove the "%s::%s" method.', $normalizedName, $declaringClass, $libName), E_USER_DEPRECATED);
+                    } else {
+                        @trigger_error(sprintf('Registering custom functions by extending the Compiler and using the lib* discovery mechanism is deprecated and will be removed in 2.0. Replace the "%s::%s" method with registering the "%s" function through "Compiler::registerFunction".', $declaringClass, $libName, $normalizedName), E_USER_DEPRECATED);
+                    }
+                }
+            }
 
             return [Type::T_FUNCTION_REFERENCE, 'native', $name, $f, $prototype];
         }

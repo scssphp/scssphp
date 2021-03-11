@@ -14,6 +14,8 @@ namespace ScssPhp\ScssPhp\Tests;
 
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Node\Number;
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 
 /**
  * API test
@@ -22,6 +24,8 @@ use ScssPhp\ScssPhp\Compiler;
  */
 class ApiTest extends TestCase
 {
+    use ExpectDeprecationTrait;
+
     private $scss;
 
     public function testUserFunction()
@@ -165,8 +169,36 @@ class ApiTest extends TestCase
         );
     }
 
+    /**
+     * @group legacy
+     */
+    public function testDeprecatedChildCompiler()
+    {
+        $this->expectDeprecation('Registering custom functions by extending the Compiler and using the lib* discovery mechanism is deprecated and will be removed in 2.0. Replace the "ScssPhp\ScssPhp\Tests\DeprecatedChildCompiler::libDeprecatedChild" method with registering the "deprecated_child" function through "Compiler::registerFunction".');
+        $this->expectDeprecation('Overriding the "blue" core function by extending the Compiler is deprecated and will be unsupported in 2.0. Remove the "ScssPhp\ScssPhp\Tests\DeprecatedChildCompiler::libBlue" method.');
+        $this->scss = new DeprecatedChildCompiler();
+
+        $this->assertEquals(
+            "a {\n  b: true;\n  c: 255;\n  d: 1;\n}",
+            $this->compile("a {\n  b: deprecated_child();\n  c: red(#f00);\n  d: blue(#f00);\n}")
+        );
+    }
+
     public function compile($str)
     {
         return trim($this->scss->compile($str));
+    }
+}
+
+class DeprecatedChildCompiler extends Compiler
+{
+    protected function libDeprecatedChild($args)
+    {
+        return self::$true;
+    }
+
+    protected function libBlue($args)
+    {
+        return new Number(1, '');
     }
 }
