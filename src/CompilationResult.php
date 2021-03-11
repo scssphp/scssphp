@@ -209,7 +209,7 @@ class CompilationResult
      * The sourceMap Css content, if there is a sourceMap
      * @return string
      */
-    public function getSourceMapCss()
+    private function getSourceMapCss()
     {
         if ($this->sourceMap) {
             if ($this->sourceMapFile) {
