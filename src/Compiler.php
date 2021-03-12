@@ -5485,7 +5485,7 @@ class Compiler
      */
     public function findImport($url, $currentDir = null)
     {
-        // for "normal" scss imports (ignore vanilla css and external requests)
+        // Vanilla css and external requests. These are not meant to be Sass imports.
         // Callback importers are still called for BC.
         if (preg_match('~\.css$|^https?://|^//~', $url)) {
             foreach ($this->importPaths as $dir) {
@@ -5498,6 +5498,24 @@ class Compiler
                     $file = \call_user_func($dir, $url);
 
                     if (! \is_null($file)) {
+                        if (\is_array($dir)) {
+                            $callableDescription = (\is_object($dir[0]) ? \get_class($dir[0]) : $dir[0]).'::'.$dir[1];
+                        } elseif ($dir instanceof \Closure) {
+                            $r = new \ReflectionFunction($dir);
+                            if (false !== strpos($r->name, '{closure}')) {
+                                $callableDescription = sprintf('closure{%s:%s}', $r->getFileName(), $r->getStartLine());
+                            } elseif ($class = $r->getClosureScopeClass()) {
+                                $callableDescription = $class->name.'::'.$r->name;
+                            } else {
+                                $callableDescription = $r->name;
+                            }
+                        } elseif (\is_object($dir)) {
+                            $callableDescription = \get_class($dir) . '::__invoke';
+                        } else {
+                            $callableDescription = 'callable'; // Fallback if we don't have a dedicated description
+                        }
+                        @trigger_error(sprintf('Returning a file to import for CSS or external references in custom importer callables is deprecated and will not be supported anymore in ScssPhp 2.0. This behavior is not compliant with the Sass specification. Update your "%s" importer.', $callableDescription), E_USER_DEPRECATED);
+
                         return $file;
                     }
                 }

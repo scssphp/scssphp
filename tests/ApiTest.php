@@ -80,8 +80,27 @@ class ApiTest extends TestCase
         $this->scss = new Compiler();
 
         $this->scss->addImportPath(function ($path) {
+            return __DIR__ . '/inputs/' . str_replace('.foo', '.scss', $path);
+        });
+
+        $this->assertEquals(
+            trim(file_get_contents(__DIR__ . '/outputs/variables.css')),
+            $this->compile('@import "variables.foo";')
+        );
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testImportCssCustomCallback()
+    {
+        $this->scss = new Compiler();
+
+        $this->scss->addImportPath(function ($path) {
             return __DIR__ . '/inputs/' . str_replace('.css', '.scss', $path);
         });
+
+        $this->expectDeprecation('Returning a file to import for CSS or external references in custom importer callables is deprecated and will not be supported anymore in ScssPhp 2.0. This behavior is not compliant with the Sass specification. Update your "closure{%s}" importer.');
 
         $this->assertEquals(
             trim(file_get_contents(__DIR__ . '/outputs/variables.css')),
