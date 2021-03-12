@@ -4077,13 +4077,20 @@ class Parser
     }
 
     /**
-     * Save internal encoding
+     * Save internal encoding of mbstring
+     *
+     * When mbstring.func_overload is used to replace the standard PHP string functions,
+     * this method configures the internal encoding to a single-byte one so that the
+     * behavior matches the normal behavior of PHP string functions while using the parser.
+     * The existing internal encoding is saved and will be restored when calling {@see restoreEncoding}.
+     *
+     * If mbstring.func_overload is not used (or does not override string functions), this method is a no-op.
      *
      * @return void
      */
     private function saveEncoding()
     {
-        if (\extension_loaded('mbstring')) {
+        if (\PHP_VERSION_ID < 80000 && \extension_loaded('mbstring') && (2 & (int) ini_get('mbstring.func_overload')) > 0) {
             $this->encoding = mb_internal_encoding();
 
             mb_internal_encoding('iso-8859-1');
