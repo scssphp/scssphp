@@ -57,6 +57,20 @@ class ApiTest extends TestCase
         );
     }
 
+    /**
+     * @group legacy
+     */
+    public function testUserFunctionOverride()
+    {
+        $compiler = new Compiler();
+
+        $this->expectDeprecation('The "blue" function is a core sass function. Overriding it with a custom implementation through "ScssPhp\ScssPhp\Compiler::registerFunction" is deprecated and won\'t be supported in ScssPhp 2.0 anymore.');
+
+        $compiler->registerFunction('blue', function ($args) {
+            return Compiler::$null;
+        });
+    }
+
     public function testUserFunctionKwargs()
     {
         $this->scss = new Compiler();
