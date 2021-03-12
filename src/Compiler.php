@@ -5390,6 +5390,10 @@ class Compiler
      */
     public function registerFunction($name, $func, $prototype = null)
     {
+        if (self::isNativeFunction($name)) {
+            @trigger_error(sprintf('The "%s" function is a core sass function. Overriding it with a custom implementation through "%s" is deprecated and won\'t be supported in ScssPhp 2.0 anymore.', $name, __METHOD__), E_USER_DEPRECATED);
+        }
+
         $this->userFunctions[$this->normalizeName($name)] = [$func, $prototype];
     }
 
