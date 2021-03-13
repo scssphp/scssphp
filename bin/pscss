@@ -76,7 +76,7 @@ Options include:
     --help              Show this message [-h, -?]
     --continue-on-error [deprecated] Ignored
     --debug-info        [deprecated] Ignored [-g]
-    --dump-tree         Dump formatted parse tree [-T]
+    --dump-tree         [deprecated] Dump formatted parse tree [-T]
     --iso8859-1         Use iso8859-1 encoding instead of default utf-8
     --line-numbers      [deprecated] Ignored [--line-comments]
     --load-path=PATH    Set import path [-I]
@@ -179,6 +179,8 @@ if ($dumpTree) {
     $parser = new Parser($inputFile);
 
     print_r(json_decode(json_encode($parser->parse($data)), true));
+
+    fwrite(STDERR, 'Warning: the --dump-tree option is deprecated. Use proper debugging tools instead.');
 
     exit();
 }
