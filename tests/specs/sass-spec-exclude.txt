@@ -239,8 +239,6 @@ core_functions/list/nth/error/index/0
 core_functions/list/nth/error/index/too_high
 core_functions/list/nth/error/index/too_low
 core_functions/list/separator/empty/comma
-core_functions/list/separator/error/too_few_args
-core_functions/list/separator/error/too_many_args
 core_functions/list/set_nth/error/index/0
 core_functions/list/utils/empty_map/same_as_empty_list
 core_functions/list/utils/real_separator/empty/comma

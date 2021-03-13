@@ -8172,13 +8172,9 @@ class Compiler
         return \count($list[2]);
     }
 
-    //protected static $libListSeparator = ['list...'];
+    protected static $libListSeparator = ['list'];
     protected function libListSeparator($args)
     {
-        if (\count($args) > 1) {
-            return 'comma';
-        }
-
         if (! \in_array($args[0][0], [Type::T_LIST, Type::T_MAP])) {
             return 'space';
         }
