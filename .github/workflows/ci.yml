@@ -29,6 +29,9 @@ jobs:
                       name_suffix: ' on macOS'
 
         steps:
+            -   if: ${{ runner.os == 'Windows' }}
+                run: git config --global core.autocrlf false
+
             -   name: Checkout
                 uses: actions/checkout@v2
 
