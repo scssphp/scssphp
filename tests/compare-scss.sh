@@ -4,7 +4,7 @@ diff_tool="$1"
 
 for file in $(ls inputs/*.scss); do
 	out_file=$(echo $file | sed -e 's/inputs/outputs/' -e 's/\.scss$/\.css/')
-	sass=$(scss < $file 2> /dev/null)
+	sass=$(sass --stdin --no-source-map < $file 2> /dev/null)
 	if [ $? = "0" ]; then
 		# echo $file
 		# echo "$sass"
