@@ -6950,13 +6950,13 @@ class Compiler
     }
 
     /**
-     * Extract the  ... / alpha on the last argument of chanel arg
+     * Extract the  ... / alpha on the last argument of channel arg
      * in color functions
      *
      * @param array $args
-     * @return mixed
+     * @return array
      */
-    public function extractSlashAlphaInColorFunction($args)
+    private function extractSlashAlphaInColorFunction($args)
     {
         $last = end($args);
         if (\count($args) === 3 && $last[0] === Type::T_EXPRESSION && $last[1] === '/') {
@@ -7107,7 +7107,7 @@ class Compiler
      *
      * @return array
      */
-    public function HWBtoRGB($hue, $whiteness, $blackness)
+    private function HWBtoRGB($hue, $whiteness, $blackness)
     {
         $w = min(100, max(0, $whiteness)) / 100;
         $b = min(100, max(0, $blackness)) / 100;
@@ -7139,7 +7139,7 @@ class Compiler
      *
      * @return array
      */
-    public function RGBtoHWB($red, $green, $blue)
+    private function RGBtoHWB($red, $green, $blue)
     {
         $min = min($red, $green, $blue);
         $max = max($red, $green, $blue);
