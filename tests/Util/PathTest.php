@@ -51,8 +51,8 @@ class PathTest extends TestCase
         yield ['foo/', '', 'foo/'];
         yield ['', 'foo', 'foo'];
         yield ['', 'foo/', 'foo/'];
-        yield ['foo', 'bar', 'foo/bar'];
-        yield ['foo', 'bar/', 'foo/bar/'];
+        yield ['foo', 'bar', 'foo' . \DIRECTORY_SEPARATOR . 'bar'];
+        yield ['foo', 'bar/', 'foo' . \DIRECTORY_SEPARATOR . 'bar/'];
         yield ['foo/', 'bar', 'foo/bar'];
         yield ['/foo/', 'bar', '/foo/bar'];
         yield ['/foo/', '/bar', '/bar'];
