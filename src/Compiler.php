@@ -8777,6 +8777,7 @@ class Compiler
         return new Number(mt_rand(0, $max - 1) / $max, '');
     }
 
+    protected static $libUniqueId = [];
     protected function libUniqueId()
     {
         static $id;
