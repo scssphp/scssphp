@@ -147,6 +147,6 @@ END_OF_SCSS
         $scss = new Compiler();
         $scss->setLogger(new QuietLogger());
 
-        return trim($scss->compile($str));
+        return $scss->compileString($str);
     }
 }

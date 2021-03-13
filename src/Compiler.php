@@ -17,6 +17,7 @@ use ScssPhp\ScssPhp\Compiler\CachedResult;
 use ScssPhp\ScssPhp\Compiler\Environment;
 use ScssPhp\ScssPhp\Exception\CompilerException;
 use ScssPhp\ScssPhp\Exception\ParserException;
+use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Formatter\Compressed;
 use ScssPhp\ScssPhp\Formatter\Expanded;
@@ -398,17 +399,49 @@ class Compiler
     /**
      * Compile scss
      *
-     * @api
+     * @param string      $code
+     * @param string|null $path
      *
-     * @param string $code
-     * @param string $path
+     * @return string
      *
-     * @return CompilationResult
+     * @throws SassException when the source fails to compile
+     *
+     * @deprecated Use {@see compileString} instead.
      */
     public function compile($code, $path = null)
     {
+        @trigger_error(sprintf('The "%s" method is deprecated. Use "compileString" instead.', __METHOD__), E_USER_DEPRECATED);
+
+        $result = $this->compileString($code, $path);
+
+        $sourceMap = $result->getSourceMap();
+
+        if ($sourceMap !== null) {
+            if ($this->sourceMap instanceof SourceMapGenerator) {
+                $this->sourceMap->saveMap($sourceMap);
+            } elseif ($this->sourceMap === self::SOURCE_MAP_FILE) {
+                $sourceMapGenerator = new SourceMapGenerator($this->sourceMapOptions);
+                $sourceMapGenerator->saveMap($sourceMap);
+            }
+        }
+
+        return $result->getCss();
+    }
+
+    /**
+     * Compile scss
+     *
+     * @param string      $source
+     * @param string|null $path
+     *
+     * @return CompilationResult
+     *
+     * @throws SassException when the source fails to compile
+     */
+    public function compileString($source, $path = null)
+    {
         if ($this->cache) {
-            $cacheKey       = ($path ? $path : '(stdin)') . ':' . md5($code);
+            $cacheKey       = ($path ? $path : '(stdin)') . ':' . md5($source);
             $compileOptions = $this->getCompileOptions();
             $cachedResult = $this->cache->getCache('compile', $cacheKey, $compileOptions);
 
@@ -416,7 +449,6 @@ class Compiler
                 return $cachedResult->getResult();
             }
         }
-
 
         $this->indentLevel    = -1;
         $this->extends        = [];
@@ -445,7 +477,7 @@ class Compiler
 
         try {
             $this->parser = $this->parserFactory($path);
-            $tree         = $this->parser->parse($code);
+            $tree         = $this->parser->parse($source);
             $this->parser = null;
 
             $this->formatter = new $this->formatter();
@@ -479,19 +511,25 @@ class Compiler
             }
 
             $sourceMap = null;
-            $sourceMapFile = null;
-            $sourceMapUrl = null;
 
             if (! empty($out) && $this->sourceMap && $this->sourceMap !== self::SOURCE_MAP_NONE) {
                 $sourceMap = $sourceMapGenerator->generateJson($prefix);
+                $sourceMapUrl = null;
 
-                if ($this->sourceMap === self::SOURCE_MAP_FILE) {
-                    $options = array_merge(
-                        ['sourceMapWriteTo' => null, 'sourceMapURL' => null],
-                        $this->sourceMapOptions
-                    );
-                    $sourceMapFile = $options['sourceMapWriteTo'];
-                    $sourceMapUrl = $options['sourceMapURL'];
+                switch ($this->sourceMap) {
+                    case self::SOURCE_MAP_INLINE:
+                        $sourceMapUrl = sprintf('data:application/json,%s', Util::encodeURIComponent($sourceMap));
+                        break;
+
+                    case self::SOURCE_MAP_FILE:
+                        if (isset($this->sourceMapOptions['sourceMapURL'])) {
+                            $sourceMapUrl = $this->sourceMapOptions['sourceMapURL'];
+                        }
+                        break;
+                }
+
+                if ($sourceMapUrl !== null) {
+                    $out .= sprintf('/*# sourceMappingURL=%s */', $sourceMapUrl);
                 }
             }
         } catch (SassScriptException $e) {
@@ -504,7 +542,7 @@ class Compiler
             $includedFiles[$resolvedImport['filePath']] = $resolvedImport['filePath'];
         }
 
-        $result = new CompilationResult($out, $sourceMap, $sourceMapFile, $sourceMapUrl, array_values($includedFiles));
+        $result = new CompilationResult($out, $sourceMap, array_values($includedFiles));
 
         if ($this->cache && isset($cacheKey) && isset($compileOptions)) {
             $this->cache->setCache('compile', $cacheKey, new CachedResult($result, $this->parsedFiles, $this->resolvedImports), $compileOptions);
@@ -5218,7 +5256,7 @@ class Compiler
      */
     public function getParsedFiles()
     {
-        @trigger_error('The method "getParsedFiles" of the Compiler is deprecated. Use the "getIncludedFiles" method on the CompilationResult instance returned by compile() instead. Be careful that the signature of the method is different.', E_USER_DEPRECATED);
+        @trigger_error('The method "getParsedFiles" of the Compiler is deprecated. Use the "getIncludedFiles" method on the CompilationResult instance returned by compileString() instead. Be careful that the signature of the method is different.', E_USER_DEPRECATED);
         return $this->parsedFiles;
     }
 
@@ -5257,7 +5295,7 @@ class Compiler
         $this->legacyCwdImportPath = \count($actualImportPaths) !== \count($paths);
 
         if ($this->legacyCwdImportPath) {
-            @trigger_error('Passing an empty string in the import paths to refer to the current working directory is deprecated. If that\'s the intended behavior, the value of "getcwd()" should be used directly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compile()" instead.', E_USER_DEPRECATED);
+            @trigger_error('Passing an empty string in the import paths to refer to the current working directory is deprecated. If that\'s the intended behavior, the value of "getcwd()" should be used directly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compileString()" instead.', E_USER_DEPRECATED);
         }
 
         $this->importPaths = $actualImportPaths;
@@ -5556,7 +5594,7 @@ class Compiler
             $path = $this->resolveImportPath($url, getcwd());
 
             if (!\is_null($path)) {
-                @trigger_error('Resolving imports relatively to the current working directory is deprecated. If that\'s the intended behavior, the value of "getcwd()" should be added as an import path explicitly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compile()" instead.', E_USER_DEPRECATED);
+                @trigger_error('Resolving imports relatively to the current working directory is deprecated. If that\'s the intended behavior, the value of "getcwd()" should be added as an import path explicitly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compileString()" instead.', E_USER_DEPRECATED);
 
                 return $path;
             }

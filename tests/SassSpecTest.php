@@ -306,7 +306,7 @@ class SassSpecTest extends TestCase
         if (! strlen($error)) {
             if (getenv('BUILD')) {
                 try {
-                    $actual = $compiler->compile($scss, $inputPath);
+                    $actual = $compiler->compileString($scss, $inputPath)->getCss();
                 } catch (\Exception $e) {
                     $this->appendToExclusionList($name);
                     fclose($fp_err_stream);
@@ -315,7 +315,7 @@ class SassSpecTest extends TestCase
                     //throwException($e);
                 }
             } else {
-                $actual = $compiler->compile($scss, $inputPath);
+                $actual = $compiler->compileString($scss, $inputPath)->getCss();
             }
 
             // normalize css for comparison purpose
@@ -364,7 +364,7 @@ class SassSpecTest extends TestCase
         } else {
             if (getenv('BUILD')) {
                 try {
-                    $compiler->compile($scss, $inputPath);
+                    $compiler->compileString($scss, $inputPath);
                     throw new \Exception('Expecting a SassException for error tests');
                 } catch (SassException $e) {
                     // TODO assert the error message ?
@@ -375,7 +375,7 @@ class SassSpecTest extends TestCase
                 $this->assertNull(null);
             } else {
                 $this->expectException(SassException::class);
-                $compiler->compile($scss, $inputPath);
+                $compiler->compileString($scss, $inputPath);
                 // TODO assert the error message ?
             }
 

@@ -25,7 +25,7 @@ class FrameworkTest extends TestCase
 
         $entrypoint = dirname(__DIR__) . '/vendor/twbs/bootstrap/scss/bootstrap.scss';
 
-        $result = $compiler->compile(file_get_contents($entrypoint), $entrypoint);
+        $result = $compiler->compileString(file_get_contents($entrypoint), $entrypoint);
 
         $this->assertNotEmpty($result->getCss());
     }
@@ -45,7 +45,7 @@ class FrameworkTest extends TestCase
 @include foundation-everything;
 SCSS;
 
-        $result = $compiler->compile($scss);
+        $result = $compiler->compileString($scss);
 
         $this->assertNotEmpty($result->getCss());
     }

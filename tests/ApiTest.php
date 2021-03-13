@@ -26,6 +26,9 @@ class ApiTest extends TestCase
 {
     use ExpectDeprecationTrait;
 
+    /**
+     * @var Compiler
+     */
     private $scss;
 
     public function testUserFunction()
@@ -208,6 +211,19 @@ class ApiTest extends TestCase
     /**
      * @group legacy
      */
+    public function testCompile()
+    {
+        $compiler = new Compiler();
+
+        $this->expectDeprecation('The "ScssPhp\ScssPhp\Compiler::compile" method is deprecated. Use "compileString" instead.');
+
+        $css = $compiler->compile('a { b: c}');
+        $this->assertSame("a {\n  b: c;\n}\n", $css);
+    }
+
+    /**
+     * @group legacy
+     */
     public function testDeprecatedChildCompiler()
     {
         $this->expectDeprecation('Registering custom functions by extending the Compiler and using the lib* discovery mechanism is deprecated and will be removed in 2.0. Replace the "ScssPhp\ScssPhp\Tests\DeprecatedChildCompiler::libDeprecatedChild" method with registering the "deprecated_child" function through "Compiler::registerFunction".');
@@ -222,7 +238,7 @@ class ApiTest extends TestCase
 
     public function compile($str)
     {
-        return trim($this->scss->compile($str));
+        return trim($this->scss->compileString($str)->getCss());
     }
 }
 

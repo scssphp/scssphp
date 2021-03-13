@@ -64,7 +64,7 @@ class InputTest extends TestCase
         $input = file_get_contents($inFname);
         $output = file_get_contents($outFname);
 
-        $css = $this->scss->compile($input, substr($inFname, strlen(__DIR__) + 1));
+        $css = $this->scss->compileString($input, substr($inFname, strlen(__DIR__) + 1))->getCss();
         $this->assertEquals($output, $css);
     }
 
