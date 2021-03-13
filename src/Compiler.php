@@ -5693,12 +5693,18 @@ class Compiler
      *
      * @api
      *
-     * @param string $encoding
+     * @param string|null $encoding
      *
      * @return void
      */
     public function setEncoding($encoding)
     {
+        if (!$encoding || strtolower($encoding) === 'utf-8') {
+            @trigger_error(sprintf('The "%s" method is deprecated.', __METHOD__), E_USER_DEPRECATED);
+        } else {
+            @trigger_error(sprintf('The "%s" method is deprecated. Parsing will only support UTF-8 in ScssPhp 2.0. The non-UTF-8 parsing of ScssPhp 1.x is not spec compliant.', __METHOD__), E_USER_DEPRECATED);
+        }
+
         $this->encoding = $encoding;
     }
 
