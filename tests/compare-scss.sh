@@ -12,15 +12,15 @@ for file in $(ls $test_dir/inputs/*.scss); do
 		# echo
 
 		if [ "$(cat $out_file)" != "$sass" ]; then
-			echo "* [FAIL] $file"
+			echo "* [FAIL]    $file"
 			if [ -n "$diff_tool" ]; then
 				$diff_tool $out_file <(echo "$sass") 2> /dev/null
 			fi
 		else
-			echo "  [PASS] $file"
+			echo "  [PASS]    $file"
 		fi
 	else
-		echo "         $file"
+		echo "x [INVALID] $file"
 	fi
 done
 
