@@ -6089,8 +6089,6 @@ class Compiler
 
                 // ensure all args are populated
                 foreach ($prototype as $i => $p) {
-                    $name = explode(':', $p)[0];
-
                     if (! isset($finalArgs[$i])) {
                         $finalArgs[$i] = null;
                     }
