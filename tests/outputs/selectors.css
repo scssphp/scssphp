@@ -230,17 +230,11 @@ E + F {
 E ~ F {
   color: blue;
 }
-E! > F {
-  color: blue;
-}
 [foo|att=val] {
   color: blue;
 }
 [*|att] {
   color: yellow;
-}
-[|att] {
-  color: green;
 }
 [att] {
   color: green;
@@ -324,7 +318,7 @@ div font:something {
 .dad .simple .wolf {
   color: blue;
 }
-.rad.simple.bad {
+.simple.rad.bad {
   color: blue;
 }
 .something div .what.world {

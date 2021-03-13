@@ -174,24 +174,18 @@ foo {;;;;
 }
 
 
-0% {
-  a: b; }
+@keyframes foo {
+  0% {
+    a: b; }
 
 
-60% {
-  a: b; }
+  60% {
+    a: b; }
 
 
-100% {
-  a: b; }
-
-
-12px {
-  a: b; }
-
-
-"foo" {
-  a: b; }
+  100% {
+    a: b; }
+}
 
 
 foo {
@@ -440,11 +434,11 @@ foo {a /*: b; c */: d}
 
 
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-  a: b; }
+  .foo {a: b;} }
 
 
 @media only screen, print and (foo: 0px) and (bar: flam(12px solid)) {
-  a: b; }
+  .foo {a: b;} }
 
 
 :-moz-any(h1, h2, h3) {
@@ -947,7 +941,7 @@ E ~ F {
   a: b; }
 
 
-@supports (a: b) and (c: d) or (not (d: e)) and ((not (f: g)) or (not ((h: i) and (j: k)))) {
+@supports ((a: b) and (c: d)) or ((not (d: e)) and ((not (f: g)) or (not ((h: i) and (j: k))))) {
   .foo {
     a: b;
   }

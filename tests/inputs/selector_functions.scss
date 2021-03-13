@@ -131,10 +131,6 @@
 	content: "a.disabled.outgoing";
 }
 
-#{selector-unify("a", "h1")} {
-	content: "null";
-}
-
 #{selector-unify(".warning a", "main a")} {
 	content: ".warning main a, main .warning a";
 }
