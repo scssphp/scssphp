@@ -82,9 +82,7 @@ foo {
 
 
 foo {bar: baz}
-<!--
 bar {bar: baz}
--->
 baz {bar: baz}
 
 
@@ -775,11 +773,11 @@ body {
 }
 
 
-E>F { a: b;} 
+E>F { a: b;}
 
-E~F { a: b;} 
+E~F { a: b;}
 
-E+F { a: b;} 
+E+F { a: b;}
 
 * {
   a: b; }
