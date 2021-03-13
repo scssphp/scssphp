@@ -13,8 +13,8 @@ div {
     color: map_get($map, 'color#{2}');
     foo: map_values($map);
     bar: map_keys($map2);
-    baz: map_merge($map, $map2);
-    foo: map_remove($map2, color);
+    baz: inspect(map_merge($map, $map2));
+    foo: inspect(map_remove($map2, color));
     bar: if(map_has_key($map, color), true, false);
     suppress: map_get($map, null);
 }

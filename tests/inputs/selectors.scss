@@ -85,12 +85,10 @@ E F { color: blue; }
 E > F { color: blue; }
 E + F { color: blue; }
 E ~ F { color: blue; }
-E! > F { color: blue; }
 
 // namespaces
 [foo|att=val] { color: blue }
 [*|att] { color: yellow }
-[|att] { color: green }
 [att] { color: green }
 
 // CSS2.1
@@ -154,7 +152,7 @@ div {
         color: blue;
     }
 
-    .rad&.bad {
+    &.rad.bad {
         color: blue;
     }
 

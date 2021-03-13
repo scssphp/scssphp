@@ -115,9 +115,6 @@ a.disabled {
 a.disabled.outgoing {
   content: "a.disabled.outgoing";
 }
- {
-  content: "null";
-}
 .warning main a, main .warning a {
   content: ".warning main a, main .warning a";
 }
