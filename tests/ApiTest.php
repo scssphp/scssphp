@@ -93,7 +93,10 @@ class ApiTest extends TestCase
     {
         $this->scss = new Compiler();
 
-        $this->scss->setVariables(['base-path' => __DIR__ . \DIRECTORY_SEPARATOR . 'inputs']);
+        $basePath = __DIR__ . \DIRECTORY_SEPARATOR . 'inputs';
+        $basePathAsScss = '"' . str_replace('\\', '\\\\', $basePath) . '"';
+
+        $this->scss->setVariables(['base-path' => $basePathAsScss]);
         $this->scss->addImportPath(__DIR__ . \DIRECTORY_SEPARATOR . 'inputs');
 
         $this->assertEquals(
