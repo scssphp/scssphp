@@ -975,11 +975,6 @@ class Parser
 
         $this->seek($s);
 
-        // misc
-        if ($this->literal('-->', 3)) {
-            return true;
-        }
-
         // opening css block
         if (
             $this->selectors($selectors) &&
@@ -1067,10 +1062,7 @@ class Parser
         }
 
         // extra stuff
-        if (
-            $this->matchChar(';') ||
-            $this->literal('<!--', 4)
-        ) {
+        if ($this->matchChar(';')) {
             return true;
         }
 
