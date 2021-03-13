@@ -12,8 +12,6 @@
 
 namespace ScssPhp\ScssPhp;
 
-use ScssPhp\ScssPhp\Exception\CompilerException;
-
 class CompilationResult
 {
     /**
@@ -27,16 +25,6 @@ class CompilationResult
     private $sourceMap;
 
     /**
-     * @var string|null
-     */
-    private $sourceMapFile;
-
-    /**
-     * @var string|null
-     */
-    private $sourceMapUrl;
-
-    /**
      * @var string[]
      */
     private $includedFiles;
@@ -44,16 +32,12 @@ class CompilationResult
     /**
      * @param string $css
      * @param string|null $sourceMap
-     * @param string|null $sourceMapFile
-     * @param string|null $sourceMapUrl
      * @param string[] $includedFiles
      */
-    public function __construct($css, $sourceMap, $sourceMapFile, $sourceMapUrl, array $includedFiles)
+    public function __construct($css, $sourceMap, array $includedFiles)
     {
         $this->css = $css;
         $this->sourceMap = $sourceMap;
-        $this->sourceMapFile = $sourceMapFile;
-        $this->sourceMapUrl = $sourceMapUrl;
         $this->includedFiles = $includedFiles;
     }
 
@@ -62,7 +46,7 @@ class CompilationResult
      */
     public function getCss()
     {
-        return $this->css . $this->getSourceMapCss();
+        return $this->css;
     }
 
     /**
@@ -73,11 +57,6 @@ class CompilationResult
         return $this->includedFiles;
     }
 
-    public function __toString()
-    {
-        return $this->getCss(); // To reduce the impact of the BC break
-    }
-
     /**
      * The sourceMap content, if it was generated
      *
@@ -86,41 +65,5 @@ class CompilationResult
     public function getSourceMap()
     {
         return $this->sourceMap;
-    }
-
-    /**
-     * The sourceMap Css content, if there is a sourceMap
-     * @return string
-     */
-    private function getSourceMapCss()
-    {
-        if ($this->sourceMap) {
-            if ($this->sourceMapFile) {
-                $sourceMapurl = $this->sourceMapUrl;
-                $dir  = \dirname($this->sourceMapFile);
-
-                // directory does not exist
-                if (! is_dir($dir)) {
-                    // FIXME: create the dir automatically?
-                    throw new CompilerException(
-                        sprintf('The directory "%s" does not exist. Cannot save the source map.', $dir)
-                    );
-                }
-
-                // FIXME: proper saving, with dir write check!
-                if (file_put_contents($this->sourceMapFile, $this->sourceMap) === false) {
-                    throw new CompilerException(sprintf('Cannot save the source map to "%s"', $this->sourceMapFile));
-                }
-            }
-            else {
-                $sourceMapurl = Util::encodeURIComponent($this->sourceMap);
-            }
-
-            if ($sourceMapurl) {
-                return sprintf('/*# sourceMappingURL=%s */', $sourceMapurl);
-            }
-        }
-
-        return '';
     }
 }

@@ -121,6 +121,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^PHPDoc tag @throws with type ScssPhp\\\\ScssPhp\\\\Exception\\\\SassException is not subtype of Throwable$#"
+			count: 2
+			path: src/Compiler.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$env \\(ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\) does not accept null\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -142,16 +147,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method generateJson\\(\\) on ScssPhp\\\\ScssPhp\\\\SourceMap\\\\SourceMapGenerator\\|null\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#3 \\$sourceMapFile of class ScssPhp\\\\ScssPhp\\\\CompilationResult constructor expects string\\|null, bool\\|string\\|null given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#4 \\$sourceMapUrl of class ScssPhp\\\\ScssPhp\\\\CompilationResult constructor expects string\\|null, bool\\|string\\|null given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
