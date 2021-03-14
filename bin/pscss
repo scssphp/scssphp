@@ -226,7 +226,7 @@ if ($encoding) {
 try {
     $output = $scss->compile($data, $inputFile);
 } catch (SassException $e) {
-    fwrite(STDERR, $e->getMessage()."\n");
+    fwrite(STDERR, 'Error: '.$e->getMessage()."\n");
     exit(1);
 }
 
