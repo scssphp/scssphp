@@ -6831,98 +6831,6 @@ class Compiler
     }
 
     /**
-     * Assert value is a number and has a given unit
-     *
-     * @api
-     *
-     * @param array|Number $value
-     * @param array<string|null> $units null value stand for unitless
-     * @param string $varName
-     *
-     * @return Number
-     *
-     * @throws \Exception
-     */
-    public function assertUnit($value, $units, $varName = null)
-    {
-        $value = $this->assertNumber($value, $varName);
-
-        foreach ($units as $unit) {
-            if ($unit && $value->hasUnit($unit)) {
-                return $value;
-            }
-            if (\is_null($unit) && $value->unitless()) {
-                return $value;
-            }
-        }
-
-        $value = $this->compileValue($value);
-        $var_display = ($varName ? " \${$varName}:" : '');
-        $unit_display = array_filter($units);
-        $unit_display = "'" . implode("' or '", $unit_display) . "'";
-        throw $this->error("Error:{$var_display} Expected $value to have unit $unit_display");
-    }
-
-    /**
-     * Assert a value is % or unitless and optionally force it to one or the other
-     *
-     * @param array|Number $value
-     * @param string|null $varName
-     * @param null|string $forceTo
-     * @return Number
-     * @throws CompilerException
-     */
-    private function assertPercentOrUnitless($value, $varName = null, $forceTo = null, $acceptButDeprecated = false)
-    {
-        $value = $this->assertNumber($value, $varName);
-
-        if ($acceptButDeprecated) {
-            if (! $value->unitless() && ! $value->hasUnit('%')) {
-                $var_display = ($varName ? " \${$varName}:" : '');
-                $warning = $this->error("{$var_display} Passing a number `$value` without unit % is deprecated.");
-                $this->logger->warn($warning->getMessage(), true);
-                $value = new Number($value->getDimension(), '');
-                return $value;
-            }
-        }
-
-        if ($value->unitless()) {
-            return $value;
-        }
-        if ($value->hasUnit('%')) {
-            if ($forceTo === 'unitless') {
-                $value = new Number($value->getDimension() / 100, '');
-            }
-            return $value;
-        }
-
-        $var_display = ($varName ? " \${$varName}:" : '');
-        throw $this->error("Error:{$var_display} Expected $value to be unitless or '%'");
-    }
-
-    /**
-     * Assert a value is whithin a range
-     * @param array|Number $value
-     * @param int|float $min
-     * @param int|float $max
-     * @param string $rangeText
-     * @param string $varName
-     * @return mixed
-     * @throws CompilerException
-     */
-    public function assertRange($value, $min, $max, $rangeText, $varName = null)
-    {
-        $v = $this->assertNumber($value, $varName)->getDimension();
-        if ($v < $min || $v > $max) {
-            $value = $this->compileValue($value);
-            $var_display = ($varName ? " \${$varName}:" : '');
-            throw $this->error("Error:{$var_display} expected $value to be within $rangeText.");
-        }
-
-        return $value;
-    }
-
-    /**
      * Assert value is a integer
      *
      * @api
@@ -7352,100 +7260,105 @@ class Compiler
      *
      * @return array
      */
-    protected function alterColor($args, $operation, $fn)
+    protected function alterColor(array $args, $operation, $fn)
     {
-        $varNames = [
-            0 => 'color',
-            1 => 'red',
-            2 => 'green',
-            3 => 'blue',
-            4 => 'hue',
-            5 => 'saturation',
-            6 => 'lightness',
-            7 => 'whiteness',
-            8 => 'blackness',
-            9 => 'alpha'
-        ];
-        /**
-         * 0 => color
-         * 1 => red, 2=> green, 3=> blue
-         * 4 => hue, 5=> saturation, 6 => lightness
-         * 7 => whiteness, 8=> blackness
-         * 9 => alpha
-         */
         $color = $this->assertColor($args[0]);
+        $kwargs = $args[1][2];
 
-        $found = false;
-
-        // rgba
-        foreach ([1 => 1, 2 => 2, 3 => 3, 9 => 4] as $iarg => $irgba) {
-            if (isset($args[$iarg])) {
-                if ($iarg < 9) {
-                    $found = "RGB";
-                }
-                if ($operation === 'scale') {
-                    $val = $this->assertUnit($args[$iarg], ['%'], $varNames[$iarg]);
-                    $val = $this->assertRange($val, -100, 100, "100% and 100%", $varNames[$iarg]);
-                }
-                else {
-                    switch ($iarg) {
-                        case 1:
-                        case 2:
-                        case 3:
-                            $this->assertUnit($args[$iarg], [null], $varNames[$iarg]);
-                            $min = ($operation === 'change' ? 0 : -255);
-                            $val = $this->assertRange($args[$iarg], $min, 255, "{$min} and 255", $varNames[$iarg]);
-                            break;
-                        case 9:
-                            $val = $this->assertPercentOrUnitless($args[$iarg], $varNames[$iarg], 'unitless');
-                            $min = ($operation === 'change' ? 0 : -1);
-                            $val = $this->assertRange($val, $min, 1, "{$min} and 1", $varNames[$iarg]);
-                            break;
-                    }
-                }
-                $val = $val->getDimension();
-
-                if (! isset($color[$irgba])) {
-                    $color[$irgba] = (($irgba < 4) ? 0 : 1);
-                }
-
-                $color[$irgba] = \call_user_func($fn, $color[$irgba], $val, $iarg);
-            }
+        if (isset($kwargs[0])) {
+            throw new SassScriptException('Only one positional argument is allowed. All other arguments must be passed by name.');
         }
 
-        // hwb
-        if (! empty($args[7]) || ! empty($args[8])) {
-            if ($found) {
-                throw $this->error("Error: $found parameters may not be passed along with HWB parameters.");
+        $scale = $operation === 'scale';
+        $change = $operation === 'change';
+
+        /**
+         * @param string $name
+         * @param float|int $max
+         * @param bool $checkPercent
+         * @param bool $assertPercent
+         *
+         * @return float|int|null
+         */
+        $getParam = function ($name, $max, $checkPercent = false, $assertPercent = false) use (&$kwargs, $scale, $change) {
+            if (!isset($kwargs[$name])) {
+                return null;
             }
-            $found = "HWB";
 
-            $hwb = $this->RGBtoHWB($color[1], $color[2], $color[3]);
+            $number = $this->assertNumber($kwargs[$name], $name);
+            unset($kwargs[$name]);
 
-            foreach ([4 => 1, 7 => 2, 8 => 3] as $iarg => $ihwb) {
-                if (! empty($args[$iarg])) {
-                    if ($operation === 'scale') {
-                        $val = $this->assertUnit($args[$iarg], ['%'], $varNames[$iarg]);
-                        $val = $this->assertRange($val, -100, 100, "100% and 100%", $varNames[$iarg]);
-                    }
-                    else {
-                        switch ($iarg) {
-                            case 7:
-                            case 8:
-                                $this->assertUnit($args[$iarg], ['%'], $varNames[$iarg]);
-                                $min = ($operation === 'change' ? 0 : -100);
-                                $val = $this->assertRange($args[$iarg], $min, 100, "{$min}% and 100%",
-                                    $varNames[$iarg]);
-                                break;
-                            default:
-                                $val = $this->assertNumber($args[$iarg]);
-                                break;
-                        }
-                    }
-                    $val = $val->getDimension();
-                    $hwb[$ihwb] = \call_user_func($fn, $hwb[$ihwb], $val, $iarg);
+            if (!$scale && $checkPercent) {
+                if (!$number->hasUnit('%')) {
+                    $warning = $this->error("{$name} Passing a number `$number` without unit % is deprecated.");
+                    $this->logger->warn($warning->getMessage(), true);
                 }
             }
+
+            if ($scale || $assertPercent) {
+                $number->assertUnit('%', $name);
+            }
+
+            if ($scale) {
+                $max = 100;
+            }
+
+            return $number->valueInRange($change ? 0 : -$max, $max, $name);
+        };
+
+        $alpha = $getParam('alpha', 1);
+        $red = $getParam('red', 255);
+        $green = $getParam('green', 255);
+        $blue = $getParam('blue', 255);
+
+        if ($scale || !isset($kwargs['hue'])) {
+            $hue = null;
+        } else {
+            $hueNumber = $this->assertNumber($kwargs['hue'], 'hue');
+            unset($kwargs['hue']);
+            $hue = $hueNumber->getDimension();
+        }
+        $saturation = $getParam('saturation', 100, true);
+        $lightness = $getParam('lightness', 100, true);
+        $whiteness = $getParam('whiteness', 100, false, true);
+        $blackness = $getParam('blackness', 100, false, true);
+
+        if (!empty($kwargs)) {
+            $unknownNames = array_keys($kwargs);
+            $lastName = array_pop($unknownNames);
+            $message = sprintf(
+                'No argument%s named $%s%s.',
+                $unknownNames ? 's' : '',
+                $unknownNames ? implode(', $', $unknownNames) . ' or $' : '',
+                $lastName
+            );
+            throw new SassScriptException($message);
+        }
+
+        $hasRgb = $red !== null || $green !== null || $blue !== null;
+        $hasSL = $saturation !== null || $lightness !== null;
+        $hasWB = $whiteness !== null || $blackness !== null;
+        $found = false;
+
+        if ($hasRgb && ($hasSL || $hasWB || $hue !== null)) {
+            throw new SassScriptException(sprintf('RGB parameters may not be passed along with %s parameters.', $hasWB ? 'HWB' : 'HSL'));
+        }
+
+        if ($hasWB && $hasSL) {
+            throw new SassScriptException('HSL parameters may not be passed along with HWB parameters.');
+        }
+
+        if ($hasRgb) {
+            $color[1] = round(\call_user_func($fn, $color[1], $red, 255));
+            $color[2] = round(\call_user_func($fn, $color[2], $green, 255));
+            $color[3] = round(\call_user_func($fn, $color[3], $blue, 255));
+        } elseif ($hasWB) {
+            $hwb = $this->RGBtoHWB($color[1], $color[2], $color[3]);
+            if ($hue !== null) {
+                $hwb[1] = $change ? $hue : $hwb[1] + $hue;
+            }
+            $hwb[2] = \call_user_func($fn, $hwb[2], $whiteness, 100);
+            $hwb[3] = \call_user_func($fn, $hwb[3], $blackness, 100);
 
             $rgb = $this->HWBtoRGB($hwb[1], $hwb[2], $hwb[3]);
 
@@ -7454,40 +7367,14 @@ class Compiler
             }
 
             $color = $rgb;
-        }
-
-        // hsl
-        if ((! empty($args[4]) && $found !== 'HWB') || ! empty($args[5]) || ! empty($args[6])) {
-            if ($found) {
-                throw $this->error("Error: $found parameters may not be passed along with HSL parameters.");
-            }
-            $found = "HSL";
-
+        } elseif ($hue !== null || $hasSL) {
             $hsl = $this->toHSL($color[1], $color[2], $color[3]);
 
-            foreach ([4 => 1, 5 => 2, 6 => 3] as $iarg => $ihsl) {
-                if (! empty($args[$iarg])) {
-                    if ($operation === 'scale') {
-                        $val = $this->assertUnit($args[$iarg], ['%'], $varNames[$iarg]);
-                        $val = $this->assertRange($val, -100, 100, "100% and 100%", $varNames[$iarg]);
-                    }
-                    else {
-                        switch ($iarg) {
-                            case 5:
-                            case 6:
-                                $this->assertPercentOrUnitless($args[$iarg], $varNames[$iarg], null, \in_array($operation, ['adjust', 'change']));
-                                $min = ($operation === 'change' ? 0 : -100);
-                                $val = $this->assertRange($args[$iarg], $min, 100, "{$min}% and 100%", $varNames[$iarg]);
-                                break;
-                            default:
-                                $val = $this->assertNumber($args[$iarg]);
-                                break;
-                        }
-                    }
-                    $val = $val->getDimension();
-                    $hsl[$ihsl] = \call_user_func($fn, $hsl[$ihsl], $val, $iarg);
-                }
+            if ($hue !== null) {
+                $hsl[1] = $change ? $hue : $hsl[1] + $hue;
             }
+            $hsl[2] = \call_user_func($fn, $hsl[2], $saturation, 100);
+            $hsl[3] = \call_user_func($fn, $hsl[3], $lightness, 100);
 
             $rgb = $this->toRGB($hsl[1], $hsl[2], $hsl[3]);
 
@@ -7498,65 +7385,54 @@ class Compiler
             $color = $rgb;
         }
 
+        if ($alpha !== null) {
+            $existingAlpha = isset($color[4]) ? $color[4] : 1;
+            $color[4] = \call_user_func($fn, $existingAlpha, $alpha, 1);
+        }
+
         return $color;
     }
 
-    protected static $libAdjustColor = ['color',
-        'red:null', 'green:null', 'blue:null',
-        'hue:null', 'saturation:null', 'lightness:null',
-        'whiteness:null', 'blackness:null',
-        'alpha:null'
-    ];
+    protected static $libAdjustColor = ['color', 'kwargs...'];
     protected function libAdjustColor($args)
     {
-        return $this->alterColor($args, 'adjust', function ($base, $alter, $i) {
-            return $base + $alter;
+        return $this->alterColor($args, 'adjust', function ($base, $alter, $max) {
+            if ($alter === null) {
+                return $base;
+            }
+
+            $new = $base + $alter;
+
+            if ($new < 0) {
+                return 0;
+            }
+
+            if ($new > $max) {
+                return $max;
+            }
+
+            return $new;
         });
     }
 
-    protected static $libChangeColor = ['color',
-        'red:null', 'green:null', 'blue:null',
-        'hue:null', 'saturation:null', 'lightness:null',
-        'whiteness:null', 'blackness:null',
-        'alpha:null'
-    ];
+    protected static $libChangeColor = ['color', 'kwargs...'];
     protected function libChangeColor($args)
     {
-        return $this->alterColor($args, 'change', function ($base, $alter, $i) {
+        return $this->alterColor($args,'change', function ($base, $alter, $max) {
+            if ($alter === null) {
+                return $base;
+            }
+
             return $alter;
         });
     }
 
-    protected static $libScaleColor = ['color',
-        'red:null', 'green:null', 'blue:null',
-        'hue:null', 'saturation:null', 'lightness:null',
-        'whiteness:null', 'blackness:null',
-        'alpha:null'
-    ];
+    protected static $libScaleColor = ['color', 'kwargs...'];
     protected function libScaleColor($args)
     {
-        return $this->alterColor($args, 'scale', function ($base, $scale, $i) {
-            // 1, 2, 3 - rgb
-            // 4, 5, 6 - hsl
-            // (4,)7,8 - (h)wb
-            // 9 - a
-            switch ($i) {
-                case 1:
-                case 2:
-                case 3:
-                    $max = 255;
-                    break;
-
-                case 4:
-                    $max = 360;
-                    break;
-
-                case 9:
-                    $max = 1;
-                    break;
-
-                default:
-                    $max = 100;
+        return $this->alterColor($args, 'scale', function ($base, $scale, $max) {
+            if ($scale === null) {
+                return $base;
             }
 
             $scale = $scale / 100;
