@@ -6102,108 +6102,292 @@ class Compiler
             }
         }
 
-        $finalArgs = [];
+        list($positionalArgs, $namedArgs, $names, $separator, $hasSplat) = $this->evaluateArguments($args, false);
 
         if (! \is_array(reset($prototypes))) {
             $prototypes = [$prototypes];
         }
 
+        $parsedPrototypes = array_map([$this, 'parseFunctionPrototype'], $prototypes);
+        assert(!empty($parsedPrototypes));
+        $matchedPrototype = $this->selectFunctionPrototype($parsedPrototypes, \count($positionalArgs), $names);
+
+        $this->verifyPrototype($matchedPrototype, \count($positionalArgs), $names, $hasSplat);
+
+        $vars = $this->applyArgumentsToDeclaration($matchedPrototype, $positionalArgs, $namedArgs, $separator);
+
+        $finalArgs = [];
         $keyArgs = [];
 
-        // trying each prototypes
-        $prototypeHasMatch = false;
-        $exceptionMessage = '';
+        foreach ($matchedPrototype['arguments'] as $argument) {
+            list($normalizedName, $originalName, $default) = $argument;
 
-        foreach ($prototypes as $prototype) {
-            $argDef = [];
-
-            foreach ($prototype as $i => $p) {
-                $default = null;
-                $p       = explode(':', $p, 2);
-                $name    = array_shift($p);
-
-                if (\count($p)) {
-                    $p = trim(reset($p));
-
-                    if ($p === 'null') {
-                        // differentiate this null from the static::$null
-                        $default = [Type::T_KEYWORD, 'null'];
-                    } else {
-                        if (\is_null($parser)) {
-                            $parser = $this->parserFactory(__METHOD__);
-                        }
-
-                        $parser->parseValue($p, $default);
-                    }
-                }
-
-                $isVariable = false;
-
-                if (substr($name, -3) === '...') {
-                    $isVariable = true;
-                    $name = substr($name, 0, -3);
-                }
-
-                $argDef[] = [$name, $default, $isVariable];
+            if (isset($vars[$normalizedName])) {
+                $value = $vars[$normalizedName];
+            } else {
+                $value = $default;
             }
 
-            $ignoreCallStackMessage = $this->ignoreCallStackMessage;
-            $this->ignoreCallStackMessage = true;
-
-            try {
-                $vars = $this->applyArguments($argDef, $args, false, false);
-
-                // ensure all args are populated
-                foreach ($prototype as $i => $p) {
-                    if (! isset($finalArgs[$i])) {
-                        $finalArgs[$i] = null;
-                    }
-                }
-
-                // apply positional args
-                foreach (array_values($vars) as $i => $val) {
-                    $finalArgs[$i] = $val;
-                }
-
-                $keyArgs = array_merge($keyArgs, $vars);
-                $prototypeHasMatch = true;
-
-                // overwrite positional args with keyword args
-                foreach ($prototype as $i => $p) {
-                    $name = explode(':', $p)[0];
-
-                    if (isset($keyArgs[$name])) {
-                        $finalArgs[$i] = $keyArgs[$name];
-                    }
-
-                    // special null value as default: translate to real null here
-                    if ($finalArgs[$i] === [Type::T_KEYWORD, 'null']) {
-                        $finalArgs[$i] = null;
-                    }
-                }
-                // should we break if this prototype seems fulfilled?
-            } catch (CompilerException $e) {
-                $exceptionMessage = $e->getMessage();
+            // special null value as default: translate to real null here
+            if ($value === [Type::T_KEYWORD, 'null']) {
+                $value = null;
             }
-            $this->ignoreCallStackMessage = $ignoreCallStackMessage;
+
+            $finalArgs[] = $value;
+            $keyArgs[$originalName] = $value;
         }
 
-        if ($exceptionMessage && ! $prototypeHasMatch) {
-            throw $this->error($exceptionMessage);
+        if ($matchedPrototype['rest_argument'] !== null) {
+            $value = $vars[$matchedPrototype['rest_argument']];
+
+            $finalArgs[] = $value;
+            $keyArgs[$matchedPrototype['rest_argument']] = $value;
         }
 
         return [$finalArgs, $keyArgs];
     }
 
     /**
+     * Parses a function prototype to the internal representation of arguments.
+     *
+     * The input is an array of strings describing each argument, as supported
+     * in {@see registerFunction}. Argument names don't include the `$`.
+     * The output contains the list of positional argument, with their normalized
+     * name (underscores are replaced by dashes), their original name (to be used
+     * in case of error reporting) and their default value. The output also contains
+     * the normalized name of the rest argument, or null if the function prototype
+     * is not variadic.
+     *
+     * @param string[] $prototype
+     *
+     * @return array
+     * @phpstan-return array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null}
+     */
+    private function parseFunctionPrototype(array $prototype)
+    {
+        static $parser = null;
+
+        $arguments = [];
+        $restArgument = null;
+
+        foreach ($prototype as $p) {
+            if (null !== $restArgument) {
+                throw new \InvalidArgumentException('The argument declaration is invalid. The rest argument must be the last one.');
+            }
+
+            $default = null;
+            $p = explode(':', $p, 2);
+            $name = str_replace('_', '-', $p[0]);
+
+            if (isset($p[1])) {
+                $defaultSource = trim($p[1]);
+
+                if ($defaultSource === 'null') {
+                    // differentiate this null from the static::$null
+                    $default = [Type::T_KEYWORD, 'null'];
+                } else {
+                    if (\is_null($parser)) {
+                        $parser = $this->parserFactory(__METHOD__);
+                    }
+
+                    $parser->parseValue($defaultSource, $default);
+                }
+            }
+
+            if (substr($name, -3) === '...') {
+                $restArgument = substr($name, 0, -3);
+            } else {
+                $arguments[] = [$name, $p[0], $default];
+            }
+        }
+
+        return [
+            'arguments' => $arguments,
+            'rest_argument' => $restArgument,
+        ];
+    }
+
+    /**
+     * Returns the function prototype for the given positional and named arguments.
+     *
+     * If no exact match is found, finds the closest approximation. Note that this
+     * doesn't guarantee that $positional and $names are valid for the returned
+     * prototype.
+     *
+     * @param array[]               $prototypes
+     * @param int                   $positional
+     * @param array<string, string> $names A set of names, as both keys and values
+     *
+     * @return array
+     *
+     * @phpstan-param non-empty-list<array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null}> $prototypes
+     * @phpstan-return array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null}
+     */
+    private function selectFunctionPrototype(array $prototypes, $positional, array $names)
+    {
+        $fuzzyMatch = null;
+        $minMismatchDistance = null;
+
+        foreach ($prototypes as $prototype) {
+            // Ideally, find an exact match.
+            if ($this->checkPrototypeMatches($prototype, $positional, $names)) {
+                return $prototype;
+            }
+
+            $mismatchDistance = \count($prototype['arguments']) - $positional;
+
+            if ($minMismatchDistance !== null) {
+                if (abs($mismatchDistance) > abs($minMismatchDistance)) {
+                    continue;
+                }
+
+                // If two overloads have the same mismatch distance, favor the overload
+                // that has more arguments.
+                if (abs($mismatchDistance) === abs($minMismatchDistance) && $mismatchDistance < 0) {
+                    continue;
+                }
+            }
+
+            $minMismatchDistance = $mismatchDistance;
+            $fuzzyMatch = $prototype;
+        }
+
+        return $fuzzyMatch;
+    }
+
+    /**
+     * Checks whether the argument invocation matches the callable prototype.
+     *
+     * The rules are similar to {@see verifyPrototype}. The boolean return value
+     * avoids the overhead of building and catching exceptions when the reason of
+     * not matching the prototype does not need to be known.
+     *
+     * @param array                 $prototype
+     * @param int                   $positional
+     * @param array<string, string> $names
+     *
+     * @return bool
+     *
+     * @phpstan-param array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null} $prototype
+     */
+    private function checkPrototypeMatches(array $prototype, $positional, array $names)
+    {
+        $nameUsed = 0;
+
+        foreach ($prototype['arguments'] as $i => $argument) {
+            list ($name, $originalName, $default) = $argument;
+
+            if ($i < $positional) {
+                if (isset($names[$name])) {
+                    return false;
+                }
+            } elseif (isset($names[$name])) {
+                $nameUsed++;
+            } elseif ($default === null) {
+                return false;
+            }
+        }
+
+        if ($prototype['rest_argument'] !== null) {
+            return true;
+        }
+
+        if ($positional > \count($prototype['arguments'])) {
+            return false;
+        }
+
+        if ($nameUsed < \count($names)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Verifies that the argument invocation is valid for the callable prototype.
+     *
+     * @param array                 $prototype
+     * @param int                   $positional
+     * @param array<string, string> $names
+     * @param bool                  $hasSplat
+     *
+     * @return void
+     *
+     * @throws SassScriptException
+     *
+     * @phpstan-param array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null} $prototype
+     */
+    private function verifyPrototype(array $prototype, $positional, array $names, $hasSplat)
+    {
+        $nameUsed = 0;
+
+        foreach ($prototype['arguments'] as $i => $argument) {
+            list ($name, $originalName, $default) = $argument;
+
+            if ($i < $positional) {
+                if (isset($names[$name])) {
+                    throw new SassScriptException(sprintf('Argument $%s was passed both by position and by name.', $originalName));
+                }
+            } elseif (isset($names[$name])) {
+                $nameUsed++;
+            } elseif ($default === null) {
+                throw new SassScriptException(sprintf('Missing argument $%s', $originalName));
+            }
+        }
+
+        if ($prototype['rest_argument'] !== null) {
+            return;
+        }
+
+        if ($positional > \count($prototype['arguments'])) {
+            $message = sprintf(
+                'Only %d %sargument%s allowed, but %d %s passed.',
+                \count($prototype['arguments']),
+                empty($names) ? '' : 'positional ',
+                \count($prototype['arguments']) === 1 ? '' : 's',
+                $positional,
+                $positional === 1 ? 'was' : 'were'
+            );
+            if (!$hasSplat) {
+                throw new SassScriptException($message);
+            }
+
+            $message = $this->addLocationToMessage($message);
+            $message .= "\nThis will be an error in future versions of Sass.";
+            $this->logger->warn($message, true);
+        }
+
+        if ($nameUsed < \count($names)) {
+            $unknownNames = array_values(array_diff($names, array_column($prototype['arguments'], 0)));
+            $lastName = array_pop($unknownNames);
+            $message = sprintf(
+                'No argument%s named $%s%s.',
+                $unknownNames ? 's' : '',
+                $unknownNames ? implode(', $', $unknownNames) . ' or $' : '',
+                $lastName
+            );
+            throw new SassScriptException($message);
+        }
+    }
+
+    /**
+     * Evaluates the argument from the invocation.
+     *
+     * This returns several things about this invocation:
+     * - the list of positional arguments
+     * - the map of named arguments, indexed by normalized names
+     * - the set of names used in the arguments (that's an array using the normalized names as keys for O(1) access)
+     * - the separator used by the list using the splat operator, if any
+     * - a boolean indicator whether any splat argument (list or map) was used, to support the incomplete error reporting.
+     *
      * @param array[] $args
-     * @param bool    $reduce
+     * @param bool    $reduce Whether arguments should be reduced to their value
      *
      * @return array
      *
      * @throws SassScriptException
      *
-     * @phpstan-return array{0: list<array|Number>, 1: array<string, array|Number>, 2: string|null, 3: bool}
+     * @phpstan-return array{0: list<array|Number>, 1: array<string, array|Number>, 2: array<string, string>, 3: string|null, 4: bool}
      */
     private function evaluateArguments(array $args, $reduce = true)
     {
@@ -6214,6 +6398,7 @@ class Compiler
 
         $splatSeparator = null;
         $keywordArgs = [];
+        $names = [];
         $positionalArgs = [];
         $hasKeywordArgument = false;
         $hasSplat = false;
@@ -6230,6 +6415,7 @@ class Compiler
                 }
 
                 $keywordArgs[$name] = $this->maybeReduce($reduce, $arg[1]);
+                $names[$name] = $name;
             } elseif (! empty($arg[2])) {
                 // $arg[2] means a var followed by ... in the arg ($list... )
                 $val = $this->reduce($arg[1], true);
@@ -6245,6 +6431,7 @@ class Compiler
                             }
 
                             $keywordArgs[$normalizedName] = $this->maybeReduce($reduce, $item);
+                            $names[$normalizedName] = $normalizedName;
                             $hasKeywordArgument = true;
                         } else {
                             if (\is_null($splatSeparator)) {
@@ -6267,6 +6454,7 @@ class Compiler
                             }
 
                             $keywordArgs[$normalizedName] = $this->maybeReduce($reduce, $item);
+                            $names[$normalizedName] = $normalizedName;
                             $hasKeywordArgument = true;
                         } else {
                             if (\is_null($splatSeparator)) {
@@ -6286,7 +6474,7 @@ class Compiler
             }
         }
 
-        return [$positionalArgs, $keywordArgs, $splatSeparator, $hasSplat];
+        return [$positionalArgs, $keywordArgs, $names, $splatSeparator, $hasSplat];
     }
 
     /**
@@ -6313,7 +6501,7 @@ class Compiler
      * @param boolean $reduce
      *   only used if $storeInEnv = false
      *
-     * @return array
+     * @return array<string, array|Number>
      *
      * @phpstan-param list<array{0: string, 1: array|Number|null, 2: bool}> $argDef
      *
@@ -6334,47 +6522,35 @@ class Compiler
             $env->store = $storeEnv->store;
         }
 
-        $hasVariable = false;
-        $args = [];
+        $prototype = ['arguments' => [], 'rest_argument' => null];
+        $originalRestArgumentName = null;
 
         foreach ($argDef as $i => $arg) {
-            list($name, $default, $isVariable) = $argDef[$i];
+            list($name, $default, $isVariable) = $arg;
             $normalizedName = str_replace('_', '-', $name);
 
-            $args[$normalizedName] = [$i, $name, $default, $isVariable];
-            $hasVariable |= $isVariable;
+            if ($isVariable) {
+                $originalRestArgumentName = $name;
+                $prototype['rest_argument'] = $normalizedName;
+            } else {
+                $prototype['arguments'][] = [$normalizedName, $name, !empty($default) ? $default : null];
+            }
         }
 
-        list($remaining, $keywordArgs, $splatSeparator, $hasSplat) = $this->evaluateArguments($argValues, $reduce);
-        $restKeywordArgs = $keywordArgs;
+        list($positionalArgs, $namedArgs, $names, $splatSeparator, $hasSplat) = $this->evaluateArguments($argValues, $reduce);
 
-        foreach ($args as $normalizedName => $arg) {
-            list($i, $name, $default, $isVariable) = $arg;
+        $this->verifyPrototype($prototype, \count($positionalArgs), $names, $hasSplat);
 
-            if ($isVariable) {
-                $val = [Type::T_LIST, \is_null($splatSeparator) ? ',' : $splatSeparator , [], $isVariable];
+        $vars = $this->applyArgumentsToDeclaration($prototype, $positionalArgs, $namedArgs, $splatSeparator);
 
-                for ($count = \count($remaining); $i < $count; $i++) {
-                    $val[2][] = $remaining[$i];
-                }
+        foreach ($prototype['arguments'] as $argument) {
+            list($normalizedName, $name) = $argument;
 
-                foreach ($restKeywordArgs as $itemName => $item) {
-                    $val[2][$itemName] = $item;
-                }
-            } elseif (isset($remaining[$i])) {
-                if (isset($keywordArgs[$normalizedName])) {
-                    throw $this->error("The argument $%s was passed both by position and by name.", $name);
-                }
-
-                $val = $remaining[$i];
-            } elseif (isset($keywordArgs[$normalizedName])) {
-                $val = $keywordArgs[$normalizedName];
-                unset($restKeywordArgs[$normalizedName]);
-            } elseif (! empty($default)) {
+            if (!isset($vars[$normalizedName])) {
                 continue;
-            } else {
-                throw $this->error("Missing argument $name");
             }
+
+            $val = $vars[$normalizedName];
 
             if ($storeInEnv) {
                 $this->set($name, $this->reduce($val, true), true, $env);
@@ -6383,15 +6559,15 @@ class Compiler
             }
         }
 
-        if (!$hasVariable) {
-            if (count($remaining) > count($args) && !$hasSplat) {
-                throw $this->error('Too many arguments');
+        if ($prototype['rest_argument'] !== null) {
+            assert($originalRestArgumentName !== null);
+            $name = $originalRestArgumentName;
+            $val = $vars[$prototype['rest_argument']];
 
-                // TODO show a warning when $hasSplat is true. This will be an error in 2.0
-            }
-
-            foreach ($restKeywordArgs as $name => $item) {
-                throw $this->error('Mixin or function doesn\'t have an argument named $%s.', $name);
+            if ($storeInEnv) {
+                $this->set($name, $this->reduce($val, true), true, $env);
+            } else {
+                $output[$name] = ($reduce ? $this->reduce($val, true) : $val);
             }
         }
 
@@ -6399,18 +6575,84 @@ class Compiler
             $storeEnv->store = $env->store;
         }
 
-        foreach ($args as $normalizedName => $arg) {
-            list($i, $name, $default, $isVariable) = $arg;
+        foreach ($prototype['arguments'] as $argument) {
+            list($normalizedName, $name, $default) = $argument;
 
-            if ($isVariable || isset($remaining[$i]) || isset($keywordArgs[$normalizedName]) || empty($default)) {
+            if (isset($vars[$normalizedName])) {
                 continue;
             }
+            assert($default !== null);
 
             if ($storeInEnv) {
                 $this->set($name, $this->reduce($default, true), true);
             } else {
                 $output[$name] = ($reduce ? $this->reduce($default, true) : $default);
             }
+        }
+
+        return $output;
+    }
+
+    /**
+     * Apply argument values per definition.
+     *
+     * This method assumes that the arguments are valid for the provided prototype.
+     * The validation with {@see verifyPrototype} must have been run before calling
+     * it.
+     * Arguments are returned as a map from the normalized argument names to the
+     * value. Additional arguments are collected in a sass argument list available
+     * under the name of the rest argument in the result.
+     *
+     * Defaults are not applied as they are resolved in a different environment.
+     *
+     * @param array                       $prototype
+     * @param array<array|Number>         $positionalArgs
+     * @param array<string, array|Number> $namedArgs
+     * @param string|null                 $splatSeparator
+     *
+     * @return array<string, array|Number>
+     *
+     * @phpstan-param array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null} $prototype
+     */
+    private function applyArgumentsToDeclaration(array $prototype, array $positionalArgs, array $namedArgs, $splatSeparator)
+    {
+        $output = [];
+        $minLength = min(\count($positionalArgs), \count($prototype['arguments']));
+
+        for ($i = 0; $i < $minLength; $i++) {
+            list($name) = $prototype['arguments'][$i];
+            $val = $positionalArgs[$i];
+
+            $output[$name] = $val;
+        }
+
+        $restNamed = $namedArgs;
+
+        for ($i = \count($positionalArgs); $i < \count($prototype['arguments']); $i++) {
+            $argument = $prototype['arguments'][$i];
+            list($name) = $argument;
+
+            if (isset($namedArgs[$name])) {
+                $val = $namedArgs[$name];
+                unset($restNamed[$name]);
+            } else {
+                continue;
+            }
+
+            $output[$name] = $val;
+        }
+
+        if ($prototype['rest_argument'] !== null) {
+            $name = $prototype['rest_argument'];
+            $rest = array_values(array_slice($positionalArgs, \count($prototype['arguments'])));
+
+            foreach ($restNamed as $itemName => $value) {
+                $rest[$itemName] = $value;
+            }
+
+            $val = [Type::T_LIST, \is_null($splatSeparator) ? ',' : $splatSeparator , $rest, true];
+
+            $output[$name] = $val;
         }
 
         return $output;
