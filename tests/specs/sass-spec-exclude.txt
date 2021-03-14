@@ -1,9 +1,7 @@
-core_functions/color/adjust_color/error/args/too_many
 core_functions/color/alpha/error/quoted_string
 core_functions/color/alpha/error/type
 core_functions/color/alpha/error/unquoted_string/no_equals
 core_functions/color/alpha/error/unquoted_string/non_identifier_before_equals
-core_functions/color/change_color/error/args/too_many
 core_functions/color/desaturate/error/bounds/too_high
 core_functions/color/desaturate/error/bounds/too_low
 core_functions/color/desaturate/error/type/lightness
@@ -216,7 +214,6 @@ core_functions/color/saturation/fraction
 core_functions/color/saturation/max
 core_functions/color/saturation/middle
 core_functions/color/saturation/named
-core_functions/color/scale_color/error/args/unknown
 core_functions/list/append/empty/comma
 core_functions/list/append/error/type/separator
 core_functions/list/append/error/unknown_separator

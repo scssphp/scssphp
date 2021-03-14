@@ -12,10 +12,13 @@
 
 namespace ScssPhp\ScssPhp\Node;
 
+use ScssPhp\ScssPhp\Base\Range;
 use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Exception\RangeException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Node;
 use ScssPhp\ScssPhp\Type;
+use ScssPhp\ScssPhp\Util;
 
 /**
  * Dimension + optional units
@@ -247,6 +250,23 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
+     * @param float|int $min
+     * @param float|int $max
+     * @param string|null $name
+     *
+     * @return float|int
+     * @throws SassScriptException
+     */
+    public function valueInRange($min, $max, $name = null)
+    {
+        try {
+            return Util::checkRange('', new Range($min, $max), $this);
+        } catch (RangeException $e) {
+            throw SassScriptException::forArgument(sprintf('Expected %s to be within %s%s and %s%3$s', $this, $min, $this->unitStr(), $max), $name);
+        }
+    }
+
+    /**
      * @param string|null $varName
      *
      * @return void
@@ -257,7 +277,22 @@ class Number extends Node implements \ArrayAccess
             return;
         }
 
-        throw SassScriptException::forArgument(sprintf('Expected %s to have no units', $this), $varName);
+        throw SassScriptException::forArgument(sprintf('Expected %s to have no units.', $this), $varName);
+    }
+
+    /**
+     * @param string      $unit
+     * @param string|null $varName
+     *
+     * @return void
+     */
+    public function assertUnit($unit, $varName = null)
+    {
+        if ($this->hasUnit($unit)) {
+            return;
+        }
+
+        throw SassScriptException::forArgument(sprintf('Expected %s to have unit "%s".', $this, $unit), $varName);
     }
 
     /**
