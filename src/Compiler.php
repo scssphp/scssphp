@@ -6163,15 +6163,6 @@ class Compiler
         }
 
         if ($exceptionMessage && ! $prototypeHasMatch) {
-            if (\in_array($functionName, ['libRgb', 'libRgba', 'libHsl', 'libHsla'])) {
-                // if var() or calc() is used as an argument, return as a css function
-                foreach ($args as $arg) {
-                    if ($arg[1][0] === Type::T_FUNCTION_CALL && in_array($arg[1][1], ['var'])) {
-                        return null;
-                    }
-                }
-            }
-
             throw $this->error($exceptionMessage);
         }
 
@@ -7705,6 +7696,7 @@ class Compiler
 
     protected static $libHsl = [
         ['channels'],
+        ['hue', 'saturation'],
         ['hue', 'saturation', 'lightness'],
         ['hue', 'saturation', 'lightness', 'alpha'] ];
     protected function libHsl($args, $kwargs, $funcName = 'hsl')
@@ -7720,14 +7712,25 @@ class Compiler
             $args_to_check = $kwargs['channels'][2];
         }
 
+        if (\count($args) === 2) {
+            // if var() is used as an argument, return as a css function
+            foreach ($args as $arg) {
+                if ($arg[0] === Type::T_FUNCTION && in_array($arg[1], ['var'])) {
+                    return null;
+                }
+            }
+
+            throw new SassScriptException('Missing argument $lightness.');
+        }
+
         foreach ($kwargs as $k => $arg) {
-            if (in_array($arg[0], [Type::T_FUNCTION_CALL]) && in_array($arg[1], ['min', 'max'])) {
+            if (in_array($arg[0], [Type::T_FUNCTION_CALL, Type::T_FUNCTION]) && in_array($arg[1], ['min', 'max'])) {
                 return null;
             }
         }
 
         foreach ($args_to_check as $k => $arg) {
-            if (in_array($arg[0], [Type::T_FUNCTION_CALL]) && in_array($arg[1], ['min', 'max'])) {
+            if (in_array($arg[0], [Type::T_FUNCTION_CALL, Type::T_FUNCTION]) && in_array($arg[1], ['min', 'max'])) {
                 if (count($kwargs) > 1 || ($k >= 2 && count($args) === 4)) {
                     return null;
                 }
@@ -7779,6 +7782,7 @@ class Compiler
 
     protected static $libHsla = [
             ['channels'],
+            ['hue', 'saturation'],
             ['hue', 'saturation', 'lightness'],
             ['hue', 'saturation', 'lightness', 'alpha']];
     protected function libHsla($args, $kwargs)
