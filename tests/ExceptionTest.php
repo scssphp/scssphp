@@ -89,7 +89,7 @@ END_OF_SCSS
 }
 END_OF_SCSS
                 ,
-                'Mixin or function doesn\'t have an argument named $a.'
+                'No argument named $a.'
             ],
             array(<<<'END_OF_SCSS'
 div {
