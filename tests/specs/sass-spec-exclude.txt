@@ -299,7 +299,6 @@ core_functions/meta/inspect/list/nested/comma/in_space/unbracketed
 core_functions/meta/inspect/list/nested/space/in_space/unbracketed
 core_functions/meta/inspect/map/list/key/comma
 core_functions/meta/inspect/map/list/value/comma
-core_functions/meta/keywords/dash_insensitive
 core_functions/meta/keywords/empty/positional
 core_functions/meta/keywords/error/type/non_arg_list
 core_functions/meta/mixin_exists/error/argument/type/name
@@ -1143,7 +1142,6 @@ non_conformant/extend-tests/subject-operator/205_test_extend_with_subject_fails_
 non_conformant/misc/JMA-pseudo-test
 non_conformant/mixin/content/arguments/error/args/none_expected
 non_conformant/mixin/content/arguments/error/args/none_passed
-non_conformant/mixin/content/arguments/error/args/too_many
 non_conformant/mixin/content/arguments/error/syntax/arglist/invalid
 non_conformant/mixin/content/arguments/error/syntax/arglist/missing
 non_conformant/mixin/content/arguments/error/syntax/arglist/missing_parens

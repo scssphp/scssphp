@@ -6113,14 +6113,6 @@ class Compiler
             $this->ignoreCallStackMessage = true;
 
             try {
-                if (\count($args) > \count($argDef)) {
-                    $lastDef = end($argDef);
-
-                    // check that last arg is not a ...
-                    if (empty($lastDef[2])) {
-                        throw $this->errorArgsNumber($functionName, $argDef, \count($args));
-                    }
-                }
                 $vars = $this->applyArguments($argDef, $args, false, false);
 
                 // ensure all args are populated
@@ -6166,15 +6158,126 @@ class Compiler
     }
 
     /**
+     * @param array[] $args
+     * @param bool    $reduce
+     *
+     * @return array
+     *
+     * @throws SassScriptException
+     *
+     * @phpstan-return array{0: list<array|Number>, 1: array<string, array|Number>, 2: string|null, 3: bool}
+     */
+    private function evaluateArguments(array $args, $reduce = true)
+    {
+        // this represents trailing commas
+        if (\count($args) && end($args) === static::$null) {
+            array_pop($args);
+        }
+
+        $splatSeparator = null;
+        $keywordArgs = [];
+        $positionalArgs = [];
+        $hasKeywordArgument = false;
+        $hasSplat = false;
+
+        foreach ($args as $j => $arg) {
+            if (!empty($arg[0])) {
+                $hasKeywordArgument = true;
+
+                assert(\is_string($arg[0][1]));
+                $name = str_replace('_', '-', $arg[0][1]);
+
+                if (isset($keywordArgs[$name])) {
+                    throw new SassScriptException(sprintf('Duplicate named argument $%s.', $arg[0][1]));
+                }
+
+                $keywordArgs[$name] = $this->maybeReduce($reduce, $arg[1]);
+            } elseif (! empty($arg[2])) {
+                // $arg[2] means a var followed by ... in the arg ($list... )
+                $val = $this->reduce($arg[1], true);
+                $hasSplat = true;
+
+                if ($val[0] === Type::T_LIST) {
+                    foreach ($val[2] as $name => $item) {
+                        if (\is_string($name) && ! is_numeric($name)) {
+                            $normalizedName = str_replace('_', '-', $name);
+
+                            if (isset($keywordArgs[$normalizedName])) {
+                                throw new SassScriptException(sprintf('Duplicate named argument $%s.', $name));
+                            }
+
+                            $keywordArgs[$normalizedName] = $this->maybeReduce($reduce, $item);
+                            $hasKeywordArgument = true;
+                        } else {
+                            if (\is_null($splatSeparator)) {
+                                $splatSeparator = $val[1];
+                            }
+
+                            $positionalArgs[] = $this->maybeReduce($reduce, $item);
+                        }
+                    }
+                } elseif ($val[0] === Type::T_MAP) {
+                    foreach ($val[1] as $i => $name) {
+                        $name = $this->compileStringContent($this->coerceString($name));
+                        $item = $val[2][$i];
+
+                        if (! is_numeric($name)) {
+                            $normalizedName = str_replace('_', '-', $name);
+
+                            if (isset($keywordArgs[$normalizedName])) {
+                                throw new SassScriptException(sprintf('Duplicate named argument $%s.', $name));
+                            }
+
+                            $keywordArgs[$normalizedName] = $this->maybeReduce($reduce, $item);
+                            $hasKeywordArgument = true;
+                        } else {
+                            if (\is_null($splatSeparator)) {
+                                $splatSeparator = $val[1];
+                            }
+
+                            $positionalArgs[] = $this->maybeReduce($reduce, $item);
+                        }
+                    }
+                } elseif ($val[0] !== Type::T_NULL) { // values other than null are treated a single-element lists, while null is the empty list
+                    $positionalArgs[] = $this->maybeReduce($reduce, $val);
+                }
+            } elseif ($hasKeywordArgument) {
+                throw new SassScriptException('Positional arguments must come before keyword arguments.');
+            } else {
+                $positionalArgs[] = $this->maybeReduce($reduce, $arg[1]);
+            }
+        }
+
+        return [$positionalArgs, $keywordArgs, $splatSeparator, $hasSplat];
+    }
+
+    /**
+     * @param bool         $reduce
+     * @param array|Number $value
+     *
+     * @return array|Number
+     */
+    private function maybeReduce($reduce, $value)
+    {
+        if ($reduce) {
+            return $this->reduce($value, true);
+        }
+
+        return $value;
+    }
+
+    /**
      * Apply argument values per definition
      *
-     * @param array   $argDef
-     * @param array   $argValues
+     * @param array[]    $argDef
+     * @param array|null $argValues
      * @param boolean $storeInEnv
      * @param boolean $reduce
      *   only used if $storeInEnv = false
      *
      * @return array
+     *
+     * @phpstan-param list<array{0: string, 1: array|Number|null, 2: bool}> $argDef
      *
      * @throws \Exception
      */
@@ -6182,8 +6285,8 @@ class Compiler
     {
         $output = [];
 
-        if (\is_array($argValues) && \count($argValues) && end($argValues) === static::$null) {
-            array_pop($argValues);
+        if (\is_null($argValues)) {
+            $argValues = [];
         }
 
         if ($storeInEnv) {
@@ -6198,113 +6301,16 @@ class Compiler
 
         foreach ($argDef as $i => $arg) {
             list($name, $default, $isVariable) = $argDef[$i];
+            $normalizedName = str_replace('_', '-', $name);
 
-            $args[$name] = [$i, $name, $default, $isVariable];
+            $args[$normalizedName] = [$i, $name, $default, $isVariable];
             $hasVariable |= $isVariable;
         }
 
-        $splatSeparator      = null;
-        $keywordArgs         = [];
-        $deferredKeywordArgs = [];
-        $deferredNamedKeywordArgs = [];
-        $remaining           = [];
-        $hasKeywordArgument  = false;
+        list($remaining, $keywordArgs, $splatSeparator, $hasSplat) = $this->evaluateArguments($argValues, $reduce);
+        $restKeywordArgs = $keywordArgs;
 
-        // assign the keyword args
-        foreach ((array) $argValues as $arg) {
-            if (! empty($arg[0])) {
-                $hasKeywordArgument = true;
-
-                $name = $arg[0][1];
-
-                if (! isset($args[$name])) {
-                    foreach (array_keys($args) as $an) {
-                        if (str_replace('_', '-', $an) === str_replace('_', '-', $name)) {
-                            $name = $an;
-                            break;
-                        }
-                    }
-                }
-
-                if (! isset($args[$name]) || $args[$name][3]) {
-                    if ($hasVariable) {
-                        $deferredNamedKeywordArgs[$name] = $arg[1];
-                    } else {
-                        throw $this->error("Mixin or function doesn't have an argument named $%s.", $arg[0][1]);
-                    }
-                } elseif ($args[$name][0] < \count($remaining)) {
-                    throw $this->error("The argument $%s was passed both by position and by name.", $arg[0][1]);
-                } else {
-                    $keywordArgs[$name] = $arg[1];
-                }
-            } elseif (! empty($arg[2])) {
-                // $arg[2] means a var followed by ... in the arg ($list... )
-                $val = $this->reduce($arg[1], true);
-
-                if ($val[0] === Type::T_LIST) {
-                    foreach ($val[2] as $name => $item) {
-                        if (! is_numeric($name)) {
-                            if (! isset($args[$name])) {
-                                foreach (array_keys($args) as $an) {
-                                    if (str_replace('_', '-', $an) === str_replace('_', '-', $name)) {
-                                        $name = $an;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if ($hasVariable) {
-                                $deferredKeywordArgs[$name] = $item;
-                            } else {
-                                $keywordArgs[$name] = $item;
-                            }
-                        } else {
-                            if (\is_null($splatSeparator)) {
-                                $splatSeparator = $val[1];
-                            }
-
-                            $remaining[] = $item;
-                        }
-                    }
-                } elseif ($val[0] === Type::T_MAP) {
-                    foreach ($val[1] as $i => $name) {
-                        $name = $this->compileStringContent($this->coerceString($name));
-                        $item = $val[2][$i];
-
-                        if (! is_numeric($name)) {
-                            if (! isset($args[$name])) {
-                                foreach (array_keys($args) as $an) {
-                                    if (str_replace('_', '-', $an) === str_replace('_', '-', $name)) {
-                                        $name = $an;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if ($hasVariable) {
-                                $deferredKeywordArgs[$name] = $item;
-                            } else {
-                                $keywordArgs[$name] = $item;
-                            }
-                        } else {
-                            if (\is_null($splatSeparator)) {
-                                $splatSeparator = $val[1];
-                            }
-
-                            $remaining[] = $item;
-                        }
-                    }
-                } else {
-                    $remaining[] = $val;
-                }
-            } elseif ($hasKeywordArgument) {
-                throw $this->error('Positional arguments must come before keyword arguments.');
-            } else {
-                $remaining[] = $arg[1];
-            }
-        }
-
-        foreach ($args as $arg) {
+        foreach ($args as $normalizedName => $arg) {
             list($i, $name, $default, $isVariable) = $arg;
 
             if ($isVariable) {
@@ -6314,17 +6320,18 @@ class Compiler
                     $val[2][] = $remaining[$i];
                 }
 
-                foreach ($deferredKeywordArgs as $itemName => $item) {
-                    $val[2][$itemName] = $item;
-                }
-
-                foreach ($deferredNamedKeywordArgs as $itemName => $item) {
+                foreach ($restKeywordArgs as $itemName => $item) {
                     $val[2][$itemName] = $item;
                 }
             } elseif (isset($remaining[$i])) {
+                if (isset($keywordArgs[$normalizedName])) {
+                    throw $this->error("The argument $%s was passed both by position and by name.", $name);
+                }
+
                 $val = $remaining[$i];
-            } elseif (isset($keywordArgs[$name])) {
-                $val = $keywordArgs[$name];
+            } elseif (isset($keywordArgs[$normalizedName])) {
+                $val = $keywordArgs[$normalizedName];
+                unset($restKeywordArgs[$normalizedName]);
             } elseif (! empty($default)) {
                 continue;
             } else {
@@ -6338,14 +6345,26 @@ class Compiler
             }
         }
 
+        if (!$hasVariable) {
+            if (count($remaining) > count($args) && !$hasSplat) {
+                throw $this->error('Too many arguments');
+
+                // TODO show a warning when $hasSplat is true. This will be an error in 2.0
+            }
+
+            foreach ($restKeywordArgs as $name => $item) {
+                throw $this->error('Mixin or function doesn\'t have an argument named $%s.', $name);
+            }
+        }
+
         if ($storeInEnv) {
             $storeEnv->store = $env->store;
         }
 
-        foreach ($args as $arg) {
+        foreach ($args as $normalizedName => $arg) {
             list($i, $name, $default, $isVariable) = $arg;
 
-            if ($isVariable || isset($remaining[$i]) || isset($keywordArgs[$name]) || empty($default)) {
+            if ($isVariable || isset($remaining[$i]) || isset($keywordArgs[$normalizedName]) || empty($default)) {
                 continue;
             }
 
