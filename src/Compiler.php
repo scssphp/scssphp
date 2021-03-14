@@ -495,7 +495,7 @@ class Compiler
                 }
             }
         } catch (SassScriptException $e) {
-            throw $this->error($e->getMessage());
+            throw new CompilerException($this->addLocationToMessage($e->getMessage()), 0, $e);
         }
 
         $includedFiles = [];
@@ -5771,23 +5771,35 @@ class Compiler
         }
 
         if (! $this->ignoreCallStackMessage) {
-            $line   = $this->sourceLine;
-            $column = $this->sourceColumn;
-
-            $loc = isset($this->sourceNames[$this->sourceIndex])
-                ? $this->getPrettyPath($this->sourceNames[$this->sourceIndex]) . " on line $line, at column $column"
-                : "line: $line, column: $column";
-
-            $msg = "$msg: $loc";
-
-            $callStackMsg = $this->callStackMessage();
-
-            if ($callStackMsg) {
-                $msg .= "\nCall Stack:\n" . $callStackMsg;
-            }
+            $msg = $this->addLocationToMessage($msg);
         }
 
         return new CompilerException($msg);
+    }
+
+    /**
+     * @param string $msg
+     *
+     * @return string
+     */
+    private function addLocationToMessage($msg)
+    {
+        $line   = $this->sourceLine;
+        $column = $this->sourceColumn;
+
+        $loc = isset($this->sourceNames[$this->sourceIndex])
+            ? $this->getPrettyPath($this->sourceNames[$this->sourceIndex]) . " on line $line, at column $column"
+            : "line: $line, column: $column";
+
+        $msg = "$msg: $loc";
+
+        $callStackMsg = $this->callStackMessage();
+
+        if ($callStackMsg) {
+            $msg .= "\nCall Stack:\n" . $callStackMsg;
+        }
+
+        return $msg;
     }
 
     /**
