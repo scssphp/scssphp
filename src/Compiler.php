@@ -3497,7 +3497,7 @@ class Compiler
                 $value[1] = $this->reduce($value[1]);
 
                 if ($inExp) {
-                    return $value[1];
+                    return [Type::T_KEYWORD, $this->compileValue($value, false)];
                 }
 
                 return $value;
@@ -4311,10 +4311,11 @@ class Compiler
      * @api
      *
      * @param array|Number $value
+     * @param bool         $quote
      *
      * @return string
      */
-    public function compileValue($value)
+    public function compileValue($value, $quote = true)
     {
         $value = $this->reduce($value);
 
@@ -4377,9 +4378,9 @@ class Compiler
                 return $h;
 
             case Type::T_STRING:
-                $content = $this->compileStringContent($value);
+                $content = $this->compileStringContent($value, $quote);
 
-                if ($value[1]) {
+                if ($value[1] && $quote) {
                     $content = str_replace('\\', '\\\\', $content);
 
                     $content = $this->escapeNonPrintableChars($content);
@@ -4404,7 +4405,7 @@ class Compiler
                 return $value[1] . $content . $value[1];
 
             case Type::T_FUNCTION:
-                $args = ! empty($value[2]) ? $this->compileValue($value[2]) : '';
+                $args = ! empty($value[2]) ? $this->compileValue($value[2], $quote) : '';
 
                 return "$value[1]($args)";
 
@@ -4417,7 +4418,7 @@ class Compiler
                 $value = $this->extractInterpolation($value);
 
                 if ($value[0] !== Type::T_LIST) {
-                    return $this->compileValue($value);
+                    return $this->compileValue($value, $quote);
                 }
 
                 list(, $delim, $items) = $value;
@@ -4470,7 +4471,7 @@ class Compiler
                         $item[1] = $same_string_quote;
                     }
 
-                    $compiled = $this->compileValue($item);
+                    $compiled = $this->compileValue($item, $quote);
 
                     if ($prefix_value && \strlen($compiled)) {
                         $compiled = $prefix_value . $compiled;
@@ -4487,7 +4488,7 @@ class Compiler
                 $filtered = [];
 
                 for ($i = 0, $s = \count($keys); $i < $s; $i++) {
-                    $filtered[$this->compileValue($keys[$i])] = $this->compileValue($values[$i]);
+                    $filtered[$this->compileValue($keys[$i], $quote)] = $this->compileValue($values[$i], $quote);
                 }
 
                 array_walk($filtered, function (&$value, $key) {
@@ -4508,7 +4509,7 @@ class Compiler
                 }
 
                 $left = \count($left[2]) > 0
-                    ?  $this->compileValue($left) . $delim . $whiteLeft
+                    ?  $this->compileValue($left, $quote) . $delim . $whiteLeft
                     : '';
 
                 $delim = $right[1];
@@ -4518,16 +4519,16 @@ class Compiler
                 }
 
                 $right = \count($right[2]) > 0 ?
-                    $whiteRight . $delim . $this->compileValue($right) : '';
+                    $whiteRight . $delim . $this->compileValue($right, $quote) : '';
 
-                return $left . $this->compileValue($interpolate) . $right;
+                return $left . $this->compileValue($interpolate, $quote) . $right;
 
             case Type::T_INTERPOLATE:
                 // strip quotes if it's a string
                 $reduced = $this->reduce($value[1]);
 
                 if ($reduced instanceof Number) {
-                    return $this->compileValue($reduced);
+                    return $this->compileValue($reduced, $quote);
                 }
 
                 switch ($reduced[0]) {
@@ -4552,11 +4553,11 @@ class Compiler
                             }
 
                             if ($item[0] === Type::T_STRING) {
-                                $filtered[] = $this->compileStringContent($item);
+                                $filtered[] = $this->compileStringContent($item, $quote);
                             } elseif ($item[0] === Type::T_KEYWORD) {
                                 $filtered[] = $item[1];
                             } else {
-                                $filtered[] = $this->compileValue($item);
+                                $filtered[] = $this->compileValue($item, $quote);
                             }
                         }
 
@@ -4571,7 +4572,7 @@ class Compiler
                         $reduced = [Type::T_KEYWORD, ''];
                 }
 
-                return $this->compileValue($reduced);
+                return $this->compileValue($reduced, $quote);
 
             case Type::T_NULL:
                 return 'null';
@@ -4622,16 +4623,17 @@ class Compiler
      * Compile string content
      *
      * @param array $string
+     * @param bool  $quote
      *
      * @return string
      */
-    protected function compileStringContent($string)
+    protected function compileStringContent($string, $quote = true)
     {
         $parts = [];
 
         foreach ($string[2] as $part) {
             if (\is_array($part) || $part instanceof Number) {
-                $parts[] = $this->compileValue($part);
+                $parts[] = $this->compileValue($part, $quote);
             } else {
                 $parts[] = $part;
             }
@@ -5960,15 +5962,9 @@ class Compiler
         @list($sorted, $kwargs) = $sorted_kwargs;
 
         if ($name !== 'if') {
-            $inExp = true;
-
-            if ($name === 'join') {
-                $inExp = false;
-            }
-
             foreach ($sorted as &$val) {
                 if ($val !== null) {
-                    $val = $this->reduce($val, $inExp);
+                    $val = $this->reduce($val, true);
                 }
             }
         }
