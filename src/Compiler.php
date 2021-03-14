@@ -8908,7 +8908,10 @@ class Compiler
                 . " a list of strings, or a list of lists of strings");
         }
 
-        $arg = $this->libUnquote([$arg]);
+
+        if ($arg[0] === Type::T_STRING) {
+            $arg[1] = '';
+        }
         $arg = $this->compileValue($arg);
 
         $parsedSelector = [];
