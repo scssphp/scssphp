@@ -6315,14 +6315,6 @@ class Compiler
             list($i, $name, $default, $isVariable) = $arg;
 
             if ($isVariable) {
-                // only if more than one arg : can not be passed as position and value
-                // see https://github.com/sass/libsass/issues/2927
-                if (count($args) > 1) {
-                    if (isset($remaining[$i]) && isset($deferredNamedKeywordArgs[$name])) {
-                        throw $this->error("The argument $%s was passed both by position and by name.", $name);
-                    }
-                }
-
                 $val = [Type::T_LIST, \is_null($splatSeparator) ? ',' : $splatSeparator , [], $isVariable];
 
                 for ($count = \count($remaining); $i < $count; $i++) {
@@ -8297,13 +8289,22 @@ class Compiler
         return [Type::T_LIST, ',', $values];
     }
 
-    protected static $libMapRemove = ['map', 'key...'];
+    protected static $libMapRemove = [
+        ['map'],
+        ['map', 'key', 'keys...'],
+    ];
     protected function libMapRemove($args)
     {
         $map = $this->assertMap($args[0]);
-        $keyList = $this->assertList($args[1]);
+
+        if (\count($args) === 1) {
+            return $map;
+        }
+
+        $keyList = $this->assertList($args[2]);
 
         $keys = [];
+        $keys[] = $this->compileStringContent($this->coerceString($args[1]));
 
         foreach ($keyList[2] as $key) {
             $keys[] = $this->compileStringContent($this->coerceString($key));
