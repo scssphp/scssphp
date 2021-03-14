@@ -8883,7 +8883,9 @@ class Compiler
     /**
      * Preprocess selector args
      *
-     * @param array $arg
+     * @param array       $arg
+     * @param string|null $varname
+     * @param bool        $allowParent
      *
      * @return array
      */
@@ -9316,7 +9318,7 @@ class Compiler
      * @param array $compound1
      * @param array $compound2
      *
-     * @return array|mixed
+     * @return array
      */
     protected function unifyCompoundSelectors($compound1, $compound2)
     {
@@ -9550,9 +9552,9 @@ class Compiler
     /**
      * Find the html tag name in a selector parts list
      *
-     * @param array $parts
+     * @param string[] $parts
      *
-     * @return mixed|string
+     * @return string
      */
     protected function findTagName($parts)
     {

@@ -1496,17 +1496,7 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:getSelectorArg\\(\\) has parameter \\$allowParent with no typehint specified\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:getSelectorArg\\(\\) has parameter \\$arg with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:getSelectorArg\\(\\) has parameter \\$varname with no typehint specified\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1596,6 +1586,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:unifyCompoundSelectors\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:prependSelectors\\(\\) has parameter \\$parts with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1642,11 +1637,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:checkCompatibleTags\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:findTagName\\(\\) has parameter \\$parts with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
