@@ -8807,21 +8807,23 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         return $res;
     }
 
+    protected static $libZip = ['lists...'];
     protected function libZip($args)
     {
-        foreach ($args as $key => $arg) {
-            $args[$key] = $this->coerceList($arg);
+        $argLists = [];
+        foreach ($args[0][2] as $arg) {
+            $argLists[] = $this->coerceList($arg);
         }
 
         $lists = [];
-        $firstList = array_shift($args);
+        $firstList = array_shift($argLists);
 
         $result = [Type::T_LIST, ',', $lists];
         if (! \is_null($firstList)) {
             foreach ($firstList[2] as $key => $item) {
                 $list = [Type::T_LIST, '', [$item]];
 
-                foreach ($args as $arg) {
+                foreach ($argLists as $arg) {
                     if (isset($arg[2][$key])) {
                         $list[2][] = $arg[2][$key];
                     } else {
