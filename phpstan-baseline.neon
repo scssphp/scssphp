@@ -1,6 +1,16 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^PHPDoc tag @template T for class ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Statement\\\\ParentStatement with bound type array\\<ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Statement\\> is not supported\\.$#"
+			count: 1
+			path: src/Ast/Sass/Statement/ParentStatement.php
+
+		-
+			message: "#^PHPDoc tag @template T for class ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Statement\\\\ParentStatement with bound type null is not supported\\.$#"
+			count: 1
+			path: src/Ast/Sass/Statement/ParentStatement.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$children type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Block.php
