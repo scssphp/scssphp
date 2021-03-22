@@ -3,6 +3,7 @@
         "sort-packages": true
     },
     "require": {
-        "phpstan/phpstan": "^0.12.98"
+        "phpstan/phpstan": "^0.12.98",
+        "symfony/polyfill-php80": "^1.23"
     }
 }

@@ -4,7 +4,15 @@ parameters:
     treatPhpDocTypesAsCertain: false
     paths:
         - ./src/
+    scanDirectories:
+        - vendor-bin/phpstan/vendor/symfony/
     ignoreErrors:
+        # We want to document the enum as return type, without caring about the exact values.
+        -
+            message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\\\StylesheetParser\\:\\:unaryOperatorFor\\(\\) never returns 'not' so it can be removed from the return typehint\\.$#"
+            count: 1
+            path: src/Parser/StylesheetParser.php
+
         # Ignore errors about not having typehints for definitions of builtin functions. These won't be typed until they are extracted.
         -
             message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$lib[\\w]+ has no typehint specified\\.$#"

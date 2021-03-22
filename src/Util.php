@@ -77,6 +77,40 @@ final class Util
     }
 
     /**
+     * Returns $name without a vendor prefix.
+     *
+     * If $name has no vendor prefix, it's returned as-is.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function unvendor(string $name): string
+    {
+        $length = \strlen($name);
+
+        if ($length < 2) {
+            return $name;
+        }
+
+        if ($name[0] !== '-') {
+            return $name;
+        }
+
+        if ($name[1] === '-') {
+            return $name;
+        }
+
+        for ($i = 2; $i < $length; $i++) {
+            if ($name[$i] === '-') {
+                return substr($name, $i + 1);
+            }
+        }
+
+        return $name;
+    }
+
+    /**
      * mb_chr() wrapper
      *
      * @param integer $code

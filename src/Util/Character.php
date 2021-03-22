@@ -42,6 +42,14 @@ final class Character
     }
 
     /**
+     * Returns whether $character is a letter or a number.
+     */
+    public static function isAlphanumeric(string $character): bool
+    {
+        return self::isAlphabetic($character) || self::isDigit($character);
+    }
+
+    /**
      * Returns whether $character is a letter.
      */
     public static function isAlphabetic(string $character): bool
@@ -54,8 +62,12 @@ final class Character
     /**
      * Returns whether $character is a digit.
      */
-    public static function isDigit(string $character): bool
+    public static function isDigit(?string $character): bool
     {
+        if ($character === null) {
+            return false;
+        }
+
         $charCode = \ord($character);
 
         return $charCode >= \ord('0') && $charCode <= \ord('9');
@@ -80,8 +92,12 @@ final class Character
     /**
      * Returns whether $character is a hexadecimal digit.
      */
-    public static function isHex(string $character): bool
+    public static function isHex(?string $character): bool
     {
+        if ($character === null) {
+            return false;
+        }
+
         if (self::isDigit($character)) {
             return true;
         }
@@ -97,6 +113,18 @@ final class Character
         }
 
         return false;
+    }
+
+    /**
+     * Returns whether $identifier is module-private.
+     *
+     * Assumes $identifier is a valid Sass identifier.
+     */
+    public static function isPrivate(string $identifier): bool
+    {
+        $first = $identifier[0];
+
+        return $first === '-' || $first === '_';
     }
 
     /**

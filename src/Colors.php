@@ -12,6 +12,8 @@
 
 namespace ScssPhp\ScssPhp;
 
+use ScssPhp\ScssPhp\Value\SassColor;
+
 /**
  * CSS Colors
  *
@@ -179,6 +181,17 @@ final class Colors
         'rebeccapurple' => '102,51,153',
         'transparent' => '0,0,0,0',
     ];
+
+    public static function colorNameToColor(string $colorName): ?SassColor
+    {
+        $rgba = self::colorNameToRGBa($colorName);
+
+        if ($rgba === null) {
+            return null;
+        }
+
+        return SassColor::rgb($rgba[0], $rgba[1], $rgba[2], $rgba[3] ?? null);
+    }
 
     /**
      * Convert named color in a [r,g,b[,a]] array
