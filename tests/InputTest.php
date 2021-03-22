@@ -34,6 +34,9 @@ function _quote($str)
  */
 class InputTest extends TestCase
 {
+    /**
+     * @var Compiler
+     */
     private $scss;
 
     protected static $inputDir = 'inputs';
@@ -81,7 +84,7 @@ class InputTest extends TestCase
     // only run when env is set
     public function buildInput($inFname, $outFname)
     {
-        $css = $this->scss->compile(file_get_contents($inFname), substr($inFname, strlen(__DIR__) + 1));
+        $css = $this->scss->compileString(file_get_contents($inFname), substr($inFname, strlen(__DIR__) + 1))->getCss();
 
         file_put_contents($outFname, $css);
     }
