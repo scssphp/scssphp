@@ -763,7 +763,6 @@ libsass-closed-issues/issue_1482
 libsass-closed-issues/issue_1487
 libsass-closed-issues/issue_152
 libsass-closed-issues/issue_1526
-libsass-closed-issues/issue_1527/extend
 libsass-closed-issues/issue_1527/selector/first
 libsass-closed-issues/issue_1527/selector/last
 libsass-closed-issues/issue_1527/selector/only
