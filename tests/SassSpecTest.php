@@ -441,6 +441,7 @@ class SassSpecTest extends TestCase
                 $hasInput  = false;
                 $hasOutput = false;
                 $baseDir = '';
+                $hasSupportedInput = false;
 
                 $parts = explode('<===>', $subTest);
 
@@ -467,6 +468,7 @@ class SassSpecTest extends TestCase
                             break;
 
                         case 'input.scss':
+                        case 'input.sass':
                             if (! $subNname && $subDir) {
                                 $subNname = '/' . $subDir;
                             }
@@ -477,6 +479,7 @@ class SassSpecTest extends TestCase
 
                             $baseDir = $subDir;
                             $hasInput = true;
+                            $hasSupportedInput = $what === 'input.scss';
                             $input = $part;
                             break;
 
@@ -504,7 +507,7 @@ class SassSpecTest extends TestCase
                             break;
 
                         default:
-                            if ($what && (substr($what, -5) === '.scss' || substr($what, -4) === '.css')) {
+                            if ($what && (substr($what, -5) === '.scss' || substr($what, -5) === '.sass' || substr($what, -4) === '.css')) {
                                 if (strpos($first, '/') !== false) {
                                     $includes[$first] = $part;
                                 } else {
@@ -556,7 +559,10 @@ class SassSpecTest extends TestCase
                     [$output, $warning, $error, $alternativeOutputs]
                 ];
 
-                if (
+                if ($hasInput && !$hasSupportedInput) {
+                    // this is a test using the sass indented syntax for the input
+                    $skippedTests[] = $test;
+                } elseif (
                     ! $hasInput ||
                     (! $hasOutput && ! $error) ||
                     strlen($input) > $sizeLimit
