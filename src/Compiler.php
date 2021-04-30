@@ -9104,9 +9104,9 @@ class Compiler
         }
 
         if (! $this->checkSelectorArgType($arg)) {
-            $var_display = ($varname ? ' $' . $varname . ':' : '');
+            $var_display = ($varname ? '$' . $varname . ': ' : '');
             $var_value = $this->compileValue($arg);
-            throw $this->error("Error:{$var_display} $var_value is not a valid selector: it must be a string,"
+            throw $this->error("$var_display$var_value is not a valid selector: it must be a string,"
                 . " a list of strings, or a list of lists of strings");
         }
 
@@ -9126,8 +9126,8 @@ class Compiler
                 foreach ($gluedSelector as $selector) {
                     foreach ($selector as $s) {
                         if (in_array(static::$selfSelector, $s)) {
-                            $var_display = ($varname ? ' $' . $varname . ':' : '');
-                            throw $this->error("Error:{$var_display} Parent selectors aren't allowed here.");
+                            $var_display = ($varname ? '$' . $varname . ': ' : '');
+                            throw $this->error("{$var_display}Parent selectors aren't allowed here.");
                         }
                     }
                 }
@@ -9136,8 +9136,8 @@ class Compiler
             return $gluedSelector;
         }
 
-        $var_display = ($varname ? ' $' . $varname . ':' : '');
-        throw $this->error("Error:{$var_display} expected more input, invalid selector.");
+        $var_display = ($varname ? '$' . $varname . ': ' : '');
+        throw $this->error("{$var_display}expected more input, invalid selector.");
     }
 
     /**
