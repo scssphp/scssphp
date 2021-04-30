@@ -1,8 +1,5 @@
 
 // media syntax
-@media {
-    div { color: blue; }
-}
 @media what {
     div { color: blue; }
 }
@@ -21,18 +18,18 @@
 $navbarCollapseWidth: 940px;
 
 @media (max-width: $navbarCollapseWidth) {
-  color: red;
+    a {
+        color: red;
+    }
 }
 
 // media bubbling
 @media not hello and (world) {
-   color: blue;
    pre {
        color: blue;
    }
 
    @media butt {
-       color: red;
        div {
            color: red;
        }
@@ -41,25 +38,33 @@ $navbarCollapseWidth: 940px;
 
 @media a, b {
     @media c {
-        color: blue;
+        a {
+            color: blue;
+        }
     }
 }
 
 @media a{
     @media b, c {
-        color: blue;
+        a {
+            color: blue;
+        }
     }
 }
 
 @media a, b{
     @media c, d {
-        color: blue;
+        a {
+            color: blue;
+        }
     }
 }
 
 @media all, b {
     @media c {
-      color: blue;
+        a {
+            color: blue;
+        }
     }
 }
 
@@ -102,11 +107,11 @@ div {
   width: 300px;
   height: 100px;
   background: #eee;
-   
+
   :hover {
     background: #aaa;
   }
-   
+
   @media only screen and (max-width : 300px){
     width: 100px;
     height: 100px;
@@ -125,7 +130,7 @@ code {
 
 dt {
     @media screen {
-        @media (color: blue) {
+        @media (color: 8) {
             height: 10px;
         }
     }
@@ -139,7 +144,7 @@ dt {
     @media only screen {
         .only-screen {
             height: 11px;
-        }    
+        }
     }
 }
 
@@ -150,7 +155,7 @@ dt {
     @media only screen {
         .only-screen {
             height: 16px;
-        }    
+        }
     }
 }
 
@@ -203,8 +208,8 @@ dt {
 }
 
 @media only screen {
-    @media screen and (color: blue) {
-        @media screen and (width: 13) {
+    @media screen and (color: 8) {
+        @media screen and (width: 13px) {
             .only-screen {
                 height: 15px;
             }
