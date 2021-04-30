@@ -1,8 +1,3 @@
-@media {
-  div {
-    color: blue;
-  }
-}
 @media what {
   div {
     color: blue;
@@ -24,24 +19,26 @@
   }
 }
 @media (max-width: 940px) {
-  color: red;
+  a {
+    color: red;
+  }
 }
 @media not hello and (world) {
-  color: blue;
   pre {
     color: blue;
   }
 }
 @media not hello and (world) {
   @media butt {
-    color: red;
     div {
       color: red;
     }
   }
 }
 @media c {
-  color: blue;
+  a {
+    color: blue;
+  }
 }
 div {
   color: blue;
@@ -92,7 +89,7 @@ code {
     height: 20px;
   }
 }
-@media screen and (color: blue) {
+@media screen and (color: 8) {
   dt {
     height: 10px;
   }
@@ -132,7 +129,7 @@ code {
     height: 15px;
   }
 }
-@media only screen and (color: blue) and (width: 13) {
+@media only screen and (color: 8) and (width: 13px) {
   .only-screen {
     height: 15px;
   }
