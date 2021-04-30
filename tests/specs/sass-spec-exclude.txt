@@ -310,8 +310,6 @@ core_functions/selector/append/format/input/initial
 core_functions/selector/append/format/input/later
 core_functions/selector/append/format/output
 core_functions/selector/append/suffix/descendant
-core_functions/selector/extend/error/extendee/complex/list
-core_functions/selector/extend/error/extendee/complex/string
 core_functions/selector/extend/format/input/multiple_extendees/list
 core_functions/selector/extend/format/input/multiple_extendees/list_of_compound
 core_functions/selector/extend/format/input/non_string/extendee
@@ -449,8 +447,6 @@ core_functions/selector/parse/structure/decomposed/middle/mixed
 core_functions/selector/parse/structure/decomposed/middle/quoted
 core_functions/selector/parse/structure/decomposed/partial/quoted
 core_functions/selector/replace/compound
-core_functions/selector/replace/error/extendee/complex/list
-core_functions/selector/replace/error/extendee/complex/string
 core_functions/selector/replace/format/input/multiple_extendees/list
 core_functions/selector/replace/format/input/multiple_extendees/list_of_compound
 core_functions/selector/replace/format/input/non_string/extendee

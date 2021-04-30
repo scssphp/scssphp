@@ -3057,8 +3057,12 @@ class Compiler
                     $results = $this->evalSelectors([$sel]);
 
                     foreach ($results as $result) {
+                        if (\count($result) !== 1) {
+                            throw $this->error('complex selectors may not be extended.');
+                        }
+
                         // only use the first one
-                        $result = current($result);
+                        $result = $result[0];
                         $selectors = $out->selectors;
 
                         if (! $selectors && isset($child['selfParent'])) {
@@ -9423,6 +9427,10 @@ class Compiler
         $this->extendsMap = [];
 
         foreach ($extendee as $es) {
+            if (\count($es) !== 1) {
+                throw $this->error('Can\'t extend complex selector.');
+            }
+
             // only use the first one
             $this->pushExtends(reset($es), $extender, null);
         }
