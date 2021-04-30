@@ -698,7 +698,6 @@ directives/extend/after_target/multiple_recursive
 directives/forward/escaped
 directives/if/escaped/if_only
 directives/if/escaped/with_else
-directives/import/error/conflict/extension
 directives/import/escaped
 directives/import/load/explicit_extension/sass
 directives/import/load/index/sass

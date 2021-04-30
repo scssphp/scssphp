@@ -5492,6 +5492,15 @@ class Compiler
         // see if tree is cached
         $realPath = realpath($path);
 
+        if (substr($path, -5) === '.sass') {
+            $this->sourceIndex = \count($this->sourceNames);
+            $this->sourceNames[] = $path;
+            $this->sourceLine = 1;
+            $this->sourceColumn = 1;
+
+            throw $this->error('The Sass indented syntax is not implemented.');
+        }
+
         if (isset($this->importCache[$realPath])) {
             $this->handleImportLoop($realPath);
 
@@ -5624,7 +5633,7 @@ class Compiler
     {
         $path = Path::join($baseDir, $url);
 
-        $hasExtension = preg_match('/.scss$/', $url);
+        $hasExtension = preg_match('/.s[ac]ss$/', $url);
 
         if ($hasExtension) {
             return $this->checkImportPathConflicts($this->tryImportPath($path));
@@ -5670,7 +5679,10 @@ class Compiler
      */
     private function tryImportPathWithExtensions($path)
     {
-        $result = $this->tryImportPath($path.'.scss');
+        $result = array_merge(
+            $this->tryImportPath($path.'.sass'),
+            $this->tryImportPath($path.'.scss')
+        );
 
         if ($result) {
             return $result;
