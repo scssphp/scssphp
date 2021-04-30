@@ -3048,7 +3048,12 @@ class Compiler
 
             case Type::T_EXTEND:
                 foreach ($child[1] as $sel) {
-                    $sel = $this->replaceSelfSelector($sel);
+                    $replacedSel = $this->replaceSelfSelector($sel);
+
+                    if ($replacedSel !== $sel) {
+                        throw $this->error('Parent selectors aren\'t allowed here.');
+                    }
+
                     $results = $this->evalSelectors([$sel]);
 
                     foreach ($results as $result) {
