@@ -38,8 +38,28 @@ class ApiTest extends TestCase
 
         $this->scss->registerFunction('add-two', function ($args) {
             list($a, $b) = $args;
+            return new Number($a[1] + $b[1], '');
+        }, ['number1', 'number2']);
+
+        $this->assertEquals(
+            'result: 30;',
+            $this->compile('result: add-two(10, 20);')
+        );
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testUserFunctionCoercedValue()
+    {
+        $this->scss = new Compiler();
+
+        $this->scss->registerFunction('add-two', function ($args) {
+            list($a, $b) = $args;
             return $a[1] + $b[1];
         }, ['number1', 'number2']);
+
+        $this->expectDeprecation('Returning a PHP value from the "add-two" custom function is deprecated. A sass value must be returned instead.');
 
         $this->assertEquals(
             'result: 30;',
@@ -97,7 +117,7 @@ class ApiTest extends TestCase
         $this->scss->registerFunction(
             'divide',
             function ($args, $kwargs) {
-                return $kwargs['dividend'][1] / $kwargs['divisor'][1];
+                return new Number($kwargs['dividend'][1] / $kwargs['divisor'][1], '');
             },
             ['dividend', 'divisor']
         );

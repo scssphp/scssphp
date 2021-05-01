@@ -1602,7 +1602,7 @@ class Compiler
                 }
             }
 
-            if ($this->libMapHasKey([$withCondition, static::$with])) {
+            if ($this->mapHasKey($withCondition, static::$with)) {
                 $without = []; // cancel the default
                 $list = $this->coerceList($this->libMapGet([$withCondition, static::$with]));
 
@@ -1613,7 +1613,7 @@ class Compiler
                 }
             }
 
-            if ($this->libMapHasKey([$withCondition, static::$without])) {
+            if ($this->mapHasKey($withCondition, static::$without)) {
                 $without = []; // cancel the default
                 $list = $this->coerceList($this->libMapGet([$withCondition, static::$without]));
 
@@ -6137,6 +6137,12 @@ class Compiler
             return null;
         }
 
+        if (\is_array($returnValue) || $returnValue instanceof Number) {
+            return $returnValue;
+        }
+
+        @trigger_error(sprintf('Returning a PHP value from the "%s" custom function is deprecated. A sass value must be returned instead.', $name), E_USER_DEPRECATED);
+
         return $this->coerceValue($returnValue);
     }
 
@@ -7632,7 +7638,7 @@ class Compiler
 
         $key = array_search($this->normalizeValue($value), $values);
 
-        return false === $key ? static::$null : $key + 1;
+        return false === $key ? static::$null : new Number($key + 1, '');
     }
 
     protected static $libRgb = [
@@ -7917,7 +7923,7 @@ class Compiler
             throw $this->error('Error: argument `$color` of `red($color)` must be a color');
         }
 
-        return $color[1];
+        return new Number($color[1], '');
     }
 
     protected static $libGreen = ['color'];
@@ -7929,7 +7935,7 @@ class Compiler
             throw $this->error('Error: argument `$color` of `green($color)` must be a color');
         }
 
-        return $color[2];
+        return new Number($color[2], '');
     }
 
     protected static $libBlue = ['color'];
@@ -7941,14 +7947,14 @@ class Compiler
             throw $this->error('Error: argument `$color` of `blue($color)` must be a color');
         }
 
-        return $color[3];
+        return new Number($color[3], '');
     }
 
     protected static $libAlpha = ['color'];
     protected function libAlpha($args)
     {
         if ($color = $this->coerceColor($args[0])) {
-            return isset($color[4]) ? $color[4] : 1;
+            return new Number(isset($color[4]) ? $color[4] : 1, '');
         }
 
         // this might be the IE function, so return value unchanged
@@ -8522,27 +8528,27 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     {
         $list = $this->coerceList($args[0], ',', true);
 
-        return \count($list[2]);
+        return new Number(\count($list[2]), '');
     }
 
     protected static $libListSeparator = ['list'];
     protected function libListSeparator($args)
     {
         if (! \in_array($args[0][0], [Type::T_LIST, Type::T_MAP])) {
-            return 'space';
+            return [Type::T_KEYWORD, 'space'];
         }
 
         $list = $this->coerceList($args[0]);
 
         if (\count($list[2]) <= 1 && empty($list['enclosing'])) {
-            return 'space';
+            return [Type::T_KEYWORD, 'space'];
         }
 
         if ($list[1] === ',') {
-            return 'comma';
+            return [Type::T_KEYWORD, 'comma'];
         }
 
-        return 'space';
+        return [Type::T_KEYWORD, 'space'];
     }
 
     protected static $libNth = ['list', 'n'];
@@ -8653,7 +8659,18 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     protected function libMapHasKey($args)
     {
         $map = $this->assertMap($args[0]);
-        $key = $this->compileStringContent($this->coerceString($args[1]));
+
+        return $this->toBool($this->mapHasKey($map, $args[1]));
+    }
+
+    /**
+     * @param array|Number $keyValue
+     *
+     * @return bool
+     */
+    private function mapHasKey(array $map, $keyValue)
+    {
+        $key = $this->compileStringContent($this->coerceString($keyValue));
 
         for ($i = \count($map[1]) - 1; $i >= 0; $i--) {
             if ($key === $this->compileStringContent($this->coerceString($map[1][$i]))) {
@@ -8719,10 +8736,10 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         $this->coerceList($list, ' ');
 
         if (! empty($list['enclosing']) && $list['enclosing'] === 'bracket') {
-            return true;
+            return self::$true;
         }
 
-        return false;
+        return self::$false;
     }
 
     /**
@@ -8853,6 +8870,16 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     {
         $value = $args[0];
 
+        return [Type::T_KEYWORD, $this->getTypeOf($value)];
+    }
+
+    /**
+     * @param array|Number $value
+     *
+     * @return string
+     */
+    private function getTypeOf($value)
+    {
         switch ($value[0]) {
             case Type::T_KEYWORD:
                 if ($value === static::$true || $value === static::$false) {
@@ -8894,7 +8921,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     {
         $value = $this->assertNumber($args[0], 'number');
 
-        return $value->unitless();
+        return $this->toBool($value->unitless());
     }
 
     protected static $libComparable = [
@@ -8912,7 +8939,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
             throw $this->error('Invalid argument(s) for "comparable"');
         }
 
-        return $number1->isComparableTo($number2);
+        return $this->toBool($number1->isComparableTo($number2));
     }
 
     protected static $libStrIndex = ['string', 'substring'];
@@ -9074,13 +9101,13 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
 
         // user defined functions
         if ($this->has(static::$namespaces['function'] . $name)) {
-            return true;
+            return self::$true;
         }
 
         $name = $this->normalizeName($name);
 
         if (isset($this->userFunctions[$name])) {
-            return true;
+            return self::$true;
         }
 
         // built-in functions
@@ -9095,7 +9122,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         $string = $this->assertString($args[0], 'name');
         $name = $this->compileStringContent($string);
 
-        return $this->has($name, $this->rootEnv);
+        return $this->toBool($this->has($name, $this->rootEnv));
     }
 
     protected static $libMixinExists = ['name'];
@@ -9104,7 +9131,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         $string = $this->assertString($args[0], 'name');
         $name = $this->compileStringContent($string);
 
-        return $this->has(static::$namespaces['mixin'] . $name);
+        return $this->toBool($this->has(static::$namespaces['mixin'] . $name));
     }
 
     protected static $libVariableExists = ['name'];
@@ -9113,7 +9140,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         $string = $this->assertString($args[0], 'name');
         $name = $this->compileStringContent($string);
 
-        return $this->has($name);
+        return $this->toBool($this->has($name));
     }
 
     protected static $libCounter = ['args...'];
@@ -9319,7 +9346,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         $super = $this->getSelectorArg($super, 'super');
         $sub = $this->getSelectorArg($sub, 'sub');
 
-        return $this->isSuperSelector($super, $sub);
+        return $this->toBool($this->isSuperSelector($super, $sub));
     }
 
     /**
