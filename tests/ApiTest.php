@@ -15,6 +15,7 @@ namespace ScssPhp\ScssPhp\Tests;
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Node\Number;
+use ScssPhp\ScssPhp\ValueConverter;
 use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 
 /**
@@ -130,9 +131,8 @@ class ApiTest extends TestCase
         $this->scss = new Compiler();
 
         $basePath = __DIR__ . \DIRECTORY_SEPARATOR . 'inputs';
-        $basePathAsScss = '"' . str_replace('\\', '\\\\', $basePath) . '"';
 
-        $this->scss->setVariables(['base-path' => $basePathAsScss]);
+        $this->scss->addVariables(['base-path' => ValueConverter::fromPhp($basePath)]);
         $this->scss->addImportPath(__DIR__ . \DIRECTORY_SEPARATOR . 'inputs');
 
         $this->assertEquals(
@@ -148,7 +148,7 @@ class ApiTest extends TestCase
     {
         $this->scss = new Compiler();
 
-        $this->scss->setVariables($variables);
+        $this->scss->replaceVariables(array_map('ScssPhp\ScssPhp\ValueConverter::parseValue', $variables));
 
         $this->assertEquals($expected, $this->compile($scss));
     }
@@ -183,8 +183,8 @@ class ApiTest extends TestCase
                 ".default {\n  color: red;\n}",
                 '$color: red;' . "\n" . '.default { color: $color; }',
                 [
-                ],
                     'color' => 'blue',
+                ],
             ],
             // override !default
             [
