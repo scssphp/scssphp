@@ -5193,11 +5193,48 @@ class Compiler
                 $name = substr($name, 1);
             }
 
-            if (! $parser->parseValue($strValue, $value)) {
+            if (!\is_string($strValue) || ! $parser->parseValue($strValue, $value)) {
                 $value = $this->coerceValue($strValue);
             }
 
             $this->set($name, $value);
+        }
+    }
+
+    /**
+     * Replaces variables.
+     *
+     * @param array<string, mixed> $variables
+     *
+     * @return void
+     */
+    public function replaceVariables(array $variables)
+    {
+        $this->registeredVars = [];
+        $this->addVariables($variables);
+    }
+
+    /**
+     * Replaces variables.
+     *
+     * @param array<string, mixed> $variables
+     *
+     * @return void
+     */
+    public function addVariables(array $variables)
+    {
+        $triggerWarning = false;
+
+        foreach ($variables as $name => $value) {
+            if (!$value instanceof Number && !\is_array($value)) {
+                $triggerWarning = true;
+            }
+
+            $this->registeredVars[$name] = $value;
+        }
+
+        if ($triggerWarning) {
+            @trigger_error('Passing raw values to as custom variables to the Compiler is deprecated. Use "\ScssPhp\ScssPhp\ValueConverter::parseValue" or "\ScssPhp\ScssPhp\ValueConverter::fromPhp" to convert them instead.', E_USER_DEPRECATED);
         }
     }
 
@@ -5212,7 +5249,9 @@ class Compiler
      */
     public function setVariables(array $variables)
     {
-        $this->registeredVars = array_merge($this->registeredVars, $variables);
+        @trigger_error('The method "setVariables" of the Compiler is deprecated. Use the "addVariables" method for the equivalent behavior or "replaceVariables" if merging with previous variables was not desired.');
+
+        $this->addVariables($variables);
     }
 
     /**
