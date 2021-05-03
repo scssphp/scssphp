@@ -4669,9 +4669,13 @@ class Compiler
      * @param array $list
      *
      * @return string
+     *
+     * @deprecated
      */
     protected function flattenList($list)
     {
+        @trigger_error(sprintf('The "%s" method is deprecated.', __METHOD__), E_USER_DEPRECATED);
+
         return $this->compileValue($list);
     }
 
@@ -5255,6 +5259,8 @@ class Compiler
      * @param array $variables
      *
      * @return void
+     *
+     * @deprecated Use "addVariables" or "replaceVariables" instead.
      */
     public function setVariables(array $variables)
     {
@@ -5805,6 +5811,8 @@ class Compiler
      * @param string|null $encoding
      *
      * @return void
+     *
+     * @deprecated Non-compliant support for other encodings than UTF-8 is deprecated.
      */
     public function setEncoding($encoding)
     {
@@ -5841,9 +5849,13 @@ class Compiler
      * @api
      *
      * @return array
+     *
+     * @deprecated
      */
     public function getSourcePosition()
     {
+        @trigger_error(sprintf('The "%s" method is deprecated.', __METHOD__), E_USER_DEPRECATED);
+
         $sourceFile = isset($this->sourceNames[$this->sourceIndex]) ? $this->sourceNames[$this->sourceIndex] : '';
 
         return [$sourceFile, $this->sourceLine, $this->sourceColumn];
@@ -5922,9 +5934,13 @@ class Compiler
      * @param array $ExpectedArgs
      * @param int $nbActual
      * @return CompilerException
+     *
+     * @deprecated
      */
     public function errorArgsNumber($functionName, $ExpectedArgs, $nbActual)
     {
+        @trigger_error(sprintf('The "%s" method is deprecated.', __METHOD__), E_USER_DEPRECATED);
+
         $nbExpected = \count($ExpectedArgs);
 
         if ($nbActual > $nbExpected) {
