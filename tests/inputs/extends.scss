@@ -31,10 +31,6 @@ hello {
     @extend .cool, .blue;
 }
 
-.hoverlink { @extend a:hover }
-a:hover { text-decoration: underline }
-
-
 // partial matching and selector merging:
 
 div.hello.world.hmm {
@@ -251,9 +247,9 @@ body{
 }
 
 .foo{
-   &__bar#test{background:red;}
+   &__bar{background:red;}
 }
-input{@extend .foo__bar#test;}
+input{@extend .foo__bar;}
 
 .selector1 {
     color: blue;
