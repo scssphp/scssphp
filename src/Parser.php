@@ -13,6 +13,8 @@
 namespace ScssPhp\ScssPhp;
 
 use ScssPhp\ScssPhp\Exception\ParserException;
+use ScssPhp\ScssPhp\Logger\LoggerInterface;
+use ScssPhp\ScssPhp\Logger\QuietLogger;
 
 /**
  * Parser
@@ -111,17 +113,23 @@ class Parser
     private $cssOnly;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @api
      *
-     * @param string      $sourceName
-     * @param integer     $sourceIndex
-     * @param string|null $encoding
-     * @param Cache|null  $cache
-     * @param bool        $cssOnly
+     * @param string               $sourceName
+     * @param integer              $sourceIndex
+     * @param string|null          $encoding
+     * @param Cache|null           $cache
+     * @param bool                 $cssOnly
+     * @param LoggerInterface|null $logger
      */
-    public function __construct($sourceName, $sourceIndex = 0, $encoding = 'utf-8', Cache $cache = null, $cssOnly = false)
+    public function __construct($sourceName, $sourceIndex = 0, $encoding = 'utf-8', Cache $cache = null, $cssOnly = false, LoggerInterface $logger = null)
     {
         $this->sourceName       = $sourceName ?: '(stdin)';
         $this->sourceIndex      = $sourceIndex;
@@ -132,6 +140,7 @@ class Parser
         $this->commentsSeen     = [];
         $this->allowVars        = true;
         $this->cssOnly          = $cssOnly;
+        $this->logger = $logger ?: new QuietLogger();
 
         if (empty(static::$operatorPattern)) {
             static::$operatorPattern = '([*\/%+-]|[!=]\=|\>\=?|\<\=?|and|or)';
@@ -1563,6 +1572,9 @@ class Parser
 
                         $comment[] = [Type::T_COMMENT, substr($this->buffer, $p, $this->count - $p), $out];
                     } else {
+                        list($line, $column) = $this->getSourcePosition($this->count);
+                        $file = $this->sourceName;
+                        $this->logger->warn("Unterminated interpolations in multiline comments are deprecated and will be removed in ScssPhp 2.0, in \"$file\", line $line, column $column.", true);
                         $comment[] = substr($this->buffer, $this->count, 2);
 
                         $this->count += 2;
@@ -1580,7 +1592,14 @@ class Parser
                 } else {
                     $comment[] = $c;
                     $staticComment = substr($this->buffer, $startCommentCount, $endCommentCount - $startCommentCount);
-                    $this->appendComment([Type::T_COMMENT, $staticComment, [Type::T_STRING, '', $comment]]);
+                    $commentStatement = [Type::T_COMMENT, $staticComment, [Type::T_STRING, '', $comment]];
+
+                    list($line, $column) = $this->getSourcePosition($startCommentCount);
+                    $commentStatement[self::SOURCE_LINE] = $line;
+                    $commentStatement[self::SOURCE_COLUMN] = $column;
+                    $commentStatement[self::SOURCE_INDEX] = $this->sourceIndex;
+
+                    $this->appendComment($commentStatement);
                 }
 
                 $this->commentsSeen[$startCommentCount] = true;

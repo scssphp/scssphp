@@ -621,7 +621,7 @@ class Compiler
             $cssOnly = true;
         }
 
-        $parser = new Parser($path, \count($this->sourceNames), $this->encoding, $this->cache, $cssOnly);
+        $parser = new Parser($path, \count($this->sourceNames), $this->encoding, $this->cache, $cssOnly, $this->logger);
 
         $this->sourceNames[] = $path;
         $this->addParsedFile($path);
@@ -1907,16 +1907,15 @@ class Compiler
                 $this->pushEnv();
             }
 
-            $ignoreCallStackMessage = $this->ignoreCallStackMessage;
-            $this->ignoreCallStackMessage = true;
-
             try {
                 $c = $this->compileValue($value[2]);
-            } catch (\Exception $e) {
+            } catch (SassScriptException $e) {
+                $this->logger->warn('Ignoring interpolation errors in multiline comments is deprecated and will be removed in ScssPhp 2.0. ' . $this->addLocationToMessage($e->getMessage()), true);
+                // ignore error in comment compilation which are only interpolation
+            } catch (SassException $e) {
+                $this->logger->warn('Ignoring interpolation errors in multiline comments is deprecated and will be removed in ScssPhp 2.0. ' . $e->getMessage(), true);
                 // ignore error in comment compilation which are only interpolation
             }
-
-            $this->ignoreCallStackMessage = $ignoreCallStackMessage;
 
             if ($pushEnv) {
                 $this->popEnv();
