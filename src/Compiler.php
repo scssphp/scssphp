@@ -3624,7 +3624,7 @@ class Compiler
 
                 // special cases of css valid functions min/max
                 $name = strtolower($name);
-                if (\in_array($name, ['min', 'max'])) {
+                if (\in_array($name, ['min', 'max']) && count($argValues) >= 1) {
                     $cssFunction = $this->cssValidArg(
                         [Type::T_FUNCTION_CALL, $name, $argValues],
                         ['min', 'max', 'calc', 'env', 'var']

@@ -267,8 +267,6 @@ core_functions/map/merge/nested/overlapping_keys
 core_functions/map/merge/nested/same_keys
 core_functions/map/values/empty
 core_functions/map/values/single
-core_functions/math/max/error/too_few_args
-core_functions/math/min/error/too_few_args
 core_functions/math/round/up/within_precision
 core_functions/meta/call/error/invalid_args
 core_functions/meta/content_exists/error/in_content
