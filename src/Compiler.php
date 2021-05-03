@@ -8797,21 +8797,17 @@ class Compiler
     protected static $libUnit = ['number'];
     protected function libUnit($args)
     {
-        $num = $args[0];
+        $num = $this->assertNumber($args[0], 'number');
 
-        if ($num instanceof Number) {
-            return [Type::T_STRING, '"', [$num->unitStr()]];
-        }
-
-        return '';
+        return [Type::T_STRING, '"', [$num->unitStr()]];
     }
 
     protected static $libUnitless = ['number'];
     protected function libUnitless($args)
     {
-        $value = $args[0];
+        $value = $this->assertNumber($args[0], 'number');
 
-        return $value instanceof Number && $value->unitless();
+        return $value->unitless();
     }
 
     protected static $libComparable = [
