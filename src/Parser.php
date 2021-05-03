@@ -1576,6 +1576,9 @@ class Parser
 
                         $comment[] = [Type::T_COMMENT, substr($this->buffer, $p, $this->count - $p), $out];
                     } else {
+                        list($line, $column) = $this->getSourcePosition($this->count);
+                        $file = $this->sourceName;
+                        $this->logger->warn("Unterminated interpolations in multiline comments are deprecated and will be removed in ScssPhp 2.0, in \"$file\", line $line, column $column.", true);
                         $comment[] = substr($this->buffer, $this->count, 2);
 
                         $this->count += 2;
@@ -1593,7 +1596,14 @@ class Parser
                 } else {
                     $comment[] = $c;
                     $staticComment = substr($this->buffer, $startCommentCount, $endCommentCount - $startCommentCount);
-                    $this->appendComment([Type::T_COMMENT, $staticComment, [Type::T_STRING, '', $comment]]);
+                    $commentStatement = [Type::T_COMMENT, $staticComment, [Type::T_STRING, '', $comment]];
+
+                    list($line, $column) = $this->getSourcePosition($startCommentCount);
+                    $commentStatement[self::SOURCE_LINE] = $line;
+                    $commentStatement[self::SOURCE_COLUMN] = $column;
+                    $commentStatement[self::SOURCE_INDEX] = $this->sourceIndex;
+
+                    $this->appendComment($commentStatement);
                 }
 
                 $this->commentsSeen[$startCommentCount] = true;
