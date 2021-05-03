@@ -601,15 +601,6 @@ core_functions/selector/unify/simple/universal/and_universal/explicit/and_any
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_default
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_empty
 core_functions/string/quote/error/type
-core_functions/string/slice/double_width_character
-core_functions/string/slice/empty/end/0
-core_functions/string/slice/end/positive/0
-core_functions/string/slice/error/decimal/end
-core_functions/string/slice/error/decimal/start
-core_functions/string/slice/error/type/end_at
-core_functions/string/slice/error/type/start_at
-core_functions/string/slice/error/type/string
-core_functions/string/slice/start/positive/after_end
 core_functions/string/to_lower_case/error/type
 core_functions/string/to_upper_case/error/type
 core_functions/string/unquote/error/type

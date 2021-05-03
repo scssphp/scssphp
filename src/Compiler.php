@@ -8888,25 +8888,37 @@ class Compiler
     protected static $libStrSlice = ['string', 'start-at', 'end-at:-1'];
     protected function libStrSlice($args)
     {
-        if (isset($args[2]) && ! $args[2][1]) {
-            return static::$nullString;
-        }
-
-        $string = $this->coerceString($args[0]);
+        $string = $this->assertString($args[0], 'string');
         $stringContent = $this->compileStringContent($string);
 
-        $start = (int) $args[1][1];
+        $start = $this->assertNumber($args[1], 'start-at');
+        $start->assertNoUnits('start-at');
+        $startInt = $this->assertInteger($start, 'start-at');
+        $end = $this->assertNumber($args[2], 'end-at');
+        $end->assertNoUnits('end-at');
+        $endInt = $this->assertInteger($end, 'end-at');
 
-        if ($start > 0) {
-            $start--;
+        if ($endInt === 0) {
+            return [Type::T_STRING, $string[1], []];
         }
 
-        $end    = isset($args[2]) ? (int) $args[2][1] : -1;
-        $length = $end < 0 ? $end + 1 : ($end > 0 ? $end - $start : $end);
+        if ($startInt > 0) {
+            $startInt--;
+        }
 
-        $string[2] = $length
-            ? [substr($stringContent, $start, $length)]
-            : [substr($stringContent, $start)];
+        if ($endInt < 0) {
+            $endInt = Util::mbStrlen($stringContent) + $endInt;
+        } else {
+            $endInt--;
+        }
+
+        if ($endInt < $startInt) {
+            return [Type::T_STRING, $string[1], []];
+        }
+
+        $length = $endInt - $startInt + 1; // The end of the slice is inclusive
+
+        $string[2] = [Util::mbSubstr($stringContent, $startInt, $length)];
 
         return $string;
     }
