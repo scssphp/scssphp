@@ -270,8 +270,6 @@ core_functions/map/values/single
 core_functions/math/max/error/too_few_args
 core_functions/math/min/error/too_few_args
 core_functions/math/round/up/within_precision
-core_functions/math/unit/error/type
-core_functions/math/unitless/error/type
 core_functions/meta/call/error/invalid_args
 core_functions/meta/content_exists/error/in_content
 core_functions/meta/content_exists/error/in_function_called_by_mixin
