@@ -13,6 +13,8 @@
 namespace ScssPhp\ScssPhp;
 
 use ScssPhp\ScssPhp\Exception\ParserException;
+use ScssPhp\ScssPhp\Logger\LoggerInterface;
+use ScssPhp\ScssPhp\Logger\QuietLogger;
 
 /**
  * Parser
@@ -111,17 +113,23 @@ class Parser
     private $cssOnly;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @api
      *
-     * @param string      $sourceName
-     * @param integer     $sourceIndex
-     * @param string|null $encoding
-     * @param Cache|null  $cache
-     * @param bool        $cssOnly
+     * @param string               $sourceName
+     * @param integer              $sourceIndex
+     * @param string|null          $encoding
+     * @param Cache|null           $cache
+     * @param bool                 $cssOnly
+     * @param LoggerInterface|null $logger
      */
-    public function __construct($sourceName, $sourceIndex = 0, $encoding = 'utf-8', Cache $cache = null, $cssOnly = false)
+    public function __construct($sourceName, $sourceIndex = 0, $encoding = 'utf-8', Cache $cache = null, $cssOnly = false, LoggerInterface $logger = null)
     {
         $this->sourceName       = $sourceName ?: '(stdin)';
         $this->sourceIndex      = $sourceIndex;
@@ -132,6 +140,7 @@ class Parser
         $this->commentsSeen     = [];
         $this->allowVars        = true;
         $this->cssOnly          = $cssOnly;
+        $this->logger = $logger ?: new QuietLogger();
 
         if (empty(static::$operatorPattern)) {
             static::$operatorPattern = '([*\/%+-]|[!=]\=|\>\=?|\<\=?|and|or)';
@@ -515,6 +524,10 @@ class Parser
                 $this->end()
             ) {
                 ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
+
+                list($line, $column) = $this->getSourcePosition($s);
+                $file = $this->sourceName;
+                $this->logger->warn("The \"@scssphp-import-once\" directive is deprecated and will be removed in ScssPhp 2.0, in \"$file\", line $line, column $column.", true);
 
                 $this->append([Type::T_SCSSPHP_IMPORT_ONCE, $importPath], $s);
 
