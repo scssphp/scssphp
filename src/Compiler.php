@@ -621,7 +621,7 @@ class Compiler
             $cssOnly = true;
         }
 
-        $parser = new Parser($path, \count($this->sourceNames), $this->encoding, $this->cache, $cssOnly);
+        $parser = new Parser($path, \count($this->sourceNames), $this->encoding, $this->cache, $cssOnly, $this->logger);
 
         $this->sourceNames[] = $path;
         $this->addParsedFile($path);
