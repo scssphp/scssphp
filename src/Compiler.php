@@ -9035,6 +9035,7 @@ class Compiler
         return $this->has($name);
     }
 
+    protected static $libCounter = ['args...'];
     /**
      * Workaround IE7's content counter bug.
      *
@@ -9044,7 +9045,7 @@ class Compiler
      */
     protected function libCounter($args)
     {
-        $list = array_map([$this, 'compileValue'], $args);
+        $list = array_map([$this, 'compileValue'], $args[0][2]);
 
         return [Type::T_STRING, '', ['counter(' . implode(',', $list) . ')']];
     }
