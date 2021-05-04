@@ -9866,9 +9866,9 @@ class Compiler
     protected static $libScssphpGlob = ['pattern'];
     protected function libScssphpGlob($args)
     {
-        @trigger_error(sprintf('The "scssphp-glob function is deprecated an will be removed in ScssPhp 2.0. Register your own alternative through "%s::registerFunction', __CLASS__), E_USER_DEPRECATED);
+        @trigger_error(sprintf('The "scssphp-glob" function is deprecated an will be removed in ScssPhp 2.0. Register your own alternative through "%s::registerFunction', __CLASS__), E_USER_DEPRECATED);
 
-        $this->logger->warn('The "scssphp-glob function is deprecated an will be removed in ScssPhp 2.0.', true);
+        $this->logger->warn('The "scssphp-glob" function is deprecated an will be removed in ScssPhp 2.0.', true);
 
         $string = $this->coerceString($args[0]);
         $pattern = $this->compileStringContent($string);
