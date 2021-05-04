@@ -7456,7 +7456,7 @@ class Compiler
     protected static $libCall = ['function', 'args...'];
     protected function libCall($args, $kwargs)
     {
-        $functionReference = array_shift($args);
+        $functionReference = $args[0];
 
         if (in_array($functionReference[0], [Type::T_STRING, Type::T_KEYWORD])) {
             $name = $this->compileStringContent($this->coerceString($functionReference));
@@ -7474,18 +7474,9 @@ class Compiler
             throw $this->error('Function reference expected, got ' . $functionReference[0]);
         }
 
-        $callArgs = [];
-
-        // $kwargs['args'] is [Type::T_LIST, ',', [..]]
-        foreach ($kwargs['args'][2] as $varname => $arg) {
-            if (is_numeric($varname)) {
-                $varname = null;
-            } else {
-                $varname = [ 'var', $varname];
-            }
-
-            $callArgs[] = [$varname, $arg, false];
-        }
+        $callArgs = [
+            [null, $args[1], true]
+        ];
 
         return $this->reduce([Type::T_FUNCTION_CALL, $functionReference, $callArgs]);
     }
