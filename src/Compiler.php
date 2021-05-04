@@ -3525,6 +3525,14 @@ class Compiler
                 foreach ($value[2] as &$item) {
                     $item = $this->reduce($item);
                 }
+                unset($item);
+
+                if (isset($value[3]) && \is_array($value[3])) {
+                    foreach ($value[3] as &$item) {
+                        $item = $this->reduce($item);
+                    }
+                    unset($item);
+                }
 
                 return $value;
 
@@ -6487,7 +6495,7 @@ class Compiler
         $hasKeywordArgument = false;
         $hasSplat = false;
 
-        foreach ($args as $j => $arg) {
+        foreach ($args as $arg) {
             if (!empty($arg[0])) {
                 $hasKeywordArgument = true;
 
@@ -6506,8 +6514,18 @@ class Compiler
                 $hasSplat = true;
 
                 if ($val[0] === Type::T_LIST) {
-                    foreach ($val[2] as $name => $item) {
-                        if (\is_string($name) && ! is_numeric($name)) {
+                    foreach ($val[2] as $item) {
+                        if (\is_null($splatSeparator)) {
+                            $splatSeparator = $val[1];
+                        }
+
+                        $positionalArgs[] = $this->maybeReduce($reduce, $item);
+                    }
+
+                    if (isset($val[3]) && \is_array($val[3])) {
+                        foreach ($val[3] as $name => $item) {
+                            assert(\is_string($name));
+
                             $normalizedName = str_replace('_', '-', $name);
 
                             if (isset($keywordArgs[$normalizedName])) {
@@ -6517,12 +6535,6 @@ class Compiler
                             $keywordArgs[$normalizedName] = $this->maybeReduce($reduce, $item);
                             $names[$normalizedName] = $normalizedName;
                             $hasKeywordArgument = true;
-                        } else {
-                            if (\is_null($splatSeparator)) {
-                                $splatSeparator = $val[1];
-                            }
-
-                            $positionalArgs[] = $this->maybeReduce($reduce, $item);
                         }
                     }
                 } elseif ($val[0] === Type::T_MAP) {
@@ -6730,11 +6742,7 @@ class Compiler
             $name = $prototype['rest_argument'];
             $rest = array_values(array_slice($positionalArgs, \count($prototype['arguments'])));
 
-            foreach ($restNamed as $itemName => $value) {
-                $rest[$itemName] = $value;
-            }
-
-            $val = [Type::T_LIST, \is_null($splatSeparator) ? ',' : $splatSeparator , $rest, true];
+            $val = [Type::T_LIST, \is_null($splatSeparator) ? ',' : $splatSeparator , $rest, $restNamed];
 
             $output[$name] = $val;
         }
@@ -7171,6 +7179,27 @@ class Compiler
     }
 
     /**
+     * Gets the keywords of an argument list.
+     *
+     * Keys in the returned array are normalized names (underscores are replaced with dashes)
+     * without the leading `$`.
+     * Calling this helper with anything that an argument list received for a rest argument
+     * of the function argument declaration is not supported.
+     *
+     * @param array|Number $value
+     *
+     * @return array<string, array|Number>
+     */
+    public function getArgumentListKeywords($value)
+    {
+        if ($value[0] !== Type::T_LIST || !isset($value[3]) || !\is_array($value[3])) {
+            throw new \InvalidArgumentException('The argument is not a sass argument list.');
+        }
+
+        return $value[3];
+    }
+
+    /**
      * Assert value is a color
      *
      * @api
@@ -7454,7 +7483,7 @@ class Compiler
     // Built in functions
 
     protected static $libCall = ['function', 'args...'];
-    protected function libCall($args, $kwargs)
+    protected function libCall($args)
     {
         $functionReference = $args[0];
 
@@ -7637,11 +7666,12 @@ class Compiler
     protected function alterColor(array $args, $operation, $fn)
     {
         $color = $this->assertColor($args[0]);
-        $kwargs = $args[1][2];
 
-        if (isset($kwargs[0])) {
+        if ($args[1][2]) {
             throw new SassScriptException('Only one positional argument is allowed. All other arguments must be passed by name.');
         }
+
+        $kwargs = $this->getArgumentListKeywords($args[1]);
 
         $scale = $operation === 'scale';
         $change = $operation === 'change';
@@ -8620,12 +8650,18 @@ class Compiler
     protected static $libKeywords = ['args'];
     protected function libKeywords($args)
     {
-        $this->assertList($args[0]);
+        $value = $args[0];
+
+        if ($value[0] !== Type::T_LIST || !isset($value[3]) || !\is_array($value[3])) {
+            $compiledValue = $this->compileValue($value);
+
+            throw SassScriptException::forArgument($compiledValue . ' is not an argument list.', 'args');
+        }
 
         $keys = [];
         $values = [];
 
-        foreach ($args[0][2] as $name => $arg) {
+        foreach ($this->getArgumentListKeywords($value) as $name => $arg) {
             $keys[] = [Type::T_KEYWORD, $name];
             $values[] = $arg;
         }
@@ -8790,7 +8826,7 @@ class Compiler
                 return 'function';
 
             case Type::T_LIST:
-                if (isset($value[3]) && $value[3]) {
+                if (isset($value[3]) && \is_array($value[3])) {
                     return 'arglist';
                 }
 

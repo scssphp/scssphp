@@ -295,8 +295,6 @@ core_functions/meta/inspect/list/nested/comma/in_space/unbracketed
 core_functions/meta/inspect/list/nested/space/in_space/unbracketed
 core_functions/meta/inspect/map/list/key/comma
 core_functions/meta/inspect/map/list/value/comma
-core_functions/meta/keywords/empty/positional
-core_functions/meta/keywords/error/type/non_arg_list
 core_functions/meta/mixin_exists/error/argument/type/name
 core_functions/meta/variable_exists/error/argument/type
 core_functions/selector/append/error/leading_combinator
