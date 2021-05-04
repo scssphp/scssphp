@@ -859,7 +859,6 @@ libsass-closed-issues/issue_713/and
 libsass-closed-issues/issue_713/not
 libsass-closed-issues/issue_713/or
 libsass-closed-issues/issue_72
-libsass-closed-issues/issue_760
 libsass-closed-issues/issue_823
 libsass-closed-issues/issue_828
 libsass-closed-issues/issue_829
