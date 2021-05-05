@@ -8467,6 +8467,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         return new Number(abs($num->getDimension()), $num->getNumeratorUnits(), $num->getDenominatorUnits());
     }
 
+    protected static $libMin = ['numbers...'];
     protected function libMin($args)
     {
         /**
@@ -8474,7 +8475,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
          */
         $min = null;
 
-        foreach ($args as $arg) {
+        foreach ($args[0][2] as $arg) {
             $number = $this->assertNumber($arg);
 
             if (\is_null($min) || $min->greaterThan($number)) {
@@ -8489,6 +8490,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         throw $this->error('At least one argument must be passed.');
     }
 
+    protected static $libMax = ['numbers...'];
     protected function libMax($args)
     {
         /**
@@ -8496,7 +8498,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
          */
         $max = null;
 
-        foreach ($args as $arg) {
+        foreach ($args[0][2] as $arg) {
             $number = $this->assertNumber($arg);
 
             if (\is_null($max) || $max->lessThan($number)) {
