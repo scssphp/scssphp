@@ -20,6 +20,8 @@ use ScssPhp\ScssPhp\Logger\QuietLogger;
  * Parser
  *
  * @author Leaf Corcoran <leafot@gmail.com>
+ *
+ * @internal
  */
 class Parser
 {

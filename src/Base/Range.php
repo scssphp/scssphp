@@ -16,6 +16,8 @@ namespace ScssPhp\ScssPhp\Base;
  * Range
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
+ *
+ * @internal
  */
 class Range
 {

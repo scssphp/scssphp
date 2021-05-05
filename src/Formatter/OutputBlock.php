@@ -16,6 +16,8 @@ namespace ScssPhp\ScssPhp\Formatter;
  * Output block
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
+ *
+ * @internal
  */
 class OutputBlock
 {

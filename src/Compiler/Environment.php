@@ -16,6 +16,8 @@ namespace ScssPhp\ScssPhp\Compiler;
  * Compiler environment
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
+ *
+ * @internal
  */
 class Environment
 {

@@ -59,6 +59,8 @@ use ScssPhp\ScssPhp\Util\Path;
  * SCSS compiler
  *
  * @author Leaf Corcoran <leafot@gmail.com>
+ *
+ * @final Extending the Compiler is deprecated
  */
 class Compiler
 {
@@ -348,6 +350,8 @@ class Compiler
      * Get compiler options
      *
      * @return array<string, mixed>
+     *
+     * @internal
      */
     public function getCompileOptions()
     {
@@ -3850,6 +3854,8 @@ class Compiler
     /**
      * Normalize value
      *
+     * @internal
+     *
      * @param array|Number $value
      *
      * @return array|Number
@@ -4301,7 +4307,7 @@ class Compiler
      *
      * @api
      *
-     * @param mixed $thing
+     * @param bool $thing
      *
      * @return array
      */
@@ -4312,7 +4318,12 @@ class Compiler
 
     /**
      * Escape non printable chars in strings output as in dart-sass
+     *
+     * @internal
+     *
      * @param string $string
+     * @param bool   $inKeyword
+     *
      * @return string
      */
     public function escapeNonPrintableChars($string, $inKeyword = false)
@@ -5106,7 +5117,7 @@ class Compiler
     /**
      * Get variable
      *
-     * @api
+     * @internal
      *
      * @param string                                $name
      * @param boolean                               $shouldThrow
@@ -5297,7 +5308,7 @@ class Compiler
     /**
      * Adds to list of parsed files
      *
-     * @api
+     * @internal
      *
      * @param string|null $path
      *
@@ -5312,8 +5323,6 @@ class Compiler
 
     /**
      * Returns list of parsed files
-     *
-     * @api
      *
      * @deprecated
      * @return array<string, int>
@@ -5591,7 +5600,7 @@ class Compiler
     /**
      * Return the file path for an import url if it exists
      *
-     * @api
+     * @internal
      *
      * @param string      $url
      * @param string|null $currentDir
@@ -5884,7 +5893,7 @@ class Compiler
     /**
      * Build an error (exception)
      *
-     * @api
+     * @internal
      *
      * @param string $msg Message with optional sprintf()-style vararg parameters
      *
@@ -6115,7 +6124,11 @@ class Compiler
 
     /**
      * Normalize native function name
+     *
+     * @internal
+     *
      * @param string $name
+     *
      * @return string
      */
     public static function normalizeNativeFunctionName($name)
@@ -6133,7 +6146,11 @@ class Compiler
 
     /**
      * Check if a function is a native built-in scss function, for css parsing
+     *
+     * @internal
+     *
      * @param string $name
+     *
      * @return bool
      */
     public static function isNativeFunction($name)
@@ -7281,7 +7298,7 @@ class Compiler
     /**
      * Convert RGB to HSL
      *
-     * @api
+     * @internal
      *
      * @param integer $red
      * @param integer $green
@@ -7353,7 +7370,7 @@ class Compiler
     /**
      * Convert HSL to RGB
      *
-     * @api
+     * @internal
      *
      * @param integer $hue        H from 0 to 360
      * @param integer $saturation S from 0 to 100

@@ -30,6 +30,9 @@ class StreamLogger implements LoggerInterface
         $this->closeOnDestruct = $closeOnDestruct;
     }
 
+    /**
+     * @internal
+     */
     public function __destruct()
     {
         if ($this->closeOnDestruct) {

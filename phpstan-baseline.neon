@@ -576,11 +576,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:escapeNonPrintableChars\\(\\) has parameter \\$inKeyword with no typehint specified\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:evalSelector\\(\\) has parameter \\$selector with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
