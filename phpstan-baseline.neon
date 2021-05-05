@@ -1246,11 +1246,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:registerFunction\\(\\) has parameter \\$prototype with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:replaceSelfSelector\\(\\) has parameter \\$selectors with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php

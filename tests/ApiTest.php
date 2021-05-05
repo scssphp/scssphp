@@ -39,7 +39,7 @@ class ApiTest extends TestCase
         $this->scss->registerFunction('add-two', function ($args) {
             list($a, $b) = $args;
             return $a[1] + $b[1];
-        });
+        }, ['number1', 'number2']);
 
         $this->assertEquals(
             'result: 30;',
@@ -53,12 +53,27 @@ class ApiTest extends TestCase
 
         $this->scss->registerFunction('get-null', function ($args) {
             return Compiler::$null;
-        });
+        }, []);
 
         $this->assertEquals(
             '',
             $this->compile('result: get-null();')
         );
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testUserFunctionWithoutArgumentDeclaration()
+    {
+        $this->scss = new Compiler();
+
+        $this->expectDeprecation('Omitting the argument declaration when registering custom function is deprecated and won\'t be supported in ScssPhp 2.0 anymore.');
+
+        $this->scss->registerFunction('get-null', function () {
+            return Compiler::$null;
+        });
+
     }
 
     /**
@@ -72,7 +87,7 @@ class ApiTest extends TestCase
 
         $compiler->registerFunction('blue', function ($args) {
             return Compiler::$null;
-        });
+        }, []);
     }
 
     public function testUserFunctionKwargs()
