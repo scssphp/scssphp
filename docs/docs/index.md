@@ -295,7 +295,3 @@ try {
 If your web application allows for arbitrary `@import` paths, you should
 tighten the `open_basedir` setting at run-time to mitigate vulnerability to
 local file inclusion (LFI) attack.
-
-### Server Example
-
-An example `Server` class is described here: <a href="{{ site.baseurl }}/docs/server.html">{{ site.baseurl }}/docs/server.html</a>.
