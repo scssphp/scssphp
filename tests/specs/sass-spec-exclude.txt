@@ -4,13 +4,10 @@ core_functions/color/alpha/error/unquoted_string/no_equals
 core_functions/color/alpha/error/unquoted_string/non_identifier_before_equals
 core_functions/color/desaturate/error/bounds/too_high
 core_functions/color/desaturate/error/bounds/too_low
-core_functions/color/desaturate/error/type/lightness
 core_functions/color/fade_in/error/bounds/too_high
 core_functions/color/fade_in/error/bounds/too_low
-core_functions/color/fade_in/error/type/alpha
 core_functions/color/fade_out/error/bounds/too_high
 core_functions/color/fade_out/error/bounds/too_low
-core_functions/color/fade_out/error/type/alpha
 core_functions/color/hsl/error/four_args/hue/type
 core_functions/color/hsl/error/four_args/lightness/type
 core_functions/color/hsl/error/four_args/saturation/type
@@ -68,10 +65,8 @@ core_functions/color/hue/negative
 core_functions/color/invert/error/bounds/too_high
 core_functions/color/invert/error/bounds/too_low
 core_functions/color/invert/error/number_with_weight
-core_functions/color/invert/error/type/weight
 core_functions/color/mix/error/bounds/too_high
 core_functions/color/mix/error/bounds/too_low
-core_functions/color/mix/error/type/weight
 core_functions/color/rgb/error/four_args/blue/type
 core_functions/color/rgb/error/four_args/green/type
 core_functions/color/rgb/error/four_args/red/type
@@ -208,8 +203,6 @@ core_functions/color/rgba/one_arg/special_functions/no_alpha/var/arg_2
 core_functions/color/rgba/one_arg/special_functions/no_alpha/var/arg_3
 core_functions/color/saturate/error/two_args/bounds/too_high
 core_functions/color/saturate/error/two_args/bounds/too_low
-core_functions/color/saturate/error/two_args/type/color
-core_functions/color/saturate/error/two_args/type/lightness
 core_functions/color/saturation/fraction
 core_functions/color/saturation/max
 core_functions/color/saturation/middle
