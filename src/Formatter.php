@@ -19,6 +19,8 @@ use ScssPhp\ScssPhp\SourceMap\SourceMapGenerator;
  * Base formatter
  *
  * @author Leaf Corcoran <leafot@gmail.com>
+ *
+ * @internal
  */
 abstract class Formatter
 {

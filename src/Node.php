@@ -16,6 +16,8 @@ namespace ScssPhp\ScssPhp;
  * Base node
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
+ *
+ * @internal
  */
 abstract class Node
 {

@@ -20,6 +20,8 @@ use ScssPhp\ScssPhp\Node\Number;
  * Utility functions
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
+ *
+ * @internal
  */
 class Util
 {

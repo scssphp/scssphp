@@ -16,6 +16,8 @@ namespace ScssPhp\ScssPhp;
  * Block
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
+ *
+ * @internal
  */
 class Block
 {

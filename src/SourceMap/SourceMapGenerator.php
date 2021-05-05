@@ -21,6 +21,8 @@ use ScssPhp\ScssPhp\Exception\CompilerException;
  *
  * @author Josh Schmidt <oyejorge@gmail.com>
  * @author Nicolas FRANÇOIS <nicolas.francois@frog-labs.com>
+ *
+ * @internal
  */
 class SourceMapGenerator
 {

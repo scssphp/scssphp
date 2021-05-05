@@ -30,6 +30,8 @@ use ScssPhp\ScssPhp\Version;
  * SCSS cache
  *
  * @author Cedric Morin <cedric@yterium.com>
+ *
+ * @internal
  */
 class Cache
 {

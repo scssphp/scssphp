@@ -16,6 +16,8 @@ namespace ScssPhp\ScssPhp;
  * CSS Colors
  *
  * @author Leaf Corcoran <leafot@gmail.com>
+ *
+ * @internal
  */
 class Colors
 {

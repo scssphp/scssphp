@@ -18,6 +18,8 @@ use ScssPhp\ScssPhp\Formatter;
  * Compressed formatter
  *
  * @author Leaf Corcoran <leafot@gmail.com>
+ *
+ * @internal
  */
 class Compressed extends Formatter
 {
