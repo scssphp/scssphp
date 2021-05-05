@@ -7516,7 +7516,7 @@ class Compiler
             $warning = "Passing a string to call() is deprecated and will be illegal\n"
                 . "in Sass 4.0. Use call(function-reference($name)) instead.";
             Warn::deprecation($warning);
-            $functionReference = $this->libGetFunction([$functionReference]);
+            $functionReference = $this->libGetFunction([$this->assertString($functionReference, 'function')]);
         }
 
         if ($functionReference === static::$null) {
@@ -7541,7 +7541,7 @@ class Compiler
     ];
     protected function libGetFunction($args)
     {
-        $name = $this->compileStringContent($this->coerceString(array_shift($args)));
+        $name = $this->compileStringContent($this->assertString(array_shift($args), 'name'));
         $isCss = false;
 
         if (count($args)) {
@@ -8391,11 +8391,22 @@ class Compiler
     protected static $libUnquote = ['string'];
     protected function libUnquote($args)
     {
-        $str = $args[0];
+        try {
+            $str = $this->assertString($args[0], 'string');
+        } catch (SassException $e) {
+            $value = $this->compileValue($args[0]);
+            $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
+            $line  = $this->sourceLine;
 
-        if ($str[0] === Type::T_STRING) {
-            $str[1] = '';
+            $message = "Passing $value, a non-string value, to unquote()
+will be an error in future versions of Sass.\n         on line $line of $fname";
+
+            $this->logger->warn($message, true);
+
+            return $args[0];
         }
+
+        $str[1] = '';
 
         return $str;
     }
@@ -8403,14 +8414,11 @@ class Compiler
     protected static $libQuote = ['string'];
     protected function libQuote($args)
     {
-        $value = $args[0];
+        $value = $this->assertString($args[0], 'string');
 
-        if ($value[0] === Type::T_STRING && ! empty($value[1])) {
-            $value[1] = '"';
-            return $value;
-        }
+        $value[1] = '"';
 
-        return [Type::T_STRING, '"', [$value]];
+        return $value;
     }
 
     protected static $libPercentage = ['number'];
@@ -8988,7 +8996,7 @@ class Compiler
     protected static $libToLowerCase = ['string'];
     protected function libToLowerCase($args)
     {
-        $string = $this->coerceString($args[0]);
+        $string = $this->assertString($args[0], 'string');
         $stringContent = $this->compileStringContent($string);
 
         $string[2] = [$this->stringTransformAsciiOnly($stringContent, 'strtolower')];
@@ -8999,7 +9007,7 @@ class Compiler
     protected static $libToUpperCase = ['string'];
     protected function libToUpperCase($args)
     {
-        $string = $this->coerceString($args[0]);
+        $string = $this->assertString($args[0], 'string');
         $stringContent = $this->compileStringContent($string);
 
         $string[2] = [$this->stringTransformAsciiOnly($stringContent, 'strtoupper')];
@@ -9037,7 +9045,7 @@ class Compiler
     protected static $libFeatureExists = ['feature'];
     protected function libFeatureExists($args)
     {
-        $string = $this->coerceString($args[0]);
+        $string = $this->assertString($args[0], 'feature');
         $name = $this->compileStringContent($string);
 
         return $this->toBool(
@@ -9048,7 +9056,7 @@ class Compiler
     protected static $libFunctionExists = ['name'];
     protected function libFunctionExists($args)
     {
-        $string = $this->coerceString($args[0]);
+        $string = $this->assertString($args[0], 'name');
         $name = $this->compileStringContent($string);
 
         // user defined functions
@@ -9071,7 +9079,7 @@ class Compiler
     protected static $libGlobalVariableExists = ['name'];
     protected function libGlobalVariableExists($args)
     {
-        $string = $this->coerceString($args[0]);
+        $string = $this->assertString($args[0], 'name');
         $name = $this->compileStringContent($string);
 
         return $this->has($name, $this->rootEnv);
@@ -9080,7 +9088,7 @@ class Compiler
     protected static $libMixinExists = ['name'];
     protected function libMixinExists($args)
     {
-        $string = $this->coerceString($args[0]);
+        $string = $this->assertString($args[0], 'name');
         $name = $this->compileStringContent($string);
 
         return $this->has(static::$namespaces['mixin'] . $name);
@@ -9089,7 +9097,7 @@ class Compiler
     protected static $libVariableExists = ['name'];
     protected function libVariableExists($args)
     {
-        $string = $this->coerceString($args[0]);
+        $string = $this->assertString($args[0], 'name');
         $name = $this->compileStringContent($string);
 
         return $this->has($name);
@@ -9922,7 +9930,7 @@ class Compiler
 
         $this->logger->warn('The "scssphp-glob" function is deprecated an will be removed in ScssPhp 2.0.', true);
 
-        $string = $this->coerceString($args[0]);
+        $string = $this->assertString($args[0], 'pattern');
         $pattern = $this->compileStringContent($string);
         $matches = glob($pattern);
         $listParts = [];
