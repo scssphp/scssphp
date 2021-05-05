@@ -7957,12 +7957,7 @@ class Compiler
 
         $first = $this->assertColor($first);
         $second = $this->assertColor($second);
-
-        if (! isset($weight)) {
-            $weight = 0.5;
-        } else {
-            $weight = $this->coercePercent($weight);
-        }
+        $weight = $this->coercePercent($this->assertNumber($weight, 'weight'));
 
         $firstAlpha = isset($first[4]) ? $first[4] : 1;
         $secondAlpha = isset($second[4]) ? $second[4] : 1;
@@ -8280,17 +8275,14 @@ class Compiler
     {
         $value = $args[0];
 
-        if ($value instanceof Number) {
+        if (count($args) === 1) {
+            $this->assertNumber($args[0], 'amount');
+
             return null;
         }
 
-        if (count($args) === 1) {
-            $val = $this->compileValue($value);
-            throw $this->error("\$amount: $val is not a number");
-        }
-
         $color = $this->assertColor($value);
-        $amount = 100 * $this->coercePercent($args[1]);
+        $amount = 100 * $this->coercePercent($this->assertNumber($args[1], 'amount'));
 
         return $this->adjustHsl($color, 2, $amount);
     }
@@ -8299,7 +8291,7 @@ class Compiler
     protected function libDesaturate($args)
     {
         $color = $this->assertColor($args[0]);
-        $amount = 100 * $this->coercePercent($args[1]);
+        $amount = 100 * $this->coercePercent($this->assertNumber($args[1], 'amount'));
 
         return $this->adjustHsl($color, 2, -$amount);
     }
@@ -8325,17 +8317,13 @@ class Compiler
     protected static $libInvert = ['color', 'weight:1'];
     protected function libInvert($args)
     {
-        list($value, $weight) = $args;
-
-        if (! isset($weight)) {
-            $weight = 1;
-        } else {
-            $weight = $this->coercePercent($weight);
-        }
+        $value = $args[0];
 
         if ($value instanceof Number) {
             return null;
         }
+
+        $weight = $this->coercePercent($this->assertNumber($args[1], 'weight'));
 
         $color = $this->assertColor($value);
         $inverted = $color;
@@ -8355,7 +8343,7 @@ class Compiler
     protected function libOpacify($args)
     {
         $color = $this->assertColor($args[0]);
-        $amount = $this->coercePercent($args[1]);
+        $amount = $this->coercePercent($this->assertNumber($args[1], 'amount'));
 
         $color[4] = (isset($color[4]) ? $color[4] : 1) + $amount;
         $color[4] = min(1, max(0, $color[4]));
@@ -8374,7 +8362,7 @@ class Compiler
     protected function libTransparentize($args)
     {
         $color = $this->assertColor($args[0]);
-        $amount = $this->coercePercent($args[1]);
+        $amount = $this->coercePercent($this->assertNumber($args[1], 'amount'));
 
         $color[4] = (isset($color[4]) ? $color[4] : 1) - $amount;
         $color[4] = min(1, max(0, $color[4]));
