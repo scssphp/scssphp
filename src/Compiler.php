@@ -4679,6 +4679,25 @@ class Compiler
     }
 
     /**
+     * Gets the text of a Sass string
+     *
+     * Calling this method on anything else than a SassString is unsupported. Use {@see assertString} first
+     * to ensure that the value is indeed a string.
+     *
+     * @param array $value
+     *
+     * @return string
+     */
+    public function getStringText(array $value)
+    {
+        if ($value[0] !== Type::T_STRING) {
+            throw new \InvalidArgumentException('The argument is not a sass string. Did you forgot to use "assertString"?');
+        }
+
+        return $this->compileValue($value);
+    }
+
+    /**
      * Compile string content
      *
      * @param array $string
@@ -7079,12 +7098,17 @@ class Compiler
     }
 
     /**
-     * Assert value is a string (or keyword)
+     * Assert value is a string
+     *
+     * This method deals with internal implementation details of the value
+     * representation where unquoted strings can sometimes be stored under
+     * other types.
+     * The returned value is always using the T_STRING type.
      *
      * @api
      *
      * @param array|Number $value
-     * @param string $varName
+     * @param string|null  $varName
      *
      * @return array
      *

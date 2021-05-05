@@ -791,6 +791,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:getStringText\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:getVariables\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
