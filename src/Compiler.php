@@ -5520,19 +5520,23 @@ class Compiler
      *
      * @api
      *
-     * @param string   $name
-     * @param callable $func
-     * @param array|null $prototype
+     * @param string        $name
+     * @param callable      $callback
+     * @param string[]|null $argumentDeclaration
      *
      * @return void
      */
-    public function registerFunction($name, $func, $prototype = null)
+    public function registerFunction($name, $callback, $argumentDeclaration = null)
     {
         if (self::isNativeFunction($name)) {
             @trigger_error(sprintf('The "%s" function is a core sass function. Overriding it with a custom implementation through "%s" is deprecated and won\'t be supported in ScssPhp 2.0 anymore.', $name, __METHOD__), E_USER_DEPRECATED);
         }
 
-        $this->userFunctions[$this->normalizeName($name)] = [$func, $prototype];
+        if ($argumentDeclaration === null) {
+            @trigger_error('Omitting the argument declaration when registering custom function is deprecated and won\'t be supported in ScssPhp 2.0 anymore.', E_USER_DEPRECATED);
+        }
+
+        $this->userFunctions[$this->normalizeName($name)] = [$callback, $argumentDeclaration];
     }
 
     /**
