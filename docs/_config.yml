@@ -19,7 +19,7 @@ exclude:
 
 # Github Pages
 github: [Repository metadata]
-gems:
+plugins:
 - jekyll-mentions
 - jemoji
 - jekyll-redirect-from
