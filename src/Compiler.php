@@ -8651,12 +8651,10 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
             return $map;
         }
 
-        $keyList = $this->assertList($args[2]);
-
         $keys = [];
         $keys[] = $this->compileStringContent($this->coerceString($args[1]));
 
-        foreach ($keyList[2] as $key) {
+        foreach ($args[2][2] as $key) {
             $keys[] = $this->compileStringContent($this->coerceString($key));
         }
 
