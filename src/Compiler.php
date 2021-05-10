@@ -9176,18 +9176,14 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     protected static $libRandom = ['limit:null'];
     protected function libRandom($args)
     {
-        if (isset($args[0]) & $args[0] !== static::$null) {
-            $n = $this->assertNumber($args[0])->getDimension();
+        if (isset($args[0]) && $args[0] !== static::$null) {
+            $n = $this->assertInteger($args[0], 'limit');
 
             if ($n < 1) {
-                throw $this->error("\$limit must be greater than or equal to 1");
+                throw new SassScriptException("\$limit: Must be greater than 0, was $n.");
             }
 
-            if (round($n - \intval($n), Number::PRECISION) > 0) {
-                throw $this->error("Expected \$limit to be an integer but got $n for `random`");
-            }
-
-            return new Number(mt_rand(1, \intval($n)), '');
+            return new Number(mt_rand(1, $n), '');
         }
 
         $max = mt_getrandmax();
