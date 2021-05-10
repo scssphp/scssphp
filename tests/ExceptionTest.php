@@ -133,18 +133,6 @@ END_OF_SCSS
                 ,
                 'was not found'
             ],
-            // TODO Remove this test once sass-spec is updated to run https://github.com/sass/sass-spec/pull/1636
-            [<<<'SCSS'
-a b {
-  color: blue;
-}
-c {
-  @extend a b;
-}
-SCSS
-                ,
-                'complex selectors may not be extended.'
-            ],
             [<<<'END_OF_SCSS'
 @import "missing";
 END_OF_SCSS
