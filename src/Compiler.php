@@ -7715,7 +7715,7 @@ class Compiler
      */
     protected function alterColor(array $args, $operation, $fn)
     {
-        $color = $this->assertColor($args[0]);
+        $color = $this->assertColor($args[0], 'color');
 
         if ($args[1][2]) {
             throw new SassScriptException('Only one positional argument is allowed. All other arguments must be passed by name.');
@@ -7981,8 +7981,8 @@ class Compiler
     {
         list($first, $second, $weight) = $args;
 
-        $first = $this->assertColor($first);
-        $second = $this->assertColor($second);
+        $first = $this->assertColor($first, 'color1');
+        $second = $this->assertColor($second, 'color2');
         $weight = $this->coercePercent($this->assertNumber($weight, 'weight'));
 
         $firstAlpha = isset($first[4]) ? $first[4] : 1;
@@ -8106,7 +8106,7 @@ class Compiler
     protected static $libHue = ['color'];
     protected function libHue($args)
     {
-        $color = $this->assertColor($args[0]);
+        $color = $this->assertColor($args[0], 'color');
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
 
         return new Number($hsl[1], 'deg');
@@ -8115,7 +8115,7 @@ class Compiler
     protected static $libSaturation = ['color'];
     protected function libSaturation($args)
     {
-        $color = $this->assertColor($args[0]);
+        $color = $this->assertColor($args[0], 'color');
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
 
         return new Number($hsl[2], '%');
@@ -8124,7 +8124,7 @@ class Compiler
     protected static $libLightness = ['color'];
     protected function libLightness($args)
     {
-        $color = $this->assertColor($args[0]);
+        $color = $this->assertColor($args[0], 'color');
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
 
         return new Number($hsl[3], '%');
@@ -8272,8 +8272,8 @@ class Compiler
     protected static $libAdjustHue = ['color', 'degrees'];
     protected function libAdjustHue($args)
     {
-        $color = $this->assertColor($args[0]);
-        $degrees = $this->assertNumber($args[1])->getDimension();
+        $color = $this->assertColor($args[0], 'color');
+        $degrees = $this->assertNumber($args[1], 'degrees')->getDimension();
 
         return $this->adjustHsl($color, 1, $degrees);
     }
@@ -8281,7 +8281,7 @@ class Compiler
     protected static $libLighten = ['color', 'amount'];
     protected function libLighten($args)
     {
-        $color = $this->assertColor($args[0]);
+        $color = $this->assertColor($args[0], 'color');
         $amount = Util::checkRange('amount', new Range(0, 100), $args[1], '%');
 
         return $this->adjustHsl($color, 3, $amount);
@@ -8290,7 +8290,7 @@ class Compiler
     protected static $libDarken = ['color', 'amount'];
     protected function libDarken($args)
     {
-        $color = $this->assertColor($args[0]);
+        $color = $this->assertColor($args[0], 'color');
         $amount = Util::checkRange('amount', new Range(0, 100), $args[1], '%');
 
         return $this->adjustHsl($color, 3, -$amount);
@@ -8307,7 +8307,7 @@ class Compiler
             return null;
         }
 
-        $color = $this->assertColor($value);
+        $color = $this->assertColor($value, 'color');
         $amount = 100 * $this->coercePercent($this->assertNumber($args[1], 'amount'));
 
         return $this->adjustHsl($color, 2, $amount);
@@ -8316,7 +8316,7 @@ class Compiler
     protected static $libDesaturate = ['color', 'amount'];
     protected function libDesaturate($args)
     {
-        $color = $this->assertColor($args[0]);
+        $color = $this->assertColor($args[0], 'color');
         $amount = 100 * $this->coercePercent($this->assertNumber($args[1], 'amount'));
 
         return $this->adjustHsl($color, 2, -$amount);
@@ -8331,13 +8331,13 @@ class Compiler
             return null;
         }
 
-        return $this->adjustHsl($this->assertColor($value), 2, -100);
+        return $this->adjustHsl($this->assertColor($value, 'color'), 2, -100);
     }
 
     protected static $libComplement = ['color'];
     protected function libComplement($args)
     {
-        return $this->adjustHsl($this->assertColor($args[0]), 1, 180);
+        return $this->adjustHsl($this->assertColor($args[0], 'color'), 1, 180);
     }
 
     protected static $libInvert = ['color', 'weight:1'];
@@ -8351,7 +8351,7 @@ class Compiler
 
         $weight = $this->coercePercent($this->assertNumber($args[1], 'weight'));
 
-        $color = $this->assertColor($value);
+        $color = $this->assertColor($value, 'color');
         $inverted = $color;
         $inverted[1] = 255 - $inverted[1];
         $inverted[2] = 255 - $inverted[2];
@@ -8368,7 +8368,7 @@ class Compiler
     protected static $libOpacify = ['color', 'amount'];
     protected function libOpacify($args)
     {
-        $color = $this->assertColor($args[0]);
+        $color = $this->assertColor($args[0], 'color');
         $amount = $this->coercePercent($this->assertNumber($args[1], 'amount'));
 
         $color[4] = (isset($color[4]) ? $color[4] : 1) + $amount;
@@ -8387,7 +8387,7 @@ class Compiler
     protected static $libTransparentize = ['color', 'amount'];
     protected function libTransparentize($args)
     {
-        $color = $this->assertColor($args[0]);
+        $color = $this->assertColor($args[0], 'color');
         $amount = $this->coercePercent($this->assertNumber($args[1], 'amount'));
 
         $color[4] = (isset($color[4]) ? $color[4] : 1) - $amount;
@@ -8605,7 +8605,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     protected static $libMapGet = ['map', 'key'];
     protected function libMapGet($args)
     {
-        $map = $this->assertMap($args[0]);
+        $map = $this->assertMap($args[0], 'map');
         $key = $args[1];
 
         if (! \is_null($key)) {
@@ -8624,7 +8624,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     protected static $libMapKeys = ['map'];
     protected function libMapKeys($args)
     {
-        $map = $this->assertMap($args[0]);
+        $map = $this->assertMap($args[0], 'map');
         $keys = $map[1];
 
         return [Type::T_LIST, ',', $keys];
@@ -8633,7 +8633,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     protected static $libMapValues = ['map'];
     protected function libMapValues($args)
     {
-        $map = $this->assertMap($args[0]);
+        $map = $this->assertMap($args[0], 'map');
         $values = $map[2];
 
         return [Type::T_LIST, ',', $values];
@@ -8645,7 +8645,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     ];
     protected function libMapRemove($args)
     {
-        $map = $this->assertMap($args[0]);
+        $map = $this->assertMap($args[0], 'map');
 
         if (\count($args) === 1) {
             return $map;
@@ -8673,7 +8673,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     protected static $libMapHasKey = ['map', 'key'];
     protected function libMapHasKey($args)
     {
-        $map = $this->assertMap($args[0]);
+        $map = $this->assertMap($args[0], 'map');
 
         return $this->toBool($this->mapHasKey($map, $args[1]));
     }
@@ -8702,8 +8702,8 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     ];
     protected function libMapMerge($args)
     {
-        $map1 = $this->assertMap($args[0]);
-        $map2 = $this->assertMap($args[1]);
+        $map1 = $this->assertMap($args[0], 'map1');
+        $map2 = $this->assertMap($args[1], 'map2');
 
         foreach ($map2[1] as $i2 => $key2) {
             $key = $this->compileStringContent($this->coerceString($key2));
