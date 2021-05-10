@@ -3376,7 +3376,7 @@ class Compiler
      *
      * @return boolean
      */
-    protected function isTruthy($value)
+    public function isTruthy($value)
     {
         return $value !== static::$false && $value !== static::$null;
     }
