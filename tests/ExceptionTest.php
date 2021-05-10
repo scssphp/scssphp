@@ -97,7 +97,7 @@ div {
 }
 END_OF_SCSS
                 ,
-                'expecting color'
+                '$color: cobaltgreen is not a color.'
             ),
             [<<<'END_OF_SCSS'
 BODY {

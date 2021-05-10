@@ -7147,7 +7147,7 @@ class Compiler
      *
      * @return array
      *
-     * @throws \Exception
+     * @throws SassScriptException
      */
     public function assertString($value, $varName = null)
     {
@@ -7158,13 +7158,10 @@ class Compiler
 
         if (! \in_array($value[0], [Type::T_STRING, Type::T_KEYWORD])) {
             $value = $this->compileValue($value);
-            $var_display = ($varName ? " \${$varName}:" : '');
-            throw $this->error("Error:{$var_display} $value is not a string.");
+            throw SassScriptException::forArgument("$value is not a string.", $varName);
         }
 
-        $value = $this->coerceString($value);
-
-        return $value;
+        return $this->coerceString($value);
     }
 
     /**
@@ -7193,17 +7190,20 @@ class Compiler
      * @api
      *
      * @param array|Number $value
+     * @param string|null  $varName
      *
      * @return array
      *
-     * @throws \Exception
+     * @throws SassScriptException
      */
-    public function assertMap($value)
+    public function assertMap($value, $varName = null)
     {
         $value = $this->coerceMap($value);
 
         if ($value[0] !== Type::T_MAP) {
-            throw $this->error('expecting map, %s received', $value[0]);
+            $value = $this->compileValue($value);
+
+            throw SassScriptException::forArgument("$value is not a map.", $varName);
         }
 
         return $value;
@@ -7256,18 +7256,21 @@ class Compiler
      * @api
      *
      * @param array|Number $value
+     * @param string|null  $varName
      *
      * @return array
      *
-     * @throws \Exception
+     * @throws SassScriptException
      */
-    public function assertColor($value)
+    public function assertColor($value, $varName = null)
     {
         if ($color = $this->coerceColor($value)) {
             return $color;
         }
 
-        throw $this->error('expecting color, %s received', $value[0]);
+        $value = $this->compileValue($value);
+
+        throw SassScriptException::forArgument("$value is not a color.", $varName);
     }
 
     /**
@@ -7276,18 +7279,17 @@ class Compiler
      * @api
      *
      * @param array|Number $value
-     * @param string $varName
+     * @param string|null  $varName
      *
      * @return Number
      *
-     * @throws \Exception
+     * @throws SassScriptException
      */
     public function assertNumber($value, $varName = null)
     {
         if (!$value instanceof Number) {
             $value = $this->compileValue($value);
-            $var_display = ($varName ? " \${$varName}:" : '');
-            throw $this->error("Error:{$var_display} $value is not a number.");
+            throw SassScriptException::forArgument("$value is not a number.", $varName);
         }
 
         return $value;
@@ -7299,19 +7301,17 @@ class Compiler
      * @api
      *
      * @param array|Number $value
-     * @param string $varName
+     * @param string|null  $varName
      *
      * @return integer
      *
-     * @throws \Exception
+     * @throws SassScriptException
      */
     public function assertInteger($value, $varName = null)
     {
-
         $value = $this->assertNumber($value, $varName)->getDimension();
         if (round($value - \intval($value), Number::PRECISION) > 0) {
-            $var_display = ($varName ? " \${$varName}:" : '');
-            throw $this->error("Error:{$var_display} $value is not an integer.");
+            throw SassScriptException::forArgument("$value is not an integer.", $varName);
         }
 
         return intval($value);
@@ -8408,7 +8408,7 @@ class Compiler
     {
         try {
             $str = $this->assertString($args[0], 'string');
-        } catch (SassException $e) {
+        } catch (SassScriptException $e) {
             $value = $this->compileValue($args[0]);
             $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
             $line  = $this->sourceLine;
@@ -9282,10 +9282,8 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         }
 
         if (! $this->checkSelectorArgType($arg)) {
-            $var_display = ($varname ? '$' . $varname . ': ' : '');
             $var_value = $this->compileValue($arg);
-            throw $this->error("$var_display$var_value is not a valid selector: it must be a string,"
-                . " a list of strings, or a list of lists of strings");
+            throw SassScriptException::forArgument("$var_value is not a valid selector: it must be a string, a list of strings, or a list of lists of strings", $varname);
         }
 
 
@@ -9304,8 +9302,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
                 foreach ($gluedSelector as $selector) {
                     foreach ($selector as $s) {
                         if (in_array(static::$selfSelector, $s)) {
-                            $var_display = ($varname ? '$' . $varname . ': ' : '');
-                            throw $this->error("{$var_display}Parent selectors aren't allowed here.");
+                            throw SassScriptException::forArgument("Parent selectors aren't allowed here.", $varname);
                         }
                     }
                 }
@@ -9314,8 +9311,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
             return $gluedSelector;
         }
 
-        $var_display = ($varname ? '$' . $varname . ': ' : '');
-        throw $this->error("{$var_display}expected more input, invalid selector.");
+        throw SassScriptException::forArgument("expected more input, invalid selector.", $varname);
     }
 
     /**
