@@ -6849,9 +6849,8 @@ class Compiler
         }
 
         if (
-            $item[0] === static::$emptyList[0] &&
-            $item[1] === static::$emptyList[1] &&
-            $item[2] === static::$emptyList[2]
+            $item[0] === Type::T_LIST &&
+            $item[2] === []
         ) {
             return static::$emptyMap;
         }
