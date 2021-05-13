@@ -5629,6 +5629,23 @@ class Compiler
     }
 
     /**
+     * Detects whether the import is a CSS import.
+     *
+     * For legacy reasons, custom importers are called for those, allowing them
+     * to replace them with an actual Sass import. However this behavior is
+     * deprecated. Custom importers are expected to return null when they receive
+     * a CSS import.
+     *
+     * @param string $url
+     *
+     * @return bool
+     */
+    public static function isCssImport($url)
+    {
+        return 1 === preg_match('~\.css$|^https?://|^//~', $url);
+    }
+
+    /**
      * Return the file path for an import url if it exists
      *
      * @internal
@@ -5642,7 +5659,7 @@ class Compiler
     {
         // Vanilla css and external requests. These are not meant to be Sass imports.
         // Callback importers are still called for BC.
-        if (preg_match('~\.css$|^https?://|^//~', $url)) {
+        if (self::isCssImport($url)) {
             foreach ($this->importPaths as $dir) {
                 if (\is_string($dir)) {
                     continue;
