@@ -34,5 +34,5 @@ $compiler->addImportPath(function($path) {
 });
 
 // will import 'stylesheets/sub.scss'
-echo $compiler->compileString('{% raw %}@{% endraw %}import "sub.scss";')->getCss();
+echo $compiler->compileString('@import "sub.scss";')->getCss();
 ```
