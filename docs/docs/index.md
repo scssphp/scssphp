@@ -42,7 +42,7 @@ message.
 
 ### Import Paths
 
-When you import a file using the `{% raw %}@{% endraw %}import` directive,
+When you import a file using the `@import` directive,
 the import is resolved relatively to the current file. The input of `compileString`
 is considered to be in the provided path. If no path is provided, relative imports
 won't be resolved. Imports paths will need to be used.
@@ -63,7 +63,7 @@ $compiler = new Compiler();
 $compiler->setImportPaths('assets/stylesheets/');
 
 // will search for 'assets/stylesheets/mixins.scss'
-echo $compiler->compileString('{% raw %}@{% endraw %}import "mixins.scss";')->getCss();
+echo $compiler->compileString('@import "mixins.scss";')->getCss();
 ```
 
 Besides adding static import paths, it's also possible to add
@@ -151,7 +151,7 @@ $compiler->setSourceMapOptions([
     'sourceRoot' => '/',
 ]);
 
-$result = $compiler->compileString('{% raw %}@{% endraw %}import "sub.scss";');
+$result = $compiler->compileString('@import "sub.scss";');
 
 file_put_contents('/var/www/vhost/my-style.map', $result->getSourceMap());
 file_put_contents('/var/www/vhost/my-style.css', $result->getCss());
