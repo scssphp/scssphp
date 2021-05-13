@@ -170,6 +170,7 @@ body {
     overflow: hidden;
     color: $text_color;
     font-size: 18px;
+    line-height: 1.5;
     padding-bottom: 20px;
 
     .inner {
@@ -239,14 +240,10 @@ body {
     }
 }
 
-
-p {
-    line-height: 150%;
-    code {
-        background: rgba(0,0,0, 0.1);
-        border-radius: 4px;
-        padding: 1px 4px;
-    }
+:not(pre) > code {
+    background: rgba(0,0,0, 0.1);
+    border-radius: 4px;
+    padding: 1px 4px;
 }
 
 .comments {
