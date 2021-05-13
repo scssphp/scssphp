@@ -7712,6 +7712,8 @@ class Compiler
      * @param callable $fn
      *
      * @return array
+     *
+     * @phpstan-param callable(float|int, float|int|null, float|int): (float|int) $fn
      */
     protected function alterColor(array $args, $operation, $fn)
     {
@@ -7803,16 +7805,16 @@ class Compiler
         }
 
         if ($hasRgb) {
-            $color[1] = round(\call_user_func($fn, $color[1], $red, 255));
-            $color[2] = round(\call_user_func($fn, $color[2], $green, 255));
-            $color[3] = round(\call_user_func($fn, $color[3], $blue, 255));
+            $color[1] = round($fn($color[1], $red, 255));
+            $color[2] = round($fn($color[2], $green, 255));
+            $color[3] = round($fn($color[3], $blue, 255));
         } elseif ($hasWB) {
             $hwb = $this->RGBtoHWB($color[1], $color[2], $color[3]);
             if ($hue !== null) {
                 $hwb[1] = $change ? $hue : $hwb[1] + $hue;
             }
-            $hwb[2] = \call_user_func($fn, $hwb[2], $whiteness, 100);
-            $hwb[3] = \call_user_func($fn, $hwb[3], $blackness, 100);
+            $hwb[2] = $fn($hwb[2], $whiteness, 100);
+            $hwb[3] = $fn($hwb[3], $blackness, 100);
 
             $rgb = $this->HWBtoRGB($hwb[1], $hwb[2], $hwb[3]);
 
@@ -7827,8 +7829,8 @@ class Compiler
             if ($hue !== null) {
                 $hsl[1] = $change ? $hue : $hsl[1] + $hue;
             }
-            $hsl[2] = \call_user_func($fn, $hsl[2], $saturation, 100);
-            $hsl[3] = \call_user_func($fn, $hsl[3], $lightness, 100);
+            $hsl[2] = $fn($hsl[2], $saturation, 100);
+            $hsl[3] = $fn($hsl[3], $lightness, 100);
 
             $rgb = $this->toRGB($hsl[1], $hsl[2], $hsl[3]);
 
@@ -7841,7 +7843,7 @@ class Compiler
 
         if ($alpha !== null) {
             $existingAlpha = isset($color[4]) ? $color[4] : 1;
-            $color[4] = \call_user_func($fn, $existingAlpha, $alpha, 1);
+            $color[4] = $fn($existingAlpha, $alpha, 1);
         }
 
         return $color;
