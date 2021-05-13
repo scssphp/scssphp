@@ -141,11 +141,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Cannot access offset 0 on \\(int\\|string\\)\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Cannot access offset 1 on array\\<int, string\\>\\|false\\.$#"
 			count: 2
 			path: src/Compiler.php
@@ -1366,6 +1361,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Offset 0 does not exist on \\(int\\|string\\)\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Offset 2 does not exist on array\\(\\)\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1516,8 +1516,13 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#3 \\$lightness of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:toRGB\\(\\) expects int, float\\|int given\\.$#"
+			message: "#^Parameter \\#3 \\$blackness of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:HWBtoRGB\\(\\) expects int, float\\|int given\\.$#"
 			count: 1
+			path: src/Compiler.php
+
+		-
+			message: "#^Parameter \\#3 \\$lightness of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:toRGB\\(\\) expects int, float\\|int given\\.$#"
+			count: 2
 			path: src/Compiler.php
 
 		-
