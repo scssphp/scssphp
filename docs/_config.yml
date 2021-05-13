@@ -20,6 +20,14 @@ exclude:
 # Github Pages
 github: [Repository metadata]
 plugins:
+# Default gh-pages plugins
+- jekyll-commonmark-ghpages
+- jekyll-relative-links
+- jekyll-optional-front-matter
+- jekyll-readme-index
+- jekyll-default-layout
+- jekyll-titles-from-headings
+# Additional plugins
 - jekyll-mentions
 - jemoji
 - jekyll-redirect-from
