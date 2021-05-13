@@ -1,8 +1,4 @@
----
-layout: default
----
-
-**scssphp** is a compiler for [SCSS][0] 3.x written in PHP.
+**scssphp** is a compiler for [SCSS][0] written in PHP.
 
 SCSS is a CSS preprocessor language that adds many features like variables,
 mixins, imports, nesting, color manipulation, functions, and control directives.
@@ -11,8 +7,8 @@ mixins, imports, nesting, color manipulation, functions, and control directives.
 line tool for running the compiler from a terminal/shell or script.
 
 <div class="github-buttons">
-<iframe src="http://ghbtns.com/github-btn.html?user=scssphp&repo=scssphp&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
-<iframe src="http://ghbtns.com/github-btn.html?user=scssphp&repo=scssphp&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95px" height="20px"></iframe>
+<iframe src="https://ghbtns.com/github-btn.html?user=scssphp&repo=scssphp&type=star&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="150" height="20"></iframe>
+<iframe src="https://ghbtns.com/github-btn.html?user=scssphp&repo=scssphp&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="150" height="20"></iframe>
 </div>
 
 <a name="installing"></a>
@@ -25,7 +21,8 @@ You can always download the latest version here:
 You can also find the latest source online:
 <{{ site.repo_url }}/>
 
-If you use [Packagist][2] for installing packages, then you can update your `composer.json` like so:
+If you use [Packagist][2] for installing packages, then you can update your
+`composer.json` like so:
 
 ```json
 {
@@ -36,8 +33,8 @@ If you use [Packagist][2] for installing packages, then you can update your `com
 ```
 
 Note: git archives of stable versions no longer include the `tests/` folder.
-To install the unit tests, download the complete package source using `composer`'s
-`--prefer-source` option.
+To install the unit tests, download the complete package source using
+`composer`'s `--prefer-source` option.
 
 **scssphp** requires PHP version 5.6 (or above).
 
@@ -45,66 +42,75 @@ To install the unit tests, download the complete package source using `composer`
 
 For a complete guide to the syntax of SCSS, consult the [official documentation][1].
 
+Note that **scssphp** is not fully compliant with the Sass specification yet.
+Sass modules are not implemented yet either.
+
 ## Command Line Tool
 
 A really basic command line tool is included for integration with scripts. It
 is called `pscss`. It reads SCSS from either a named input file or standard in,
 and returns the CSS to standard out.
 
-Usage: bin/pscss [options] [input-file]
+Usage: `bin/pscss [options] [input-file] [output-file]`
 
 ### Options
 
-If passed the flag `-h` (or `--help`), input is ignored and a summary of the command's usage is returned.
+If passed the flag `-h` (or `--help`), input is ignored and a summary of the
+command's usage is returned.
 
-If passed the flag `-v` (or `--version`), input is ignored and the current version is returned.
+If passed the flag `-v` (or `--version`), input is ignored and the current
+version is returned.
 
-If passed the flag `-T`, a formatted parse tree is returned instead of the compiled CSS.
-
-The flag `-s` (or `--style`) can be used to set the [output style](docs/#output-formatting):
+The flag `-s` (or `--style`) can be used to set the
+[output style](docs/#output-formatting):
 
 ```bash
-$ bin/pscss -s compressed < styles.scss
+$ bin/pscss -s compressed styles.scss
 ```
 
-The flag `-I` (or `--load_path`) can be used to set import paths for the loader. On Unix/Linux systems,
-the paths are colon separated. On Windows, they are separate by a semi-colon.
+The flag `-I` (or `--load_path`) can be used to set import paths for the loader.
+On Unix/Linux systems, the paths are colon separated. On Windows, they are
+separated by a semi-colon.
 
 ## SCSSPHP Library Reference
 
-Complete documentation for **scssphp** is located at <a href="{{ site.baseurl }}/docs/">{{ site.baseurl }}/docs/</a>.
-
-To use the scssphp library either require `scss.inc.php` or use your `composer` generated auto-loader, and then
-invoke the `Compiler` class:
+To use the scssphp library either require `scss.inc.php` or use your `composer`
+generated auto-loader, and then invoke the `\ScssPhp\ScssPhp\Compiler` class:
 
 ```php
 require_once "scssphp/scss.inc.php";
 
 use ScssPhp\ScssPhp\Compiler;
 
-$scss = new Compiler();
+$compiler = new Compiler();
 
-echo $scss->compile('
+echo $compiler->compileString('
   $color: #abc;
   div { color: lighten($color, 20%); }
-');
+')->getCss();
 ```
 
-The `compile` method takes `SCSS` as a string, and returns the `CSS`. If there
-is an error when compiling, an exception is thrown with an appropriate
-message.
+The `compileString` method takes the `SCSS` source code as a string and an
+optional path of the input file (to resolve relative imports), and returns
+a `CompilationResult` value object containing the CSS and some additional
+data. If there is an error when compiling, a `\ScssPhp\ScssPhp\Exception\SassException`
+is thrown with an appropriate message.
 
-For a more detailed guide, consult <a href="{{ site.baseurl }}/docs/">{{ site.baseurl }}/docs/</a>.
+For a more detailed guide, [consult the documentation](docs/).
 
 <a name="issues"></a>
 
 ## Issues
 
-Please submit bug reports and feature requests to the [the issue tracker][3]. Pull requests also welcome.
+Please submit bug reports and feature requests to the [the issue tracker][3].
+Pull requests are also welcome.
+
+Any feature request about implementing new language feature will be rejected.
+They must be submitted to the upstream Sass project instead.
 
 ## Changelog
 
-For a list of **scssphp** changes, refer to <a href="{{ site.baseurl }}/docs/changelog.html">{{ site.baseurl }}/docs/changelog.html</a>.
+For a list of **scssphp** changes, refer to [the changelog](docs/changelog.md).
 
   [0]: https://sass-lang.com/
   [1]: https://sass-lang.com/documentation

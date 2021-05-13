@@ -67,6 +67,6 @@ allow others to use your modifications and give credit to [Sass][3],
 [Ubuntu][1], and [Drupal][2].
 
   [0]: https://creativecommons.org/licenses/by-sa/3.0/us/
-  [1]: http://www.ubuntu.com/about/about-ubuntu/conduct
+  [1]: https://www.ubuntu.com/about/about-ubuntu/conduct
   [2]: https://www.drupal.org/dcoc
-  [3]: http://sass-lang.com/community-guidelines
+  [3]: https://sass-lang.com/community-guidelines
