@@ -16,11 +16,19 @@ jobs:
                 php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0' ]
                 extensions: [ '' ]
                 os: [ubuntu-latest]
+                composer_flags: ['']
                 include:
                     - php: '8.0'
                       os: ubuntu-latest
                       extensions: ':mbstring'
                       name_suffix: ' without mbstring'
+                      # PHPUnit requires ext-mbstring. But it is only necessary for features that we don't currently use:
+                      # - the testdox, JUnit and XML result printers
+                      # - the StringContains assertion when ignoring case
+                      composer_flags: '--ignore-platform-req=ext-mbstring'
+                    - php: '8.1'
+                      os: ubuntu-latest
+                      composer_flags: '--ignore-platform-req=php'
                     - php: '8.0'
                       os: windows-latest
                       name_suffix: ' on Windows'
@@ -43,11 +51,7 @@ jobs:
                     extensions: "${{ matrix.extensions }}"
 
             -   name: Install dependencies
-                # PHPUnit requires ext-mbstring. But it is only necessary for features that we don't currently use:
-                # - the testdox, JUnit and XML result printers
-                # - the StringContains assertion when ignoring case
-                # Ignoring the requirement is necessary for the job running the testsuite without mbstring
-                run: composer update --ansi --no-progress --ignore-platform-req=ext-mbstring
+                run: composer update --ansi --no-progress ${{ matrix.composer_flags }}
 
             -   name: Run tests
                 run: vendor/bin/phpunit --colors=always
