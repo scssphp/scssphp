@@ -1,5 +1,68 @@
 # Changelog
 
+## **1.5.0** -- May 14, 2021
+
+**Deprecated:**
+
+* Deprecate the `compile` method relying on stateful getters for included files (@stof)
+* Deprecate extending the Compiler class to register custom functions. Use `registerFunction` instead (@stof)
+* Deprecate overriding core functions through `registerFunction` (@stof)
+* Deprecate returning a file path in custom importers for CSS imports (@stof)
+* Deprecate `Compiler::setEncoding` as it was not implemented in a compliant way. Only UTF-8 is supported now (@stof)
+* Deprecate the `--dump-tree` option of the pscss CLI (@stof)
+* Deprecate the `scssphp-glob` function (@stof)
+* Deprecate the `Compiler::setVariables` method (@stof)
+* Deprecate passing non-converted values when registering variables (@stof)
+* Deprecate returning a PHP value rather than a Sass value from custom functions (@stof)
+* Deprecate registering custom functions without an argument declaration (@stof)
+* Deprecate the `@scssphp-import-once` directive (@stof)
+* Deprecate non-standard support for broken interpolation in loud comments (@stof)
+* Deprecate `\ScssPhp\ScssPhp\Exception\ServerException` (@stof)
+
+**Added:**
+
+* Add support for writing the output to a file in pscss (@stof)
+* Add support for writing sourcemaps to a file in pscss (@stof)
+* Add support for embedding sources in the sourcemap in pscss (@stof)
+* Add support for `$blackness` and `$whiteness` in `adjust-color`, `change-color` and `scale-color` (@Cerdic)
+* Add a new `compileString` method returning a `CompilationResult` (@Cerdic, @stof)
+* Add a new `checkImportResolutions` cache option to invalidate the compilation cache if imports would resolve differently (@Cerdic)
+* Add a `LoggerInteface` to customize the handling of warning and debug messages (@stof)
+* Add the `\ScssPhp\ScssPhp\Warn` API to report warnings in custom functions (@stof)
+* Add `Compiler::replaceVariables` and `Compiler::addVariables` to manage custom variables (@stof)
+* Add the `\ScssPhp\ScssPhp\ValueConverter` to produce values in the Sass value representation (@stof)
+* Add `Compiler::getStringText` to get the text of a Sass string (@stof)
+* Add `Compiler::getArgumentListKeywords` to get the keyword arguments of a Sass argument list (@stof)
+* Add `Compiler::isCssImport` to allow custom importers to skip CSS imports (@stof)
+* Add documentation about extending the library (@stof)
+
+**Changed:**
+
+* Add type checks for arguments of core functions (@Cerdic, @stof)
+* Refactor the processing of function arguments to be more spec compliant (@stof)
+* Forbid unsupported selectors in the `@extend` directive instead of producing a non-standard behavior (@stof)
+* Take into account `.sass` files during import resolution to avoid selecting a different file than dart-sass (@stof)
+* Change the internal representation of arguments lists to make them compliant lists (@stof)
+* Tagged all internal APIs with `@internal` to exclude them from the backward compatibility surface (@stof)
+* Change the error reporting for `Compiler::assert*` helpers to be consistent (@stof)
+* Change `scss.inc.php` to register an autoloader rather than loading all classes eagerly (@stof)
+* Improve the phpdoc of the library, with advanced type declarations for phpstan (@stof)
+
+**Removed:**
+
+* Remove support for running (in a non-compliant way) without mbstring and iconv. Either mbstring or iconv is now required (@stof)
+* Remove non-standard support for ignoring HTML comment delimiters (but not the content of the comment) during parsing (@stof)
+
+**Fixed:**
+
+* Fix the handling of units and bounds in for loop (@stof)
+* Fix the handling of interpolation in expressions (@stof)
+* Fix the implementation of `str-slice` for non-ASCII chars (@stof)
+* Fix the handling of `min` and `max` without arguments (@stof)
+* Fix the implementation of `keywords()` for functions called with positional arguments (@stof)
+* Fix the handling of list indexes in `nth` and `set-nth` (@stof)
+* Fix usage of `preg_match` flags avoid passing `null` (@stof)
+
 ## **1.4.1** -- Jan 4, 2021
 
 * Fix support for absolute paths in imports (stof)
