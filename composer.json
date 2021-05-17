@@ -41,6 +41,7 @@
         "squizlabs/php_codesniffer": "~3.5",
         "symfony/phpunit-bridge": "^5.1",
         "twbs/bootstrap": "~5.0",
+        "twbs/bootstrap4": "4.6.0",
         "zurb/foundation": "~6.5"
     },
     "repositories": [
@@ -58,6 +59,24 @@
                     "type": "zip",
                     "url": "https://api.github.com/repos/sass/sass-spec/zipball/b9bf24a936528f333fb30ee59ca550c6da551c11",
                     "reference": "b9bf24a936528f333fb30ee59ca550c6da551c11",
+                    "shasum": ""
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "twbs/bootstrap4",
+                "version": "v4.6.0",
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/twbs/bootstrap.git",
+                    "reference": "6ffb0b48e455430f8a5359ed689ad64c1143fac2"
+                },
+                "dist": {
+                    "type": "zip",
+                    "url": "https://api.github.com/repos/twbs/bootstrap/zipball/6ffb0b48e455430f8a5359ed689ad64c1143fac2",
+                    "reference": "6ffb0b48e455430f8a5359ed689ad64c1143fac2",
                     "shasum": ""
                 }
             }
