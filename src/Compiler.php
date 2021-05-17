@@ -7369,6 +7369,10 @@ class Compiler
             if ($c[$i] > 255) {
                 $c[$i] = 255;
             }
+
+            if (!\is_int($c[$i])) {
+                $c[$i] = round($c[$i]);
+            }
         }
 
         return $c;
@@ -7451,9 +7455,9 @@ class Compiler
      *
      * @internal
      *
-     * @param integer $hue        H from 0 to 360
-     * @param integer $saturation S from 0 to 100
-     * @param integer $lightness  L from 0 to 100
+     * @param int|float $hue        H from 0 to 360
+     * @param int|float $saturation S from 0 to 100
+     * @param int|float $lightness  L from 0 to 100
      *
      * @return array
      */
@@ -7941,7 +7945,7 @@ class Compiler
             throw $this->error('Error: argument `$color` of `red($color)` must be a color');
         }
 
-        return new Number($color[1], '');
+        return new Number((int) $color[1], '');
     }
 
     protected static $libGreen = ['color'];
@@ -7953,7 +7957,7 @@ class Compiler
             throw $this->error('Error: argument `$color` of `green($color)` must be a color');
         }
 
-        return new Number($color[2], '');
+        return new Number((int) $color[2], '');
     }
 
     protected static $libBlue = ['color'];
@@ -7965,7 +7969,7 @@ class Compiler
             throw $this->error('Error: argument `$color` of `blue($color)` must be a color');
         }
 
-        return new Number($color[3], '');
+        return new Number((int) $color[3], '');
     }
 
     protected static $libAlpha = ['color'];
