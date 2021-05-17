@@ -30,6 +30,36 @@ class FrameworkTest extends TestCase
         $this->assertNotEmpty($result->getCss());
     }
 
+    public function testBootstrap4()
+    {
+        $compiler = new Compiler();
+        $compiler->setLogger(new QuietLogger());
+
+        $entrypoint = dirname(__DIR__) . '/vendor/twbs/bootstrap4/scss/bootstrap.scss';
+
+        $result = $compiler->compileString(file_get_contents($entrypoint), $entrypoint);
+
+        $this->assertNotEmpty($result->getCss());
+    }
+
+    public function testBootstrap4CustomSettings()
+    {
+        $compiler = new Compiler();
+        $compiler->addImportPath(dirname(__DIR__) . '/vendor/twbs/bootstrap4/scss');
+        $compiler->setLogger(new QuietLogger());
+
+        $scss = <<<'SCSS'
+$enable-shadows: true;
+$enable-gradients: true;
+
+@import "bootstrap";
+SCSS;
+
+        $result = $compiler->compileString($scss);
+
+        $this->assertNotEmpty($result->getCss());
+    }
+
     public function testFoundation()
     {
         $compiler = new Compiler();
