@@ -40,7 +40,7 @@
         "sass/sass-spec": "*",
         "squizlabs/php_codesniffer": "~3.5",
         "symfony/phpunit-bridge": "^5.1",
-        "twbs/bootstrap": "~4.3",
+        "twbs/bootstrap": "~5.0",
         "zurb/foundation": "~6.5"
     },
     "repositories": [
