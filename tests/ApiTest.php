@@ -243,6 +243,14 @@ class ApiTest extends TestCase
         );
     }
 
+    public function testGetStringText()
+    {
+        $compiler = new Compiler();
+        $string = ValueConverter::parseValue('"foobar"');
+
+        $this->assertEquals('foobar', $compiler->getStringText($compiler->assertString($string)));
+    }
+
     /**
      * @group legacy
      */
