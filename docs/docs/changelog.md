@@ -1,5 +1,11 @@
 # Changelog
 
+## **1.5.1** -- May 17, 2021
+
+**Fixed:**
+
+* Fix computation on colors to always return integer values for RGB channels (@stof)
+
 ## **1.5.0** -- May 14, 2021
 
 **Deprecated:**
