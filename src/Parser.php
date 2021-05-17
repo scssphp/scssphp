@@ -124,7 +124,7 @@ class Parser
      *
      * @api
      *
-     * @param string               $sourceName
+     * @param string|null          $sourceName
      * @param integer              $sourceIndex
      * @param string|null          $encoding
      * @param Cache|null           $cache

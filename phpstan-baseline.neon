@@ -1431,11 +1431,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$path of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:parserFactory\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Parameter \\#1 \\$r of static method ScssPhp\\\\ScssPhp\\\\Colors\\:\\:RGBaToColorName\\(\\) expects int, float\\|int\\|string given\\.$#"
 			count: 1
 			path: src/Compiler.php
