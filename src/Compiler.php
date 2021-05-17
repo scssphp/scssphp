@@ -4713,7 +4713,7 @@ class Compiler
             throw new \InvalidArgumentException('The argument is not a sass string. Did you forgot to use "assertString"?');
         }
 
-        return $this->compileValue($value);
+        return $this->compileStringContent($value);
     }
 
     /**
