@@ -8574,21 +8574,6 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         return $this->toBool($this->has($name));
     }
 
-    private static $libCounter = ['args...'];
-    /**
-     * Workaround IE7's content counter bug.
-     *
-     * @param array $args
-     *
-     * @return array
-     */
-    private function libCounter($args)
-    {
-        $list = array_map([$this, 'compileValue'], $args[0][2]);
-
-        return [Type::T_STRING, '', ['counter(' . implode(',', $list) . ')']];
-    }
-
     private static $libRandom = ['limit:null'];
     private function libRandom($args)
     {

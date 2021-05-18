@@ -886,16 +886,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:libCounter\\(\\) has parameter \\$args with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:libCounter\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:libHsl\\(\\) has parameter \\$funcName with no typehint specified\\.$#"
 			count: 1
 			path: src/Compiler.php
