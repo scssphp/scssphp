@@ -38,12 +38,6 @@ class Number extends Node implements \ArrayAccess
     const PRECISION = 10;
 
     /**
-     * @var integer
-     * @deprecated use {Number::PRECISION} instead to read the precision. Configuring it is not supported anymore.
-     */
-    public static $precision = self::PRECISION;
-
-    /**
      * @see http://www.w3.org/TR/2012/WD-css3-values-20120308/
      *
      * @var array

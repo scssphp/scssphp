@@ -67,12 +67,6 @@ END_OF_SCSS
                 'unexpected }'
             ],
             [<<<'END_OF_SCSS'
-.test { color: #fff / 0; }
-END_OF_SCSS
-                ,
-                'color: Can\'t divide by zero'
-            ],
-            [<<<'END_OF_SCSS'
 .test {
   @include foo();
 }

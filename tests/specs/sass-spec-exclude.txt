@@ -581,8 +581,6 @@ core_functions/selector/unify/simple/universal/and_universal/explicit/and_any
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_default
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_empty
 core_functions/string/unquote/error/type
-css/comment/error/loud/interpolation/failure
-css/comment/error/loud/interpolation/unterminated
 css/comment/error/loud/unterminated/scss
 css/custom_properties/error/brackets/curly
 css/custom_properties/error/brackets/curly_in_square
@@ -767,6 +765,7 @@ libsass-closed-issues/issue_1739/interpolate/left
 libsass-closed-issues/issue_1739/interpolate/right
 libsass-closed-issues/issue_1793
 libsass-closed-issues/issue_1797
+libsass-closed-issues/issue_1798/2
 libsass-closed-issues/issue_1803/nested
 libsass-closed-issues/issue_1804/inline
 libsass-closed-issues/issue_1804/variable
@@ -852,6 +851,7 @@ libsass-closed-issues/issue_948
 libsass-todo-issues/issue_1026
 libsass-todo-issues/issue_1732/invalid/ruleset
 libsass-todo-issues/issue_1763
+libsass-todo-issues/issue_1798/3
 libsass-todo-issues/issue_2023/class-selector-id
 libsass-todo-issues/issue_2023/class-selector-nr
 libsass-todo-issues/issue_2023/type-selector-id
@@ -954,8 +954,6 @@ non_conformant/errors/import/file/mixin/control-if/outside
 non_conformant/errors/import/file/simple
 non_conformant/errors/import/miss/simple
 non_conformant/errors/import/url/simple
-non_conformant/errors/invalid-operation/plus
-non_conformant/errors/invalid-operation/times
 non_conformant/errors/invalid-parent/function-in-each
 non_conformant/errors/invalid-parent/function-in-for
 non_conformant/errors/invalid-parent/function-in-function
@@ -1156,18 +1154,6 @@ non_conformant/parser/operations/subtract/dimensions/pairs
 non_conformant/parser/operations/subtract/numbers/pairs
 non_conformant/parser/operations/subtract/strings/pairs
 non_conformant/sass/imported
-non_conformant/sass_4_0/color_arithmetic/addition/color_color
-non_conformant/sass_4_0/color_arithmetic/addition/color_number
-non_conformant/sass_4_0/color_arithmetic/addition/number_color
-non_conformant/sass_4_0/color_arithmetic/division/color_color
-non_conformant/sass_4_0/color_arithmetic/division/color_number
-non_conformant/sass_4_0/color_arithmetic/modulo/color_color
-non_conformant/sass_4_0/color_arithmetic/modulo/color_number
-non_conformant/sass_4_0/color_arithmetic/multiplication/color_color
-non_conformant/sass_4_0/color_arithmetic/multiplication/color_number
-non_conformant/sass_4_0/color_arithmetic/multiplication/number_color
-non_conformant/sass_4_0/color_arithmetic/subtraction/color_color
-non_conformant/sass_4_0/color_arithmetic/subtraction/color_number
 non_conformant/sass_4_0/interpolation/after_hyphen
 non_conformant/sass_4_0/interpolation/function_name
 non_conformant/sass_4_0/interpolation/trailing_non_name_start
