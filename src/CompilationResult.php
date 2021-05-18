@@ -12,7 +12,7 @@
 
 namespace ScssPhp\ScssPhp;
 
-class CompilationResult
+final class CompilationResult
 {
     /**
      * @var string

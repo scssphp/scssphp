@@ -33,7 +33,7 @@ use ScssPhp\ScssPhp\Util;
  *
  * @template-implements \ArrayAccess<int, mixed>
  */
-class Number extends Node implements \ArrayAccess
+final class Number extends Node implements \ArrayAccess
 {
     const PRECISION = 10;
 
@@ -43,7 +43,7 @@ class Number extends Node implements \ArrayAccess
      * @var array
      * @phpstan-var array<string, array<string, float|int>>
      */
-    protected static $unitTable = [
+    private static $unitTable = [
         'in' => [
             'in' => 1,
             'pc' => 6,
@@ -755,7 +755,7 @@ class Number extends Node implements \ArrayAccess
             return 1;
         }
 
-        foreach (static::$unitTable as $unitVariants) {
+        foreach (self::$unitTable as $unitVariants) {
             if (isset($unitVariants[$unit1]) && isset($unitVariants[$unit2])) {
                 return $unitVariants[$unit1] / $unitVariants[$unit2];
             }

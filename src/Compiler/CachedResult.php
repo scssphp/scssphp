@@ -17,7 +17,7 @@ use ScssPhp\ScssPhp\CompilationResult;
 /**
  * @internal
  */
-class CachedResult
+final class CachedResult
 {
     /**
      * @var CompilationResult

@@ -23,7 +23,7 @@ use ScssPhp\ScssPhp\Node\Number;
  *
  * @internal
  */
-class Util
+final class Util
 {
     /**
      * Asserts that `value` falls within `range` (inclusive), leaving

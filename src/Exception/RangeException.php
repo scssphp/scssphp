@@ -19,6 +19,6 @@ namespace ScssPhp\ScssPhp\Exception;
  *
  * @internal
  */
-class RangeException extends \Exception implements SassException
+final class RangeException extends \Exception implements SassException
 {
 }

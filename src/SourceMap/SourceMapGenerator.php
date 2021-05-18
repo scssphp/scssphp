@@ -12,8 +12,6 @@
 
 namespace ScssPhp\ScssPhp\SourceMap;
 
-use ScssPhp\ScssPhp\Exception\CompilerException;
-
 /**
  * Source Map Generator
  *
@@ -24,7 +22,7 @@ use ScssPhp\ScssPhp\Exception\CompilerException;
  *
  * @internal
  */
-class SourceMapGenerator
+final class SourceMapGenerator
 {
     /**
      * What version of source map does the generator generate?
@@ -37,7 +35,7 @@ class SourceMapGenerator
      * @var array
      * @phpstan-var array{sourceRoot: string, sourceMapFilename: string|null, sourceMapURL: string|null, sourceMapWriteTo: string|null, outputSourceFiles: bool, sourceMapRootpath: string, sourceMapBasepath: string}
      */
-    protected $defaultOptions = [
+    private $defaultOptions = [
         // an optional source root, useful for relocating source files
         // on a server or removing repeated values in the 'sources' entry.
         // This value is prepended to the individual entries in the 'source' field.
@@ -67,7 +65,7 @@ class SourceMapGenerator
      *
      * @var \ScssPhp\ScssPhp\SourceMap\Base64VLQ
      */
-    protected $encoder;
+    private $encoder;
 
     /**
      * Array of mappings
@@ -75,26 +73,19 @@ class SourceMapGenerator
      * @var array
      * @phpstan-var list<array{generated_line: int, generated_column: int, original_line: int, original_column: int, source_file: string}>
      */
-    protected $mappings = [];
-
-    /**
-     * Array of contents map
-     *
-     * @var array
-     */
-    protected $contentsMap = [];
+    private $mappings = [];
 
     /**
      * File to content map
      *
      * @var array<string, string>
      */
-    protected $sources = [];
+    private $sources = [];
 
     /**
      * @var array<string, int>
      */
-    protected $sourceKeys = [];
+    private $sourceKeys = [];
 
     /**
      * @var array
@@ -200,7 +191,7 @@ class SourceMapGenerator
      *
      * @return string[]|null
      */
-    protected function getSourcesContent()
+    private function getSourcesContent()
     {
         if (empty($this->sources)) {
             return null;
@@ -297,9 +288,9 @@ class SourceMapGenerator
      *
      * @return integer|false
      */
-    protected function findFileIndex($filename)
+    private function findFileIndex($filename)
     {
-        return $this->sourceKeys[$filename];
+        return $this->sourceKeys[$filename] ?? false;
     }
 
     /**
@@ -309,7 +300,7 @@ class SourceMapGenerator
      *
      * @return string
      */
-    protected function normalizeFilename($filename)
+    private function normalizeFilename($filename)
     {
         $filename = $this->fixWindowsPath($filename);
         $rootpath = $this->options['sourceMapRootpath'];
