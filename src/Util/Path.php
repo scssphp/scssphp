@@ -5,7 +5,7 @@ namespace ScssPhp\ScssPhp\Util;
 /**
  * @internal
  */
-class Path
+final class Path
 {
     /**
      * @param string $path

@@ -19,6 +19,6 @@ namespace ScssPhp\ScssPhp\Exception;
  *
  * @internal
  */
-class CompilerException extends \Exception implements SassException
+final class CompilerException extends \Exception implements SassException
 {
 }

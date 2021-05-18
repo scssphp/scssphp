@@ -17,7 +17,7 @@ namespace ScssPhp\ScssPhp;
  *
  * @author Anthon Pang <anthon.pang@gmail.com>
  */
-class Type
+final class Type
 {
     const T_ASSIGN = 'assign';
     const T_AT_ROOT = 'at-root';

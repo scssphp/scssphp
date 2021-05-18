@@ -19,7 +19,7 @@ namespace ScssPhp\ScssPhp\SourceMap;
  *
  * @internal
  */
-class Base64
+final class Base64
 {
     /**
      * @var array<int, string>

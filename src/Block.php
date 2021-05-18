@@ -19,7 +19,7 @@ namespace ScssPhp\ScssPhp;
  *
  * @internal
  */
-class Block
+final class Block
 {
     /**
      * @var string

@@ -19,7 +19,7 @@ namespace ScssPhp\ScssPhp\Exception;
  *
  * @internal
  */
-class ParserException extends \Exception implements SassException
+final class ParserException extends \Exception implements SassException
 {
     /**
      * @var array
@@ -28,8 +28,6 @@ class ParserException extends \Exception implements SassException
 
     /**
      * Get source position
-     *
-     * @api
      */
     public function getSourcePosition()
     {
@@ -38,8 +36,6 @@ class ParserException extends \Exception implements SassException
 
     /**
      * Set source position
-     *
-     * @api
      *
      * @param array $sourcePosition
      */

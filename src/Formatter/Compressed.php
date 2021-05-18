@@ -21,7 +21,7 @@ use ScssPhp\ScssPhp\Formatter;
  *
  * @internal
  */
-class Compressed extends Formatter
+final class Compressed extends Formatter
 {
     /**
      * {@inheritdoc}
@@ -41,7 +41,7 @@ class Compressed extends Formatter
     /**
      * {@inheritdoc}
      */
-    public function blockLines(OutputBlock $block)
+    protected function blockLines(OutputBlock $block)
     {
         $inner = $this->indentStr();
 

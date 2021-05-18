@@ -1846,11 +1846,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:last\\(\\) should return array\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:matchString\\(\\) has parameter \\$m with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Parser.php
@@ -2002,11 +1997,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\SourceMap\\\\SourceMapGenerator\\:\\:getSourcesContent\\(\\) should return array\\<string\\>\\|null but returns array\\<int, bool\\|string\\>\\.$#"
-			count: 1
-			path: src/SourceMap/SourceMapGenerator.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\SourceMap\\\\SourceMapGenerator\\:\\:\\$contentsMap type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/SourceMap/SourceMapGenerator.php
 

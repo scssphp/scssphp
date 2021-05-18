@@ -19,7 +19,7 @@ namespace ScssPhp\ScssPhp;
  *
  * @internal
  */
-class Colors
+final class Colors
 {
     /**
      * CSS Colors
@@ -28,7 +28,7 @@ class Colors
      *
      * @var array<string, string>
      */
-    protected static $cssColors = [
+    private static $cssColors = [
         'aliceblue' => '240,248,255',
         'antiquewhite' => '250,235,215',
         'aqua' => '0,255,255',
@@ -189,8 +189,8 @@ class Colors
      */
     public static function colorNameToRGBa($colorName)
     {
-        if (\is_string($colorName) && isset(static::$cssColors[$colorName])) {
-            $rgba = explode(',', static::$cssColors[$colorName]);
+        if (\is_string($colorName) && isset(self::$cssColors[$colorName])) {
+            $rgba = explode(',', self::$cssColors[$colorName]);
 
             // only case with opacity is transparent, with opacity=0, so we can intval on opacity also
             $rgba = array_map('intval', $rgba);
@@ -226,7 +226,7 @@ class Colors
         if (\is_null($reverseColorTable)) {
             $reverseColorTable = [];
 
-            foreach (static::$cssColors as $name => $rgb_str) {
+            foreach (self::$cssColors as $name => $rgb_str) {
                 $rgb_str = explode(',', $rgb_str);
 
                 if (

@@ -10,7 +10,7 @@ namespace ScssPhp\ScssPhp\Exception;
  * and replace it with a SassException reporting the location of the
  * error.
  */
-class SassScriptException extends \Exception
+final class SassScriptException extends \Exception
 {
     /**
      * Creates a SassScriptException with support for an argument name.

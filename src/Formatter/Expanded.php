@@ -21,7 +21,7 @@ use ScssPhp\ScssPhp\Formatter;
  *
  * @internal
  */
-class Expanded extends Formatter
+final class Expanded extends Formatter
 {
     /**
      * {@inheritdoc}
