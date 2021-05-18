@@ -104,7 +104,6 @@ class Parser
      * @var string
      */
     private $buffer;
-    private $utf8;
     /**
      * @var string|null
      */
@@ -126,18 +125,16 @@ class Parser
      *
      * @param string|null          $sourceName
      * @param integer              $sourceIndex
-     * @param string|null          $encoding
      * @param Cache|null           $cache
      * @param bool                 $cssOnly
      * @param LoggerInterface|null $logger
      */
-    public function __construct($sourceName, $sourceIndex = 0, $encoding = 'utf-8', Cache $cache = null, $cssOnly = false, LoggerInterface $logger = null)
+    public function __construct($sourceName, $sourceIndex = 0, Cache $cache = null, $cssOnly = false, LoggerInterface $logger = null)
     {
         $this->sourceName       = $sourceName ?: '(stdin)';
         $this->sourceIndex      = $sourceIndex;
         $this->charset          = null;
-        $this->utf8             = ! $encoding || strtolower($encoding) === 'utf-8';
-        $this->patternModifiers = $this->utf8 ? 'Aisu' : 'Ais';
+        $this->patternModifiers = 'Aisu';
         $this->commentsSeen     = [];
         $this->commentsSeen     = [];
         $this->allowVars        = true;
@@ -152,9 +149,7 @@ class Parser
             $commentMultiRight  = '\*\/';
 
             static::$commentPattern = $commentMultiLeft . '.*?' . $commentMultiRight;
-            static::$whitePattern = $this->utf8
-                ? '/' . $commentSingle . '[^\n]*\s*|(' . static::$commentPattern . ')\s*|\s+/AisuS'
-                : '/' . $commentSingle . '[^\n]*\s*|(' . static::$commentPattern . ')\s*|\s+/AisS';
+            static::$whitePattern = '/' . $commentSingle . '[^\n]*\s*|(' . static::$commentPattern . ')\s*|\s+/AisuS';
         }
 
         $this->cache = $cache;
@@ -170,29 +165,6 @@ class Parser
     public function getSourceName()
     {
         return $this->sourceName;
-    }
-
-    /**
-     * Throw parser error
-     *
-     * @api
-     *
-     * @param string $msg
-     *
-     * @phpstan-return never-return
-     *
-     * @throws ParserException
-     *
-     * @deprecated use "parseError" and throw the exception in the caller instead.
-     */
-    public function throwParseError($msg = 'parse error')
-    {
-        @trigger_error(
-            'The method "throwParseError" is deprecated. Use "parseError" and throw the exception in the caller instead',
-            E_USER_DEPRECATED
-        );
-
-        throw $this->parseError($msg);
     }
 
     /**
@@ -244,7 +216,6 @@ class Parser
             $cacheKey = $this->sourceName . ':' . md5($buffer);
             $parseOptions = [
                 'charset' => $this->charset,
-                'utf8' => $this->utf8,
             ];
             $v = $this->cache->getCache('parse', $cacheKey, $parseOptions);
 
@@ -514,24 +485,6 @@ class Parser
                 } else {
                     $this->append($child, $s);
                 }
-
-                return true;
-            }
-
-            $this->seek($s);
-
-            if (
-                $this->literal('@scssphp-import-once', 20) &&
-                $this->valueList($importPath) &&
-                $this->end()
-            ) {
-                ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
-
-                list($line, $column) = $this->getSourcePosition($s);
-                $file = $this->sourceName;
-                $this->logger->warn("The \"@scssphp-import-once\" directive is deprecated and will be removed in ScssPhp 2.0, in \"$file\", line $line, column $column.", true);
-
-                $this->append([Type::T_SCSSPHP_IMPORT_ONCE, $importPath], $s);
 
                 return true;
             }
@@ -1578,12 +1531,7 @@ class Parser
 
                         $comment[] = [Type::T_COMMENT, substr($this->buffer, $p, $this->count - $p), $out];
                     } else {
-                        list($line, $column) = $this->getSourcePosition($this->count);
-                        $file = $this->sourceName;
-                        $this->logger->warn("Unterminated interpolations in multiline comments are deprecated and will be removed in ScssPhp 2.0, in \"$file\", line $line, column $column.", true);
-                        $comment[] = substr($this->buffer, $this->count, 2);
-
-                        $this->count += 2;
+                        throw $this->parseError('Unterminated interpolation');
                     }
 
                     $p = strpos($this->buffer, '#{', $this->count);
@@ -3802,9 +3750,7 @@ class Parser
     {
         $s = $this->count;
         $match = $this->match(
-            $this->utf8
-                ? '(([\pL\w\x{00A0}-\x{10FFFF}_\-\*!"\']|\\\\[a-f0-9]{6} ?|\\\\[a-f0-9]{1,5}(?![a-f0-9]) ?|[\\\\].)([\pL\w\x{00A0}-\x{10FFFF}\-_"\']|\\\\[a-f0-9]{6} ?|\\\\[a-f0-9]{1,5}(?![a-f0-9]) ?|[\\\\].)*)'
-                : '(([\w_\-\*!"\']|\\\\[a-f0-9]{6} ?|\\\\[a-f0-9]{1,5}(?![a-f0-9]) ?|[\\\\].)([\w\-_"\']|\\\\[a-f0-9]{6} ?|\\\\[a-f0-9]{1,5}(?![a-f0-9]) ?|[\\\\].)*)',
+            '(([\pL\w\x{00A0}-\x{10FFFF}_\-\*!"\']|\\\\[a-f0-9]{6} ?|\\\\[a-f0-9]{1,5}(?![a-f0-9]) ?|[\\\\].)([\pL\w\x{00A0}-\x{10FFFF}\-_"\']|\\\\[a-f0-9]{6} ?|\\\\[a-f0-9]{1,5}(?![a-f0-9]) ?|[\\\\].)*)',
             $m,
             false
         );
@@ -3888,9 +3834,7 @@ class Parser
     protected function placeholder(&$placeholder)
     {
         $match = $this->match(
-            $this->utf8
-                ? '([\pL\w\-_]+)'
-                : '([\w\-_]+)',
+            '([\pL\w\-_]+)',
             $m
         );
 

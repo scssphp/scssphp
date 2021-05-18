@@ -59,37 +59,9 @@ use ScssPhp\ScssPhp\Util\Path;
  * SCSS compiler
  *
  * @author Leaf Corcoran <leafot@gmail.com>
- *
- * @final Extending the Compiler is deprecated
  */
-class Compiler
+final class Compiler
 {
-    /**
-     * @deprecated
-     */
-    const LINE_COMMENTS = 1;
-    /**
-     * @deprecated
-     */
-    const DEBUG_INFO    = 2;
-
-    /**
-     * @deprecated
-     */
-    const WITH_RULE     = 1;
-    /**
-     * @deprecated
-     */
-    const WITH_MEDIA    = 2;
-    /**
-     * @deprecated
-     */
-    const WITH_SUPPORTS = 4;
-    /**
-     * @deprecated
-     */
-    const WITH_ALL      = 7;
-
     const SOURCE_MAP_NONE   = 0;
     const SOURCE_MAP_INLINE = 1;
     const SOURCE_MAP_FILE   = 2;
@@ -124,10 +96,6 @@ class Compiler
 
     public static $true         = [Type::T_KEYWORD, 'true'];
     public static $false        = [Type::T_KEYWORD, 'false'];
-    /** @deprecated */
-    public static $NaN          = [Type::T_KEYWORD, 'NaN'];
-    /** @deprecated */
-    public static $Infinity     = [Type::T_KEYWORD, 'Infinity'];
     public static $null         = [Type::T_NULL];
     public static $nullString   = [Type::T_STRING, '', []];
     public static $defaultValue = [Type::T_KEYWORD, ''];
@@ -146,11 +114,6 @@ class Compiler
      * @var array<string, Block>
      */
     protected $importCache = [];
-
-    /**
-     * @var string[]
-     */
-    protected $importedFiles = [];
 
     /**
      * @var array
@@ -172,18 +135,8 @@ class Compiler
     ];
 
     /**
-     * @var string|null
-     */
-    protected $encoding = null;
-    /**
-     * @var null
-     * @deprecated
-     */
-    protected $lineNumberStyle = null;
-
-    /**
-     * @var int|SourceMapGenerator
-     * @phpstan-var self::SOURCE_MAP_*|SourceMapGenerator
+     * @var int
+     * @phpstan-var self::SOURCE_MAP_*
      */
     protected $sourceMap = self::SOURCE_MAP_NONE;
 
@@ -276,15 +229,6 @@ class Compiler
      * @var bool|null
      */
     protected $shouldEvaluate;
-    /**
-     * @var null
-     * @deprecated
-     */
-    protected $ignoreErrors;
-    /**
-     * @var bool
-     */
-    protected $ignoreCallStackMessage = false;
 
     /**
      * @var array[]
@@ -312,19 +256,9 @@ class Compiler
     private $rootDirectory;
 
     /**
-     * @var bool
-     */
-    private $legacyCwdImportPath = true;
-
-    /**
      * @var LoggerInterface
      */
     private $logger;
-
-    /**
-     * @var array<string, bool>
-     */
-    private $warnedChildFunctions = [];
 
     /**
      * Constructor
@@ -358,12 +292,9 @@ class Compiler
         $options = [
             'importPaths'        => $this->importPaths,
             'registeredVars'     => $this->registeredVars,
-            'registeredFeatures' => $this->registeredFeatures,
-            'encoding'           => $this->encoding,
             'sourceMap'          => serialize($this->sourceMap),
             'sourceMapOptions'   => $this->sourceMapOptions,
             'formatter'          => $this->formatter,
-            'legacyImportPath'   => $this->legacyCwdImportPath,
         ];
 
         return $options;
@@ -382,54 +313,6 @@ class Compiler
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-    }
-
-    /**
-     * Set an alternative error output stream, for testing purpose only
-     *
-     * @param resource $handle
-     *
-     * @return void
-     *
-     * @deprecated Use {@see setLogger} instead
-     */
-    public function setErrorOuput($handle)
-    {
-        @trigger_error('The method "setErrorOuput" is deprecated. Use "setLogger" instead.', E_USER_DEPRECATED);
-
-        $this->logger = new StreamLogger($handle);
-    }
-
-    /**
-     * Compile scss
-     *
-     * @param string      $code
-     * @param string|null $path
-     *
-     * @return string
-     *
-     * @throws SassException when the source fails to compile
-     *
-     * @deprecated Use {@see compileString} instead.
-     */
-    public function compile($code, $path = null)
-    {
-        @trigger_error(sprintf('The "%s" method is deprecated. Use "compileString" instead.', __METHOD__), E_USER_DEPRECATED);
-
-        $result = $this->compileString($code, $path);
-
-        $sourceMap = $result->getSourceMap();
-
-        if ($sourceMap !== null) {
-            if ($this->sourceMap instanceof SourceMapGenerator) {
-                $this->sourceMap->saveMap($sourceMap);
-            } elseif ($this->sourceMap === self::SOURCE_MAP_FILE) {
-                $sourceMapGenerator = new SourceMapGenerator($this->sourceMapOptions);
-                $sourceMapGenerator->saveMap($sourceMap);
-            }
-        }
-
-        return $result->getCss();
     }
 
     /**
@@ -465,9 +348,7 @@ class Compiler
         $this->storeEnv       = null;
         $this->charsetSeen    = null;
         $this->shouldEvaluate = null;
-        $this->ignoreCallStackMessage = false;
         $this->parsedFiles = [];
-        $this->importedFiles = [];
         $this->resolvedImports = [];
 
         if (!\is_null($path) && is_file($path)) {
@@ -503,13 +384,8 @@ class Compiler
 
             $sourceMapGenerator = null;
 
-            if ($this->sourceMap) {
-                if (\is_object($this->sourceMap) && $this->sourceMap instanceof SourceMapGenerator) {
-                    $sourceMapGenerator = $this->sourceMap;
-                    $this->sourceMap = self::SOURCE_MAP_FILE;
-                } elseif ($this->sourceMap !== self::SOURCE_MAP_NONE) {
-                    $sourceMapGenerator = new SourceMapGenerator($this->sourceMapOptions);
-                }
+            if ($this->sourceMap !== self::SOURCE_MAP_NONE) {
+                $sourceMapGenerator = new SourceMapGenerator($this->sourceMapOptions);
             }
 
             $out = $this->formatter->format($this->scope, $sourceMapGenerator);
@@ -525,7 +401,7 @@ class Compiler
 
             $sourceMap = null;
 
-            if (! empty($out) && $this->sourceMap && $this->sourceMap !== self::SOURCE_MAP_NONE) {
+            if (! empty($out) && $this->sourceMap !== self::SOURCE_MAP_NONE) {
                 $sourceMap = $sourceMapGenerator->generateJson($prefix);
                 $sourceMapUrl = null;
 
@@ -562,9 +438,8 @@ class Compiler
         }
 
         // Reset state to free memory
-        // TODO in 2.0, reset parsedFiles as well when the getter is removed.
+        $this->parsedFiles = [];
         $this->resolvedImports = [];
-        $this->importedFiles = [];
 
         return $result;
     }
@@ -625,7 +500,7 @@ class Compiler
             $cssOnly = true;
         }
 
-        $parser = new Parser($path, \count($this->sourceNames), $this->encoding, $this->cache, $cssOnly, $this->logger);
+        $parser = new Parser($path, \count($this->sourceNames), $this->cache, $cssOnly, $this->logger);
 
         $this->sourceNames[] = $path;
         $this->addParsedFile($path);
@@ -1911,15 +1786,7 @@ class Compiler
                 $this->pushEnv();
             }
 
-            try {
-                $c = $this->compileValue($value[2]);
-            } catch (SassScriptException $e) {
-                $this->logger->warn('Ignoring interpolation errors in multiline comments is deprecated and will be removed in ScssPhp 2.0. ' . $this->addLocationToMessage($e->getMessage()), true);
-                // ignore error in comment compilation which are only interpolation
-            } catch (SassException $e) {
-                $this->logger->warn('Ignoring interpolation errors in multiline comments is deprecated and will be removed in ScssPhp 2.0. ' . $e->getMessage(), true);
-                // ignore error in comment compilation which are only interpolation
-            }
+            $c = $this->compileValue($value[2]);
 
             if ($pushEnv) {
                 $this->popEnv();
@@ -2632,11 +2499,10 @@ class Compiler
      *
      * @param array                                  $rawPath
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
-     * @param boolean                                $once
      *
      * @return boolean
      */
-    protected function compileImport($rawPath, OutputBlock $out, $once = false)
+    protected function compileImport($rawPath, OutputBlock $out)
     {
         if ($rawPath[0] === Type::T_STRING) {
             $path = $this->compileStringContent($rawPath);
@@ -2644,10 +2510,7 @@ class Compiler
             if (strpos($path, 'url(') !== 0 && $filePath = $this->findImport($path, $this->currentDirectory)) {
                 $this->registerImport($this->currentDirectory, $path, $filePath);
 
-                if (! $once || ! \in_array($filePath, $this->importedFiles)) {
-                    $this->importFile($filePath, $out);
-                    $this->importedFiles[] = $filePath;
-                }
+                $this->importFile($filePath, $out);
 
                 return true;
             }
@@ -2672,7 +2535,7 @@ class Compiler
             }
 
             foreach ($rawPath[2] as $path) {
-                $this->compileImport($path, $out, $once);
+                $this->compileImport($path, $out);
             }
 
             return true;
@@ -2848,12 +2711,6 @@ class Compiler
         }
 
         switch ($child[0]) {
-            case Type::T_SCSSPHP_IMPORT_ONCE:
-                $rawPath = $this->reduce($child[1]);
-
-                $this->compileImport($rawPath, $out, true);
-                break;
-
             case Type::T_IMPORT:
                 $rawPath = $this->reduce($child[1]);
 
@@ -3825,21 +3682,6 @@ class Compiler
             $libName   = $f[1];
             $prototype = isset(static::$$libName) ? static::$$libName : null;
 
-            if (\get_class($this) !== __CLASS__ && !isset($this->warnedChildFunctions[$libName])) {
-                $r = new \ReflectionMethod($this, $libName);
-                $declaringClass = $r->getDeclaringClass()->name;
-
-                $needsWarning = $this->warnedChildFunctions[$libName] = $declaringClass !== __CLASS__;
-
-                if ($needsWarning) {
-                    if (method_exists(__CLASS__, $libName)) {
-                        @trigger_error(sprintf('Overriding the "%s" core function by extending the Compiler is deprecated and will be unsupported in 2.0. Remove the "%s::%s" method.', $normalizedName, $declaringClass, $libName), E_USER_DEPRECATED);
-                    } else {
-                        @trigger_error(sprintf('Registering custom functions by extending the Compiler and using the lib* discovery mechanism is deprecated and will be removed in 2.0. Replace the "%s::%s" method with registering the "%s" function through "Compiler::registerFunction".', $declaringClass, $libName, $normalizedName), E_USER_DEPRECATED);
-                    }
-                }
-            }
-
             return [Type::T_FUNCTION_REFERENCE, 'native', $name, $f, $prototype];
         }
 
@@ -4070,68 +3912,19 @@ class Compiler
      */
     protected function opColorColor($op, $left, $right)
     {
-        if ($op !== '==' && $op !== '!=') {
-            $warning = "Color arithmetic is deprecated and will be an error in future versions.\n"
-                . "Consider using Sass's color functions instead.";
-            $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
-            $line  = $this->sourceLine;
+        switch ($op) {
+            case '==':
+                return $this->opEq($left, $right);
 
-            Warn::deprecation("$warning\n         on line $line of $fname");
+            case '!=':
+                return $this->opNeq($left, $right);
+
+            default:
+                $leftValue = $this->compileValue($left);
+                $rightValue = $this->compileValue($right);
+
+                throw new SassScriptException("Unsupported operation \"$leftValue $op $rightValue\".");
         }
-
-        $out = [Type::T_COLOR];
-
-        foreach ([1, 2, 3] as $i) {
-            $lval = isset($left[$i]) ? $left[$i] : 0;
-            $rval = isset($right[$i]) ? $right[$i] : 0;
-
-            switch ($op) {
-                case '+':
-                    $out[] = $lval + $rval;
-                    break;
-
-                case '-':
-                    $out[] = $lval - $rval;
-                    break;
-
-                case '*':
-                    $out[] = $lval * $rval;
-                    break;
-
-                case '%':
-                    if ($rval == 0) {
-                        throw $this->error("color: Can't take modulo by zero");
-                    }
-
-                    $out[] = $lval % $rval;
-                    break;
-
-                case '/':
-                    if ($rval == 0) {
-                        throw $this->error("color: Can't divide by zero");
-                    }
-
-                    $out[] = (int) ($lval / $rval);
-                    break;
-
-                case '==':
-                    return $this->opEq($left, $right);
-
-                case '!=':
-                    return $this->opNeq($left, $right);
-
-                default:
-                    throw $this->error("color: unknown op $op");
-            }
-        }
-
-        if (isset($left[4])) {
-            $out[4] = $left[4];
-        } elseif (isset($right[4])) {
-            $out[4] = $right[4];
-        }
-
-        return $this->fixColor($out);
     }
 
     /**
@@ -4153,13 +3946,10 @@ class Compiler
             return static::$true;
         }
 
-        $value = $right->getDimension();
+        $leftValue = $this->compileValue($left);
+        $rightValue = $this->compileValue($right);
 
-        return $this->opColorColor(
-            $op,
-            $left,
-            [Type::T_COLOR, $value, $value, $value]
-        );
+        throw new SassScriptException("Unsupported operation \"$leftValue $op $rightValue\".");
     }
 
     /**
@@ -4181,13 +3971,10 @@ class Compiler
             return static::$true;
         }
 
-        $value = $left->getDimension();
+        $leftValue = $this->compileValue($left);
+        $rightValue = $this->compileValue($right);
 
-        return $this->opColorColor(
-            $op,
-            [Type::T_COLOR, $value, $value, $value],
-            $right
-        );
+        throw new SassScriptException("Unsupported operation \"$leftValue $op $rightValue\".");
     }
 
     /**
@@ -4679,22 +4466,6 @@ class Compiler
             default:
                 return $this->compileValue($value);
         }
-    }
-
-    /**
-     * Flatten list
-     *
-     * @param array $list
-     *
-     * @return string
-     *
-     * @deprecated
-     */
-    protected function flattenList($list)
-    {
-        @trigger_error(sprintf('The "%s" method is deprecated.', __METHOD__), E_USER_DEPRECATED);
-
-        return $this->compileValue($list);
     }
 
     /**
@@ -5273,37 +5044,13 @@ class Compiler
      */
     public function addVariables(array $variables)
     {
-        $triggerWarning = false;
-
         foreach ($variables as $name => $value) {
             if (!$value instanceof Number && !\is_array($value)) {
-                $triggerWarning = true;
+                throw new \InvalidArgumentException('Passing raw values to as custom variables to the Compiler is deprecated. Use "\ScssPhp\ScssPhp\ValueConverter::parseValue" or "\ScssPhp\ScssPhp\ValueConverter::fromPhp" to convert them instead.');
             }
 
             $this->registeredVars[$name] = $value;
         }
-
-        if ($triggerWarning) {
-            @trigger_error('Passing raw values to as custom variables to the Compiler is deprecated. Use "\ScssPhp\ScssPhp\ValueConverter::parseValue" or "\ScssPhp\ScssPhp\ValueConverter::fromPhp" to convert them instead.', E_USER_DEPRECATED);
-        }
-    }
-
-    /**
-     * Set variables
-     *
-     * @api
-     *
-     * @param array $variables
-     *
-     * @return void
-     *
-     * @deprecated Use "addVariables" or "replaceVariables" instead.
-     */
-    public function setVariables(array $variables)
-    {
-        @trigger_error('The method "setVariables" of the Compiler is deprecated. Use the "addVariables" method for the equivalent behavior or "replaceVariables" if merging with previous variables was not desired.');
-
-        $this->addVariables($variables);
     }
 
     /**
@@ -5349,18 +5096,6 @@ class Compiler
     }
 
     /**
-     * Returns list of parsed files
-     *
-     * @deprecated
-     * @return array<string, int>
-     */
-    public function getParsedFiles()
-    {
-        @trigger_error('The method "getParsedFiles" of the Compiler is deprecated. Use the "getIncludedFiles" method on the CompilationResult instance returned by compileString() instead. Be careful that the signature of the method is different.', E_USER_DEPRECATED);
-        return $this->parsedFiles;
-    }
-
-    /**
      * Add import path
      *
      * @api
@@ -5392,30 +5127,11 @@ class Compiler
             return $path !== '';
         });
 
-        $this->legacyCwdImportPath = \count($actualImportPaths) !== \count($paths);
-
-        if ($this->legacyCwdImportPath) {
-            @trigger_error('Passing an empty string in the import paths to refer to the current working directory is deprecated. If that\'s the intended behavior, the value of "getcwd()" should be used directly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compileString()" instead.', E_USER_DEPRECATED);
+        if (\count($actualImportPaths) !== \count($paths)) {
+            throw new \InvalidArgumentException('Passing an empty string in the import paths to refer to the current working directory is not supported anymore. If that\'s the intended behavior, the value of "getcwd()" should be used directly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compileString()" instead.');
         }
 
         $this->importPaths = $actualImportPaths;
-    }
-
-    /**
-     * Set number precision
-     *
-     * @api
-     *
-     * @param integer $numberPrecision
-     *
-     * @return void
-     *
-     * @deprecated The number precision is not configurable anymore. The default is enough for all browsers.
-     */
-    public function setNumberPrecision($numberPrecision)
-    {
-        @trigger_error('The number precision is not configurable anymore. '
-            . 'The default is enough for all browsers.', E_USER_DEPRECATED);
     }
 
     /**
@@ -5443,44 +5159,6 @@ class Compiler
             default:
                 throw new \InvalidArgumentException(sprintf('Invalid output style "%s".', $style));
         }
-    }
-
-    /**
-     * Set formatter
-     *
-     * @api
-     *
-     * @param string $formatterName
-     *
-     * @return void
-     *
-     * @deprecated Use {@see setOutputStyle} instead.
-     */
-    public function setFormatter($formatterName)
-    {
-        if (!\in_array($formatterName, [Expanded::class, Compressed::class], true)) {
-            @trigger_error('Formatters other than Expanded and Compressed are deprecated.', E_USER_DEPRECATED);
-        }
-        @trigger_error('The method "setFormatter" is deprecated. Use "setOutputStyle" instead.', E_USER_DEPRECATED);
-
-        $this->formatter = $formatterName;
-    }
-
-    /**
-     * Set line number style
-     *
-     * @api
-     *
-     * @param string $lineNumberStyle
-     *
-     * @return void
-     *
-     * @deprecated The line number output is not supported anymore. Use source maps instead.
-     */
-    public function setLineNumberStyle($lineNumberStyle)
-    {
-        @trigger_error('The line number output is not supported anymore. '
-                       . 'Use source maps instead.', E_USER_DEPRECATED);
     }
 
     /**
@@ -5520,20 +5198,16 @@ class Compiler
      *
      * @api
      *
-     * @param string        $name
-     * @param callable      $callback
-     * @param string[]|null $argumentDeclaration
+     * @param string   $name
+     * @param callable $callback
+     * @param string[] $argumentDeclaration
      *
      * @return void
      */
-    public function registerFunction($name, $callback, $argumentDeclaration = null)
+    public function registerFunction($name, $callback, array $argumentDeclaration)
     {
         if (self::isNativeFunction($name)) {
-            @trigger_error(sprintf('The "%s" function is a core sass function. Overriding it with a custom implementation through "%s" is deprecated and won\'t be supported in ScssPhp 2.0 anymore.', $name, __METHOD__), E_USER_DEPRECATED);
-        }
-
-        if ($argumentDeclaration === null) {
-            @trigger_error('Omitting the argument declaration when registering custom function is deprecated and won\'t be supported in ScssPhp 2.0 anymore.', E_USER_DEPRECATED);
+            throw new \InvalidArgumentException(sprintf('The "%s" function is a core sass function. Overriding it with a custom implementation through "%s" is not supported .', $name, __METHOD__));
         }
 
         $this->userFunctions[$this->normalizeName($name)] = [$callback, $argumentDeclaration];
@@ -5551,24 +5225,6 @@ class Compiler
     public function unregisterFunction($name)
     {
         unset($this->userFunctions[$this->normalizeName($name)]);
-    }
-
-    /**
-     * Add feature
-     *
-     * @api
-     *
-     * @param string $name
-     *
-     * @return void
-     *
-     * @deprecated Registering additional features is deprecated.
-     */
-    public function addFeature($name)
-    {
-        @trigger_error('Registering additional features is deprecated.', E_USER_DEPRECATED);
-
-        $this->registeredFeatures[$name] = true;
     }
 
     /**
@@ -5631,11 +5287,6 @@ class Compiler
     /**
      * Detects whether the import is a CSS import.
      *
-     * For legacy reasons, custom importers are called for those, allowing them
-     * to replace them with an actual Sass import. However this behavior is
-     * deprecated. Custom importers are expected to return null when they receive
-     * a CSS import.
-     *
      * @param string $url
      *
      * @return bool
@@ -5658,40 +5309,7 @@ class Compiler
     public function findImport($url, $currentDir = null)
     {
         // Vanilla css and external requests. These are not meant to be Sass imports.
-        // Callback importers are still called for BC.
         if (self::isCssImport($url)) {
-            foreach ($this->importPaths as $dir) {
-                if (\is_string($dir)) {
-                    continue;
-                }
-
-                if (\is_callable($dir)) {
-                    // check custom callback for import path
-                    $file = \call_user_func($dir, $url);
-
-                    if (! \is_null($file)) {
-                        if (\is_array($dir)) {
-                            $callableDescription = (\is_object($dir[0]) ? \get_class($dir[0]) : $dir[0]).'::'.$dir[1];
-                        } elseif ($dir instanceof \Closure) {
-                            $r = new \ReflectionFunction($dir);
-                            if (false !== strpos($r->name, '{closure}')) {
-                                $callableDescription = sprintf('closure{%s:%s}', $r->getFileName(), $r->getStartLine());
-                            } elseif ($class = $r->getClosureScopeClass()) {
-                                $callableDescription = $class->name.'::'.$r->name;
-                            } else {
-                                $callableDescription = $r->name;
-                            }
-                        } elseif (\is_object($dir)) {
-                            $callableDescription = \get_class($dir) . '::__invoke';
-                        } else {
-                            $callableDescription = 'callable'; // Fallback if we don't have a dedicated description
-                        }
-                        @trigger_error(sprintf('Returning a file to import for CSS or external references in custom importer callables is deprecated and will not be supported anymore in ScssPhp 2.0. This behavior is not compliant with the Sass specification. Update your "%s" importer.', $callableDescription), E_USER_DEPRECATED);
-
-                        return $file;
-                    }
-                }
-            }
             return null;
         }
 
@@ -5717,16 +5335,6 @@ class Compiler
                 if (! \is_null($file)) {
                     return $file;
                 }
-            }
-        }
-
-        if ($this->legacyCwdImportPath) {
-            $path = $this->resolveImportPath($url, getcwd());
-
-            if (!\is_null($path)) {
-                @trigger_error('Resolving imports relatively to the current working directory is deprecated. If that\'s the intended behavior, the value of "getcwd()" should be added as an import path explicitly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compileString()" instead.', E_USER_DEPRECATED);
-
-                return $path;
             }
         }
 
@@ -5864,85 +5472,6 @@ class Compiler
     }
 
     /**
-     * Set encoding
-     *
-     * @api
-     *
-     * @param string|null $encoding
-     *
-     * @return void
-     *
-     * @deprecated Non-compliant support for other encodings than UTF-8 is deprecated.
-     */
-    public function setEncoding($encoding)
-    {
-        if (!$encoding || strtolower($encoding) === 'utf-8') {
-            @trigger_error(sprintf('The "%s" method is deprecated.', __METHOD__), E_USER_DEPRECATED);
-        } else {
-            @trigger_error(sprintf('The "%s" method is deprecated. Parsing will only support UTF-8 in ScssPhp 2.0. The non-UTF-8 parsing of ScssPhp 1.x is not spec compliant.', __METHOD__), E_USER_DEPRECATED);
-        }
-
-        $this->encoding = $encoding;
-    }
-
-    /**
-     * Ignore errors?
-     *
-     * @api
-     *
-     * @param boolean $ignoreErrors
-     *
-     * @return \ScssPhp\ScssPhp\Compiler
-     *
-     * @deprecated Ignoring Sass errors is not longer supported.
-     */
-    public function setIgnoreErrors($ignoreErrors)
-    {
-        @trigger_error('Ignoring Sass errors is not longer supported.', E_USER_DEPRECATED);
-
-        return $this;
-    }
-
-    /**
-     * Get source position
-     *
-     * @api
-     *
-     * @return array
-     *
-     * @deprecated
-     */
-    public function getSourcePosition()
-    {
-        @trigger_error(sprintf('The "%s" method is deprecated.', __METHOD__), E_USER_DEPRECATED);
-
-        $sourceFile = isset($this->sourceNames[$this->sourceIndex]) ? $this->sourceNames[$this->sourceIndex] : '';
-
-        return [$sourceFile, $this->sourceLine, $this->sourceColumn];
-    }
-
-    /**
-     * Throw error (exception)
-     *
-     * @api
-     *
-     * @param string $msg Message with optional sprintf()-style vararg parameters
-     *
-     * @throws \ScssPhp\ScssPhp\Exception\CompilerException
-     *
-     * @deprecated use "error" and throw the exception in the caller instead.
-     */
-    public function throwError($msg)
-    {
-        @trigger_error(
-            'The method "throwError" is deprecated. Use "error" and throw the exception in the caller instead',
-            E_USER_DEPRECATED
-        );
-
-        throw $this->error(...func_get_args());
-    }
-
-    /**
      * Build an error (exception)
      *
      * @internal
@@ -5957,9 +5486,7 @@ class Compiler
             $msg = sprintf($msg, ...$args);
         }
 
-        if (! $this->ignoreCallStackMessage) {
-            $msg = $this->addLocationToMessage($msg);
-        }
+        $msg = $this->addLocationToMessage($msg);
 
         return new CompilerException($msg);
     }
@@ -5987,43 +5514,6 @@ class Compiler
         }
 
         return $msg;
-    }
-
-    /**
-     * @param string $functionName
-     * @param array $ExpectedArgs
-     * @param int $nbActual
-     * @return CompilerException
-     *
-     * @deprecated
-     */
-    public function errorArgsNumber($functionName, $ExpectedArgs, $nbActual)
-    {
-        @trigger_error(sprintf('The "%s" method is deprecated.', __METHOD__), E_USER_DEPRECATED);
-
-        $nbExpected = \count($ExpectedArgs);
-
-        if ($nbActual > $nbExpected) {
-            return $this->error(
-                'Error: Only %d arguments allowed in %s(), but %d were passed.',
-                $nbExpected,
-                $functionName,
-                $nbActual
-            );
-        } else {
-            $missing = [];
-
-            while (count($ExpectedArgs) && count($ExpectedArgs) > $nbActual) {
-                array_unshift($missing, array_pop($ExpectedArgs));
-            }
-
-            return $this->error(
-                'Error: %s() argument%s %s missing.',
-                $functionName,
-                count($missing) > 1 ? 's' : '',
-                implode(', ', $missing)
-            );
-        }
     }
 
     /**
@@ -6166,9 +5656,7 @@ class Compiler
             return $returnValue;
         }
 
-        @trigger_error(sprintf('Returning a PHP value from the "%s" custom function is deprecated. A sass value must be returned instead.', $name), E_USER_DEPRECATED);
-
-        return $this->coerceValue($returnValue);
+        throw new \UnexpectedValueException(sprintf('The custom function "%s" must return a sass value.', $name));
     }
 
     /**
@@ -6224,37 +5712,13 @@ class Compiler
      * Sorts keyword arguments
      *
      * @param string $functionName
-     * @param array|null  $prototypes
+     * @param array  $prototypes
      * @param array  $args
      *
      * @return array|null
      */
-    protected function sortNativeFunctionArgs($functionName, $prototypes, $args)
+    protected function sortNativeFunctionArgs($functionName, array $prototypes, $args)
     {
-        static $parser = null;
-
-        if (! isset($prototypes)) {
-            $keyArgs = [];
-            $posArgs = [];
-
-            if (\is_array($args) && \count($args) && \end($args) === static::$null) {
-                array_pop($args);
-            }
-
-            // separate positional and keyword arguments
-            foreach ($args as $arg) {
-                list($key, $value) = $arg;
-
-                if (empty($key) or empty($key[1])) {
-                    $posArgs[] = empty($arg[2]) ? $value : $arg;
-                } else {
-                    $keyArgs[$key[1]] = $value;
-                }
-            }
-
-            return [$posArgs, $keyArgs];
-        }
-
         // specific cases ?
         if (\in_array($functionName, ['libRgb', 'libRgba', 'libHsl', 'libHsla'])) {
             // notation 100 127 255 / 0 is in fact a simple list of 4 values
@@ -9978,29 +9442,6 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
 
         foreach ($part as $p) {
             $listParts[] = [Type::T_STRING, '', [$p]];
-        }
-
-        return [Type::T_LIST, ',', $listParts];
-    }
-
-    protected static $libScssphpGlob = ['pattern'];
-    protected function libScssphpGlob($args)
-    {
-        @trigger_error(sprintf('The "scssphp-glob" function is deprecated an will be removed in ScssPhp 2.0. Register your own alternative through "%s::registerFunction', __CLASS__), E_USER_DEPRECATED);
-
-        $this->logger->warn('The "scssphp-glob" function is deprecated an will be removed in ScssPhp 2.0.', true);
-
-        $string = $this->assertString($args[0], 'pattern');
-        $pattern = $this->compileStringContent($string);
-        $matches = glob($pattern);
-        $listParts = [];
-
-        foreach ($matches as $match) {
-            if (! is_file($match)) {
-                continue;
-            }
-
-            $listParts[] = [Type::T_STRING, '"', [$match]];
         }
 
         return [Type::T_LIST, ',', $listParts];
