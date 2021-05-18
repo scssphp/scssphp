@@ -34,17 +34,14 @@ final class CompilationResult
      * @param string|null $sourceMap
      * @param string[] $includedFiles
      */
-    public function __construct($css, $sourceMap, array $includedFiles)
+    public function __construct(string $css, ?string $sourceMap, array $includedFiles)
     {
         $this->css = $css;
         $this->sourceMap = $sourceMap;
         $this->includedFiles = $includedFiles;
     }
 
-    /**
-     * @return string
-     */
-    public function getCss()
+    public function getCss(): string
     {
         return $this->css;
     }
@@ -52,7 +49,7 @@ final class CompilationResult
     /**
      * @return string[]
      */
-    public function getIncludedFiles()
+    public function getIncludedFiles(): array
     {
         return $this->includedFiles;
     }
@@ -62,7 +59,7 @@ final class CompilationResult
      *
      * @return null|string
      */
-    public function getSourceMap()
+    public function getSourceMap(): ?string
     {
         return $this->sourceMap;
     }

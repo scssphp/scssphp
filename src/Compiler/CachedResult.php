@@ -52,7 +52,7 @@ final class CachedResult
     /**
      * @return CompilationResult
      */
-    public function getResult()
+    public function getResult(): CompilationResult
     {
         return $this->result;
     }
@@ -60,7 +60,7 @@ final class CachedResult
     /**
      * @return array<string, int>
      */
-    public function getParsedFiles()
+    public function getParsedFiles(): array
     {
         return $this->parsedFiles;
     }
@@ -70,7 +70,7 @@ final class CachedResult
      *
      * @phpstan-return list<array{currentDir: string|null, path: string, filePath: string}>
      */
-    public function getResolvedImports()
+    public function getResolvedImports(): array
     {
         return $this->resolvedImports;
     }

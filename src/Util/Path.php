@@ -12,7 +12,7 @@ final class Path
      *
      * @return bool
      */
-    public static function isAbsolute($path)
+    public static function isAbsolute(string $path): bool
     {
         if ($path === '') {
             return false;
@@ -55,7 +55,7 @@ final class Path
      *
      * @return string
      */
-    public static function join($part1, $part2)
+    public static function join(string $part1, string $part2): string
     {
         if ($part1 === '' || self::isAbsolute($part2)) {
             return $part2;

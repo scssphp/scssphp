@@ -135,7 +135,7 @@ final class SourceMapGenerator
      *
      * @see https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/edit#
      */
-    public function generateJson($prefix = '')
+    public function generateJson(string $prefix = ''): string
     {
         $sourceMap = [];
         $mappings  = $this->generateMappings($prefix);
@@ -191,7 +191,7 @@ final class SourceMapGenerator
      *
      * @return string[]|null
      */
-    private function getSourcesContent()
+    private function getSourcesContent(): ?array
     {
         if (empty($this->sources)) {
             return null;
@@ -213,7 +213,7 @@ final class SourceMapGenerator
      *
      * @return string
      */
-    public function generateMappings($prefix = '')
+    public function generateMappings(string $prefix = ''): string
     {
         if (! \count($this->mappings)) {
             return '';
@@ -288,7 +288,7 @@ final class SourceMapGenerator
      *
      * @return integer|false
      */
-    private function findFileIndex($filename)
+    private function findFileIndex(string $filename)
     {
         return $this->sourceKeys[$filename] ?? false;
     }
@@ -300,7 +300,7 @@ final class SourceMapGenerator
      *
      * @return string
      */
-    private function normalizeFilename($filename)
+    private function normalizeFilename(string $filename): string
     {
         $filename = $this->fixWindowsPath($filename);
         $rootpath = $this->options['sourceMapRootpath'];
@@ -327,7 +327,7 @@ final class SourceMapGenerator
      *
      * @return string
      */
-    public function fixWindowsPath($path, $addEndSlash = false)
+    public function fixWindowsPath(string $path, bool $addEndSlash = false): string
     {
         $slash = ($addEndSlash) ? '/' : '';
 

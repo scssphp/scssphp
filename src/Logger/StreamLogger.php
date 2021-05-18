@@ -24,7 +24,7 @@ class StreamLogger implements LoggerInterface
      * @param resource $stream          A stream resource
      * @param bool     $closeOnDestruct If true, takes ownership of the stream and close it on destruct to avoid leaks.
      */
-    public function __construct($stream, $closeOnDestruct = false)
+    public function __construct($stream, bool $closeOnDestruct = false)
     {
         $this->stream = $stream;
         $this->closeOnDestruct = $closeOnDestruct;
@@ -43,7 +43,7 @@ class StreamLogger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function warn($message, $deprecation = false)
+    public function warn(string $message, bool $deprecation = false)
     {
         $prefix = ($deprecation ? 'DEPRECATION ' : '') . 'WARNING: ';
 
@@ -53,7 +53,7 @@ class StreamLogger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function debug($message)
+    public function debug(string $message)
     {
         fwrite($this->stream, $message . "\n");
     }

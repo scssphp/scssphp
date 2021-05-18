@@ -201,32 +201,22 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:adjustHsl\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:adjustHsl\\(\\) has parameter \\$amount with no typehint specified\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:adjustHsl\\(\\) has parameter \\$color with no typehint specified\\.$#"
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:adjustHsl\\(\\) has parameter \\$color with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:adjustHsl\\(\\) has parameter \\$idx with no typehint specified\\.$#"
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:adjustHsl\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:alterColor\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:appendRootDirective\\(\\) has parameter \\$allowed with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -531,11 +521,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileWith\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:cssValidArg\\(\\) has parameter \\$arg with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -787,11 +772,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:glueFunctionSelectors\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:handleImportLoop\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1711,11 +1691,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Call to function is_string\\(\\) with array will always evaluate to false\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Cannot access property \\$children on ScssPhp\\\\ScssPhp\\\\Block\\|null\\.$#"
 			count: 6
 			path: src/Parser.php
@@ -1751,11 +1726,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:appendComment\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:appendComment\\(\\) has parameter \\$comment with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Parser.php
@@ -1786,11 +1756,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:extractLineNumbers\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:flattenList\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Parser.php
@@ -1812,11 +1777,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:getSourcePosition\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:isPlainCssValidElement\\(\\) has parameter \\$allowExpression with no typehint specified\\.$#"
 			count: 1
 			path: src/Parser.php
 
@@ -1861,16 +1821,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:seek\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:string\\(\\) has parameter \\$keepDelimWithInterpolation with no typehint specified\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:stripAssignmentFlags\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Parser.php
@@ -1882,11 +1832,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:stripOptionalFlag\\(\\) has parameter \\$selectors with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:stripOptionalFlag\\(\\) should return string but returns bool\\.$#"
 			count: 1
 			path: src/Parser.php
 

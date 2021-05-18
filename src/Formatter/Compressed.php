@@ -41,7 +41,7 @@ final class Compressed extends Formatter
     /**
      * {@inheritdoc}
      */
-    protected function blockLines(OutputBlock $block)
+    protected function blockLines(OutputBlock $block): void
     {
         $inner = $this->indentStr();
 
@@ -67,7 +67,7 @@ final class Compressed extends Formatter
      *
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
      */
-    protected function blockSelectors(OutputBlock $block)
+    protected function blockSelectors(OutputBlock $block): void
     {
         assert(! empty($block->selectors));
 

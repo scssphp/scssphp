@@ -41,7 +41,7 @@ final class Expanded extends Formatter
     /**
      * {@inheritdoc}
      */
-    protected function indentStr()
+    protected function indentStr(): string
     {
         return str_repeat($this->indentChar, $this->indentLevel);
     }
@@ -49,7 +49,7 @@ final class Expanded extends Formatter
     /**
      * {@inheritdoc}
      */
-    protected function blockLines(OutputBlock $block)
+    protected function blockLines(OutputBlock $block): void
     {
         $inner = $this->indentStr();
 
