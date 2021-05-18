@@ -1,5 +1,13 @@
 # Changelog
 
+## **1.5.2** -- May 18, 2021
+
+**Fixed:**
+
+* Fix the implementation of the `Compiler::getStringText` helper (@stof)
+* Fix the handling of compiling without an input path, to avoid deprecations on PHP 8.1 (@stof)
+* Revert the 1.5.0 fix for list indexes in `nth` and `setNth` as other spec compliance issues for list are making it break the compilation of Bootstrap 4.6 (@stof)
+
 ## **1.5.1** -- May 17, 2021
 
 **Fixed:**
