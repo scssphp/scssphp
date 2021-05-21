@@ -46,11 +46,6 @@ parameters:
 			path: src/Cache.php
 
 		-
-			message: "#^Result of \\|\\| is always false\\.$#"
-			count: 3
-			path: src/Colors.php
-
-		-
 			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$hasValue\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1267,7 +1262,7 @@ parameters:
 
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
-			count: 2
+			count: 1
 			path: src/Compiler.php
 
 		-
