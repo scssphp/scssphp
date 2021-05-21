@@ -17,11 +17,11 @@ namespace ScssPhp\ScssPhp\Logger;
  */
 class QuietLogger implements LoggerInterface
 {
-    public function warn($message, $deprecation = false)
+    public function warn(string $message, bool $deprecation = false)
     {
     }
 
-    public function debug($message)
+    public function debug(string $message)
     {
     }
 }

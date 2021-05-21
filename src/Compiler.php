@@ -147,7 +147,7 @@ final class Compiler
     private $sourceMapOptions = [];
 
     /**
-     * @var string|\ScssPhp\ScssPhp\Formatter
+     * @var string|Formatter
      */
     private $formatter = Expanded::class;
 
@@ -161,7 +161,7 @@ final class Compiler
     private $rootBlock;
 
     /**
-     * @var \ScssPhp\ScssPhp\Compiler\Environment
+     * @var Environment
      */
     private $env;
     /**
@@ -266,7 +266,7 @@ final class Compiler
      * @param array|null $cacheOptions
      * @phpstan-param array{cacheDir?: string, prefix?: string, forceRefresh?: string, checkImportResolutions?: bool}|null $cacheOptions
      */
-    public function __construct($cacheOptions = null)
+    public function __construct(?array $cacheOptions = null)
     {
         $this->sourceNames = [];
 
@@ -285,7 +285,7 @@ final class Compiler
      *
      * @return array<string, mixed>
      */
-    private function getCompileOptions()
+    private function getCompileOptions(): array
     {
         $options = [
             'importPaths'        => $this->importPaths,
@@ -308,7 +308,7 @@ final class Compiler
      *
      * @return void
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }
@@ -323,7 +323,7 @@ final class Compiler
      *
      * @throws SassException when the source fails to compile
      */
-    public function compileString($source, $path = null)
+    public function compileString(string $source, ?string $path = null): CompilationResult
     {
         if ($this->cache) {
             $cacheKey       = ($path ? $path : '(stdin)') . ':' . md5($source);
@@ -447,7 +447,7 @@ final class Compiler
      *
      * @return bool
      */
-    private function isFreshCachedResult(CachedResult $result)
+    private function isFreshCachedResult(CachedResult $result): bool
     {
         // check if any dependency file changed since the result was compiled
         foreach ($result->getParsedFiles() as $file => $mtime) {
@@ -483,9 +483,9 @@ final class Compiler
      *
      * @param string|null $path
      *
-     * @return \ScssPhp\ScssPhp\Parser
+     * @return Parser
      */
-    private function parserFactory($path)
+    private function parserFactory(?string $path): Parser
     {
         // https://sass-lang.com/documentation/at-rules/import
         // CSS files imported by Sass don’t allow any special Sass features.
@@ -514,7 +514,7 @@ final class Compiler
      *
      * @return boolean
      */
-    private function isSelfExtend($target, $origin)
+    private function isSelfExtend(array $target, array $origin): bool
     {
         foreach ($origin as $sel) {
             if (\in_array($target, $sel)) {
@@ -534,7 +534,7 @@ final class Compiler
      *
      * @return void
      */
-    private function pushExtends($target, $origin, $block)
+    private function pushExtends(array $target, array $origin, ?array $block): void
     {
         $i = \count($this->extends);
         $this->extends[] = [$target, $origin, $block];
@@ -554,9 +554,9 @@ final class Compiler
      * @param string|null   $type
      * @param string[]|null $selectors
      *
-     * @return \ScssPhp\ScssPhp\Formatter\OutputBlock
+     * @return OutputBlock
      */
-    private function makeOutputBlock($type, $selectors = null)
+    private function makeOutputBlock(?string $type, ?array $selectors = null): OutputBlock
     {
         $out = new OutputBlock();
         $out->type      = $type;
@@ -582,11 +582,11 @@ final class Compiler
     /**
      * Compile root
      *
-     * @param \ScssPhp\ScssPhp\Block $rootBlock
+     * @param Block $rootBlock
      *
      * @return void
      */
-    private function compileRoot(Block $rootBlock)
+    private function compileRoot(Block $rootBlock): void
     {
         $this->rootBlock = $this->scope = $this->makeOutputBlock(Type::T_ROOT);
 
@@ -600,7 +600,7 @@ final class Compiler
      *
      * @return void
      */
-    private function missingSelectors()
+    private function missingSelectors(): void
     {
         foreach ($this->extends as $extend) {
             if (isset($extend[3])) {
@@ -625,12 +625,12 @@ final class Compiler
     /**
      * Flatten selectors
      *
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $block
-     * @param string                                 $parentKey
+     * @param OutputBlock     $block
+     * @param string|int|null $parentKey
      *
      * @return void
      */
-    private function flattenSelectors(OutputBlock $block, $parentKey = null)
+    private function flattenSelectors(OutputBlock $block, $parentKey = null): void
     {
         if ($block->selectors) {
             $selectors = [];
@@ -690,7 +690,7 @@ final class Compiler
      *
      * @return array
      */
-    private function glueFunctionSelectors($parts)
+    private function glueFunctionSelectors(array $parts): array
     {
         $new = [];
 
@@ -728,7 +728,7 @@ final class Compiler
      *
      * @return void
      */
-    private function matchExtends($selector, &$out, $from = 0, $initial = true)
+    private function matchExtends(array $selector, &$out, int $from = 0, bool $initial = true): void
     {
         static $partsPile = [];
         $selector = $this->glueFunctionSelectors($selector);
@@ -859,7 +859,7 @@ final class Compiler
      *
      * @return boolean
      */
-    private function isPseudoSelector($part, &$matches)
+    private function isPseudoSelector(string $part, &$matches): bool
     {
         if (
             strpos($part, ':') === 0 &&
@@ -883,7 +883,7 @@ final class Compiler
      *
      * @return void
      */
-    private function pushOrMergeExtentedSelector(&$out, $extended)
+    private function pushOrMergeExtentedSelector(&$out, array $extended): void
     {
         if (\count($out) && \count($extended) === 1 && \count(reset($extended)) === 1) {
             $single = reset($extended);
@@ -925,7 +925,7 @@ final class Compiler
      *
      * @return boolean
      */
-    private function matchExtendsSingle($rawSingle, &$outOrigin, $initial = true)
+    private function matchExtendsSingle(array $rawSingle, &$outOrigin, bool $initial = true): bool
     {
         $counts = [];
         $single = [];
@@ -1055,7 +1055,7 @@ final class Compiler
      *
      * @return array The selector without the relationship fragment if any, the relationship fragment.
      */
-    private function extractRelationshipFromFragment(array $fragment)
+    private function extractRelationshipFromFragment(array $fragment): array
     {
         $parents = [];
         $children = [];
@@ -1085,7 +1085,7 @@ final class Compiler
      *
      * @return array
      */
-    private function combineSelectorSingle($base, $other)
+    private function combineSelectorSingle(array $base, array $other): array
     {
         $tag    = [];
         $out    = [];
@@ -1132,11 +1132,11 @@ final class Compiler
     /**
      * Compile media
      *
-     * @param \ScssPhp\ScssPhp\Block $media
+     * @param Block $media
      *
      * @return void
      */
-    private function compileMedia(Block $media)
+    private function compileMedia(Block $media): void
     {
         $this->pushEnv($media);
 
@@ -1195,11 +1195,11 @@ final class Compiler
     /**
      * Media parent
      *
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $scope
+     * @param OutputBlock $scope
      *
-     * @return \ScssPhp\ScssPhp\Formatter\OutputBlock
+     * @return OutputBlock
      */
-    private function mediaParent(OutputBlock $scope)
+    private function mediaParent(OutputBlock $scope): OutputBlock
     {
         while (! empty($scope->parent)) {
             if (! empty($scope->type) && $scope->type !== Type::T_MEDIA) {
@@ -1215,12 +1215,12 @@ final class Compiler
     /**
      * Compile directive
      *
-     * @param \ScssPhp\ScssPhp\Block|array $directive
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
+     * @param Block|array $directive
+     * @param OutputBlock $out
      *
      * @return void
      */
-    private function compileDirective($directive, OutputBlock $out)
+    private function compileDirective($directive, OutputBlock $out): void
     {
         if (\is_array($directive)) {
             $directiveName = $this->compileDirectiveName($directive[0]);
@@ -1263,7 +1263,7 @@ final class Compiler
      * @return string
      * @throws CompilerException
      */
-    private function compileDirectiveName($directiveName)
+    private function compileDirectiveName($directiveName): string
     {
         if (is_string($directiveName)) {
             return $directiveName;
@@ -1275,11 +1275,11 @@ final class Compiler
     /**
      * Compile at-root
      *
-     * @param \ScssPhp\ScssPhp\Block $block
+     * @param Block $block
      *
      * @return void
      */
-    private function compileAtRoot(Block $block)
+    private function compileAtRoot(Block $block): void
     {
         $env     = $this->pushEnv($block);
         $envs    = $this->compactEnv($env);
@@ -1331,13 +1331,13 @@ final class Compiler
     /**
      * Filter at-root scope depending of with/without option
      *
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $scope
-     * @param array                                  $with
-     * @param array                                  $without
+     * @param OutputBlock $scope
+     * @param array       $with
+     * @param array       $without
      *
      * @return OutputBlock
      */
-    private function filterScopeWithWithout($scope, $with, $without)
+    private function filterScopeWithWithout(OutputBlock $scope, array $with, array $without): OutputBlock
     {
         $filteredScopes = [];
         $childStash = [];
@@ -1405,12 +1405,12 @@ final class Compiler
      * found missing selector from a at-root compilation in the previous scope
      * (if at-root is just enclosing a property, the selector is in the parent tree)
      *
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $scope
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $previousScope
+     * @param OutputBlock $scope
+     * @param OutputBlock $previousScope
      *
      * @return OutputBlock
      */
-    private function completeScope($scope, $previousScope)
+    private function completeScope(OutputBlock $scope, OutputBlock $previousScope): OutputBlock
     {
         if (! $scope->type && (! $scope->selectors || ! \count($scope->selectors)) && \count($scope->lines)) {
             $scope->selectors = $this->findScopeSelectors($previousScope, $scope->depth);
@@ -1428,12 +1428,12 @@ final class Compiler
     /**
      * Find a selector by the depth node in the scope
      *
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $scope
-     * @param integer                                $depth
+     * @param OutputBlock $scope
+     * @param integer     $depth
      *
      * @return array
      */
-    private function findScopeSelectors($scope, $depth)
+    private function findScopeSelectors(OutputBlock $scope, int $depth): array
     {
         if ($scope->depth === $depth && $scope->selectors) {
             return $scope->selectors;
@@ -1453,11 +1453,13 @@ final class Compiler
     /**
      * Compile @at-root's with: inclusion / without: exclusion into 2 lists uses to filter scope/env later
      *
-     * @param array $withCondition
+     * @param array|null $withCondition
      *
      * @return array
+     *
+     * @phpstan-return array{array<string, bool>, array<string, bool>}
      */
-    private function compileWith($withCondition)
+    private function compileWith(?array $withCondition): array
     {
         // just compile what we have in 2 lists
         $with = [];
@@ -1512,7 +1514,7 @@ final class Compiler
      *
      * @phpstan-param  non-empty-array<Environment> $envs
      */
-    private function filterWithWithout($envs, $with, $without)
+    private function filterWithWithout(array $envs, array $with, array $without): Environment
     {
         $filtered = [];
 
@@ -1534,13 +1536,13 @@ final class Compiler
     /**
      * Filter WITH rules
      *
-     * @param \ScssPhp\ScssPhp\Block|\ScssPhp\ScssPhp\Formatter\OutputBlock $block
-     * @param array                                                         $with
-     * @param array                                                         $without
+     * @param Block|OutputBlock $block
+     * @param array             $with
+     * @param array             $without
      *
      * @return boolean
      */
-    private function isWith($block, $with, $without)
+    private function isWith($block, array $with, array $without): bool
     {
         if (isset($block->type)) {
             if ($block->type === Type::T_MEDIA) {
@@ -1586,7 +1588,7 @@ final class Compiler
      * @return boolean
      *   true if the block should be kept, false to reject
      */
-    private function testWithWithout($what, $with, $without)
+    private function testWithWithout(string $what, array $with, array $without): bool
     {
         // if without, reject only if in the list (or 'all' is in the list)
         if (\count($without)) {
@@ -1601,12 +1603,12 @@ final class Compiler
     /**
      * Compile keyframe block
      *
-     * @param \ScssPhp\ScssPhp\Block $block
-     * @param string[]               $selectors
+     * @param Block    $block
+     * @param string[] $selectors
      *
      * @return void
      */
-    private function compileKeyframeBlock(Block $block, $selectors)
+    private function compileKeyframeBlock(Block $block, array $selectors): void
     {
         $env = $this->pushEnv($block);
 
@@ -1631,12 +1633,12 @@ final class Compiler
     /**
      * Compile nested properties lines
      *
-     * @param \ScssPhp\ScssPhp\Block                 $block
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
+     * @param Block       $block
+     * @param OutputBlock $out
      *
      * @return void
      */
-    private function compileNestedPropertiesBlock(Block $block, OutputBlock $out)
+    private function compileNestedPropertiesBlock(Block $block, OutputBlock $out): void
     {
         $prefix = $this->compileValue($block->prefix) . '-';
 
@@ -1667,12 +1669,12 @@ final class Compiler
     /**
      * Compile nested block
      *
-     * @param \ScssPhp\ScssPhp\Block $block
-     * @param string[]               $selectors
+     * @param Block    $block
+     * @param string[] $selectors
      *
      * @return void
      */
-    private function compileNestedBlock(Block $block, $selectors)
+    private function compileNestedBlock(Block $block, array $selectors): void
     {
         $this->pushEnv($block);
 
@@ -1731,11 +1733,11 @@ final class Compiler
      *
      * @see Compiler::compileChild()
      *
-     * @param \ScssPhp\ScssPhp\Block $block
+     * @param Block $block
      *
      * @return void
      */
-    private function compileBlock(Block $block)
+    private function compileBlock(Block $block): void
     {
         $env = $this->pushEnv($block);
         $env->selectors = $this->evalSelectors($block->selectors);
@@ -1775,7 +1777,7 @@ final class Compiler
      *
      * @return string
      */
-    private function compileCommentValue($value, $pushEnv = false)
+    private function compileCommentValue(array $value, bool $pushEnv = false)
     {
         $c = $value[1];
 
@@ -1801,7 +1803,7 @@ final class Compiler
      *
      * @return void
      */
-    private function compileComment($block)
+    private function compileComment(array $block): void
     {
         $out = $this->makeOutputBlock(Type::T_COMMENT);
         $out->lines[] = $this->compileCommentValue($block, true);
@@ -1816,7 +1818,7 @@ final class Compiler
      *
      * @return array
      */
-    private function evalSelectors($selectors)
+    private function evalSelectors(array $selectors): array
     {
         $this->shouldEvaluate = false;
 
@@ -1849,7 +1851,7 @@ final class Compiler
      *
      * @return array
      */
-    private function evalSelector($selector)
+    private function evalSelector(array $selector): array
     {
         return array_map([$this, 'evalSelectorPart'], $selector);
     }
@@ -1861,7 +1863,7 @@ final class Compiler
      *
      * @return array
      */
-    private function evalSelectorPart($part)
+    private function evalSelectorPart(array $part): array
     {
         foreach ($part as &$p) {
             if (\is_array($p) && ($p[0] === Type::T_INTERPOLATE || $p[0] === Type::T_STRING)) {
@@ -1890,7 +1892,7 @@ final class Compiler
      *
      * @return string
      */
-    private function collapseSelectors($selectors)
+    private function collapseSelectors(array $selectors): string
     {
         $parts = [];
 
@@ -1923,7 +1925,7 @@ final class Compiler
      *
      * @return array
      */
-    private function collapseSelectorsAsList($selectors)
+    private function collapseSelectorsAsList(array $selectors): array
     {
         $parts = [];
 
@@ -1975,7 +1977,7 @@ final class Compiler
      *
      * @return array
      */
-    private function replaceSelfSelector($selectors, $replace = null)
+    private function replaceSelfSelector(array $selectors, ?string $replace = null): array
     {
         foreach ($selectors as &$part) {
             if (\is_array($part)) {
@@ -2001,7 +2003,7 @@ final class Compiler
      *
      * @return array
      */
-    private function flattenSelectorSingle($single)
+    private function flattenSelectorSingle(array $single): array
     {
         $joined = [];
 
@@ -2032,7 +2034,7 @@ final class Compiler
      *
      * @return string
      */
-    private function compileSelector($selector)
+    private function compileSelector($selector): string
     {
         if (! \is_array($selector)) {
             return $selector; // media and the like
@@ -2054,7 +2056,7 @@ final class Compiler
      *
      * @return string
      */
-    private function compileSelectorPart($piece)
+    private function compileSelectorPart(array $piece): string
     {
         foreach ($piece as &$p) {
             if (! \is_array($p)) {
@@ -2082,7 +2084,7 @@ final class Compiler
      *
      * @return boolean
      */
-    private function hasSelectorPlaceholder($selector)
+    private function hasSelectorPlaceholder($selector): bool
     {
         if (! \is_array($selector)) {
             return false;
@@ -2104,7 +2106,7 @@ final class Compiler
      *
      * @return void
      */
-    private function pushCallStack($name = '')
+    private function pushCallStack(string $name = ''): void
     {
         $this->callStack[] = [
           'n' => $name,
@@ -2126,7 +2128,7 @@ final class Compiler
     /**
      * @return void
      */
-    private function popCallStack()
+    private function popCallStack(): void
     {
         array_pop($this->callStack);
     }
@@ -2134,13 +2136,13 @@ final class Compiler
     /**
      * Compile children and return result
      *
-     * @param array                                  $stms
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
-     * @param string                                 $traceName
+     * @param array       $stms
+     * @param OutputBlock $out
+     * @param string      $traceName
      *
      * @return array|Number|null
      */
-    private function compileChildren($stms, OutputBlock $out, $traceName = '')
+    private function compileChildren(array $stms, OutputBlock $out, string $traceName = '')
     {
         $this->pushCallStack($traceName);
 
@@ -2162,16 +2164,16 @@ final class Compiler
     /**
      * Compile children and throw exception if unexpected `@return`
      *
-     * @param array                                  $stms
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
-     * @param \ScssPhp\ScssPhp\Block                 $selfParent
-     * @param string                                 $traceName
+     * @param array       $stms
+     * @param OutputBlock $out
+     * @param Block       $selfParent
+     * @param string      $traceName
      *
      * @return void
      *
      * @throws \Exception
      */
-    private function compileChildrenNoReturn($stms, OutputBlock $out, $selfParent = null, $traceName = '')
+    private function compileChildrenNoReturn(array $stms, OutputBlock $out, $selfParent = null, string $traceName = ''): void
     {
         $this->pushCallStack($traceName);
 
@@ -2204,7 +2206,7 @@ final class Compiler
      *
      * @return array
      */
-    private function evaluateMediaQuery($queryList)
+    private function evaluateMediaQuery(array $queryList): array
     {
         static $parser = null;
 
@@ -2270,7 +2272,7 @@ final class Compiler
      *
      * @return string[]
      */
-    private function compileMediaQuery($queryList)
+    private function compileMediaQuery(array $queryList): array
     {
         $start   = '@media ';
         $default = trim($start);
@@ -2394,7 +2396,7 @@ final class Compiler
      *
      * @return array
      */
-    private function mergeDirectRelationships($selectors1, $selectors2)
+    private function mergeDirectRelationships(array $selectors1, array $selectors2): array
     {
         if (empty($selectors1) || empty($selectors2)) {
             return array_merge($selectors1, $selectors2);
@@ -2438,7 +2440,7 @@ final class Compiler
      *
      * @return array|null
      */
-    private function mergeMediaTypes($type1, $type2)
+    private function mergeMediaTypes(array $type1, array $type2): ?array
     {
         if (empty($type1)) {
             return $type2;
@@ -2495,12 +2497,12 @@ final class Compiler
     /**
      * Compile import; returns true if the value was something that could be imported
      *
-     * @param array                                  $rawPath
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
+     * @param array       $rawPath
+     * @param OutputBlock $out
      *
      * @return boolean
      */
-    private function compileImport($rawPath, OutputBlock $out)
+    private function compileImport($rawPath, OutputBlock $out): bool
     {
         if ($rawPath[0] === Type::T_STRING) {
             $path = $this->compileStringContent($rawPath);
@@ -2549,7 +2551,7 @@ final class Compiler
      * @return string
      * @throws CompilerException
      */
-    private function compileImportPath($rawPath)
+    private function compileImportPath($rawPath): string
     {
         $path = $this->compileValue($rawPath);
 
@@ -2596,13 +2598,13 @@ final class Compiler
      * Append a root directive like @import or @charset as near as the possible from the source code
      * (keeping before comments, @import and @charset coming before in the source code)
      *
-     * @param string                                 $line
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
-     * @param array                                  $allowed
+     * @param string      $line
+     * @param OutputBlock $out
+     * @param string[]      $allowed
      *
      * @return void
      */
-    private function appendRootDirective($line, $out, $allowed = [Type::T_COMMENT])
+    private function appendRootDirective(string $line, OutputBlock $out, array $allowed = [Type::T_COMMENT]): void
     {
         $root = $out;
 
@@ -2646,13 +2648,13 @@ final class Compiler
      * Append lines to the current output block:
      * directly to the block or through a child if necessary
      *
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
-     * @param string                                 $type
-     * @param string                                 $line
+     * @param OutputBlock $out
+     * @param string      $type
+     * @param string      $line
      *
      * @return void
      */
-    private function appendOutputLine(OutputBlock $out, $type, $line)
+    private function appendOutputLine(OutputBlock $out, string $type, string $line): void
     {
         $outWrite = &$out;
 
@@ -2682,8 +2684,8 @@ final class Compiler
     /**
      * Compile child; returns a value to halt execution
      *
-     * @param array                                  $child
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
+     * @param array       $child
+     * @param OutputBlock $out
      *
      * @return array|Number|null
      */
@@ -3193,7 +3195,7 @@ final class Compiler
      *
      * @return array
      */
-    private function expToString($exp, $keepParens = false)
+    private function expToString(array $exp, bool $keepParens = false): array
     {
         list(, $op, $left, $right, $inParens, $whiteLeft, $whiteRight) = $exp;
 
@@ -3231,7 +3233,7 @@ final class Compiler
      *
      * @return boolean
      */
-    public function isTruthy($value)
+    public function isTruthy($value): bool
     {
         return $value !== self::$false && $value !== self::$null;
     }
@@ -3243,7 +3245,7 @@ final class Compiler
      *
      * @return boolean
      */
-    private function isImmediateRelationshipCombinator($value)
+    private function isImmediateRelationshipCombinator(string $value): bool
     {
         return $value === '>' || $value === '+' || $value === '~';
     }
@@ -3255,7 +3257,7 @@ final class Compiler
      *
      * @return boolean
      */
-    private function shouldEval($value)
+    private function shouldEval($value): bool
     {
         switch ($value[0]) {
             case Type::T_EXPRESSION:
@@ -3280,7 +3282,7 @@ final class Compiler
      *
      * @return array|Number
      */
-    private function reduce($value, $inExp = false)
+    private function reduce($value, bool $inExp = false)
     {
         if ($value instanceof Number) {
             return $value;
@@ -3515,11 +3517,11 @@ final class Compiler
     /**
      * @param array|Number $arg
      * @param string[]     $allowed_function
-     * @param bool         $inFunction
+     * @param string|bool  $inFunction
      *
      * @return array|Number|false
      */
-    private function cssValidArg($arg, $allowed_function = [], $inFunction = false)
+    private function cssValidArg($arg, array $allowed_function = [], $inFunction = false)
     {
         if ($arg instanceof Number) {
             return $this->stringifyFncallArgs($arg);
@@ -3652,7 +3654,7 @@ final class Compiler
      * @param bool $safeCopy
      * @return array
      */
-    private function getFunctionReference($name, $safeCopy = false)
+    private function getFunctionReference(string $name, bool $safeCopy = false): array
     {
         // SCSS @function
         if ($func = $this->get(self::$namespaces['function'] . $name, false)) {
@@ -3694,7 +3696,7 @@ final class Compiler
      *
      * @return string
      */
-    private function normalizeName($name)
+    private function normalizeName(string $name): string
     {
         return str_replace('-', '_', $name);
     }
@@ -3751,7 +3753,7 @@ final class Compiler
      *
      * @return Number
      */
-    private function opAddNumberNumber(Number $left, Number $right)
+    private function opAddNumberNumber(Number $left, Number $right): Number
     {
         return $left->plus($right);
     }
@@ -3764,7 +3766,7 @@ final class Compiler
      *
      * @return Number
      */
-    private function opMulNumberNumber(Number $left, Number $right)
+    private function opMulNumberNumber(Number $left, Number $right): Number
     {
         return $left->times($right);
     }
@@ -3777,7 +3779,7 @@ final class Compiler
      *
      * @return Number
      */
-    private function opSubNumberNumber(Number $left, Number $right)
+    private function opSubNumberNumber(Number $left, Number $right): Number
     {
         return $left->minus($right);
     }
@@ -3790,7 +3792,7 @@ final class Compiler
      *
      * @return Number
      */
-    private function opDivNumberNumber(Number $left, Number $right)
+    private function opDivNumberNumber(Number $left, Number $right): Number
     {
         return $left->dividedBy($right);
     }
@@ -3803,7 +3805,7 @@ final class Compiler
      *
      * @return Number
      */
-    private function opModNumberNumber(Number $left, Number $right)
+    private function opModNumberNumber(Number $left, Number $right): Number
     {
         return $left->modulo($right);
     }
@@ -3811,8 +3813,8 @@ final class Compiler
     /**
      * Add strings
      *
-     * @param array $left
-     * @param array $right
+     * @param array|Number $left
+     * @param array|Number $right
      *
      * @return array|null
      */
@@ -3850,7 +3852,7 @@ final class Compiler
      *
      * @return array|Number|null
      */
-    private function opAnd($left, $right, $shouldEval)
+    private function opAnd($left, $right, bool $shouldEval)
     {
         $truthy = ($left === self::$null || $right === self::$null) ||
                   ($left === self::$false || $left === self::$true) &&
@@ -3878,7 +3880,7 @@ final class Compiler
      *
      * @return array|Number|null
      */
-    private function opOr($left, $right, $shouldEval)
+    private function opOr($left, $right, bool $shouldEval)
     {
         $truthy = ($left === self::$null || $right === self::$null) ||
                   ($left === self::$false || $left === self::$true) &&
@@ -3906,7 +3908,7 @@ final class Compiler
      *
      * @return array
      */
-    private function opColorColor($op, $left, $right)
+    private function opColorColor(string $op, $left, $right)
     {
         switch ($op) {
             case '==':
@@ -3932,7 +3934,7 @@ final class Compiler
      *
      * @return array
      */
-    private function opColorNumber($op, $left, Number $right)
+    private function opColorNumber(string $op, $left, Number $right)
     {
         if ($op === '==') {
             return self::$false;
@@ -3957,7 +3959,7 @@ final class Compiler
      *
      * @return array
      */
-    private function opNumberColor($op, Number $left, $right)
+    private function opNumberColor(string $op, Number $left, $right)
     {
         if ($op === '==') {
             return self::$false;
@@ -4100,7 +4102,7 @@ final class Compiler
      *
      * @return array
      */
-    public function toBool($thing)
+    public function toBool(bool $thing)
     {
         return $thing ? self::$true : self::$false;
     }
@@ -4113,7 +4115,7 @@ final class Compiler
      *
      * @return string
      */
-    private function escapeNonPrintableChars($string, $inKeyword = false)
+    private function escapeNonPrintableChars(string $string, bool $inKeyword = false): string
     {
         static $replacement = [];
         if (empty($replacement[$inKeyword])) {
@@ -4166,7 +4168,7 @@ final class Compiler
      *
      * @return string
      */
-    public function compileValue($value, $quote = true)
+    public function compileValue($value, bool $quote = true): string
     {
         $value = $this->reduce($value);
 
@@ -4441,7 +4443,7 @@ final class Compiler
      *
      * @return string
      */
-    private function compileDebugValue($value)
+    private function compileDebugValue($value): string
     {
         $value = $this->reduce($value, true);
 
@@ -4468,7 +4470,7 @@ final class Compiler
      *
      * @return string
      */
-    public function getStringText(array $value)
+    public function getStringText(array $value): string
     {
         if ($value[0] !== Type::T_STRING) {
             throw new \InvalidArgumentException('The argument is not a sass string. Did you forgot to use "assertString"?');
@@ -4485,7 +4487,7 @@ final class Compiler
      *
      * @return string
      */
-    private function compileStringContent($string, $quote = true)
+    private function compileStringContent($string, bool $quote = true): string
     {
         $parts = [];
 
@@ -4526,12 +4528,12 @@ final class Compiler
     /**
      * Find the final set of selectors
      *
-     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
-     * @param \ScssPhp\ScssPhp\Block                $selfParent
+     * @param Environment $env
+     * @param Block       $selfParent
      *
      * @return array
      */
-    private function multiplySelectors(Environment $env, $selfParent = null)
+    private function multiplySelectors(Environment $env, ?Block $selfParent = null): array
     {
         $envs            = $this->compactEnv($env);
         $selectors       = [];
@@ -4594,7 +4596,7 @@ final class Compiler
 
      * @return array
      */
-    private function joinSelectors($parent, $child, &$stillHasSelf, $selfParentSelectors = null)
+    private function joinSelectors(array $parent, array $child, &$stillHasSelf, ?array $selfParentSelectors = null)
     {
         $setSelf = false;
         $out = [];
@@ -4649,12 +4651,12 @@ final class Compiler
     /**
      * Multiply media
      *
-     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
-     * @param array                                 $childQueries
+     * @param Environment $env
+     * @param array|null  $childQueries
      *
      * @return array
      */
-    private function multiplyMedia(Environment $env = null, $childQueries = null)
+    private function multiplyMedia(Environment $env = null, ?array $childQueries = null): array
     {
         if (
             ! isset($env) ||
@@ -4727,7 +4729,7 @@ final class Compiler
      *
      * @phpstan-param  non-empty-array<Environment> $envs
      */
-    private function extractEnv($envs)
+    private function extractEnv(array $envs): Environment
     {
         for ($env = null; $e = array_pop($envs);) {
             $e->parent = $env;
@@ -4740,11 +4742,11 @@ final class Compiler
     /**
      * Push environment
      *
-     * @param \ScssPhp\ScssPhp\Block $block
+     * @param Block $block
      *
-     * @return \ScssPhp\ScssPhp\Compiler\Environment
+     * @return Environment
      */
-    private function pushEnv(Block $block = null)
+    private function pushEnv(Block $block = null): Environment
     {
         $env = new Environment();
         $env->parent = $this->env;
@@ -4764,7 +4766,7 @@ final class Compiler
      *
      * @return void
      */
-    private function popEnv()
+    private function popEnv(): void
     {
         $this->storeEnv = $this->env->parentStore;
         $this->env = $this->env->parent;
@@ -4778,7 +4780,7 @@ final class Compiler
      *
      * @return void
      */
-    private function backPropagateEnv($store, $excludedVars = null)
+    private function backPropagateEnv(array $store, ?array $excludedVars = null): void
     {
         foreach ($store as $key => $value) {
             if (empty($excludedVars) || ! \in_array($key, $excludedVars)) {
@@ -4790,9 +4792,9 @@ final class Compiler
     /**
      * Get store environment
      *
-     * @return \ScssPhp\ScssPhp\Compiler\Environment
+     * @return Environment
      */
-    private function getStoreEnv()
+    private function getStoreEnv(): Environment
     {
         return isset($this->storeEnv) ? $this->storeEnv : $this->env;
     }
@@ -4803,12 +4805,12 @@ final class Compiler
      * @param string                                $name
      * @param mixed                                 $value
      * @param boolean                               $shadow
-     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
+     * @param Environment $env
      * @param mixed                                 $valueUnreduced
      *
      * @return void
      */
-    private function set($name, $value, $shadow = false, Environment $env = null, $valueUnreduced = null)
+    private function set(string $name, $value, bool $shadow = false, Environment $env = null, $valueUnreduced = null): void
     {
         $name = $this->normalizeName($name);
 
@@ -4828,12 +4830,12 @@ final class Compiler
      *
      * @param string                                $name
      * @param mixed                                 $value
-     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
+     * @param Environment $env
      * @param mixed                                 $valueUnreduced
      *
      * @return void
      */
-    private function setExisting($name, $value, Environment $env, $valueUnreduced = null)
+    private function setExisting(string $name, $value, Environment $env, $valueUnreduced = null): void
     {
         $storeEnv = $env;
         $specialContentKey = self::$namespaces['special'] . 'content';
@@ -4886,14 +4888,14 @@ final class Compiler
     /**
      * Set raw variable
      *
-     * @param string                                $name
-     * @param mixed                                 $value
-     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
-     * @param mixed                                 $valueUnreduced
+     * @param string      $name
+     * @param mixed       $value
+     * @param Environment $env
+     * @param mixed       $valueUnreduced
      *
      * @return void
      */
-    private function setRaw($name, $value, Environment $env, $valueUnreduced = null)
+    private function setRaw(string $name, $value, Environment $env, $valueUnreduced = null): void
     {
         $env->store[$name] = $value;
 
@@ -4905,14 +4907,14 @@ final class Compiler
     /**
      * Get variable
      *
-     * @param string                                $name
-     * @param boolean                               $shouldThrow
-     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
-     * @param boolean                               $unreduced
+     * @param string           $name
+     * @param bool             $shouldThrow
+     * @param Environment|null $env
+     * @param bool             $unreduced
      *
      * @return mixed|null
      */
-    private function get($name, $shouldThrow = true, Environment $env = null, $unreduced = false)
+    private function get(string $name, bool $shouldThrow = true, ?Environment $env = null, bool $unreduced = false)
     {
         $normalizedName = $this->normalizeName($name);
         $specialContentKey = self::$namespaces['special'] . 'content';
@@ -4972,12 +4974,12 @@ final class Compiler
     /**
      * Has variable?
      *
-     * @param string                                $name
-     * @param \ScssPhp\ScssPhp\Compiler\Environment $env
+     * @param string           $name
+     * @param Environment|null $env
      *
      * @return boolean
      */
-    private function has($name, Environment $env = null)
+    private function has(string $name, Environment $env = null): bool
     {
         return ! \is_null($this->get($name, false, $env));
     }
@@ -4989,7 +4991,7 @@ final class Compiler
      *
      * @return void
      */
-    private function injectVariables(array $args)
+    private function injectVariables(array $args): void
     {
         if (empty($args)) {
             return;
@@ -5017,7 +5019,7 @@ final class Compiler
      *
      * @return void
      */
-    public function replaceVariables(array $variables)
+    public function replaceVariables(array $variables): void
     {
         $this->registeredVars = [];
         $this->addVariables($variables);
@@ -5030,7 +5032,7 @@ final class Compiler
      *
      * @return void
      */
-    public function addVariables(array $variables)
+    public function addVariables(array $variables): void
     {
         foreach ($variables as $name => $value) {
             if (!$value instanceof Number && !\is_array($value)) {
@@ -5048,7 +5050,7 @@ final class Compiler
      *
      * @return void
      */
-    public function unsetVariable($name)
+    public function unsetVariable(string $name): void
     {
         unset($this->registeredVars[$name]);
     }
@@ -5058,7 +5060,7 @@ final class Compiler
      *
      * @return array
      */
-    public function getVariables()
+    public function getVariables(): array
     {
         return $this->registeredVars;
     }
@@ -5070,7 +5072,7 @@ final class Compiler
      *
      * @return void
      */
-    private function addParsedFile($path)
+    private function addParsedFile(?string $path): void
     {
         if (! \is_null($path) && is_file($path)) {
             $this->parsedFiles[realpath($path)] = filemtime($path);
@@ -5084,7 +5086,7 @@ final class Compiler
      *
      * @return void
      */
-    public function addImportPath($path)
+    public function addImportPath($path): void
     {
         if (! \in_array($path, $this->importPaths)) {
             $this->importPaths[] = $path;
@@ -5098,7 +5100,7 @@ final class Compiler
      *
      * @return void
      */
-    public function setImportPaths($path)
+    public function setImportPaths($path): void
     {
         $paths = (array) $path;
         $actualImportPaths = array_filter($paths, function ($path) {
@@ -5121,7 +5123,7 @@ final class Compiler
      *
      * @phpstan-param OutputStyle::* $style
      */
-    public function setOutputStyle($style)
+    public function setOutputStyle(string $style): void
     {
         switch ($style) {
             case OutputStyle::EXPANDED:
@@ -5146,7 +5148,7 @@ final class Compiler
      *
      * @phpstan-param self::SOURCE_MAP_* $sourceMap
      */
-    public function setSourceMap($sourceMap)
+    public function setSourceMap(int $sourceMap): void
     {
         $this->sourceMap = $sourceMap;
     }
@@ -5160,7 +5162,7 @@ final class Compiler
      *
      * @return void
      */
-    public function setSourceMapOptions($sourceMapOptions)
+    public function setSourceMapOptions(array $sourceMapOptions): void
     {
         $this->sourceMapOptions = $sourceMapOptions;
     }
@@ -5174,7 +5176,7 @@ final class Compiler
      *
      * @return void
      */
-    public function registerFunction($name, $callback, array $argumentDeclaration)
+    public function registerFunction(string $name, callable $callback, array $argumentDeclaration): void
     {
         if (self::isNativeFunction($name)) {
             throw new \InvalidArgumentException(sprintf('The "%s" function is a core sass function. Overriding it with a custom implementation through "%s" is not supported .', $name, __METHOD__));
@@ -5190,7 +5192,7 @@ final class Compiler
      *
      * @return void
      */
-    public function unregisterFunction($name)
+    public function unregisterFunction(string $name): void
     {
         unset($this->userFunctions[$this->normalizeName($name)]);
     }
@@ -5198,12 +5200,12 @@ final class Compiler
     /**
      * Import file
      *
-     * @param string                                 $path
-     * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
+     * @param string      $path
+     * @param OutputBlock $out
      *
      * @return void
      */
-    private function importFile($path, OutputBlock $out)
+    private function importFile(string $path, OutputBlock $out): void
     {
         $this->pushCallStack('import ' . $this->getPrettyPath($path));
         // see if tree is cached
@@ -5247,7 +5249,7 @@ final class Compiler
      *
      * @return void
      */
-    private function registerImport($currentDirectory, $path, $filePath)
+    private function registerImport(?string $currentDirectory, string $path, string $filePath): void
     {
         $this->resolvedImports[] = ['currentDir' => $currentDirectory, 'path' => $path, 'filePath' => $filePath];
     }
@@ -5259,7 +5261,7 @@ final class Compiler
      *
      * @return bool
      */
-    public static function isCssImport($url)
+    public static function isCssImport(string $url): bool
     {
         return 1 === preg_match('~\.css$|^https?://|^//~', $url);
     }
@@ -5272,7 +5274,7 @@ final class Compiler
      *
      * @return string|null
      */
-    private function findImport($url, $currentDir = null)
+    private function findImport(string $url, ?string $currentDir = null): ?string
     {
         // Vanilla css and external requests. These are not meant to be Sass imports.
         if (self::isCssImport($url)) {
@@ -5313,7 +5315,7 @@ final class Compiler
      *
      * @return string|null
      */
-    private function resolveImportPath($url, $baseDir)
+    private function resolveImportPath(string $url, string $baseDir): ?string
     {
         $path = Path::join($baseDir, $url);
 
@@ -5337,7 +5339,7 @@ final class Compiler
      *
      * @return string|null
      */
-    private function checkImportPathConflicts(array $paths)
+    private function checkImportPathConflicts(array $paths): ?string
     {
         if (\count($paths) === 0) {
             return null;
@@ -5361,7 +5363,7 @@ final class Compiler
      *
      * @return string[]
      */
-    private function tryImportPathWithExtensions($path)
+    private function tryImportPathWithExtensions(string $path): array
     {
         $result = array_merge(
             $this->tryImportPath($path.'.sass'),
@@ -5380,7 +5382,7 @@ final class Compiler
      *
      * @return string[]
      */
-    private function tryImportPath($path)
+    private function tryImportPath(string $path): array
     {
         $partial = dirname($path).'/_'.basename($path);
 
@@ -5402,7 +5404,7 @@ final class Compiler
      *
      * @return string|null
      */
-    private function tryImportPathAsDirectory($path)
+    private function tryImportPathAsDirectory(string $path): ?string
     {
         if (!is_dir($path)) {
             return null;
@@ -5416,7 +5418,7 @@ final class Compiler
      *
      * @return string
      */
-    private function getPrettyPath($path)
+    private function getPrettyPath(?string $path): string
     {
         if ($path === null) {
             return '(unknown file)';
@@ -5444,7 +5446,7 @@ final class Compiler
      *
      * @return CompilerException
      */
-    private function error($msg, ...$args)
+    private function error(string $msg, ...$args): CompilerException
     {
         if ($args) {
             $msg = sprintf($msg, ...$args);
@@ -5460,7 +5462,7 @@ final class Compiler
      *
      * @return string
      */
-    private function addLocationToMessage($msg)
+    private function addLocationToMessage(string $msg): string
     {
         $line   = $this->sourceLine;
         $column = $this->sourceColumn;
@@ -5488,7 +5490,7 @@ final class Compiler
      *
      * @return string
      */
-    private function callStackMessage($all = false, $limit = null)
+    private function callStackMessage(bool $all = false, ?int $limit = null): string
     {
         $callStackMsg = [];
         $ncall = 0;
@@ -5521,7 +5523,7 @@ final class Compiler
      *
      * @throws \Exception
      */
-    private function handleImportLoop($name)
+    private function handleImportLoop($name): void
     {
         for ($env = $this->env; $env; $env = $env->parent) {
             if (! $env->block) {
@@ -5585,14 +5587,14 @@ final class Compiler
     /**
      * Call built-in and registered (PHP) functions
      *
-     * @param string $name
+     * @param string   $name
      * @param callable $function
-     * @param array  $prototype
-     * @param array  $args
+     * @param array    $prototype
+     * @param array    $args
      *
      * @return array|Number|null
      */
-    private function callNativeFunction($name, $function, $prototype, $args)
+    private function callNativeFunction(string $name, callable $function, array $prototype, array $args)
     {
         $libName = (is_array($function) ? end($function) : null);
         $sorted_kwargs = $this->sortNativeFunctionArgs($libName, $prototype, $args);
@@ -5627,7 +5629,7 @@ final class Compiler
      *
      * @return array
      */
-    private function getBuiltinFunction($name)
+    private function getBuiltinFunction(string $name): array
     {
         $libName = self::normalizeNativeFunctionName($name);
         return [$this, $libName];
@@ -5640,7 +5642,7 @@ final class Compiler
      *
      * @return string
      */
-    private static function normalizeNativeFunctionName($name)
+    private static function normalizeNativeFunctionName(string $name): string
     {
         $name = str_replace("-", "_", $name);
         $libName = 'lib' . preg_replace_callback(
@@ -5662,7 +5664,7 @@ final class Compiler
      *
      * @return bool
      */
-    public static function isNativeFunction($name)
+    public static function isNativeFunction(string $name): bool
     {
         return method_exists(Compiler::class, self::normalizeNativeFunctionName($name));
     }
@@ -5670,13 +5672,13 @@ final class Compiler
     /**
      * Sorts keyword arguments
      *
-     * @param string $functionName
-     * @param array  $prototypes
-     * @param array  $args
+     * @param string|null $functionName
+     * @param array       $prototypes
+     * @param array       $args
      *
      * @return array
      */
-    private function sortNativeFunctionArgs($functionName, array $prototypes, $args)
+    private function sortNativeFunctionArgs(?string $functionName, array $prototypes, array $args): array
     {
         // specific cases ?
         if (\in_array($functionName, ['libRgb', 'libRgba', 'libHsl', 'libHsla'])) {
@@ -5749,7 +5751,7 @@ final class Compiler
      * @return array
      * @phpstan-return array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null}
      */
-    private function parseFunctionPrototype(array $prototype)
+    private function parseFunctionPrototype(array $prototype): array
     {
         static $parser = null;
 
@@ -5809,7 +5811,7 @@ final class Compiler
      * @phpstan-param non-empty-list<array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null}> $prototypes
      * @phpstan-return array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null}
      */
-    private function selectFunctionPrototype(array $prototypes, $positional, array $names)
+    private function selectFunctionPrototype(array $prototypes, int $positional, array $names): array
     {
         $fuzzyMatch = null;
         $minMismatchDistance = null;
@@ -5856,7 +5858,7 @@ final class Compiler
      *
      * @phpstan-param array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null} $prototype
      */
-    private function checkPrototypeMatches(array $prototype, $positional, array $names)
+    private function checkPrototypeMatches(array $prototype, int $positional, array $names): bool
     {
         $nameUsed = 0;
 
@@ -5903,7 +5905,7 @@ final class Compiler
      *
      * @phpstan-param array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null} $prototype
      */
-    private function verifyPrototype(array $prototype, $positional, array $names, $hasSplat)
+    private function verifyPrototype(array $prototype, int $positional, array $names, bool $hasSplat): void
     {
         $nameUsed = 0;
 
@@ -5975,7 +5977,7 @@ final class Compiler
      *
      * @phpstan-return array{0: list<array|Number>, 1: array<string, array|Number>, 2: array<string, string>, 3: string|null, 4: bool}
      */
-    private function evaluateArguments(array $args, $reduce = true)
+    private function evaluateArguments(array $args, bool $reduce = true): array
     {
         // this represents trailing commas
         if (\count($args) && end($args) === self::$null) {
@@ -6073,7 +6075,7 @@ final class Compiler
      *
      * @return array|Number
      */
-    private function maybeReduce($reduce, $value)
+    private function maybeReduce(bool $reduce, $value)
     {
         if ($reduce) {
             return $this->reduce($value, true);
@@ -6097,7 +6099,7 @@ final class Compiler
      *
      * @throws \Exception
      */
-    private function applyArguments($argDef, $argValues, $storeInEnv = true, $reduce = true)
+    private function applyArguments(array $argDef, ?array $argValues, bool $storeInEnv = true, bool $reduce = true)
     {
         $output = [];
 
@@ -6204,7 +6206,7 @@ final class Compiler
      *
      * @phpstan-param array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null} $prototype
      */
-    private function applyArgumentsToDeclaration(array $prototype, array $positionalArgs, array $namedArgs, $splatSeparator)
+    private function applyArgumentsToDeclaration(array $prototype, array $positionalArgs, array $namedArgs, ?string $splatSeparator): array
     {
         $output = [];
         $minLength = min(\count($positionalArgs), \count($prototype['arguments']));
@@ -6315,7 +6317,7 @@ final class Compiler
      *
      * @return array
      */
-    private function coerceList($item, $delim = ',', $removeTrailingNull = false)
+    private function coerceList($item, string $delim = ',', bool $removeTrailingNull = false): array
     {
         if ($item instanceof Number) {
             return [Type::T_LIST, $delim, [$item]];
@@ -6388,7 +6390,7 @@ final class Compiler
      *
      * @return array|null
      */
-    private function coerceColor($value, $inRGBFunction = false)
+    private function coerceColor($value, bool $inRGBFunction = false)
     {
         if ($value instanceof Number) {
             return null;
@@ -6507,7 +6509,7 @@ final class Compiler
      *
      * @return integer|mixed
      */
-    private function compileRGBAValue($value, $isAlpha = false)
+    private function compileRGBAValue($value, bool $isAlpha = false)
     {
         if ($isAlpha) {
             return $this->compileColorPartValue($value, 0, 1, false);
@@ -6524,7 +6526,7 @@ final class Compiler
      *
      * @return integer|mixed
      */
-    private function compileColorPartValue($value, $min, $max, $isInt = true)
+    private function compileColorPartValue($value, $min, $max, bool $isInt = true)
     {
         if (! is_numeric($value)) {
             if (\is_array($value)) {
@@ -6570,7 +6572,7 @@ final class Compiler
      *
      * @return array
      */
-    private function coerceString($value)
+    private function coerceString($value): array
     {
         if ($value[0] === Type::T_STRING) {
             return $value;
@@ -6594,7 +6596,7 @@ final class Compiler
      *
      * @throws SassScriptException
      */
-    public function assertString($value, $varName = null)
+    public function assertString($value, ?string $varName = null)
     {
         // case of url(...) parsed a a function
         if ($value[0] === Type::T_FUNCTION) {
@@ -6639,7 +6641,7 @@ final class Compiler
      *
      * @throws SassScriptException
      */
-    public function assertMap($value, $varName = null)
+    public function assertMap($value, ?string $varName = null)
     {
         $value = $this->coerceMap($value);
 
@@ -6682,7 +6684,7 @@ final class Compiler
      *
      * @return array<string, array|Number>
      */
-    public function getArgumentListKeywords($value)
+    public function getArgumentListKeywords($value): array
     {
         if ($value[0] !== Type::T_LIST || !isset($value[3]) || !\is_array($value[3])) {
             throw new \InvalidArgumentException('The argument is not a sass argument list.');
@@ -6701,7 +6703,7 @@ final class Compiler
      *
      * @throws SassScriptException
      */
-    public function assertColor($value, $varName = null)
+    public function assertColor($value, ?string $varName = null)
     {
         if ($color = $this->coerceColor($value)) {
             return $color;
@@ -6722,7 +6724,7 @@ final class Compiler
      *
      * @throws SassScriptException
      */
-    public function assertNumber($value, $varName = null)
+    public function assertNumber($value, ?string $varName = null): Number
     {
         if (!$value instanceof Number) {
             $value = $this->compileValue($value);
@@ -6742,7 +6744,7 @@ final class Compiler
      *
      * @throws SassScriptException
      */
-    public function assertInteger($value, $varName = null)
+    public function assertInteger($value, ?string $varName = null): int
     {
         $value = $this->assertNumber($value, $varName)->getDimension();
         if (round($value - \intval($value), Number::PRECISION) > 0) {
@@ -6759,7 +6761,7 @@ final class Compiler
      * @param array $args
      * @return array
      */
-    private function extractSlashAlphaInColorFunction($args)
+    private function extractSlashAlphaInColorFunction(array $args): array
     {
         $last = end($args);
         if (\count($args) === 3 && $last[0] === Type::T_EXPRESSION && $last[1] === '/') {
@@ -6778,7 +6780,7 @@ final class Compiler
      *
      * @return array
      */
-    private function fixColor($c)
+    private function fixColor(array $c): array
     {
         foreach ([1, 2, 3] as $i) {
             if ($c[$i] < 0) {
@@ -6806,7 +6808,7 @@ final class Compiler
      *
      * @return array
      */
-    private function toHSL($red, $green, $blue)
+    private function toHSL($red, $green, $blue): array
     {
         $min = min($red, $green, $blue);
         $max = max($red, $green, $blue);
@@ -7147,7 +7149,7 @@ final class Compiler
      *
      * @phpstan-param callable(float|int, float|int|null, float|int): (float|int) $fn
      */
-    private function alterColor(array $args, $operation, $fn)
+    private function alterColor(array $args, string $operation, callable $fn): array
     {
         $color = $this->assertColor($args[0], 'color');
 
@@ -7690,7 +7692,7 @@ final class Compiler
     }
     */
 
-    private function adjustHsl($color, $idx, $amount)
+    private function adjustHsl(array $color, int $idx, $amount): array
     {
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
         $hsl[$idx] += $amount;
@@ -8180,7 +8182,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      * @return string
      * @throws CompilerException
      */
-    private function listSeparatorForJoin($list1, $sep)
+    private function listSeparatorForJoin(array $list1, $sep): string
     {
         if (! isset($sep)) {
             return $list1[1];
@@ -8494,7 +8496,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      * @param callable $filter
      * @return string
      */
-    private function stringTransformAsciiOnly($stringContent, $filter)
+    private function stringTransformAsciiOnly(string $stringContent, callable $filter): string
     {
         $mblength = Util::mbStrlen($stringContent);
         if ($mblength === strlen($stringContent)) {
@@ -8669,7 +8671,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @return array
      */
-    private function getSelectorArg($arg, $varname = null, $allowParent = false)
+    private function getSelectorArg($arg, ?string $varname = null, bool $allowParent = false)
     {
         static $parser = null;
 
@@ -8716,7 +8718,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      * @param int $maxDepth
      * @return bool
      */
-    private function checkSelectorArgType($arg, $maxDepth = 2)
+    private function checkSelectorArgType($arg, int $maxDepth = 2): bool
     {
         if ($arg[0] === Type::T_LIST && $maxDepth > 0) {
             foreach ($arg[2] as $elt) {
@@ -8739,7 +8741,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @return array
      */
-    private function formatOutputSelector($selectors)
+    private function formatOutputSelector(array $selectors): array
     {
         $selectors = $this->collapseSelectorsAsList($selectors);
 
@@ -8765,7 +8767,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @return boolean
      */
-    private function isSuperSelector($super, $sub)
+    private function isSuperSelector(array $super, array $sub): bool
     {
         // one and only one selector for each arg
         if (! $super) {
@@ -8846,7 +8848,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @return boolean
      */
-    private function isSuperPart($superParts, $subParts)
+    private function isSuperPart(array $superParts, array $subParts): bool
     {
         $i = 0;
 
@@ -8893,7 +8895,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @throws \ScssPhp\ScssPhp\Exception\CompilerException
      */
-    private function selectorAppend($selectors)
+    private function selectorAppend(array $selectors): array
     {
         $lastSelectors = array_pop($selectors);
 
@@ -8988,7 +8990,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @return array
      */
-    private function extendOrReplaceSelectors($selectors, $extendee, $extender, $replace = false)
+    private function extendOrReplaceSelectors(array $selectors, array $extendee, array $extender, bool $replace = false): array
     {
         $saveExtends = $this->extends;
         $saveExtendsMap = $this->extendsMap;
@@ -9103,7 +9105,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @return array
      */
-    private function unifyCompoundSelectors($compound1, $compound2)
+    private function unifyCompoundSelectors(array $compound1, array $compound2): array
     {
         if (! \count($compound1)) {
             return $compound2;
@@ -9196,7 +9198,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @return array
      */
-    private function prependSelectors($selectors, $parts)
+    private function prependSelectors(array $selectors, array $parts): array
     {
         $new = [];
 
@@ -9219,7 +9221,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @return array|false
      */
-    private function matchPartInCompound($part, $compound)
+    private function matchPartInCompound(array $part, array $compound)
     {
         $partTag = $this->findTagName($part);
         $before  = $compound;
@@ -9265,7 +9267,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @return array
      */
-    private function mergeParts($parts1, $parts2)
+    private function mergeParts(array $parts1, array $parts2): array
     {
         $tag1 = $this->findTagName($parts1);
         $tag2 = $this->findTagName($parts2);
@@ -9314,7 +9316,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @return array|false
      */
-    private function checkCompatibleTags($tag1, $tag2)
+    private function checkCompatibleTags(string $tag1, string $tag2)
     {
         $tags = [$tag1, $tag2];
         $tags = array_unique($tags);
@@ -9339,7 +9341,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @return string
      */
-    private function findTagName($parts)
+    private function findTagName(array $parts): string
     {
         foreach ($parts as $part) {
             if (! preg_match('/^[\[.:#%_-]/', $part)) {

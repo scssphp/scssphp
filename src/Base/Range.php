@@ -50,7 +50,7 @@ final class Range
      *
      * @return boolean
      */
-    public function includes($value)
+    public function includes($value): bool
     {
         return $value >= $this->first && $value <= $this->last;
     }

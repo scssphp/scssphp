@@ -99,7 +99,7 @@ abstract class Formatter
      *
      * @return string
      */
-    protected function indentStr()
+    protected function indentStr(): string
     {
         return '';
     }
@@ -108,11 +108,11 @@ abstract class Formatter
      * Return property assignment
      *
      * @param string $name
-     * @param mixed  $value
+     * @param string  $value
      *
      * @return string
      */
-    public function property($name, $value)
+    public function property(string $name, string $value): string
     {
         return rtrim($name) . $this->assignSeparator . $value . ';';
     }
@@ -122,11 +122,11 @@ abstract class Formatter
      * differs in that you have to keep spaces in the value as is
      *
      * @param string $name
-     * @param mixed  $value
+     * @param string  $value
      *
      * @return string
      */
-    public function customProperty($name, $value)
+    public function customProperty(string $name, string $value): string
     {
         return rtrim($name) . trim($this->assignSeparator) . $value . ';';
     }
@@ -138,7 +138,7 @@ abstract class Formatter
      *
      * @return void
      */
-    protected function blockLines(OutputBlock $block)
+    protected function blockLines(OutputBlock $block): void
     {
         $inner = $this->indentStr();
         $glue  = $this->break . $inner;
@@ -157,7 +157,7 @@ abstract class Formatter
      *
      * @return void
      */
-    protected function blockSelectors(OutputBlock $block)
+    protected function blockSelectors(OutputBlock $block): void
     {
         assert(! empty($block->selectors));
 
@@ -235,7 +235,7 @@ abstract class Formatter
      *
      * @return boolean
      */
-    private function testEmptyChildren($block)
+    private function testEmptyChildren(OutputBlock $block): bool
     {
         $isEmpty = empty($block->lines);
 
@@ -264,7 +264,7 @@ abstract class Formatter
      *
      * @return string
      */
-    public function format(OutputBlock $block, SourceMapGenerator $sourceMapGenerator = null)
+    public function format(OutputBlock $block, SourceMapGenerator $sourceMapGenerator = null): string
     {
         $this->sourceMapGenerator = null;
 
@@ -292,7 +292,7 @@ abstract class Formatter
      *
      * @return void
      */
-    protected function write($str)
+    protected function write(string $str): void
     {
         if (! empty($this->strippedSemicolon)) {
             echo $this->strippedSemicolon;

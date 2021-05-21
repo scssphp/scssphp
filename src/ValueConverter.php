@@ -33,7 +33,7 @@ final class ValueConverter
      *
      * @return mixed
      */
-    public static function parseValue($source)
+    public static function parseValue(string $source)
     {
         $parser = new Parser(__CLASS__);
 

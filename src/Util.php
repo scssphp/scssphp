@@ -36,9 +36,9 @@ final class Util
      *
      * @return mixed `value` adjusted to fall within range, if it was outside by a floating-point margin.
      *
-     * @throws \ScssPhp\ScssPhp\Exception\RangeException
+     * @throws RangeException
      */
-    public static function checkRange($name, Range $range, $value, $unit = '')
+    public static function checkRange(string $name, Range $range, $value, string $unit = '')
     {
         $val = $value[1];
         $grace = new Range(-0.00001, 0.00001);
@@ -69,7 +69,7 @@ final class Util
      *
      * @return string
      */
-    public static function encodeURIComponent($string)
+    public static function encodeURIComponent(string $string): string
     {
         $revert = ['%21' => '!', '%2A' => '*', '%27' => "'", '%28' => '(', '%29' => ')'];
 
@@ -83,7 +83,7 @@ final class Util
      *
      * @return string
      */
-    public static function mbChr($code)
+    public static function mbChr(int $code): string
     {
         // Use the native implementation if available, but not on PHP 7.2 as mb_chr(0) is buggy there
         if (\PHP_VERSION_ID > 70300 && \function_exists('mb_chr')) {
@@ -110,7 +110,7 @@ final class Util
      * @param string $string
      * @return int
      */
-    public static function mbStrlen($string)
+    public static function mbStrlen(string $string): int
     {
         // Use the native implementation if available.
         if (\function_exists('mb_strlen')) {
@@ -131,7 +131,7 @@ final class Util
      * @param null|int $length
      * @return string
      */
-    public static function mbSubstr($string, $start, $length = null)
+    public static function mbSubstr(string $string, int $start, ?int $length = null): string
     {
         // Use the native implementation if available.
         if (\function_exists('mb_substr')) {
@@ -169,7 +169,7 @@ final class Util
      *
      * @return int|false
      */
-    public static function mbStrpos($haystack, $needle, $offset = 0)
+    public static function mbStrpos(string $haystack, string $needle, int $offset = 0)
     {
         if (\function_exists('mb_strpos')) {
             return mb_strpos($haystack, $needle, $offset, 'UTF-8');
