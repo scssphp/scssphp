@@ -23,7 +23,7 @@ final class SassScriptException extends \Exception
      *
      * @return SassScriptException
      */
-    public static function forArgument($message, $name = null)
+    public static function forArgument(string $message, ?string $name = null): SassScriptException
     {
         $varDisplay = !\is_null($name) ? "\${$name}: " : '';
 
