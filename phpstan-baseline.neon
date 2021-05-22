@@ -141,11 +141,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Cannot access property \\$assignSeparator on ScssPhp\\\\ScssPhp\\\\Formatter\\|string\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Cannot access property \\$children on ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\|null\\.$#"
 			count: 6
 			path: src/Compiler.php
@@ -161,27 +156,7 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Cannot access property \\$tagSeparator on ScssPhp\\\\ScssPhp\\\\Formatter\\|string\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Cannot call method customProperty\\(\\) on ScssPhp\\\\ScssPhp\\\\Formatter\\|string\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Cannot call method format\\(\\) on ScssPhp\\\\ScssPhp\\\\Formatter\\|string\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Cannot call method generateJson\\(\\) on ScssPhp\\\\ScssPhp\\\\SourceMap\\\\SourceMapGenerator\\|null\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Cannot call method property\\(\\) on ScssPhp\\\\ScssPhp\\\\Formatter\\|string\\.$#"
 			count: 1
 			path: src/Compiler.php
 

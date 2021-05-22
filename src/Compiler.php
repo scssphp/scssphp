@@ -147,9 +147,15 @@ final class Compiler
     private $sourceMapOptions = [];
 
     /**
-     * @var string|Formatter
+     * @var string
+     * @phpstan-var OutputStyle::*
      */
-    private $formatter = Expanded::class;
+    private $outputStyle = OutputStyle::EXPANDED;
+
+    /**
+     * @var Formatter
+     */
+    private $formatter;
 
     /**
      * @var Environment
@@ -292,7 +298,7 @@ final class Compiler
             'registeredVars'     => $this->registeredVars,
             'sourceMap'          => serialize($this->sourceMap),
             'sourceMapOptions'   => $this->sourceMapOptions,
-            'formatter'          => $this->formatter,
+            'outputStyle'        => $this->outputStyle,
         ];
 
         return $options;
@@ -363,7 +369,7 @@ final class Compiler
             $tree         = $this->parser->parse($source);
             $this->parser = null;
 
-            $this->formatter = new $this->formatter();
+            $this->formatter = $this->outputStyle === OutputStyle::COMPRESSED ? new Compressed() : new Expanded();
             $this->rootBlock = null;
             $this->rootEnv   = $this->pushEnv($tree);
 
@@ -385,6 +391,8 @@ final class Compiler
             if ($this->sourceMap !== self::SOURCE_MAP_NONE) {
                 $sourceMapGenerator = new SourceMapGenerator($this->sourceMapOptions);
             }
+
+            assert($this->scope !== null);
 
             $out = $this->formatter->format($this->scope, $sourceMapGenerator);
 
@@ -5127,11 +5135,8 @@ final class Compiler
     {
         switch ($style) {
             case OutputStyle::EXPANDED:
-                $this->formatter = Expanded::class;
-                break;
-
             case OutputStyle::COMPRESSED:
-                $this->formatter = Compressed::class;
+                $this->outputStyle = $style;
                 break;
 
             default:
