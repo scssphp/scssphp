@@ -1546,26 +1546,6 @@ parameters:
 			path: src/Compiler/Environment.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Exception\\\\ParserException\\:\\:getSourcePosition\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Exception/ParserException.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Exception\\\\ParserException\\:\\:setSourcePosition\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Exception/ParserException.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Exception\\\\ParserException\\:\\:setSourcePosition\\(\\) has parameter \\$sourcePosition with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Exception/ParserException.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Exception\\\\ParserException\\:\\:\\$sourcePosition type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Exception/ParserException.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Formatter\\:\\:format\\(\\) should return string but returns string\\|false\\.$#"
 			count: 1
 			path: src/Formatter.php
