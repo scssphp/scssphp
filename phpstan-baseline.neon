@@ -1311,11 +1311,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^PHPDoc tag @throws with type ScssPhp\\\\ScssPhp\\\\Exception\\\\SassException is not subtype of Throwable$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Parameter \\#1 \\$block of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:flattenSelectors\\(\\) expects ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock, ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\|null given\\.$#"
 			count: 1
 			path: src/Compiler.php
