@@ -13,8 +13,13 @@
 namespace ScssPhp\ScssPhp\Ast\Sass\Statement;
 
 use ScssPhp\ScssPhp\Ast\Sass\Statement;
-use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition;
+use ScssPhp\ScssPhp\Exception\SassFormatException;
+use ScssPhp\ScssPhp\Logger\LoggerInterface;
+use ScssPhp\ScssPhp\Parser\CssParser;
+use ScssPhp\ScssPhp\Parser\ScssParser;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\SourceSpan\SourceFile;
+use ScssPhp\ScssPhp\Syntax;
 use ScssPhp\ScssPhp\Visitor\StatementVisitor;
 
 /**
@@ -63,5 +68,54 @@ final class Stylesheet extends ParentStatement
     public function accepts(StatementVisitor $visitor)
     {
         return $visitor->visitStylesheet($this);
+    }
+
+    /**
+     * @param Syntax::* $syntax
+     *
+     * @throws SassFormatException when parsing fails
+     */
+    public static function parse(string $contents, string $syntax, ?LoggerInterface $logger = null, ?string $sourceUrl = null): self
+    {
+        switch ($syntax) {
+            case Syntax::SASS:
+                return self::parseSass($contents, $logger, $sourceUrl);
+
+            case Syntax::SCSS:
+                return self::parseScss($contents, $logger, $sourceUrl);
+
+            case Syntax::CSS:
+                return self::parseCss($contents, $logger, $sourceUrl);
+
+            default:
+                throw new \InvalidArgumentException("Unknown syntax $syntax.");
+        }
+    }
+
+    /**
+     * @throws SassFormatException when parsing fails
+     */
+    public static function parseSass(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null): self
+    {
+        $file = new SourceFile($contents, $sourceUrl);
+        $span = $file->span(0, 0);
+
+        throw new SassFormatException('The Sass indented syntax is not implemented.', $span);
+    }
+
+    /**
+     * @throws SassFormatException when parsing fails
+     */
+    public static function parseScss(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null): self
+    {
+        return (new ScssParser($contents, $logger, $sourceUrl))->parse();
+    }
+
+    /**
+     * @throws SassFormatException when parsing fails
+     */
+    public static function parseCss(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null): self
+    {
+        return (new CssParser($contents, $logger, $sourceUrl))->parse();
     }
 }
