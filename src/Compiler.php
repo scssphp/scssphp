@@ -5044,7 +5044,7 @@ final class Compiler
     {
         foreach ($variables as $name => $value) {
             if (!$value instanceof Number && !\is_array($value)) {
-                throw new \InvalidArgumentException('Passing raw values to as custom variables to the Compiler is deprecated. Use "\ScssPhp\ScssPhp\ValueConverter::parseValue" or "\ScssPhp\ScssPhp\ValueConverter::fromPhp" to convert them instead.');
+                throw new \InvalidArgumentException('Passing raw values to as custom variables to the Compiler is not supported anymore. Use "\ScssPhp\ScssPhp\ValueConverter::parseValue" or "\ScssPhp\ScssPhp\ValueConverter::fromPhp" to convert them instead.');
             }
 
             $this->registeredVars[$name] = $value;
