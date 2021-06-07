@@ -3072,6 +3072,21 @@ class Compiler
                             $selectors = $this->multiplySelectors($this->env, $child['selfParent']);
                         }
 
+                        if (\count($result) > 1) {
+                            $replacement = implode(', ', $result);
+                            $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
+                            $line = $this->sourceLine;
+
+                            $message = <<<EOL
+on line $line of $fname:
+Compound selectors may no longer be extended.
+Consider `@extend $replacement` instead.
+See http://bit.ly/ExtendCompound for details.
+EOL;
+
+                            $this->logger->warn($message);
+                        }
+
                         $this->pushExtends($result, $selectors, $child);
                     }
                 }
