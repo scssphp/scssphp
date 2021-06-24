@@ -1361,11 +1361,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Offset 0 does not exist on \\(int\\|string\\)\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Offset 2 does not exist on array\\(\\)\\.$#"
 			count: 1
 			path: src/Compiler.php
