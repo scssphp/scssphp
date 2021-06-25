@@ -32,3 +32,8 @@ plugins:
 - jemoji
 - jekyll-redirect-from
 - jekyll-sitemap
+optional_front_matter:
+  remove_originals: true
+readme_index:
+  remove_originals: true
+  with_frontmatter: true
