@@ -105,6 +105,8 @@ div {
     or: (one or two);
     or: (one or false);
     or: (null or two);
+
+    mixed_precedence: true or 128 < 0 and false;
 }
 
 
