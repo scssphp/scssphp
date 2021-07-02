@@ -1,5 +1,15 @@
 # Changelog
 
+## **1.6.0** -- June 30, 2021
+
+**Deprecated:**
+
+* Deprecate extending compound selectors, as that's unsupported by dart-sass (@stof)
+
+**Fixed:**
+
+* Fixed the parsing of expressions with alterning operator precedence, which fixes support for compiling Bootstrap 5.0.2 (@stof)
+
 ## **1.5.2** -- May 18, 2021
 
 **Fixed:**

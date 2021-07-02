@@ -2352,10 +2352,8 @@ final class Parser
                 break;
             }
 
-            // peek and see if rhs belongs to next operator
-            if ($this->peek($operators, $next) && self::$precedence[$next[1]] > self::$precedence[$op]) {
-                $rhs = $this->expHelper($rhs, self::$precedence[$next[1]]);
-            }
+            // consume higher-precedence operators on the right-hand side
+            $rhs = $this->expHelper($rhs, self::$precedence[$op] + 1);
 
             $lhs = [Type::T_EXPRESSION, $op, $lhs, $rhs, $this->inParens, $whiteBefore, $whiteAfter];
 

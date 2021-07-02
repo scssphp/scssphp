@@ -1,6 +1,6 @@
 # Site settings
 title: SCSS Compiler in PHP
-current_version: v1.5.2
+current_version: v1.6.0
 description: >
   SCSS compiler written in PHP
 url: https://scssphp.github.io
@@ -32,3 +32,8 @@ plugins:
 - jemoji
 - jekyll-redirect-from
 - jekyll-sitemap
+optional_front_matter:
+  remove_originals: true
+readme_index:
+  remove_originals: true
+  with_frontmatter: true

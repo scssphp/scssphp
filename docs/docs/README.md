@@ -135,9 +135,6 @@ use ScssPhp\ScssPhp\Compiler;
 $compiler = new Compiler();
 $compiler->setSourceMap(Compiler::SOURCE_MAP_FILE);
 $compiler->setSourceMapOptions([
-    // absolute path to write .map file
-    'sourceMapWriteTo'  => '/var/www/vhost/my-style.map',
-
     // relative or full url to the above .map file
     'sourceMapURL' => './my-style.map',
 

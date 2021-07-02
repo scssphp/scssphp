@@ -70,6 +70,7 @@ div {
   or: one;
   or: one;
   or: two;
+  mixed_precedence: true;
 }
 #nots-fail {
   not: false2;
