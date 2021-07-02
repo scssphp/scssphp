@@ -93,6 +93,7 @@ libsass/variable-scoping/blead-global/expanding/at-root
 libsass/variable-scoping/blead-global/expanding/function
 libsass/variable-scoping/blead-global/expanding/mixin
 libsass/variable-scoping/blead-global/expanding/ruleset
+libsass/warn-directive-nested/inline
 non_conformant/basic/32_percentages
 non_conformant/operations/division/slash/with_string/slash_plus_string
 non_conformant/operations/division/slash/with_string/string_plus_slash

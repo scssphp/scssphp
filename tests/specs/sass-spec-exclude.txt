@@ -314,6 +314,8 @@ core_functions/selector/extend/format/input/multiple_extendees/list_of_compound
 core_functions/selector/extend/format/input/non_string/extendee
 core_functions/selector/extend/format/input/non_string/selector
 core_functions/selector/extend/format/output
+core_functions/selector/extend/list/all_match
+core_functions/selector/extend/list/different_matches
 core_functions/selector/extend/named
 core_functions/selector/extend/no_op/conflict/id
 core_functions/selector/extend/no_op/conflict/next_sibling
@@ -691,13 +693,15 @@ css/unicode_range/error/ident_minus_space_ident
 css/unicode_range/error/minus_ident_minus
 css/unicode_range/error/minus_number_minus_ident
 css/unicode_range/error/nothing_after_minus
-css/unicode_range/error/too_many_decimal_digits
-css/unicode_range/error/too_many_decimal_digits_after_minus
-css/unicode_range/error/too_many_digits_after_minus
-css/unicode_range/error/too_many_hex_digits
+css/unicode_range/error/too_many/after_minus/decimal_digits
+css/unicode_range/error/too_many/after_minus/hex_digits
+css/unicode_range/error/too_many/decimal_digits
+css/unicode_range/error/too_many/hex_digits
 css/unicode_range/simple
 directives/extend/after_target/multiple_recursive
 directives/extend/error/compound
+directives/extend/pseudo/into_pseudo/extends_after
+directives/for/in_declaration
 directives/forward/escaped
 directives/if/escaped/if_only
 directives/if/escaped/with_else
@@ -967,7 +971,6 @@ libsass/variable-scoping/defaults-global-null
 libsass/variable-scoping/feature-test
 libsass/variable-scoping/lexical-scope
 libsass/variable-scoping/root-scope
-libsass/warn-directive-nested/inline
 libsass/warn-directive-nested/mixin
 libsass/wrapped-selector-whitespace
 non_conformant/basic/11_attribute_selectors
