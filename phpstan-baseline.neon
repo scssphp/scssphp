@@ -1,6 +1,61 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Expression\\\\ColorExpression\\:\\:__construct\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: src/Ast/Sass/Expression/ColorExpression.php
+
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Expression\\\\ColorExpression\\:\\:getValue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Ast/Sass/Expression/ColorExpression.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Expression\\\\ColorExpression\\:\\:\\$value has no typehint specified\\.$#"
+			count: 1
+			path: src/Ast/Sass/Expression/ColorExpression.php
+
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Expression\\\\ValueExpression\\:\\:__construct\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Ast/Sass/Expression/ValueExpression.php
+
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Expression\\\\ValueExpression\\:\\:getValue\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Ast/Sass/Expression/ValueExpression.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Expression\\\\ValueExpression\\:\\:\\$value type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Ast/Sass/Expression/ValueExpression.php
+
+		-
+			message: "#^Argument of an invalid type array\\|null supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: src/Ast/Sass/Statement/ParentStatement.php
+
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Statement\\\\ParentStatement\\:\\:__construct\\(\\) has parameter \\$children with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Ast/Sass/Statement/ParentStatement.php
+
+		-
+			message: "#^PHPDoc tag @param for parameter \\$children with type T is not subtype of native type array\\|null\\.$#"
+			count: 1
+			path: src/Ast/Sass/Statement/ParentStatement.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Statement\\\\ParentStatement\\:\\:\\$declarations has no typehint specified\\.$#"
+			count: 1
+			path: src/Ast/Sass/Statement/ParentStatement.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Statement\\\\ParentStatement\\<T\\>\\:\\:\\$children \\(T\\) does not accept array\\|null\\.$#"
+			count: 1
+			path: src/Ast/Sass/Statement/ParentStatement.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$children type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Block.php
@@ -44,11 +99,6 @@ parameters:
 			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, string\\|false given\\.$#"
 			count: 1
 			path: src/Cache.php
-
-		-
-			message: "#^Result of \\|\\| is always false\\.$#"
-			count: 3
-			path: src/Colors.php
 
 		-
 			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$hasValue\\.$#"
@@ -1272,7 +1322,7 @@ parameters:
 
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
-			count: 2
+			count: 1
 			path: src/Compiler.php
 
 		-

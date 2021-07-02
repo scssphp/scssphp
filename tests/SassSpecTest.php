@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Tests;
 
 use PHPUnit\Framework\TestCase;
+use ScssPhp\ScssPhp\Ast\Sass\Statement\Stylesheet;
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Logger\StreamLogger;
@@ -245,7 +246,7 @@ class SassSpecTest extends TestCase
         $compiler = new Compiler();
 
         list($options, $scss, $includes, $inputDir) = $input;
-        list($css, $warning, $error, $alternativeCssOutputs) = $output;
+        list($css, $warning, $error, $alternativeCssOutputs, $hasAlternativeError) = $output;
 
         $fullInputs = $scss . "\n" . implode("\n", $includes);
 
@@ -325,6 +326,10 @@ class SassSpecTest extends TestCase
             rewind($fp_err_stream);
             $output = stream_get_contents($fp_err_stream);
             fclose($fp_err_stream);
+
+            if (!$hasAlternativeError) {
+                Stylesheet::parseScss($scss);
+            }
 
             $disallowQuoteDifference = getenv('DISALLOW_QUOTE_DIFFERENCE');
 
@@ -442,6 +447,7 @@ class SassSpecTest extends TestCase
                 $hasOutput = false;
                 $baseDir = '';
                 $hasSupportedInput = false;
+                $hasAlternativeError = false;
 
                 $parts = explode('<===>', $subTest);
 
@@ -502,6 +508,10 @@ class SassSpecTest extends TestCase
                             $error = $part;
                             break;
 
+                        case 'error-dart-sass':
+                            $hasAlternativeError = true;
+                            break;
+
                         case 'warning':
                             $warning = $part;
                             break;
@@ -556,7 +566,7 @@ class SassSpecTest extends TestCase
                 $test = [
                     $baseTestName . $subNname,
                     [$options, $input, $includes, $baseDir],
-                    [$output, $warning, $error, $alternativeOutputs]
+                    [$output, $warning, $error, $alternativeOutputs, $hasAlternativeError]
                 ];
 
                 if ($hasInput && !$hasSupportedInput) {

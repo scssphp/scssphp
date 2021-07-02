@@ -137,6 +137,13 @@ if (isset($arguments[0]) && file_exists($arguments[0])) {
     }
 }
 
+try {
+    \ScssPhp\ScssPhp\Ast\Sass\Statement\Stylesheet::parseScss($data);
+} catch (SassException $e) {
+    fwrite(STDERR, ((string) $e)."\n");
+    exit(1);
+}
+
 $scss = new Compiler();
 
 if ($loadPaths) {

@@ -77,6 +77,40 @@ final class Util
     }
 
     /**
+     * Returns $name without a vendor prefix.
+     *
+     * If $name has no vendor prefix, it's returned as-is.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function unvendor(string $name): string
+    {
+        $length = \strlen($name);
+
+        if ($length < 2) {
+            return $name;
+        }
+
+        if ($name[0] !== '-') {
+            return $name;
+        }
+
+        if ($name[1] === '-') {
+            return $name;
+        }
+
+        for ($i = 2; $i < $length; $i++) {
+            if ($name[$i] === '-') {
+                return substr($name, $i + 1);
+            }
+        }
+
+        return $name;
+    }
+
+    /**
      * mb_chr() wrapper
      *
      * @param integer $code
@@ -102,6 +136,42 @@ final class Util
         }
 
         return $s;
+    }
+
+    /**
+     * mb_ord() wrapper
+     *
+     * @param string $string
+     *
+     * @return int
+     */
+    public static function mbOrd(string $string): int
+    {
+        if (\function_exists('mb_ord')) {
+            return mb_ord($string, 'UTF-8');
+        }
+
+        if (\strlen($string) === 1) {
+            return \ord($string);
+        }
+
+        $s = unpack('C*', substr($string, 0, 4));
+        assert($s !== false);
+        $code = $s ? $s[0] : 0;
+
+        if (0xF0 <= $code) {
+            return (($code - 0xF0) << 18) + (($s[2] - 0x80) << 12) + (($s[3] - 0x80) << 6) + $s[4] - 0x80;
+        }
+
+        if (0xE0 <= $code) {
+            return (($code - 0xE0) << 12) + (($s[2] - 0x80) << 6) + $s[3] - 0x80;
+        }
+
+        if (0xC0 <= $code) {
+            return (($code - 0xC0) << 6) + $s[2] - 0x80;
+        }
+
+        return $code;
     }
 
     /**
