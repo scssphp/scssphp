@@ -76,7 +76,7 @@ class ApiTest extends TestCase
         );
     }
 
-    public function testImportCustomCallback()
+    public function testImportCustomCallbackOnlyPath()
     {
         $this->scss = new Compiler();
 
@@ -88,6 +88,32 @@ class ApiTest extends TestCase
             trim(file_get_contents(__DIR__ . '/outputs/variables.css')),
             $this->compile('@import "variables.foo";')
         );
+    }
+
+    public function testCustomImportCallback()
+    {
+        $this->scss = new Compiler();
+        $this->scss->addImportPath(__DIR__ . '/inputs/');
+
+        // Add custom callback to replace "custom_imports" by "imports" again.
+        $this->scss->addImportPath([$this, 'customImportCallback']);
+
+        // Get contents of inputs/import.scss and replace all "imports" directories to "custom_imports"
+        $cscc = file_get_contents(__DIR__ . '/inputs/import.scss');
+        $cscc = str_replace('"imports/', '"custom_imports/', $cscc);
+
+        $this->assertEquals(
+            trim(file_get_contents(__DIR__ . '/outputs/import.css')),
+            $this->compile($cscc)
+        );
+    }
+
+    public function customImportCallback($path, $compiler) {
+        if (substr($path, 0, 15) !== "custom_imports/") {
+            return null;
+        }
+
+        return $compiler->findImport("imports/".substr($path, 15));
     }
 
     public function testImportAbsolutePath()
