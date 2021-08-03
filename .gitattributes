@@ -11,3 +11,6 @@ phpstan*.neon export-ignore
 phpunit.xml.dist export-ignore
 tests/ export-ignore
 vendor-bin/ export-ignore
+tests/outputs/*.css text eol=lf
+tests/inputs/*.scss text eol=lf
+tests/inputs/imports/*.scss text eol=lf
