@@ -5294,7 +5294,7 @@ EOL;
      *
      * @return string|null
      */
-    private function findImport(string $url, ?string $currentDir = null): ?string
+    public function findImport(string $url, ?string $currentDir = null): ?string
     {
         // Vanilla css and external requests. These are not meant to be Sass imports.
         if (self::isCssImport($url)) {
@@ -5318,7 +5318,7 @@ EOL;
                 }
             } elseif (\is_callable($dir)) {
                 // check custom callback for import path
-                $file = \call_user_func($dir, $url);
+                $file = \call_user_func($dir, $url, $this);
 
                 if (! \is_null($file)) {
                     return $file;
