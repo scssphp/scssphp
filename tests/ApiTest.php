@@ -113,7 +113,7 @@ class ApiTest extends TestCase
             return null;
         }
 
-        return $compiler->findImport("imports/".substr($path, 15));
+        return $compiler->findImport(substr($path, 15), __DIR__ . '/inputs/imports/');
     }
 
     public function testImportAbsolutePath()

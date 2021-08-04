@@ -36,3 +36,26 @@ $compiler->addImportPath(function($path) {
 // will import 'stylesheets/sub.scss'
 echo $compiler->compileString('@import "sub.scss";')->getCss();
 ```
+
+Optional, the current `\ScssPhp\ScssPhp\Compiler` can be accessed with the
+second parameter. Allowing to retry the `findImport` function after correcting
+`$path`
+```php
+use ScssPhp\ScssPhp\Compiler;
+
+$compiler = new Compiler();
+$compiler->addImportPath(function($path, $compiler) {
+    if (Compiler::isCssImport($path)) {
+        return null;
+    }
+
+    if (substr($path, 0, 19) !== "thirdparty_package/") {
+        return null;
+    }
+
+    return $compiler->findImport(substr($path, 19), "path_to_thirdparty_package/");
+});
+
+// will import 'path_to_thirdparty_package/_variables.scss'
+echo $compiler->compileString('@import "thirdparty_package/variables";')->getCss();
+```
