@@ -110,10 +110,23 @@ final class Compiler
      * @var array<int, string|callable>
      */
     private $importPaths = [];
+
     /**
      * @var array<string, Block>
      */
     private $importCache = [];
+
+    /**
+     * @var string<string, string>
+     */
+    private $importedFiles = [];
+
+    /**
+     * Disabled multiple imports
+     *
+     * @var bool
+     */
+    private $importFilesOnce = false;
 
     /**
      * @var array
@@ -353,6 +366,7 @@ final class Compiler
         $this->charsetSeen    = null;
         $this->shouldEvaluate = null;
         $this->parsedFiles = [];
+        $this->importedFiles = [];
         $this->resolvedImports = [];
 
         if (!\is_null($path) && is_file($path)) {
@@ -445,6 +459,7 @@ final class Compiler
 
         // Reset state to free memory
         $this->parsedFiles = [];
+        $this->importedFiles = [];
         $this->resolvedImports = [];
 
         return $result;
@@ -615,7 +630,7 @@ final class Compiler
                 continue;
             }
 
-            list($target, $origin, $block) = $extend;
+            [$target, $origin, $block] = $extend;
 
             // ignore if !optional
             if ($block[2]) {
@@ -767,7 +782,7 @@ final class Compiler
             if ($this->matchExtendsSingle($part, $origin, $initial)) {
                 $after       = \array_slice($selector, $i + 1);
                 $before      = \array_slice($selector, 0, $i);
-                list($before, $nonBreakableBefore) = $this->extractRelationshipFromFragment($before);
+                [$before, $nonBreakableBefore] = $this->extractRelationshipFromFragment($before);
 
                 foreach ($origin as $new) {
                     $k = 0;
@@ -834,7 +849,7 @@ final class Compiler
                         $preSharedParts = $k > 0 ? \array_slice($before, 0, $k) : [];
                         $postSharedParts = $k > 0 ? \array_slice($before, $k) : $before;
 
-                        list($betweenSharedParts, $nonBreakabl2) = $this->extractRelationshipFromFragment($afterBefore);
+                        [$betweenSharedParts, $nonBreakabl2] = $this->extractRelationshipFromFragment($afterBefore);
 
                         $result2 = array_merge(
                             $preSharedParts,
@@ -1006,7 +1021,7 @@ final class Compiler
         }
 
         foreach ($counts as $idx => $count) {
-            list($target, $origin, /* $block */) = $this->extends[$idx];
+            [$target, $origin, /* $block */] = $this->extends[$idx];
 
             $origin = $this->glueFunctionSelectors($origin);
 
@@ -1291,7 +1306,7 @@ final class Compiler
     {
         $env     = $this->pushEnv($block);
         $envs    = $this->compactEnv($env);
-        list($with, $without) = $this->compileWith(isset($block->with) ? $block->with : null);
+        [$with, $without] = $this->compileWith(isset($block->with) ? $block->with : null);
 
         // wrap inline selector
         if ($block->selector) {
@@ -2518,7 +2533,10 @@ final class Compiler
             if (strpos($path, 'url(') !== 0 && $filePath = $this->findImport($path, $this->currentDirectory)) {
                 $this->registerImport($this->currentDirectory, $path, $filePath);
 
-                $this->importFile($filePath, $out);
+                if (! $this->importFilesOnce || ! isset($this->importedFiles[$filePath]) ) {
+                    $this->importFile($filePath, $out);
+                    $this->importedFiles[$filePath] = $filePath;
+                }
 
                 return true;
             }
@@ -2749,7 +2767,7 @@ final class Compiler
                 break;
 
             case Type::T_CUSTOM_PROPERTY:
-                list(, $name, $value) = $child;
+                [, $name, $value] = $child;
                 $compiledName = $this->compileValue($name);
 
                 // if the value reduces to null from something else then
@@ -2773,7 +2791,7 @@ final class Compiler
                 break;
 
             case Type::T_ASSIGN:
-                list(, $name, $value) = $child;
+                [, $name, $value] = $child;
 
                 if ($name[0] === Type::T_VARIABLE) {
                     $flags     = isset($child[3]) ? $child[3] : [];
@@ -2908,7 +2926,7 @@ final class Compiler
 
             case Type::T_MIXIN:
             case Type::T_FUNCTION:
-                list(, $block) = $child;
+                [, $block] = $child;
                 // the block need to be able to go up to it's parent env to resolve vars
                 $block->parentEnv = $this->getStoreEnv();
                 $this->set(self::$namespaces[$block->type] . $block->name, $block, true);
@@ -2958,7 +2976,7 @@ EOL;
                 break;
 
             case Type::T_IF:
-                list(, $if) = $child;
+                [, $if] = $child;
 
                 if ($this->isTruthy($this->reduce($if->cond, true))) {
                     return $this->compileChildren($if->children, $out);
@@ -2975,7 +2993,7 @@ EOL;
                 break;
 
             case Type::T_EACH:
-                list(, $each) = $child;
+                [, $each] = $child;
 
                 $list = $this->coerceList($this->reduce($each->list), ',', true);
 
@@ -2985,7 +3003,7 @@ EOL;
                     if (\count($each->vars) === 1) {
                         $this->set($each->vars[0], $item, true);
                     } else {
-                        list(,, $values) = $this->coerceList($item);
+                        [,, $values] = $this->coerceList($item);
 
                         foreach ($each->vars as $i => $var) {
                             $this->set($var, isset($values[$i]) ? $values[$i] : self::$null, true);
@@ -3009,7 +3027,7 @@ EOL;
                 break;
 
             case Type::T_WHILE:
-                list(, $while) = $child;
+                [, $while] = $child;
 
                 while ($this->isTruthy($this->reduce($while->cond, true))) {
                     $ret = $this->compileChildren($while->children, $out);
@@ -3021,7 +3039,7 @@ EOL;
                 break;
 
             case Type::T_FOR:
-                list(, $for) = $child;
+                [, $for] = $child;
 
                 $startNumber = $this->assertNumber($this->reduce($for->start, true));
                 $endNumber = $this->assertNumber($this->reduce($for->end, true));
@@ -3074,7 +3092,7 @@ EOL;
 
             case Type::T_INCLUDE:
                 // including a mixin
-                list(, $name, $argValues, $content, $argUsing) = $child;
+                [, $name, $argValues, $content, $argUsing] = $child;
 
                 $mixin = $this->get(self::$namespaces['mixin'] . $name, false);
 
@@ -3177,7 +3195,7 @@ EOL;
                 break;
 
             case Type::T_DEBUG:
-                list(, $value) = $child;
+                [, $value] = $child;
 
                 $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
                 $line  = $this->sourceLine;
@@ -3187,7 +3205,7 @@ EOL;
                 break;
 
             case Type::T_WARN:
-                list(, $value) = $child;
+                [, $value] = $child;
 
                 $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
                 $line  = $this->sourceLine;
@@ -3197,7 +3215,7 @@ EOL;
                 break;
 
             case Type::T_ERROR:
-                list(, $value) = $child;
+                [, $value] = $child;
 
                 $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
                 $line  = $this->sourceLine;
@@ -3220,7 +3238,7 @@ EOL;
      */
     private function expToString(array $exp, bool $keepParens = false): array
     {
-        list(, $op, $left, $right, $inParens, $whiteLeft, $whiteRight) = $exp;
+        [, $op, $left, $right, $inParens, $whiteLeft, $whiteRight] = $exp;
 
         $content = [];
 
@@ -3313,7 +3331,7 @@ EOL;
 
         switch ($value[0]) {
             case Type::T_EXPRESSION:
-                list(, $op, $left, $right, $inParens) = $value;
+                [, $op, $left, $right, $inParens] = $value;
 
                 $opName = isset(self::$operatorNames[$op]) ? self::$operatorNames[$op] : $op;
                 $inExp = $inExp || $this->shouldEval($left) || $this->shouldEval($right);
@@ -3373,7 +3391,7 @@ EOL;
                 return $this->expToString($value);
 
             case Type::T_UNARY:
-                list(, $op, $exp, $inParens) = $value;
+                [, $op, $exp, $inParens] = $value;
 
                 $inExp = $inExp || $this->shouldEval($exp);
                 $exp = $this->reduce($exp);
@@ -3511,7 +3529,7 @@ EOL;
             // native PHP functions
             case 'user':
             case 'native':
-                list(,,$name, $fn, $prototype) = $functionReference;
+                [,,$name, $fn, $prototype] = $functionReference;
 
                 // special cases of css valid functions min/max
                 $name = strtolower($name);
@@ -3696,7 +3714,7 @@ EOL;
 
         if (isset($this->userFunctions[$normalizedName])) {
             // see if we can find a user function
-            list($f, $prototype) = $this->userFunctions[$normalizedName];
+            [$f, $prototype] = $this->userFunctions[$normalizedName];
 
             return [Type::T_FUNCTION_REFERENCE, 'user', $name, $f, $prototype];
         }
@@ -4208,7 +4226,7 @@ EOL;
                 // [2] - green component
                 // [3] - blue component
                 // [4] - optional alpha component
-                list(, $r, $g, $b) = $value;
+                [, $r, $g, $b] = $value;
 
                 $r = $this->compileRGBAValue($r);
                 $g = $this->compileRGBAValue($g);
@@ -4297,7 +4315,7 @@ EOL;
                     return $this->compileValue($value, $quote);
                 }
 
-                list(, $delim, $items) = $value;
+                [, $delim, $items] = $value;
                 $pre = $post = '';
 
                 if (! empty($value['enclosing'])) {
@@ -4375,8 +4393,8 @@ EOL;
 
             case Type::T_INTERPOLATED:
                 // node created by extractInterpolation
-                list(, $interpolate, $left, $right) = $value;
-                list(,, $whiteLeft, $whiteRight) = $interpolate;
+                [, $interpolate, $left, $right] = $value;
+                [,, $whiteLeft, $whiteRight] = $interpolate;
 
                 $delim = $left[1];
 
@@ -4415,7 +4433,7 @@ EOL;
                             break;
                         }
 
-                        list(, $delim, $items) = $reduced;
+                        [, $delim, $items] = $reduced;
 
                         if ($delim !== ' ') {
                             $delim .= ' ';
@@ -4703,7 +4721,7 @@ EOL;
         $this->storeEnv = null;
         $parentQueries  = $this->evaluateMediaQuery($parentQueries);
 
-        list($this->env, $this->storeEnv) = $store;
+        [$this->env, $this->storeEnv] = $store;
 
         if (\is_null($childQueries)) {
             $childQueries = $parentQueries;
@@ -5135,6 +5153,24 @@ EOL;
         }
 
         $this->importPaths = $actualImportPaths;
+    }
+
+    /**
+     * Enables one-time imports
+     *
+     */
+    public function enableImportFilesOnce(): void
+    {
+        $this->importFilesOnce = true;
+    }
+
+    /**
+     * Disable one-time imports
+     *
+     */
+    public function disableImportFilesOnce(): void
+    {
+        $this->importFilesOnce = false;
     }
 
     /**
@@ -5619,7 +5655,7 @@ EOL;
         $libName = (is_array($function) ? end($function) : null);
         $sorted_kwargs = $this->sortNativeFunctionArgs($libName, $prototype, $args);
 
-        list($sorted, $kwargs) = $sorted_kwargs;
+        [$sorted, $kwargs] = $sorted_kwargs;
 
         if ($name !== 'if') {
             foreach ($sorted as &$val) {
@@ -5710,7 +5746,7 @@ EOL;
             }
         }
 
-        list($positionalArgs, $namedArgs, $names, $separator, $hasSplat) = $this->evaluateArguments($args, false);
+        [$positionalArgs, $namedArgs, $names, $separator, $hasSplat] = $this->evaluateArguments($args, false);
 
         if (! \is_array(reset($prototypes))) {
             $prototypes = [$prototypes];
@@ -5728,7 +5764,7 @@ EOL;
         $keyArgs = [];
 
         foreach ($matchedPrototype['arguments'] as $argument) {
-            list($normalizedName, $originalName, $default) = $argument;
+            [$normalizedName, $originalName, $default] = $argument;
 
             if (isset($vars[$normalizedName])) {
                 $value = $vars[$normalizedName];
@@ -5883,7 +5919,7 @@ EOL;
         $nameUsed = 0;
 
         foreach ($prototype['arguments'] as $i => $argument) {
-            list ($name, $originalName, $default) = $argument;
+            [$name, $originalName, $default] = $argument;
 
             if ($i < $positional) {
                 if (isset($names[$name])) {
@@ -5930,7 +5966,7 @@ EOL;
         $nameUsed = 0;
 
         foreach ($prototype['arguments'] as $i => $argument) {
-            list ($name, $originalName, $default) = $argument;
+            [$name, $originalName, $default] = $argument;
 
             if ($i < $positional) {
                 if (isset($names[$name])) {
@@ -6138,7 +6174,7 @@ EOL;
         $originalRestArgumentName = null;
 
         foreach ($argDef as $i => $arg) {
-            list($name, $default, $isVariable) = $arg;
+            [$name, $default, $isVariable] = $arg;
             $normalizedName = str_replace('_', '-', $name);
 
             if ($isVariable) {
@@ -6149,14 +6185,14 @@ EOL;
             }
         }
 
-        list($positionalArgs, $namedArgs, $names, $splatSeparator, $hasSplat) = $this->evaluateArguments($argValues, $reduce);
+        [$positionalArgs, $namedArgs, $names, $splatSeparator, $hasSplat] = $this->evaluateArguments($argValues, $reduce);
 
         $this->verifyPrototype($prototype, \count($positionalArgs), $names, $hasSplat);
 
         $vars = $this->applyArgumentsToDeclaration($prototype, $positionalArgs, $namedArgs, $splatSeparator);
 
         foreach ($prototype['arguments'] as $argument) {
-            list($normalizedName, $name) = $argument;
+            [$normalizedName, $name] = $argument;
 
             if (!isset($vars[$normalizedName])) {
                 continue;
@@ -6188,7 +6224,7 @@ EOL;
         }
 
         foreach ($prototype['arguments'] as $argument) {
-            list($normalizedName, $name, $default) = $argument;
+            [$normalizedName, $name, $default] = $argument;
 
             if (isset($vars[$normalizedName])) {
                 continue;
@@ -6232,7 +6268,7 @@ EOL;
         $minLength = min(\count($positionalArgs), \count($prototype['arguments']));
 
         for ($i = 0; $i < $minLength; $i++) {
-            list($name) = $prototype['arguments'][$i];
+            [$name] = $prototype['arguments'][$i];
             $val = $positionalArgs[$i];
 
             $output[$name] = $val;
@@ -6242,7 +6278,7 @@ EOL;
 
         for ($i = \count($positionalArgs); $i < \count($prototype['arguments']); $i++) {
             $argument = $prototype['arguments'][$i];
-            list($name) = $argument;
+            [$name] = $argument;
 
             if (isset($namedArgs[$name])) {
                 $val = $namedArgs[$name];
@@ -7039,7 +7075,7 @@ EOL;
     private static $libIf = ['condition', 'if-true', 'if-false:'];
     private function libIf($args)
     {
-        list($cond, $t, $f) = $args;
+        [$cond, $t, $f] = $args;
 
         if (! $this->isTruthy($this->reduce($cond, true))) {
             return $this->reduce($f, true);
@@ -7051,7 +7087,7 @@ EOL;
     private static $libIndex = ['list', 'value'];
     private function libIndex($args)
     {
-        list($list, $value) = $args;
+        [$list, $value] = $args;
 
         if (
             $list[0] === Type::T_MAP ||
@@ -7435,7 +7471,7 @@ EOL;
         ];
     private function libMix($args)
     {
-        list($first, $second, $weight) = $args;
+        [$first, $second, $weight] = $args;
 
         $first = $this->assertColor($first, 'color1');
         $second = $this->assertColor($second, 'color2');
@@ -8223,7 +8259,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     private static $libJoin = ['list1', 'list2', 'separator:null', 'bracketed:auto'];
     private function libJoin($args)
     {
-        list($list1, $list2, $sep, $bracketed) = $args;
+        [$list1, $list2, $sep, $bracketed] = $args;
 
         $list1 = $this->coerceList($list1, ' ', true);
         $list2 = $this->coerceList($list2, ' ', true);
@@ -8270,7 +8306,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     private static $libAppend = ['list', 'val', 'separator:null'];
     private function libAppend($args)
     {
-        list($list1, $value, $sep) = $args;
+        [$list1, $value, $sep] = $args;
 
         $list1 = $this->coerceList($list1, ' ', true);
         $sep   = $this->listSeparatorForJoin($list1, $sep);
@@ -8383,7 +8419,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     ];
     private function libComparable($args)
     {
-        list($number1, $number2) = $args;
+        [$number1, $number2] = $args;
 
         if (
             ! $number1 instanceof Number ||
@@ -8771,7 +8807,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     private static $libIsSuperselector = ['super', 'sub'];
     private function libIsSuperselector($args)
     {
-        list($super, $sub) = $args;
+        [$super, $sub] = $args;
 
         $super = $this->getSelectorArg($super, 'super');
         $sub = $this->getSelectorArg($sub, 'sub');
@@ -8963,7 +8999,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     ];
     private function libSelectorExtend($args)
     {
-        list($selectors, $extendee, $extender) = $args;
+        [$selectors, $extendee, $extender] = $args;
 
         $selectors = $this->getSelectorArg($selectors, 'selector');
         $extendee  = $this->getSelectorArg($extendee, 'extendee');
@@ -8984,7 +9020,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     ];
     private function libSelectorReplace($args)
     {
-        list($selectors, $original, $replacement) = $args;
+        [$selectors, $original, $replacement] = $args;
 
         $selectors   = $this->getSelectorArg($selectors, 'selector');
         $original    = $this->getSelectorArg($original, 'original');
@@ -9097,7 +9133,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     private static $libSelectorUnify = ['selectors1', 'selectors2'];
     private function libSelectorUnify($args)
     {
-        list($selectors1, $selectors2) = $args;
+        [$selectors1, $selectors2] = $args;
 
         $selectors1 = $this->getSelectorArg($selectors1, 'selectors1');
         $selectors2 = $this->getSelectorArg($selectors2, 'selectors2');
@@ -9153,7 +9189,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
             $part2 = end($compound2);
 
             if ($part1 && ($match2 = $this->matchPartInCompound($part1, $compound2))) {
-                list($compound2, $part2, $after2) = $match2;
+                [$compound2, $part2, $after2] = $match2;
 
                 if ($after2) {
                     $unifiedSelectors = $this->prependSelectors($unifiedSelectors, $after2);
@@ -9168,7 +9204,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
             }
 
             if ($part2 && ($match1 = $this->matchPartInCompound($part2, $compound1))) {
-                list($compound1, $part1, $after1) = $match1;
+                [$compound1, $part1, $after1] = $match1;
 
                 if ($after1) {
                     $unifiedSelectors = $this->prependSelectors($unifiedSelectors, $after1);
