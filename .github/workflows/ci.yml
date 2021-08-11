@@ -42,6 +42,12 @@ jobs:
                     php-version: "${{ matrix.php }}"
                     extensions: "${{ matrix.extensions }}"
 
+            # PHPUnit 8.5.18+ and 9.5.7+ contains a runtime check for ext-mbstring, so we need to use an older version
+            # for running tests without ext-mbstring.
+            -   name: Force the PHPUnit version
+                if: ${{ matrix.extensions == ':mbstring' }}
+                run: composer require --dev --no-update phpunit/phpunit 9.5.6
+
             -   name: Install dependencies
                 # PHPUnit requires ext-mbstring. But it is only necessary for features that we don't currently use:
                 # - the testdox, JUnit and XML result printers
