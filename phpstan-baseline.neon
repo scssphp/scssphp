@@ -1886,7 +1886,7 @@ parameters:
 			path: src/SourceMap/SourceMapGenerator.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\SourceMap\\\\SourceMapGenerator\\:\\:\\$options \\(array\\('sourceRoot' \\=\\> string, 'sourceMapFilename' \\=\\> string\\|null, 'sourceMapURL' \\=\\> string\\|null, 'sourceMapWriteTo' \\=\\> string\\|null, 'outputSourceFiles' \\=\\> bool, 'sourceMapRootpath' \\=\\> string, 'sourceMapBasepath' \\=\\> string\\)\\) does not accept array\\<non\\-empty\\-string, bool\\|string\\|null\\>&nonEmpty\\.$#"
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\SourceMap\\\\SourceMapGenerator\\:\\:\\$options \\(array\\('sourceRoot' \\=\\> string, 'sourceMapFilename' \\=\\> string\\|null, 'sourceMapURL' \\=\\> string\\|null, 'sourceMapWriteTo' \\=\\> string\\|null, 'outputSourceFiles' \\=\\> bool, 'sourceMapRootpath' \\=\\> string, 'sourceMapBasepath' \\=\\> string\\)\\) does not accept array\\<literal\\-string&non\\-empty\\-string, bool\\|string\\|null\\>&nonEmpty\\.$#"
 			count: 1
 			path: src/SourceMap/SourceMapGenerator.php
 
