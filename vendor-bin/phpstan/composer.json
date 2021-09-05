@@ -3,6 +3,6 @@
         "sort-packages": true
     },
     "require": {
-        "phpstan/phpstan": "^0.12.96"
+        "phpstan/phpstan": "^0.12.98"
     }
 }
