@@ -232,6 +232,28 @@ class ApiTest extends TestCase
         ];
     }
 
+    public function testCompileWithoutCharset()
+    {
+        $this->scss = new Compiler();
+        $this->scss->setCharset(false);
+
+        self::assertEquals(
+            "a {\n  b: \"à\";\n}",
+            $this->compile('a { b: "à" }')
+        );
+    }
+
+    public function testCompileWithCharset()
+    {
+        $this->scss = new Compiler();
+        $this->scss->setCharset(true);
+
+        self::assertEquals(
+            "@charset \"UTF-8\";\na {\n  b: \"à\";\n}",
+            $this->compile('a { b: "à" }')
+        );
+    }
+
     public function testCompileByteOrderMarker()
     {
         $this->scss = new Compiler();

@@ -194,6 +194,11 @@ class Compiler
     protected $sourceMapOptions = [];
 
     /**
+     * @var bool
+     */
+    private $charset = true;
+
+    /**
      * @var string|\ScssPhp\ScssPhp\Formatter
      */
     protected $formatter = Expanded::class;
@@ -517,7 +522,7 @@ class Compiler
 
             $prefix = '';
 
-            if (strlen($out) !== Util::mbStrlen($out)) {
+            if ($this->charset && strlen($out) !== Util::mbStrlen($out)) {
                 $prefix = '@charset "UTF-8";' . "\n";
                 $out = $prefix . $out;
             }
@@ -5491,6 +5496,25 @@ EOL;
     {
         @trigger_error('The line number output is not supported anymore. '
                        . 'Use source maps instead.', E_USER_DEPRECATED);
+    }
+
+    /**
+     * Configures the handling of non-ASCII outputs.
+     *
+     * If $charset is `true`, this will include a `@charset` declaration or a
+     * UTF-8 [byte-order mark][] if the stylesheet contains any non-ASCII
+     * characters. Otherwise, it will never include a `@charset` declaration or a
+     * byte-order mark.
+     *
+     * [byte-order mark]: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8
+     *
+     * @param bool $charset
+     *
+     * @return void
+     */
+    public function setCharset($charset)
+    {
+        $this->charset = $charset;
     }
 
     /**
