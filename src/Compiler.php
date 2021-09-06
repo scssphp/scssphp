@@ -221,6 +221,8 @@ class Compiler
     protected $storeEnv;
     /**
      * @var bool|null
+     *
+     * @deprecated
      */
     protected $charsetSeen;
     /**
@@ -463,7 +465,6 @@ class Compiler
         $this->env            = null;
         $this->scope          = null;
         $this->storeEnv       = null;
-        $this->charsetSeen    = null;
         $this->shouldEvaluate = null;
         $this->ignoreCallStackMessage = false;
         $this->parsedFiles = [];
@@ -516,11 +517,9 @@ class Compiler
 
             $prefix = '';
 
-            if (!$this->charsetSeen) {
-                if (strlen($out) !== Util::mbStrlen($out)) {
-                    $prefix = '@charset "UTF-8";' . "\n";
-                    $out = $prefix . $out;
-                }
+            if (strlen($out) !== Util::mbStrlen($out)) {
+                $prefix = '@charset "UTF-8";' . "\n";
+                $out = $prefix . $out;
             }
 
             $sourceMap = null;
@@ -2877,10 +2876,6 @@ class Compiler
                 break;
 
             case Type::T_CHARSET:
-                if (! $this->charsetSeen) {
-                    $this->charsetSeen = true;
-                    $this->appendRootDirective('@charset ' . $this->compileValue($child[1]) . ';', $out);
-                }
                 break;
 
             case Type::T_CUSTOM_PROPERTY:
