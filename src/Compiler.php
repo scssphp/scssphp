@@ -399,7 +399,11 @@ final class Compiler
             $prefix = '';
 
             if ($this->charset && strlen($out) !== Util::mbStrlen($out)) {
-                $prefix = '@charset "UTF-8";' . "\n";
+                if ($this->outputStyle === OutputStyle::COMPRESSED) {
+                    $prefix = "\u{FEFF}";
+                } else {
+                    $prefix = '@charset "UTF-8";' . "\n";
+                }
                 $out = $prefix . $out;
             }
 
