@@ -8392,11 +8392,15 @@ EOL;
     {
         $value = $args[0];
 
+        $weight = $this->assertNumber($args[1], 'weight');
+
         if ($value instanceof Number) {
+            if ($weight->getDimension() != 100 || !$weight->hasUnit('%')) {
+                throw new SassScriptException('Only one argument may be passed to the plain-CSS invert() function.');
+            }
+
             return null;
         }
-
-        $weight = $this->assertNumber($args[1], 'weight');
 
         $color = $this->assertColor($value, 'color');
         $inverted = $color;

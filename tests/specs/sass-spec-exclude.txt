@@ -64,7 +64,6 @@ core_functions/color/hue/max
 core_functions/color/hue/middle
 core_functions/color/hue/named
 core_functions/color/hue/negative
-core_functions/color/invert/error/number_with_weight
 core_functions/color/rgb/error/four_args/blue/type
 core_functions/color/rgb/error/four_args/green/type
 core_functions/color/rgb/error/four_args/red/type
