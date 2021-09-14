@@ -8029,25 +8029,26 @@ EOL;
 
         $first = $this->assertColor($first, 'color1');
         $second = $this->assertColor($second, 'color2');
-        $weight = $this->assertNumber($weight, 'weight')->valueInRange(0, 100, 'weight') / 100;
+        $weightScale = $this->assertNumber($weight, 'weight')->valueInRange(0, 100, 'weight') / 100;
 
         $firstAlpha = isset($first[4]) ? $first[4] : 1;
         $secondAlpha = isset($second[4]) ? $second[4] : 1;
 
-        $w = $weight * 2 - 1;
-        $a = $firstAlpha - $secondAlpha;
+        $normalizedWeight = $weightScale * 2 - 1;
+        $alphaDistance = $firstAlpha - $secondAlpha;
 
-        $w1 = (($w * $a === -1 ? $w : ($w + $a) / (1 + $w * $a)) + 1) / 2.0;
-        $w2 = 1.0 - $w1;
+        $combinedWeight = $normalizedWeight * $alphaDistance == -1 ? $normalizedWeight : ($normalizedWeight + $alphaDistance) / (1 + $normalizedWeight * $alphaDistance);
+        $weight1 = ($combinedWeight + 1) / 2.0;
+        $weight2 = 1.0 - $weight1;
 
         $new = [Type::T_COLOR,
-            $w1 * $first[1] + $w2 * $second[1],
-            $w1 * $first[2] + $w2 * $second[2],
-            $w1 * $first[3] + $w2 * $second[3],
+            $weight1 * $first[1] + $weight2 * $second[1],
+            $weight1 * $first[2] + $weight2 * $second[2],
+            $weight1 * $first[3] + $weight2 * $second[3],
         ];
 
         if ($firstAlpha != 1.0 || $secondAlpha != 1.0) {
-            $new[] = $firstAlpha * $weight + $secondAlpha * (1 - $weight);
+            $new[] = $firstAlpha * $weightScale + $secondAlpha * (1 - $weightScale);
         }
 
         return $this->fixColor($new);
