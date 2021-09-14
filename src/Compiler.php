@@ -8020,8 +8020,8 @@ EOL;
 
     // mix two colors
     protected static $libMix = [
-        ['color1', 'color2', 'weight:0.5'],
-        ['color-1', 'color-2', 'weight:0.5']
+        ['color1', 'color2', 'weight:50%'],
+        ['color-1', 'color-2', 'weight:50%']
         ];
     protected function libMix($args)
     {
@@ -8029,7 +8029,7 @@ EOL;
 
         $first = $this->assertColor($first, 'color1');
         $second = $this->assertColor($second, 'color2');
-        $weight = $this->coercePercent($this->assertNumber($weight, 'weight'));
+        $weight = $this->assertNumber($weight, 'weight')->valueInRange(0, 100, 'weight') / 100;
 
         $firstAlpha = isset($first[4]) ? $first[4] : 1;
         $secondAlpha = isset($second[4]) ? $second[4] : 1;
@@ -8386,7 +8386,7 @@ EOL;
         return $this->adjustHsl($this->assertColor($args[0], 'color'), 1, 180);
     }
 
-    protected static $libInvert = ['color', 'weight:1'];
+    protected static $libInvert = ['color', 'weight:100%'];
     protected function libInvert($args)
     {
         $value = $args[0];
@@ -8395,7 +8395,7 @@ EOL;
             return null;
         }
 
-        $weight = $this->coercePercent($this->assertNumber($args[1], 'weight'));
+        $weight = $this->assertNumber($args[1], 'weight');
 
         $color = $this->assertColor($value, 'color');
         $inverted = $color;
@@ -8403,11 +8403,7 @@ EOL;
         $inverted[2] = 255 - $inverted[2];
         $inverted[3] = 255 - $inverted[3];
 
-        if ($weight < 1) {
-            return $this->libMix([$inverted, $color, new Number($weight, '')]);
-        }
-
-        return $inverted;
+        return $this->libMix([$inverted, $color, $weight]);
     }
 
     // increases opacity by amount
