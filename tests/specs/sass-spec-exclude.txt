@@ -88,10 +88,6 @@ core_functions/color/rgb/error/three_args/green/type
 core_functions/color/rgb/error/three_args/red/type
 core_functions/color/rgb/error/two_args/alpha/type
 core_functions/color/rgb/error/two_args/color/type
-core_functions/color/rgb/four_args/special_functions/var/arg_2/args/both
-core_functions/color/rgb/four_args/special_functions/var/arg_2/args/color
-core_functions/color/rgb/multi_argument_var/1_of_2
-core_functions/color/rgb/multi_argument_var/2_of_2
 core_functions/color/rgb/one_arg/special_functions/alpha/calc/arg_1
 core_functions/color/rgb/one_arg/special_functions/alpha/calc/arg_2
 core_functions/color/rgb/one_arg/special_functions/alpha/calc/arg_3
@@ -156,10 +152,6 @@ core_functions/color/rgba/error/three_args/green/type
 core_functions/color/rgba/error/three_args/red/type
 core_functions/color/rgba/error/two_args/alpha/type
 core_functions/color/rgba/error/two_args/color/type
-core_functions/color/rgba/four_args/special_functions/var/arg_2/args/both
-core_functions/color/rgba/four_args/special_functions/var/arg_2/args/color
-core_functions/color/rgba/multi_argument_var/1_of_2
-core_functions/color/rgba/multi_argument_var/2_of_2
 core_functions/color/rgba/one_arg/special_functions/alpha/calc/arg_1
 core_functions/color/rgba/one_arg/special_functions/alpha/calc/arg_2
 core_functions/color/rgba/one_arg/special_functions/alpha/calc/arg_3
