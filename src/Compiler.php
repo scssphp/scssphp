@@ -7461,7 +7461,7 @@ EOL;
             }
         }
 
-        return [Type::T_HSL, fmod($h, 360), $s * 100, $l / 5.1];
+        return [Type::T_HSL, fmod($h + 360, 360), $s * 100, $l / 5.1];
     }
 
     /**
@@ -8148,7 +8148,7 @@ EOL;
             }
         }
 
-        $hueValue = $hue->getDimension() % 360;
+        $hueValue = fmod($hue->getDimension(), 360);
 
         while ($hueValue < 0) {
             $hueValue += 360;
