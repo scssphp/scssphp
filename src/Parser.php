@@ -1518,7 +1518,12 @@ final class Parser
 
                         $comment[] = [Type::T_COMMENT, substr($this->buffer, $p, $this->count - $p), $out];
                     } else {
-                        throw $this->parseError('Unterminated interpolation');
+                        if (!$this->discardComments) {
+                            throw $this->parseError('Unterminated interpolation');
+                        }
+                        $comment[] = substr($this->buffer, $this->count, 2);
+
+                        $this->count += 2;
                     }
 
                     $p = strpos($this->buffer, '#{', $this->count);

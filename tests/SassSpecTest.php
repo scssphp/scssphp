@@ -245,7 +245,7 @@ class SassSpecTest extends TestCase
         $compiler = new Compiler();
 
         list($options, $scss, $includes, $inputDir) = $input;
-        list($css, $warning, $error, $alternativeCssOutputs) = $output;
+        list($css, $warning, $error, $alternativeCssOutputs, $alternativeWarnings) = $output;
 
         $fullInputs = $scss . "\n" . implode("\n", $includes);
 
@@ -342,23 +342,30 @@ class SassSpecTest extends TestCase
                 }
             }
 
+            if (rtrim($output) !== rtrim($warning) && $alternativeWarnings) {
+                foreach ($alternativeWarnings as $alternativeWarning) {
+                    if (rtrim($output) === rtrim($alternativeWarning)) {
+                        $warning = $alternativeWarning;
+                        break;
+                    }
+                }
+            }
+
             if (getenv('BUILD')) {
                 if ($css !== $actual) {
                     $this->appendToExclusionList($name);
-                } elseif ($warning && rtrim($output) !== rtrim($warning)) {
+                } elseif (rtrim($output) !== rtrim($warning)) {
                     $this->appendToWarningExclusionList($name);
                 }
                 $this->assertNull(null);
             } else {
                 $this->assertEquals($css, $actual, $name);
 
-                if ($warning) {
-                    if (
-                        getenv('TEST_SASS_SPEC') ||
-                        ! $this->matchExclusionList($name, $this->getWarningExclusionList())
-                    ) {
-                        $this->assertEquals(rtrim($warning), rtrim($output));
-                    }
+                if (
+                    getenv('TEST_SASS_SPEC') ||
+                    ! $this->matchExclusionList($name, $this->getWarningExclusionList())
+                ) {
+                    $this->assertEquals(rtrim($warning), rtrim($output));
                 }
             }
         } else {
@@ -389,6 +396,27 @@ class SassSpecTest extends TestCase
         $css = str_replace(",\n", ", ", $css);
 
         return $css;
+    }
+
+    private static function prepareWarning($warning, $baseTestName, $baseDir)
+    {
+        // Remove normalized absolute paths present in some warnings and errors
+        // due to https://github.com/sass/libsass/issues/2861
+        // Our own implementation always uses the expected relative path.
+        $baseTestDir = dirname($baseTestName);
+        $baseTestDir = preg_replace(
+            '/(^|\/)libsass-[a-z]+-issues(\/|$)/',
+            '$1libsass-issues$2',
+            $baseTestDir
+        );
+        $warning = str_replace(
+            rtrim("/sass/spec/$baseTestDir/$baseDir", '/') . '/',
+            '',
+            $warning
+        );
+
+        // Normalize paths in the output, as done by the official runner
+        return preg_replace('/[-_\/a-zA-Z0-9]+(input\.s[ca]ss)/', '$1', $warning);
     }
 
     /**
@@ -438,6 +466,7 @@ class SassSpecTest extends TestCase
                 $options   = '';
                 $error     = '';
                 $warning   = '';
+                $alternativeWarnings = [];
                 $hasInput  = false;
                 $hasOutput = false;
                 $baseDir = '';
@@ -503,7 +532,15 @@ class SassSpecTest extends TestCase
                             break;
 
                         case 'warning':
-                            $warning = $part;
+                            $warning = self::prepareWarning($part, $baseTestName, $baseDir);
+                            break;
+
+                        case 'warning-libsass':
+                            $alternativeWarnings['libsass'] = self::prepareWarning($part, $baseTestName, $baseDir);
+                            break;
+
+                        case 'warning-dart-sass':
+                            $alternativeWarnings['dart-sass'] = self::prepareWarning($part, $baseTestName, $baseDir);
                             break;
 
                         default:
@@ -535,28 +572,11 @@ class SassSpecTest extends TestCase
                     $options = $generalOptions;
                 }
 
-                // Remove normalized absolute paths present in some warnings and errors
-                // due to https://github.com/sass/libsass/issues/2861
-                // Our own implementation always uses the expected relative path.
-                if ($warning) {
-                    $baseTestDir = dirname($baseTestName);
-                    $baseTestDir = preg_replace(
-                        '/(^|\/)libsass-[a-z]+-issues(\/|$)/',
-                        '$1libsass-issues$2',
-                        $baseTestDir
-                    );
-                    $warning = str_replace(
-                        rtrim("/sass/spec/$baseTestDir/$baseDir", '/') . '/',
-                        '',
-                        $warning
-                    );
-                }
-
                 $sizeLimit = 1024 * 1024;
                 $test = [
                     $baseTestName . $subNname,
                     [$options, $input, $includes, $baseDir],
-                    [$output, $warning, $error, $alternativeOutputs]
+                    [$output, $warning, $error, $alternativeOutputs, $alternativeWarnings]
                 ];
 
                 if ($hasInput && !$hasSupportedInput) {
