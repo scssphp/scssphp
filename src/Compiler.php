@@ -8039,8 +8039,8 @@ EOL;
 
     // mix two colors
     protected static $libMix = [
-        ['color1', 'color2', 'weight:0.5'],
-        ['color-1', 'color-2', 'weight:0.5']
+        ['color1', 'color2', 'weight:50%'],
+        ['color-1', 'color-2', 'weight:50%']
         ];
     protected function libMix($args)
     {
@@ -8048,25 +8048,26 @@ EOL;
 
         $first = $this->assertColor($first, 'color1');
         $second = $this->assertColor($second, 'color2');
-        $weight = $this->coercePercent($this->assertNumber($weight, 'weight'));
+        $weightScale = $this->assertNumber($weight, 'weight')->valueInRange(0, 100, 'weight') / 100;
 
         $firstAlpha = isset($first[4]) ? $first[4] : 1;
         $secondAlpha = isset($second[4]) ? $second[4] : 1;
 
-        $w = $weight * 2 - 1;
-        $a = $firstAlpha - $secondAlpha;
+        $normalizedWeight = $weightScale * 2 - 1;
+        $alphaDistance = $firstAlpha - $secondAlpha;
 
-        $w1 = (($w * $a === -1 ? $w : ($w + $a) / (1 + $w * $a)) + 1) / 2.0;
-        $w2 = 1.0 - $w1;
+        $combinedWeight = $normalizedWeight * $alphaDistance == -1 ? $normalizedWeight : ($normalizedWeight + $alphaDistance) / (1 + $normalizedWeight * $alphaDistance);
+        $weight1 = ($combinedWeight + 1) / 2.0;
+        $weight2 = 1.0 - $weight1;
 
         $new = [Type::T_COLOR,
-            $w1 * $first[1] + $w2 * $second[1],
-            $w1 * $first[2] + $w2 * $second[2],
-            $w1 * $first[3] + $w2 * $second[3],
+            $weight1 * $first[1] + $weight2 * $second[1],
+            $weight1 * $first[2] + $weight2 * $second[2],
+            $weight1 * $first[3] + $weight2 * $second[3],
         ];
 
         if ($firstAlpha != 1.0 || $secondAlpha != 1.0) {
-            $new[] = $firstAlpha * $weight + $secondAlpha * (1 - $weight);
+            $new[] = $firstAlpha * $weightScale + $secondAlpha * (1 - $weightScale);
         }
 
         return $this->fixColor($new);
@@ -8405,16 +8406,20 @@ EOL;
         return $this->adjustHsl($this->assertColor($args[0], 'color'), 1, 180);
     }
 
-    protected static $libInvert = ['color', 'weight:1'];
+    protected static $libInvert = ['color', 'weight:100%'];
     protected function libInvert($args)
     {
         $value = $args[0];
 
+        $weight = $this->assertNumber($args[1], 'weight');
+
         if ($value instanceof Number) {
+            if ($weight->getDimension() != 100 || !$weight->hasUnit('%')) {
+                throw new SassScriptException('Only one argument may be passed to the plain-CSS invert() function.');
+            }
+
             return null;
         }
-
-        $weight = $this->coercePercent($this->assertNumber($args[1], 'weight'));
 
         $color = $this->assertColor($value, 'color');
         $inverted = $color;
@@ -8422,11 +8427,7 @@ EOL;
         $inverted[2] = 255 - $inverted[2];
         $inverted[3] = 255 - $inverted[3];
 
-        if ($weight < 1) {
-            return $this->libMix([$inverted, $color, new Number($weight, '')]);
-        }
-
-        return $inverted;
+        return $this->libMix([$inverted, $color, $weight]);
     }
 
     // increases opacity by amount
