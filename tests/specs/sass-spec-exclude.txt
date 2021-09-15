@@ -2,12 +2,6 @@ core_functions/color/alpha/error/quoted_string
 core_functions/color/alpha/error/type
 core_functions/color/alpha/error/unquoted_string/no_equals
 core_functions/color/alpha/error/unquoted_string/non_identifier_before_equals
-core_functions/color/desaturate/error/bounds/too_high
-core_functions/color/desaturate/error/bounds/too_low
-core_functions/color/fade_in/error/bounds/too_high
-core_functions/color/fade_in/error/bounds/too_low
-core_functions/color/fade_out/error/bounds/too_high
-core_functions/color/fade_out/error/bounds/too_low
 core_functions/color/hsl/error/four_args/hue/type
 core_functions/color/hsl/error/four_args/lightness/type
 core_functions/color/hsl/error/four_args/saturation/type
@@ -116,8 +110,6 @@ core_functions/color/rgb/one_arg/special_functions/no_alpha/min/string/arg_3
 core_functions/color/rgb/one_arg/special_functions/no_alpha/var/arg_1
 core_functions/color/rgb/one_arg/special_functions/no_alpha/var/arg_2
 core_functions/color/rgb/one_arg/special_functions/no_alpha/var/arg_3
-core_functions/color/saturate/error/two_args/bounds/too_high
-core_functions/color/saturate/error/two_args/bounds/too_low
 core_functions/color/saturation/fraction
 core_functions/color/saturation/max
 core_functions/color/saturation/middle
@@ -932,7 +924,6 @@ non_conformant/basic/15_arithmetic_and_lists
 non_conformant/basic/23_basic_value_interpolation
 non_conformant/basic/41_slashy_urls
 non_conformant/basic/54_adjacent_identifiers_with_hyphens
-non_conformant/errors/fn-saturate-out-of-range
 non_conformant/errors/import/file/control-else
 non_conformant/errors/import/file/control-if
 non_conformant/errors/import/file/loop/each

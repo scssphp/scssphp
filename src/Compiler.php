@@ -7228,9 +7228,13 @@ EOL;
      * @param array|Number $value
      *
      * @return integer|float
+     *
+     * @deprecated
      */
     protected function coercePercent($value)
     {
+        @trigger_error(sprintf('"%s" is deprecated since 1.7.0.', __METHOD__), E_USER_DEPRECATED);
+
         if ($value instanceof Number) {
             if ($value->hasUnit('%')) {
                 return $value->getDimension() / 100;
@@ -8326,6 +8330,12 @@ EOL;
     {
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
         $hsl[$idx] += $amount;
+
+        if ($idx !== 1) {
+            // Clamp the saturation and lightness
+            $hsl[$idx] = min(max(0, $hsl[$idx]), 100);
+        }
+
         $out = $this->toRGB($hsl[1], $hsl[2], $hsl[3]);
 
         if (isset($color[4])) {
@@ -8373,19 +8383,19 @@ EOL;
             return null;
         }
 
-        $color = $this->assertColor($value, 'color');
-        $amount = 100 * $this->coercePercent($this->assertNumber($args[1], 'amount'));
+        $color = $this->assertColor($args[0], 'color');
+        $amount = $this->assertNumber($args[1], 'amount');
 
-        return $this->adjustHsl($color, 2, $amount);
+        return $this->adjustHsl($color, 2, $amount->valueInRange(0, 100, 'amount'));
     }
 
     protected static $libDesaturate = ['color', 'amount'];
     protected function libDesaturate($args)
     {
         $color = $this->assertColor($args[0], 'color');
-        $amount = 100 * $this->coercePercent($this->assertNumber($args[1], 'amount'));
+        $amount = $this->assertNumber($args[1], 'amount');
 
-        return $this->adjustHsl($color, 2, -$amount);
+        return $this->adjustHsl($color, 2, -$amount->valueInRange(0, 100, 'amount'));
     }
 
     protected static $libGrayscale = ['color'];
@@ -8435,9 +8445,9 @@ EOL;
     protected function libOpacify($args)
     {
         $color = $this->assertColor($args[0], 'color');
-        $amount = $this->coercePercent($this->assertNumber($args[1], 'amount'));
+        $amount = $this->assertNumber($args[1], 'amount');
 
-        $color[4] = (isset($color[4]) ? $color[4] : 1) + $amount;
+        $color[4] = (isset($color[4]) ? $color[4] : 1) + $amount->valueInRange(0, 1, 'amount');
         $color[4] = min(1, max(0, $color[4]));
 
         return $color;
@@ -8454,9 +8464,9 @@ EOL;
     protected function libTransparentize($args)
     {
         $color = $this->assertColor($args[0], 'color');
-        $amount = $this->coercePercent($this->assertNumber($args[1], 'amount'));
+        $amount = $this->assertNumber($args[1], 'amount');
 
-        $color[4] = (isset($color[4]) ? $color[4] : 1) - $amount;
+        $color[4] = (isset($color[4]) ? $color[4] : 1) - $amount->valueInRange(0, 1, 'amount');
         $color[4] = min(1, max(0, $color[4]));
 
         return $color;
