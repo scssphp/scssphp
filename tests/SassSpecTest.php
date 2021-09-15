@@ -409,11 +409,14 @@ class SassSpecTest extends TestCase
             '$1libsass-issues$2',
             $baseTestDir
         );
-        return str_replace(
+        $warning = str_replace(
             rtrim("/sass/spec/$baseTestDir/$baseDir", '/') . '/',
             '',
             $warning
         );
+
+        // Normalize paths in the output, as done by the official runner
+        return preg_replace('/[-_\/a-zA-Z0-9]+(input\.s[ca]ss)/', '$1', $warning);
     }
 
     /**
