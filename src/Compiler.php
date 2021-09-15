@@ -8379,10 +8379,10 @@ EOL;
             return null;
         }
 
-        $color = $this->assertColor($value, 'color');
-        $amount = 100 * $this->coercePercent($this->assertNumber($args[1], 'amount'));
+        $color = $this->assertColor($args[0], 'color');
+        $amount = $this->assertNumber($args[1], 'amount');
 
-        return $this->adjustHsl($color, 2, $amount);
+        return $this->adjustHsl($color, 2, $amount->valueInRange(0, 100, 'amount'));
     }
 
     protected static $libDesaturate = ['color', 'amount'];
