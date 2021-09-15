@@ -7228,9 +7228,13 @@ EOL;
      * @param array|Number $value
      *
      * @return integer|float
+     *
+     * @deprecated
      */
     protected function coercePercent($value)
     {
+        @trigger_error(sprintf('"%s" is deprecated since 1.7.0.', __METHOD__), E_USER_DEPRECATED);
+
         if ($value instanceof Number) {
             if ($value->hasUnit('%')) {
                 return $value->getDimension() / 100;
