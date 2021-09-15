@@ -184,12 +184,6 @@ final class Compiler
      */
     private $storeEnv;
     /**
-     * @var bool|null
-     *
-     * @deprecated
-     */
-    private $charsetSeen;
-    /**
      * @var array<int, string|null>
      */
     private $sourceNames;
@@ -5168,12 +5162,8 @@ EOL;
      * byte-order mark.
      *
      * [byte-order mark]: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8
-     *
-     * @param bool $charset
-     *
-     * @return void
      */
-    public function setCharset($charset)
+    public function setCharset(bool $charset): void
     {
         $this->charset = $charset;
     }
@@ -6648,30 +6638,6 @@ EOL;
         }
 
         return $this->coerceString($value);
-    }
-
-    /**
-     * Coerce value to a percentage
-     *
-     * @param array|Number $value
-     *
-     * @return integer|float
-     *
-     * @deprecated
-     */
-    private function coercePercent($value)
-    {
-        @trigger_error(sprintf('"%s" is deprecated since 1.7.0.', __METHOD__), E_USER_DEPRECATED);
-
-        if ($value instanceof Number) {
-            if ($value->hasUnit('%')) {
-                return $value->getDimension() / 100;
-            }
-
-            return $value->getDimension();
-        }
-
-        return 0;
     }
 
     /**
