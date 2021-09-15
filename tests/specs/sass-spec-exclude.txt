@@ -2,8 +2,6 @@ core_functions/color/alpha/error/quoted_string
 core_functions/color/alpha/error/type
 core_functions/color/alpha/error/unquoted_string/no_equals
 core_functions/color/alpha/error/unquoted_string/non_identifier_before_equals
-core_functions/color/fade_in/error/bounds/too_high
-core_functions/color/fade_in/error/bounds/too_low
 core_functions/color/fade_out/error/bounds/too_high
 core_functions/color/fade_out/error/bounds/too_low
 core_functions/color/hsl/error/four_args/hue/type
