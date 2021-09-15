@@ -5891,7 +5891,7 @@ EOL;
         }
 
         if (0 === strpos($normalizedPath, $normalizedRootDirectory)) {
-            return substr($normalizedPath, \strlen($normalizedRootDirectory));
+            return substr($path, \strlen($normalizedRootDirectory));
         }
 
         return $path;
