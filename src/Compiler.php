@@ -8326,6 +8326,12 @@ EOL;
     {
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
         $hsl[$idx] += $amount;
+
+        if ($idx !== 1) {
+            // Clamp the saturation and lightness
+            $hsl[$idx] = min(max(0, $hsl[$idx]), 100);
+        }
+
         $out = $this->toRGB($hsl[1], $hsl[2], $hsl[3]);
 
         if (isset($color[4])) {
@@ -8383,9 +8389,9 @@ EOL;
     protected function libDesaturate($args)
     {
         $color = $this->assertColor($args[0], 'color');
-        $amount = 100 * $this->coercePercent($this->assertNumber($args[1], 'amount'));
+        $amount = $this->assertNumber($args[1], 'amount');
 
-        return $this->adjustHsl($color, 2, -$amount);
+        return $this->adjustHsl($color, 2, -$amount->valueInRange(0, 100, 'amount'));
     }
 
     protected static $libGrayscale = ['color'];
