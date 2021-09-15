@@ -7738,7 +7738,7 @@ EOL;
                             [$funcName . '(', $color[1], ', ', $color[2], ', ', $color[3], ', ', $alpha, ')']];
                     }
                 } else {
-                    $color = [Type::T_STRING, '', [$funcName . '(', $args[0], ')']];
+                    $color = [Type::T_STRING, '', [$funcName . '(', $args[0], ', ', $args[1], ')']];
                 }
                 break;
 
