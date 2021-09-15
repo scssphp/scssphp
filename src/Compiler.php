@@ -8460,9 +8460,9 @@ EOL;
     protected function libTransparentize($args)
     {
         $color = $this->assertColor($args[0], 'color');
-        $amount = $this->coercePercent($this->assertNumber($args[1], 'amount'));
+        $amount = $this->assertNumber($args[1], 'amount');
 
-        $color[4] = (isset($color[4]) ? $color[4] : 1) - $amount;
+        $color[4] = (isset($color[4]) ? $color[4] : 1) - $amount->valueInRange(0, 1, 'amount');
         $color[4] = min(1, max(0, $color[4]));
 
         return $color;
