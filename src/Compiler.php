@@ -6641,30 +6641,6 @@ EOL;
     }
 
     /**
-     * Coerce value to a percentage
-     *
-     * @param array|Number $value
-     *
-     * @return integer|float
-     *
-     * @deprecated
-     */
-    private function coercePercent($value)
-    {
-        @trigger_error(sprintf('"%s" is deprecated since 1.7.0.', __METHOD__), E_USER_DEPRECATED);
-
-        if ($value instanceof Number) {
-            if ($value->hasUnit('%')) {
-                return $value->getDimension() / 100;
-            }
-
-            return $value->getDimension();
-        }
-
-        return 0;
-    }
-
-    /**
      * Assert value is a map
      *
      * @param array|Number $value
