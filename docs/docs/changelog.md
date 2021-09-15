@@ -1,5 +1,24 @@
 # Changelog
 
+## **1.7.0** -- September 15, 2021
+
+**Added**
+
+* Add support for a `charset` option to omit the charset declaration from the generated CSS (@stof)
+
+**Changed**
+
+* Add spec-compliant validation of arguments in several color functions (@stof)
+
+**Fixed**
+
+* Fix the handling of CSS variables in `rgba()` (@stof)
+* Fix the handling of unitless weights in `mix()` and `invert()` (@stof)
+* Fix the handling of amounts in `saturate()`, `desaturate()`, `fade-in()` and `fade-out()` (@stof)
+* Fix the handling of `@charset` in the Sass source (@stof)
+* Fix wrong deprecation warning about unterminated interpolation in discarded comments (@stof)
+* Fix file paths in error messages on Windows (@stof)
+
 ## **1.6.0** -- June 30, 2021
 
 **Deprecated:**
