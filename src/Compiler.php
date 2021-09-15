@@ -184,12 +184,6 @@ final class Compiler
      */
     private $storeEnv;
     /**
-     * @var bool|null
-     *
-     * @deprecated
-     */
-    private $charsetSeen;
-    /**
      * @var array<int, string|null>
      */
     private $sourceNames;
@@ -5168,12 +5162,8 @@ EOL;
      * byte-order mark.
      *
      * [byte-order mark]: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8
-     *
-     * @param bool $charset
-     *
-     * @return void
      */
-    public function setCharset($charset)
+    public function setCharset(bool $charset): void
     {
         $this->charset = $charset;
     }
