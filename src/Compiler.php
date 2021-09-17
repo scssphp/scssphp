@@ -3827,7 +3827,6 @@ EOL;
 
         // try to find a native lib function
         $normalizedName = $this->normalizeName($name);
-        $libName = null;
 
         if (isset($this->userFunctions[$normalizedName])) {
             // see if we can find a user function
@@ -3836,9 +3835,44 @@ EOL;
             return [Type::T_FUNCTION_REFERENCE, 'user', $name, $f, $prototype];
         }
 
+        $lowercasedName = strtolower($normalizedName);
+
+        // Special functions overriding a CSS function are case-insensitive. We normalize them as lowercase
+        // to avoid the deprecation warning about the wrong case being used.
+        if ($lowercasedName === 'min' || $lowercasedName === 'max') {
+            $normalizedName = $lowercasedName;
+        }
+
         if (($f = $this->getBuiltinFunction($normalizedName)) && \is_callable($f)) {
             $libName   = $f[1];
             $prototype = isset(static::$$libName) ? static::$$libName : null;
+
+            // All core functions have a prototype defined. Not finding the
+            // prototype can mean 2 things:
+            // - the function comes from a child class (deprecated just after)
+            // - the function was found with a different case, which relates to calling the
+            //   wrong Sass function due to our camelCase usage (`fade-in()` vs `fadein()`),
+            //   because PHP method names are case-insensitive while property names are
+            //   case-sensitive.
+            if ($prototype === null || strtolower($normalizedName) !== $normalizedName) {
+                $r = new \ReflectionMethod($this, $libName);
+                $actualLibName = $r->name;
+
+                if ($actualLibName !== $libName || strtolower($normalizedName) !== $normalizedName) {
+                    $kebabCaseName = preg_replace('~(?<=\\w)([A-Z])~', '-$1', substr($actualLibName, 3));
+                    assert($kebabCaseName !== null);
+                    $originalName = strtolower($kebabCaseName);
+                    $warning = "Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0.\nUse \"$originalName\" instead of \"$name\".";
+                    @trigger_error($warning, E_USER_DEPRECATED);
+                    $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
+                    $line  = $this->sourceLine;
+                    Warn::deprecation("$warning\n         on line $line of $fname");
+
+                    // Use the actual function definition
+                    $prototype = isset(static::$$actualLibName) ? static::$$actualLibName : null;
+                    $f[1] = $libName = $actualLibName;
+                }
+            }
 
             if (\get_class($this) !== __CLASS__ && !isset($this->warnedChildFunctions[$libName])) {
                 $r = new \ReflectionMethod($this, $libName);
