@@ -2,10 +2,11 @@
 
 test_dir=$(dirname $0)
 diff_tool="$1"
+sass_executable=${SASS_EXECUTABLE:-sass}
 
 for file in $(ls $test_dir/inputs/*.scss); do
 	out_file=$(echo $file | sed -e 's/inputs/outputs/' -e 's/\.scss$/\.css/')
-	sass=$(sass --no-source-map $file 2> /dev/null)
+	sass=$($sass_executable --style=expanded $file 2> /dev/null)
 	if [ $? = "0" ]; then
 	  # Perform the same normalization than SassSpecTest regarding formatting
 		normalized_sass=$(echo "$sass" | sed -e ':a' -e 'N' -e '$!ba' -e 's/}\n\n/}\n/g' -e 's/,\n/, /g')
