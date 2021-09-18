@@ -3862,7 +3862,7 @@ EOL;
                     $kebabCaseName = preg_replace('~(?<=\\w)([A-Z])~', '-$1', substr($actualLibName, 3));
                     assert($kebabCaseName !== null);
                     $originalName = strtolower($kebabCaseName);
-                    $warning = "Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0.\nUse \"$originalName\" instead of \"$name\".";
+                    $warning = "Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0 (they will be treated as CSS function calls instead).\nUse \"$originalName\" instead of \"$name\".";
                     @trigger_error($warning, E_USER_DEPRECATED);
                     $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
                     $line  = $this->sourceLine;
