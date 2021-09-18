@@ -3708,34 +3708,7 @@ EOL;
 
         if (($f = $this->getBuiltinFunction($normalizedName)) && \is_callable($f)) {
             $libName   = $f[1];
-            $prototype = isset(self::$$libName) ? self::$$libName : null;
-
-            // All core functions have a prototype defined. Not finding the
-            // prototype can mean 2 things:
-            // - the function comes from a child class (deprecated just after)
-            // - the function was found with a different case, which relates to calling the
-            //   wrong Sass function due to our camelCase usage (`fade-in()` vs `fadein()`),
-            //   because PHP method names are case-insensitive while property names are
-            //   case-sensitive.
-            if ($prototype === null || strtolower($normalizedName) !== $normalizedName) {
-                $r = new \ReflectionMethod($this, $libName);
-                $actualLibName = $r->name;
-
-                if ($actualLibName !== $libName || strtolower($normalizedName) !== $normalizedName) {
-                    $kebabCaseName = preg_replace('~(?<=\\w)([A-Z])~', '-$1', substr($actualLibName, 3));
-                    assert($kebabCaseName !== null);
-                    $originalName = strtolower($kebabCaseName);
-                    $warning = "Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0 (they will be treated as CSS function calls instead).\nUse \"$originalName\" instead of \"$name\".";
-                    @trigger_error($warning, E_USER_DEPRECATED);
-                    $fname = $this->getPrettyPath($this->sourceNames[$this->sourceIndex]);
-                    $line  = $this->sourceLine;
-                    Warn::deprecation("$warning\n         on line $line of $fname");
-
-                    // Use the actual function definition
-                    $prototype = isset(static::$$actualLibName) ? static::$$actualLibName : null;
-                    $f[1] = $libName = $actualLibName;
-                }
-            }
+            $prototype = self::$$libName;
 
             return [Type::T_FUNCTION_REFERENCE, 'native', $name, $f, $prototype];
         }
@@ -5694,11 +5667,28 @@ EOL;
      *
      * @param string $name Normalized name
      *
-     * @return array
+     * @return array|null
      */
-    private function getBuiltinFunction(string $name): array
+    private function getBuiltinFunction(string $name): ?array
     {
+        // All core functions have lowercase names, and they are case-sensitive.
+        if (strtolower($name) !== $name) {
+            return null;
+        }
+
         $libName = self::normalizeNativeFunctionName($name);
+
+        // All core functions have a prototype defined. Not finding the
+        // prototype can mean 2 things:
+        // - the function does not exist at all (handled by the caller)
+        // - the function exists with a different case, which relates to calling the
+        //   wrong Sass function due to our camelCase usage (`fade-in()` vs `fadein()`),
+        //   because PHP method names are case-insensitive while property names are
+        //   case-sensitive.
+        if (!isset(self::$$libName)) {
+            return null;
+        }
+
         return [$this, $libName];
     }
 
@@ -5733,7 +5723,13 @@ EOL;
      */
     public static function isNativeFunction(string $name): bool
     {
-        return method_exists(Compiler::class, self::normalizeNativeFunctionName($name));
+        if (strtolower($name) !== $name) {
+            return false;
+        }
+
+        $libName = self::normalizeNativeFunctionName($name);
+
+        return method_exists(Compiler::class, $libName) && isset(self::$$libName);
     }
 
     /**
@@ -8600,7 +8596,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         // built-in functions
         $f = $this->getBuiltinFunction($name);
 
-        return $this->toBool(\is_callable($f));
+        return $this->toBool($f !== null && \is_callable($f));
     }
 
     private static $libGlobalVariableExists = ['name'];
