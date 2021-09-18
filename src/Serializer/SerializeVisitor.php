@@ -1,0 +1,697 @@
+<?php
+
+/**
+ * SCSSPHP
+ *
+ * @copyright 2018-2020 Anthon Pang
+ *
+ * @license http://opensource.org/licenses/MIT MIT
+ *
+ * @link http://scssphp.github.io/scssphp
+ */
+
+namespace ScssPhp\ScssPhp\Serializer;
+
+use ScssPhp\ScssPhp\Colors;
+use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\OutputStyle;
+use ScssPhp\ScssPhp\Util;
+use ScssPhp\ScssPhp\Util\Character;
+use ScssPhp\ScssPhp\Util\NumberUtil;
+use ScssPhp\ScssPhp\Value\CalculationInterpolation;
+use ScssPhp\ScssPhp\Value\CalculationOperation;
+use ScssPhp\ScssPhp\Value\CalculationOperator;
+use ScssPhp\ScssPhp\Value\ListSeparator;
+use ScssPhp\ScssPhp\Value\SassBoolean;
+use ScssPhp\ScssPhp\Value\SassCalculation;
+use ScssPhp\ScssPhp\Value\SassColor;
+use ScssPhp\ScssPhp\Value\SassFunction;
+use ScssPhp\ScssPhp\Value\SassList;
+use ScssPhp\ScssPhp\Value\SassMap;
+use ScssPhp\ScssPhp\Value\SassNumber;
+use ScssPhp\ScssPhp\Value\SassString;
+use ScssPhp\ScssPhp\Value\Value;
+use ScssPhp\ScssPhp\Visitor\ValueVisitor;
+
+/**
+ * @internal
+ *
+ * @template-implements ValueVisitor<void>
+ */
+class SerializeVisitor implements ValueVisitor
+{
+    /**
+     * @var StringBuffer
+     */
+    private $buffer;
+
+    /**
+     * Whether we're emitting an unambiguous representation of the source
+     * structure, as opposed to valid CSS.
+     *
+     * @var bool
+     */
+    private $inspect;
+
+    /**
+     * Whether quoted strings should be emitted with quotes.
+     *
+     * @var bool
+     */
+    private $quote;
+
+    /**
+     * @var bool
+     */
+    private $compressed;
+
+    /**
+     * @phpstan-param OutputStyle::* $style
+     */
+    public function __construct(bool $inspect = false, bool $quote = true, string $style = OutputStyle::EXPANDED)
+    {
+        $this->buffer = new SimpleStringBuffer();
+        $this->inspect = $inspect;
+        $this->quote = $quote;
+        $this->compressed = $style === OutputStyle::COMPRESSED;
+    }
+
+    /**
+     * @return StringBuffer
+     */
+    public function getBuffer(): StringBuffer
+    {
+        return $this->buffer;
+    }
+
+    public function visitBoolean(SassBoolean $value)
+    {
+        $this->buffer->write($value->getValue() ? 'true': 'false');
+    }
+
+    public function visitCalculation(SassCalculation $value)
+    {
+        $this->buffer->write($value->getName());
+        $this->buffer->writeChar('(');
+
+        $isFirst = true;
+
+        foreach ($value->getArguments() as $argument) {
+            if ($isFirst) {
+                $isFirst = false;
+            } else {
+                $this->buffer->write($this->getCommaSeparator());
+            }
+
+            $this->writeCalculationValue($argument);
+        }
+        $this->buffer->writeChar(')');
+    }
+
+    private function writeCalculationValue(object $value): void
+    {
+        if ($value instanceof Value) {
+            $value->accept($this);
+        } elseif ($value instanceof CalculationInterpolation) {
+            $this->buffer->write($value->getValue());
+        } elseif ($value instanceof CalculationOperation) {
+            $left = $value->getLeft();
+            $parenthesizeLeft = $left instanceof CalculationInterpolation || ($left instanceof CalculationOperation && CalculationOperator::getPrecedence($left->getOperator()) < CalculationOperator::getPrecedence($value->getOperator()));
+
+            if ($parenthesizeLeft) {
+                $this->buffer->writeChar('(');
+            }
+            $this->writeCalculationValue($left);
+            if ($parenthesizeLeft) {
+                $this->buffer->writeChar(')');
+            }
+
+            $operatorWhitespace = !$this->compressed || CalculationOperator::getPrecedence($value->getOperator()) === 1;
+            if ($operatorWhitespace) {
+                $this->buffer->writeChar(' ');
+            }
+            $this->buffer->write($value->getOperator());
+            if ($operatorWhitespace) {
+                $this->buffer->writeChar(' ');
+            }
+
+            $right = $value->getRight();
+            $parenthesizeRight = $right instanceof CalculationInterpolation || ($right instanceof CalculationOperation && $this->parenthesizeCalculationRhs($value->getOperator(), $right->getOperator()));
+
+            if ($parenthesizeRight) {
+                $this->buffer->writeChar('(');
+            }
+            $this->writeCalculationValue($right);
+            if ($parenthesizeRight) {
+                $this->buffer->writeChar(')');
+            }
+        }
+    }
+
+    /**
+     * Returns whether the right-hand operation of a calculation should be
+     * parenthesized.
+     *
+     * In `a ? (b # c)`, `outer` is `?` and `right` is `#`.
+     *
+     * @phpstan-param CalculationOperator::* $outer
+     * @phpstan-param CalculationOperator::* $right
+     */
+    private function parenthesizeCalculationRhs(string $outer, string $right): bool
+    {
+        if ($outer === CalculationOperator::DIVIDED_BY) {
+            return true;
+        }
+
+        if ($outer === CalculationOperator::PLUS) {
+            return false;
+        }
+
+        return $right === CalculationOperator::PLUS || $right === CalculationOperator::MINUS;
+    }
+
+    public function visitColor(SassColor $value)
+    {
+        $name = Colors::RGBaToColorName($value->getRed(), $value->getGreen(), $value->getBlue(), $value->getAlpha());
+
+        // In compressed mode, emit colors in the shortest representation possible.
+        if ($this->compressed && NumberUtil::fuzzyEquals($value->getAlpha(), 1)) {
+            $canUseShortHex = $this->canUseShortHex($value);
+            $hexLength = $canUseShortHex ? 4 : 7;
+
+            if ($name !== null && \strlen($name) <= $hexLength) {
+                $this->buffer->write($name);
+            } elseif ($canUseShortHex) {
+                $this->buffer->writeChar('#');
+                $this->buffer->writeChar(dechex($value->getRed() & 0xF));
+                $this->buffer->writeChar(dechex($value->getGreen() & 0xF));
+                $this->buffer->writeChar(dechex($value->getBlue() & 0xF));
+            } else {
+                $this->buffer->writeChar('#');
+                $this->writeHexComponent($value->getRed());
+                $this->writeHexComponent($value->getGreen());
+                $this->writeHexComponent($value->getBlue());
+            }
+
+            return;
+        }
+
+        if ($name !== null && !NumberUtil::fuzzyEquals($value->getAlpha(), 0)) {
+            $this->buffer->write($name);
+        } elseif (NumberUtil::fuzzyEquals($value->getAlpha(), 1)) {
+            $this->buffer->writeChar('#');
+            $this->writeHexComponent($value->getRed());
+            $this->writeHexComponent($value->getGreen());
+            $this->writeHexComponent($value->getBlue());
+        } else {
+            $this->buffer->write('rgba(');
+            $this->buffer->write((string) $value->getRed());
+            $this->buffer->write($this->getCommaSeparator());
+            $this->buffer->write((string) $value->getGreen());
+            $this->buffer->write($this->getCommaSeparator());
+            $this->buffer->write((string) $value->getBlue());
+            $this->buffer->write($this->getCommaSeparator());
+            $this->writeNumber($value->getAlpha());
+            $this->buffer->writeChar(')');
+        }
+    }
+
+    /**
+     * Returns whether [color]'s hex pair representation is symmetrical (e.g. `FF`)
+     */
+    private function isSymmetricalHex(int $color): bool
+    {
+        return ($color & 0xF) === $color >> 4;
+    }
+
+    /**
+     * Returns whether [color] can be represented as a short hexadecimal color
+     * (e.g. `#fff`).
+     */
+    private function canUseShortHex(SassColor $color): bool
+    {
+        return $this->isSymmetricalHex($color->getRed()) && $this->isSymmetricalHex($color->getGreen()) && $this->isSymmetricalHex($color->getBlue());
+    }
+
+    /**
+     * Emits $color as a hex character pair.
+     */
+    private function writeHexComponent(int $color): void
+    {
+        $this->buffer->write(str_pad(dechex($color), 2, '0', STR_PAD_LEFT));
+    }
+
+    public function visitFunction(SassFunction $value)
+    {
+        if (!$this->inspect) {
+            throw new SassScriptException("$value is not a valid CSS value.");
+        }
+
+        $this->buffer->write('get-function(');
+        $this->visitQuotedString($value->getName());
+        $this->buffer->writeChar(')');
+    }
+
+    public function visitList(SassList $value)
+    {
+        if ($value->hasBrackets()) {
+            $this->buffer->writeChar('[');
+        } elseif (\count($value->asList()) === 0) {
+            if (!$this->inspect) {
+                throw new SassScriptException("() is not a valid CSS value.");
+            }
+
+            $this->buffer->write('()');
+            return;
+        }
+
+        $singleton = $this->inspect && \count($value->asList()) === 1 && ($value->getSeparator() === ListSeparator::COMMA || $value->getSeparator() === ListSeparator::SLASH);
+
+        if ($singleton && !$value->hasBrackets()) {
+            $this->buffer->writeChar('(');
+        }
+
+        $separator = $this->separatorString($value->getSeparator());
+
+        $isFirst = true;
+
+        foreach ($value->asList() as $element) {
+            if (!$this->inspect && $element->isBlank()) {
+                continue;
+            }
+
+            if ($isFirst) {
+                $isFirst = false;
+            } else {
+                $this->buffer->write($separator);
+            }
+
+            $needsParens = $this->inspect && self::elementNeedsParens($value->getSeparator(), $element);
+
+            if ($needsParens) {
+                $this->buffer->writeChar('(');
+            }
+
+            $element->accept($this);
+
+            if ($needsParens) {
+                $this->buffer->writeChar(')');
+            }
+        }
+
+        if ($singleton) {
+            $this->buffer->write($value->getSeparator());
+
+            if (!$value->hasBrackets()) {
+                $this->buffer->writeChar(')');
+            }
+        }
+
+        if ($value->hasBrackets()) {
+            $this->buffer->writeChar(']');
+        }
+    }
+
+    /**
+     * @phpstan-param ListSeparator::* $separator
+     */
+    private function separatorString(string $separator): string
+    {
+        switch ($separator) {
+            case ListSeparator::COMMA:
+                return $this->getCommaSeparator();
+
+            case ListSeparator::SLASH:
+                return $this->compressed ? '/' : ' / ';
+
+            case ListSeparator::SPACE:
+                return ' ';
+
+            default:
+                /**
+                 * This should never be used, but it may still be returned since
+                 * {@see separatorString} is invoked eagerly by {@see writeList} even for lists
+                 * with only one element.
+                 */
+                return '';
+        }
+    }
+
+    /**
+     * Returns whether the value needs parentheses as an element in a list with the given separator.
+     *
+     * @param string $separator
+     * @param Value $value
+     *
+     * @return bool
+     *
+     * @phpstan-param ListSeparator::* $separator
+     */
+    private static function elementNeedsParens(string $separator, Value $value): bool
+    {
+        if (!$value instanceof SassList) {
+            return false;
+        }
+
+        if (count($value->asList()) < 2) {
+            return false;
+        }
+
+        if ($value->hasBrackets()) {
+            return false;
+        }
+
+        switch ($separator) {
+            case ListSeparator::COMMA:
+                return $value->getSeparator() === ListSeparator::COMMA;
+
+            case ListSeparator::SLASH:
+                return $value->getSeparator() === ListSeparator::COMMA || $value->getSeparator() === ListSeparator::SLASH;
+
+            default:
+                return $value->getSeparator() !== ListSeparator::UNDECIDED;
+        }
+    }
+
+    public function visitMap(SassMap $value)
+    {
+        if (!$this->inspect) {
+            throw new SassScriptException("$value is not a valid CSS value.");
+        }
+
+        $this->buffer->writeChar('(');
+
+        $isFirst = true;
+
+        foreach ($value->getContents() as $key => $element) {
+            if ($isFirst) {
+                $isFirst = false;
+            } else {
+                $this->buffer->write(', ');
+            }
+
+            $this->writeMapElement($key);
+            $this->buffer->write(': ');
+            $this->writeMapElement($element);
+        }
+        $this->buffer->writeChar(')');
+    }
+
+    private function writeMapElement(Value $value): void
+    {
+        $needsParens = $value instanceof SassList
+            && ListSeparator::COMMA === $value->getSeparator()
+            && !$value->hasBrackets();
+
+        if ($needsParens) {
+            $this->buffer->writeChar('(');
+        }
+
+        $value->accept($this);
+
+        if ($needsParens) {
+            $this->buffer->writeChar(')');
+        }
+    }
+
+    public function visitNull()
+    {
+        if ($this->inspect) {
+            $this->buffer->write('null');
+        }
+    }
+
+    public function visitNumber(SassNumber $value)
+    {
+        $asSlash = $value->getAsSlash();
+
+        if ($asSlash !== null) {
+            $this->visitNumber($asSlash[0]);
+            $this->buffer->writeChar('/');
+            $this->visitNumber($asSlash[1]);
+
+            return;
+        }
+
+        $this->writeNumber($value->getValue());
+
+        if (!$this->inspect) {
+            if (\count($value->getNumeratorUnits()) > 1 || \count($value->getDenominatorUnits()) > 0) {
+                throw new SassScriptException("$value is not a valid CSS value.");
+            }
+
+            if (\count($value->getNumeratorUnits()) > 0) {
+                $this->buffer->write($value->getNumeratorUnits()[0]);
+            }
+        } else {
+            $this->buffer->write($value->getUnitString());
+        }
+    }
+
+    /**
+     * Writes $number without exponent notation and with at most
+     * {@see SassNumber::PRECISION} digits after the decimal point.
+     *
+     * @param int|float $number
+     */
+    private function writeNumber($number): void
+    {
+        if (is_nan($number)) {
+            $this->buffer->write('NaN');
+            return;
+        }
+
+        if ($number === INF) {
+            $this->buffer->write('Infinity');
+            return;
+        }
+
+        if ($number === -INF) {
+            $this->buffer->write('-Infinity');
+            return;
+        }
+
+        $int = NumberUtil::fuzzyAsInt($number);
+
+        if ($int !== null) {
+            $this->buffer->write((string) $int);
+            return;
+        }
+
+        $output = number_format($number, SassNumber::PRECISION, '.', '');
+
+        $this->buffer->write(rtrim(rtrim($output, '0'), '.'));
+    }
+
+    public function visitString(SassString $value)
+    {
+        if ($this->quote && $value->hasQuotes()) {
+            $this->visitQuotedString($value->getText());
+        } else {
+            $this->visitUnquotedString($value->getText());
+        }
+    }
+
+    private function visitQuotedString(string $string): void
+    {
+        $includesDoubleQuote = false !== strpos($string, '"');
+        $includesSingleQuote = false !== strpos($string, '\'');
+        $forceDoubleQuotes = $includesSingleQuote && $includesDoubleQuote;
+        $quote = $forceDoubleQuotes || !$includesDoubleQuote ? '"' : "'";
+
+        $this->buffer->writeChar($quote);
+
+        $length = \strlen($string);
+
+        for ($i = 0; $i < $length; $i++) {
+            $char = $string[$i];
+
+            switch ($char) {
+                case "'":
+                    $this->buffer->writeChar("'"); // such string is always rendered double-quoted
+                    break;
+
+                case '"':
+                    if ($forceDoubleQuotes) {
+                        $this->buffer->writeChar('\\');
+                    }
+                    $this->buffer->writeChar('"');
+                    break;
+
+                case "\0":
+                case "\x1":
+                case "\x2":
+                case "\x3":
+                case "\x4":
+                case "\x5":
+                case "\x6":
+                case "\x7":
+                case "\x8":
+                case "\xA":
+                case "\xB":
+                case "\xC":
+                case "\xD":
+                case "\xE":
+                case "\xF":
+                case "\x11":
+                case "\x12":
+                case "\x13":
+                case "\x14":
+                case "\x15":
+                case "\x16":
+                case "\x17":
+                case "\x18":
+                case "\x19":
+                case "\x1A":
+                case "\x1B":
+                case "\x1C":
+                case "\x1D":
+                case "\x1E":
+                case "\x1F":
+                    $this->writeEscape($this->buffer, $char, $string, $i);
+                    break;
+
+                case '\\':
+                    $this->buffer->writeChar('\\');
+                    $this->buffer->writeChar('\\');
+                    break;
+
+                default:
+                    $newIndex = $this->tryPrivateUseCharacter($this->buffer, $char, $string, $i);
+
+                    if ($newIndex !== null) {
+                        $i = $newIndex;
+                        break;
+                    }
+
+                    $this->buffer->writeChar($char);
+                    break;
+            }
+        }
+
+        $this->buffer->writeChar($quote);
+    }
+
+    private function visitUnquotedString(string $string): void
+    {
+        $afterNewline = false;
+        $length = \strlen($string);
+
+        for ($i = 0; $i < $length; ++$i) {
+            $char = $string[$i];
+
+            switch ($char) {
+                case "\n":
+                    $this->buffer->writeChar(' ');
+                    $afterNewline = true;
+                    break;
+
+                case ' ':
+                    if (!$afterNewline) {
+                        $this->buffer->writeChar(' ');
+                    }
+                    break;
+
+                default:
+                    $afterNewline = false;
+                    $newIndex = $this->tryPrivateUseCharacter($this->buffer, $char, $string, $i);
+
+                    if ($newIndex !== null) {
+                        $i = $newIndex;
+                        break;
+                    }
+
+                    $this->buffer->writeChar($char);
+                    break;
+            }
+        }
+    }
+
+    /**
+     * If $char is the beginning of a private-use character and Sass isn't
+     * emitting compressed CSS, writes that character as an escape to $buffer.
+     *
+     * The $string is the string from which $char was read, and $i is the
+     * index it was read from. If this successfully writes the character, returns
+     * the index of the *last* byte that was consumed for it. Otherwise,
+     * returns `null`.
+     *
+     * In expanded mode, we print all characters in Private Use Areas as escape
+     * codes since there's no useful way to render them directly. These
+     * characters are often used for glyph fonts, where it's useful for readers
+     * to be able to distinguish between them in the rendered stylesheet.
+     */
+    private function tryPrivateUseCharacter(StringBuffer $buffer, string $char, string $string, int $i): ?int
+    {
+        if ($this->compressed) {
+            return null;
+        }
+
+        $firstByteCode = \ord($char);
+        if ($firstByteCode >= 0xF0) {
+            $extraBytes = 3; // 4-bytes chars
+        } elseif ($firstByteCode >= 0xE0) {
+            $extraBytes = 2; // 3-bytes chars
+        } elseif ($firstByteCode >= 0xC2) {
+            $extraBytes = 1; // 2-bytes chars
+        } elseif ($firstByteCode >= 0x80 && $firstByteCode <= 0x8F) {
+            return null; // Continuation of a UTF-8 char started in a previous byte
+        } else {
+            $extraBytes = 0;
+        }
+
+        if (\strlen($string) <= $i + $extraBytes) {
+            return null; // Invalid UTF-8 chars
+        }
+
+        if ($extraBytes) {
+            $fullChar = substr($string, $i, $extraBytes + 1);
+            $charCode = Util::mbOrd($fullChar);
+        } else {
+            $fullChar = $char;
+            $charCode = $firstByteCode;
+        }
+
+        if ($charCode >= 0xE000 && $charCode <= 0xF8FF || // PUA of the BMP
+            $charCode >= 0xF0000 && $charCode <= 0x10FFFF // Supplementary PUAs of the planes 15 and 16
+        ) {
+            $this->writeEscape($buffer, $fullChar, $string, $i + $extraBytes);
+
+            return $i + $extraBytes;
+        }
+
+        return null;
+    }
+
+    /**
+     * Writes $character as a hexadecimal escape sequence to $buffer.
+     *
+     * The $string is the string from which the escape is being written, and $i
+     * is the index of the last byte of $character in that string. These
+     * are used to write a trailing space after the escape if necessary to
+     * disambiguate it from the next character.
+     */
+    private function writeEscape(StringBuffer $buffer, string $character, string $string, int $i): void
+    {
+        $buffer->writeChar('\\');
+        $buffer->write(dechex(Util::mbOrd($character)));
+
+        if (\strlen($string) === $i + 1) {
+            return;
+        }
+
+        $next = $string[$i + 1];
+
+        if ($next === ' ' || $next === "\t" || Character::isHex($next)) {
+            $buffer->writeChar(' ');
+        }
+    }
+
+    /**
+     * Returns a comma used to separate values in lists.
+     */
+    private function getCommaSeparator(): string
+    {
+        return $this->compressed ? ',': ', ';
+    }
+}
