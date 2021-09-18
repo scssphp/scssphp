@@ -25,7 +25,7 @@ use ScssPhp\ScssPhp\OutputStyle;
 use ScssPhp\ScssPhp\Version;
 
 $style = null;
-$loadPaths = null;
+$loadPaths = [];
 $dumpTree = false;
 $inputFile = null;
 $changeDir = false;
@@ -113,7 +113,7 @@ EOT;
     $value = parseArgument($i, array('-I', '--load-path'));
 
     if (isset($value)) {
-        $loadPaths = $value;
+        $loadPaths[] = $value;
         continue;
     }
 
@@ -140,7 +140,7 @@ if (isset($arguments[0]) && file_exists($arguments[0])) {
 $scss = new Compiler();
 
 if ($loadPaths) {
-    $scss->setImportPaths(explode(PATH_SEPARATOR, $loadPaths));
+    $scss->setImportPaths($loadPaths);
 }
 
 if ($style) {

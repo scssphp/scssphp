@@ -63,20 +63,40 @@ SCSS;
     public function testFoundation()
     {
         $compiler = new Compiler();
-        $compiler->addImportPath(dirname(__DIR__) . '/vendor/zurb/foundation/scss');
         $compiler->setLogger(new QuietLogger());
 
-        // The Foundation entrypoint only define mixins. To get a useful compilation
-        // executing their code, we need to actually use the mixin.
-        $scss = <<<'SCSS'
-@import "settings/settings";
-@import "foundation";
+        $entrypoint = dirname(__DIR__) . '/vendor/zurb/foundation/assets/foundation.scss';
 
-@include foundation-everything;
-SCSS;
-
-        $result = $compiler->compileString($scss);
+        $result = $compiler->compileString(file_get_contents($entrypoint), $entrypoint);
 
         $this->assertNotEmpty($result->getCss());
+    }
+
+    /**
+     * @dataProvider provideBourbonEntrypoints
+     */
+    public function testBourbon($entrypoint)
+    {
+        $compiler = new Compiler();
+        $compiler->setLogger(new QuietLogger());
+        $compiler->addImportPath(dirname(__DIR__) . '/vendor/thoughtbot/bourbon');
+        $compiler->addImportPath(dirname(__DIR__) . '/vendor/thoughtbot/bourbon/spec/fixtures');
+
+        $result = $compiler->compileString(file_get_contents($entrypoint), $entrypoint);
+
+        $this->assertNotEmpty($result->getCss());
+    }
+
+    public static function provideBourbonEntrypoints()
+    {
+        $iterator = new \RecursiveDirectoryIterator(dirname(__DIR__) . '/vendor/thoughtbot/bourbon/spec/fixtures', \FilesystemIterator::SKIP_DOTS);
+        $iterator = new \RecursiveCallbackFilterIterator($iterator, function (\SplFileInfo $current) {
+            return $current->isDir() || $current->getFilename()[0] !== '_';
+        });
+
+        /** @var \SplFileInfo $file */
+        foreach (new \RecursiveIteratorIterator($iterator) as $file) {
+            yield [$file->getRealPath()];
+        }
     }
 }
