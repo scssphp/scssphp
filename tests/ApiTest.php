@@ -140,7 +140,7 @@ class ApiTest extends TestCase
         assert($logStream !== false);
         $this->scss->setLogger(new StreamLogger($logStream));
 
-        $this->expectDeprecation("Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0.\nUse \"fade-out\" instead of \"faDe-out\".");
+        $this->expectDeprecation("Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0 (they will be treated as CSS function calls instead).\nUse \"fade-out\" instead of \"faDe-out\".");
 
         $result = $this->compile('a { b: faDe-out(#e7e8ea, 0.75) }');
 
@@ -149,7 +149,7 @@ class ApiTest extends TestCase
         fclose($logStream);
 
         $this->assertEquals("a {\n  b: rgba(231, 232, 234, 0.25);\n}", $result);
-        $this->assertEquals("DEPRECATION WARNING: Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0.\nUse \"fade-out\" instead of \"faDe-out\".\n         on line 1 of (unknown file)", trim($output));
+        $this->assertEquals("DEPRECATION WARNING: Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0 (they will be treated as CSS function calls instead).\nUse \"fade-out\" instead of \"faDe-out\".\n         on line 1 of (unknown file)", trim($output));
     }
 
     /**
@@ -163,7 +163,7 @@ class ApiTest extends TestCase
         assert($logStream !== false);
         $this->scss->setLogger(new StreamLogger($logStream));
 
-        $this->expectDeprecation("Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0.\nUse \"fade-out\" instead of \"Fade-out\".");
+        $this->expectDeprecation("Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0 (they will be treated as CSS function calls instead).\nUse \"fade-out\" instead of \"Fade-out\".");
 
         $result = $this->compile('a { b: Fade-out(#e7e8ea, 0.75) }');
 
@@ -172,7 +172,7 @@ class ApiTest extends TestCase
         fclose($logStream);
 
         $this->assertEquals("a {\n  b: rgba(231, 232, 234, 0.25);\n}", $result);
-        $this->assertEquals("DEPRECATION WARNING: Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0.\nUse \"fade-out\" instead of \"Fade-out\".\n         on line 1 of (unknown file)", trim($output));
+        $this->assertEquals("DEPRECATION WARNING: Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0 (they will be treated as CSS function calls instead).\nUse \"fade-out\" instead of \"Fade-out\".\n         on line 1 of (unknown file)", trim($output));
     }
 
     /**
@@ -186,7 +186,7 @@ class ApiTest extends TestCase
         assert($logStream !== false);
         $this->scss->setLogger(new StreamLogger($logStream));
 
-        $this->expectDeprecation("Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0.\nUse \"fade-out\" instead of \"fadeout\".");
+        $this->expectDeprecation("Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0 (they will be treated as CSS function calls instead).\nUse \"fade-out\" instead of \"fadeout\".");
 
         $result = $this->compile('a { b: fadeout(#e7e8ea, 0.75) }');
 
@@ -195,7 +195,7 @@ class ApiTest extends TestCase
         fclose($logStream);
 
         $this->assertEquals("a {\n  b: rgba(231, 232, 234, 0.25);\n}", $result);
-        $this->assertEquals("DEPRECATION WARNING: Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0.\nUse \"fade-out\" instead of \"fadeout\".\n         on line 1 of (unknown file)", trim($output));
+        $this->assertEquals("DEPRECATION WARNING: Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0 (they will be treated as CSS function calls instead).\nUse \"fade-out\" instead of \"fadeout\".\n         on line 1 of (unknown file)", trim($output));
     }
 
     /**
@@ -209,7 +209,7 @@ class ApiTest extends TestCase
         assert($logStream !== false);
         $this->scss->setLogger(new StreamLogger($logStream));
 
-        $this->expectDeprecation("Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0.\nUse \"transparentize\" instead of \"trans-parentize\".");
+        $this->expectDeprecation("Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0 (they will be treated as CSS function calls instead).\nUse \"transparentize\" instead of \"trans-parentize\".");
 
         $result = $this->compile('a { b: trans-parentize(#e7e8ea, 0.75) }');
 
@@ -218,7 +218,7 @@ class ApiTest extends TestCase
         fclose($logStream);
 
         $this->assertEquals("a {\n  b: rgba(231, 232, 234, 0.25);\n}", $result);
-        $this->assertEquals("DEPRECATION WARNING: Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0.\nUse \"transparentize\" instead of \"trans-parentize\".\n         on line 1 of (unknown file)", trim($output));
+        $this->assertEquals("DEPRECATION WARNING: Calling built-in functions with a non-standard name is deprecated since Scssphp 1.8.0 and will not work anymore in 2.0 (they will be treated as CSS function calls instead).\nUse \"transparentize\" instead of \"trans-parentize\".\n         on line 1 of (unknown file)", trim($output));
     }
 
     public function testImportCustomCallback()
