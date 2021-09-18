@@ -80,6 +80,14 @@ class SerializerTest extends TestCase
             '"foo\a"',
             "foo\n",
         ];
+        yield [
+            '"à👭b👬c"',
+            'à👭b👬c',
+        ];
+        yield [
+            '"\e600 f"',
+            "\u{E600}f",
+        ];
     }
 
     /**
@@ -135,6 +143,14 @@ class SerializerTest extends TestCase
         yield [
             "fo \to",
             "fo\n\to",
+        ];
+        yield [
+            'à👭b👬c',
+            'à👭b👬c',
+        ];
+        yield [
+            '\e600 f',
+            "\u{E600}f",
         ];
     }
 }
