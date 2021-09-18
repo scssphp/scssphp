@@ -1,5 +1,15 @@
 # Changelog
 
+## **1.8.0** -- September 18, 2021
+
+**Deprecated**
+
+* Deprecate calling core functions with non-standard names. Due to the internal implementation of core functions, they were calling with different cases or different positions of `-` or `_` in the names (@stof)
+
+**Fixed**
+
+* Fix the computation of the hue of colors for some cases (@stof)
+
 ## **1.7.0** -- September 15, 2021
 
 **Added**
