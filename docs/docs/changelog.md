@@ -4,7 +4,7 @@
 
 **Added**
 
-* Fix compatibility with PHP 8.1
+* Fix compatibility with PHP 8.1 (@TimWolla, @stof)
 
 ## **1.8.0** -- September 18, 2021
 
