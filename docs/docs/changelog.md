@@ -1,5 +1,11 @@
 # Changelog
 
+## **1.8.1** -- September 18, 2021
+
+**Added**
+
+* Fix compatibility with PHP 8.1
+
 ## **1.8.0** -- September 18, 2021
 
 **Deprecated**
