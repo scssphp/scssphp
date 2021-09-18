@@ -16,6 +16,9 @@ use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
 
+/**
+ * @group frameworks
+ */
 class FrameworkTest extends TestCase
 {
     public function testBootstrap()
