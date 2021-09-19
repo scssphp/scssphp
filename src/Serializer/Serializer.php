@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Serializer;
 
+use ScssPhp\ScssPhp\Ast\Selector\Selector;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Value\Value;
 
@@ -34,6 +35,22 @@ final class Serializer
     {
         $visitor = new SerializeVisitor($inspect, $quote);
         $value->accept($visitor);
+
+        return (string) $visitor->getBuffer();
+    }
+
+    /**
+     * Converts $selector to a CSS string.
+     *
+     * If $inspect is `true`, this will emit an unambiguous representation of the
+     * source structure. Note however that, although this will be valid SCSS, it
+     * may not be valid CSS. If $inspect is `false` and $selector can't be
+     * represented in plain CSS, throws a {@see SassScriptException}.
+     */
+    public static function serializeSelector(Selector $selector, bool $inspect = false): string
+    {
+        $visitor = new SerializeVisitor($inspect);
+        $selector->accept($visitor); // TODO
 
         return (string) $visitor->getBuffer();
     }

@@ -12,9 +12,21 @@
 
 namespace ScssPhp\ScssPhp\Serializer;
 
+use ScssPhp\ScssPhp\Ast\Selector\AttributeSelector;
+use ScssPhp\ScssPhp\Ast\Selector\ClassSelector;
+use ScssPhp\ScssPhp\Ast\Selector\ComplexSelector;
+use ScssPhp\ScssPhp\Ast\Selector\CompoundSelector;
+use ScssPhp\ScssPhp\Ast\Selector\IDSelector;
+use ScssPhp\ScssPhp\Ast\Selector\ParentSelector;
+use ScssPhp\ScssPhp\Ast\Selector\PlaceholderSelector;
+use ScssPhp\ScssPhp\Ast\Selector\PseudoSelector;
+use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
+use ScssPhp\ScssPhp\Ast\Selector\TypeSelector;
+use ScssPhp\ScssPhp\Ast\Selector\UniversalSelector;
 use ScssPhp\ScssPhp\Colors;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\OutputStyle;
+use ScssPhp\ScssPhp\Parser\Parser;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\NumberUtil;
@@ -31,14 +43,16 @@ use ScssPhp\ScssPhp\Value\SassMap;
 use ScssPhp\ScssPhp\Value\SassNumber;
 use ScssPhp\ScssPhp\Value\SassString;
 use ScssPhp\ScssPhp\Value\Value;
+use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
 /**
  * @internal
  *
  * @template-implements ValueVisitor<void>
+ * @template-implements SelectorVisitor<void>
  */
-class SerializeVisitor implements ValueVisitor
+class SerializeVisitor implements ValueVisitor, SelectorVisitor
 {
     /**
      * @var StringBuffer
@@ -83,6 +97,8 @@ class SerializeVisitor implements ValueVisitor
     {
         return $this->buffer;
     }
+
+    // ## Values
 
     public function visitBoolean(SassBoolean $value)
     {
@@ -684,6 +700,210 @@ class SerializeVisitor implements ValueVisitor
 
         if ($next === ' ' || $next === "\t" || Character::isHex($next)) {
             $buffer->writeChar(' ');
+        }
+    }
+
+    // ## Selectors
+
+    public function visitAttributeSelector(AttributeSelector $attribute)
+    {
+        $this->buffer->writeChar('[');
+        $this->buffer->write($attribute->getName());
+
+        $value = $attribute->getValue();
+
+        if ($value !== null) {
+            assert($attribute->getOp() !== null);
+            $this->buffer->write($attribute->getOp());
+
+            // Emit identifiers that start with `--` with quotes, because IE11
+            // doesn't consider them to be valid identifiers.
+            if (Parser::isIdentifier($value) && 0 !== strpos($value, '--')) {
+                $this->buffer->write($value);
+
+                if ($attribute->getModifier() !== null) {
+                    $this->buffer->writeChar(' ');
+                }
+            } else {
+                $this->visitQuotedString($value);
+
+                if ($attribute->getModifier() !== null) {
+                    $this->writeOptionalSpace();
+                }
+            }
+
+            if ($attribute->getModifier() !== null) {
+                $this->buffer->write($attribute->getModifier());
+            }
+        }
+
+        $this->buffer->writeChar(']');
+    }
+
+    public function visitClassSelector(ClassSelector $klass)
+    {
+        $this->buffer->writeChar('.');
+        $this->buffer->write($klass->getName());
+    }
+
+    public function visitComplexSelector(ComplexSelector $complex)
+    {
+        $lastComponent = null;
+
+        foreach ($complex->getComponents() as $component) {
+            if ($lastComponent !== null && !$this->omitSpacesAround($lastComponent) && !$this->omitSpacesAround($component)) {
+                $this->buffer->writeChar(' ');
+            }
+
+            if ($component instanceof CompoundSelector) {
+                $this->visitCompoundSelector($component);
+            } else {
+                $this->buffer->write($component);
+            }
+
+            $lastComponent = $component;
+        }
+    }
+
+    /**
+     * @param CompoundSelector|string $component
+     *
+     * @return bool
+     */
+    private function omitSpacesAround($component): bool
+    {
+        // Combinator values
+        return $this->compressed && \is_string($component);
+    }
+
+    public function visitCompoundSelector(CompoundSelector $compound)
+    {
+        $start = $this->buffer->getLength();
+
+        foreach ($compound->getComponents() as $simple) {
+            $simple->accept($this);
+        }
+
+        // If we emit an empty compound, it's because all of the components got
+        // optimized out because they match all selectors, so we just emit the
+        // universal selector.
+        if ($this->buffer->getLength() === $start) {
+            $this->buffer->writeChar('*');
+        }
+    }
+
+    public function visitIDSelector(IDSelector $id)
+    {
+        $this->buffer->writeChar('#');
+        $this->buffer->write($id->getName());
+    }
+
+    public function visitSelectorList(SelectorList $list)
+    {
+        $first = true;
+
+        foreach ($list->getComponents() as $complex) {
+            if (!$this->inspect && $complex->isInvisible()) {
+                continue;
+            }
+
+            if ($first) {
+                $first = false;
+            } else {
+                $this->buffer->writeChar(',');
+
+                if ($complex->getLineBreak()) {
+                    $this->writeLineFeed();
+                } else {
+                    $this->writeOptionalSpace();
+                }
+            }
+
+            $this->visitComplexSelector($complex);
+        }
+    }
+
+    public function visitParentSelector(ParentSelector $parent)
+    {
+        $this->buffer->writeChar('&');
+
+        if ($parent->getSuffix() !== null) {
+            $this->buffer->write($parent->getSuffix());
+        }
+    }
+
+    public function visitPlaceholderSelector(PlaceholderSelector $placeholder)
+    {
+        $this->buffer->writeChar('%');
+        $this->buffer->write($placeholder->getName());
+    }
+
+    public function visitPseudoSelector(PseudoSelector $pseudo)
+    {
+        $innerSelector = $pseudo->getSelector();
+
+        // `:not(%a)` is semantically identical to `*`.
+        if ($innerSelector !== null && $pseudo->getName() === 'not' && $innerSelector->isInvisible()) {
+            return;
+        }
+
+        $this->buffer->writeChar(':');
+        if ($pseudo->isSyntacticElement()) {
+            $this->buffer->writeChar(':');
+        }
+        $this->buffer->write($pseudo->getName());
+
+        if ($pseudo->getArgument() === null && $pseudo->getSelector() === null) {
+            return;
+        }
+
+        $this->buffer->writeChar('(');
+
+        if ($pseudo->getArgument() !== null) {
+            $this->buffer->write($pseudo->getArgument());
+
+            if ($pseudo->getSelector() !== null) {
+                $this->buffer->writeChar(' ');
+            }
+        }
+
+        if ($innerSelector !== null) {
+            $this->visitSelectorList($innerSelector);
+        }
+
+        $this->buffer->writeChar(')');
+    }
+
+    public function visitTypeSelector(TypeSelector $type)
+    {
+        $this->buffer->write($type->getName());
+    }
+
+    public function visitUniversalSelector(UniversalSelector $universal)
+    {
+        if ($universal->getNamespace() !== null) {
+            $this->buffer->write($universal->getNamespace());
+            $this->buffer->writeChar('|');
+        }
+        $this->buffer->writeChar('*');
+    }
+
+    // ## Utilities
+
+    /**
+     * Writes a line feed, unless this emitting compressed CSS.
+     */
+    private function writeLineFeed(): void
+    {
+        if (!$this->compressed) {
+            $this->buffer->writeChar("\n");
+        }
+    }
+
+    private function writeOptionalSpace(): void
+    {
+        if (!$this->compressed) {
+            $this->buffer->writeChar(' ');
         }
     }
 
