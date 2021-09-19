@@ -43,11 +43,50 @@ class Parser
      */
     protected $sourceUrl;
 
+    /**
+     * Parses $text as a CSS identifier and returns the result.
+     *
+     * @throws SassFormatException if parsing fails.
+     */
+    public static function parseIdentifier(string $text, ?LoggerInterface $logger = null): string
+    {
+        return (new Parser($text, $logger))->doParseIdentifier();
+    }
+
+    /**
+     * Returns whether $text is a valid CSS identifier.
+     */
+    public static function isIdentifier(string $text, ?LoggerInterface $logger = null): bool
+    {
+        try {
+            self::parseIdentifier($text, $logger);
+
+            return true;
+        } catch (SassFormatException $e) {
+            return false;
+        }
+    }
+
     public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null)
     {
         $this->scanner = new StringScanner($contents);
         $this->logger = $logger ?: new QuietLogger();
         $this->sourceUrl = $sourceUrl;
+    }
+
+    /**
+     * @throws SassFormatException
+     */
+    private function doParseIdentifier(): string
+    {
+        try {
+            $result = $this->identifier();
+            $this->scanner->expectDone();
+
+            return $result;
+        } catch (FormatException $e) {
+            throw $this->wrapException($e);
+        }
     }
 
     /**
