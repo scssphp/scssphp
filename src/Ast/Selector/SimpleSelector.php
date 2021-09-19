@@ -12,13 +12,30 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\Logger\LoggerInterface;
+use ScssPhp\ScssPhp\Parser\SelectorParser;
 
 /**
  * An abstract superclass for simple selectors.
  */
 abstract class SimpleSelector extends Selector
 {
+    /**
+     * Parses a simple selector from $contents.
+     *
+     * If passed, $url is the name of the file from which $contents comes.
+     * $allowParent controls whether a {@see ParentSelector} is allowed in this
+     * selector.
+     *
+     * @throws SassFormatException if parsing fails.
+     */
+    public static function parse(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true): SimpleSelector
+    {
+        return (new SelectorParser($contents, $logger, $url, $allowParent))->parseSimpleSelector();
+    }
+
     /**
      * The minimum possible specificity that this selector can have.
      *

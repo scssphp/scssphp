@@ -12,6 +12,9 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use ScssPhp\ScssPhp\Exception\SassFormatException;
+use ScssPhp\ScssPhp\Logger\LoggerInterface;
+use ScssPhp\ScssPhp\Parser\SelectorParser;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Value\ListSeparator;
 use ScssPhp\ScssPhp\Value\SassList;
@@ -35,6 +38,20 @@ final class SelectorList extends Selector
      * @readonly
      */
     private $components;
+
+    /**
+     * Parses a selector list from $contents.
+     *
+     * If passed, $url is the name of the file from which $contents comes.
+     * $allowParent and $allowPlaceholder control whether {@see ParentSelector}s or
+     * {@see PlaceholderSelector}s are allowed in this selector, respectively.
+     *
+     * @throws SassFormatException if parsing fails.
+     */
+    public static function parse(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true, bool $allowPlaceholder = true): SelectorList
+    {
+        return (new SelectorParser($contents, $logger, $url, $allowParent, $allowPlaceholder))->parse();
+    }
 
     /**
      * @param list<ComplexSelector> $components
