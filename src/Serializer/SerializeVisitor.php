@@ -233,7 +233,7 @@ class SerializeVisitor implements ValueVisitor, SelectorVisitor
     }
 
     /**
-     * Returns whether [color]'s hex pair representation is symmetrical (e.g. `FF`)
+     * Returns whether $color's hex pair representation is symmetrical (e.g. `FF`)
      */
     private function isSymmetricalHex(int $color): bool
     {
@@ -241,7 +241,7 @@ class SerializeVisitor implements ValueVisitor, SelectorVisitor
     }
 
     /**
-     * Returns whether [color] can be represented as a short hexadecimal color
+     * Returns whether $color can be represented as a short hexadecimal color
      * (e.g. `#fff`).
      */
     private function canUseShortHex(SassColor $color): bool
