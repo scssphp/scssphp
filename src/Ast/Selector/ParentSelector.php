@@ -53,4 +53,9 @@ final class ParentSelector extends SimpleSelector
     {
         return $visitor->visitParentSelector($this);
     }
+
+    public function unify(array $compound): ?array
+    {
+        throw new \LogicException("& doesn't support unification.");
+    }
 }

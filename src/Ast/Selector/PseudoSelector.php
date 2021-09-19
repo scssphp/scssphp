@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
 use ScssPhp\ScssPhp\Util;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 
 /**
@@ -255,6 +256,53 @@ final class PseudoSelector extends SimpleSelector
         }
 
         return new PseudoSelector($this->name . $suffix, $this->isElement());
+    }
+
+    public function unify(array $compound): ?array
+    {
+        if ($this->name === 'host' || $this->name === 'host-context') {
+            foreach ($compound as $simple) {
+                if (!$simple instanceof PseudoSelector || (!$simple->isHost() && $simple->selector === null)) {
+                    return null;
+                }
+            }
+        } elseif (\count($compound) === 1) {
+            $other = $compound[0];
+
+            if ($other instanceof UniversalSelector || $other instanceof PseudoSelector && ($other->isHost() || $other->isHostContext())) {
+                return $other->unify([$this]);
+            }
+        }
+
+        if (EquatableUtil::listContains($compound, $this)) {
+            return $compound;
+        }
+
+        $result = [];
+        $addedThis = false;
+
+        foreach ($compound as $simple) {
+            if ($simple instanceof PseudoSelector && $simple->isElement()) {
+                // A given compound selector may only contain one pseudo element. If
+                // $compound has a different one than $this, unification fails.
+                if ($this->isElement()) {
+                    return null;
+                }
+
+                // Otherwise, this is a pseudo selector and should come before pseudo
+                // elements.
+                $result[] = $this;
+                $addedThis = true;
+            }
+
+            $result[] = $simple;
+        }
+
+        if (!$addedThis) {
+            $result[] = $this;
+        }
+
+        return $result;
     }
 
     public function accept(SelectorVisitor $visitor)

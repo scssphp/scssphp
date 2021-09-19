@@ -54,6 +54,18 @@ final class IDSelector extends SimpleSelector
         return new IDSelector($this->name . $suffix);
     }
 
+    public function unify(array $compound): ?array
+    {
+        // A given compound selector may only contain one ID.
+        foreach ($compound as $simple) {
+            if ($simple instanceof IDSelector && !$simple->equals($this)) {
+                return null;
+            }
+        }
+
+        return parent::unify($compound);
+    }
+
     public function equals(object $other): bool
     {
         return $other instanceof IDSelector && $other->name === $this->name;

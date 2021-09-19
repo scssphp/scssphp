@@ -105,6 +105,33 @@ final class SelectorList extends Selector
     }
 
     /**
+     * Returns a {@see SelectorList} that matches only elements that are matched by
+     * both this and $other.
+     *
+     * If no such list can be produced, returns `null`.
+     */
+    public function unify(SelectorList $other): ?SelectorList
+    {
+        $contents = [];
+
+        foreach ($this->components as $complex1) {
+            foreach ($other->components as $complex2) {
+                $unified = ExtendUtil::unifyComplex([$complex1->getComponents(), $complex2->getComponents()]);
+
+                if ($unified === null) {
+                    continue;
+                }
+
+                foreach ($unified as $complex) {
+                    $contents[] = new ComplexSelector($complex);
+                }
+            }
+        }
+
+        return \count($contents) === 0 ? null : new SelectorList($contents);
+    }
+
+    /**
      * Whether this is a superselector of $other.
      *
      * That is, whether this matches every element that $other matches, as well
