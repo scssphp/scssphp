@@ -19,6 +19,8 @@ use ScssPhp\ScssPhp\Exception\CompilerException;
 use ScssPhp\ScssPhp\Exception\ParserException;
 use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\FileReader\FileReaderInterface;
+use ScssPhp\ScssPhp\FileReader\FilesystemReader;
 use ScssPhp\ScssPhp\Formatter\Compressed;
 use ScssPhp\ScssPhp\Formatter\Expanded;
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
@@ -268,6 +270,11 @@ final class Compiler
     private $logger;
 
     /**
+     * @var FileReaderInterface
+     */
+    private $fileReader;
+
+    /**
      * Constructor
      *
      * @param array|null $cacheOptions
@@ -285,6 +292,7 @@ final class Compiler
         }
 
         $this->logger = new StreamLogger(fopen('php://stderr', 'w'), true);
+        $this->fileReader = new FilesystemReader();
     }
 
     /**
@@ -318,6 +326,19 @@ final class Compiler
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * TODO
+     *
+     *
+     * @param FileReaderInterface $fileReader
+     *
+     * @return void
+     */
+    public function setFileReader(FileReaderInterface $fileReader): void
+    {
+        $this->fileReader = $fileReader;
     }
 
     /**
@@ -355,8 +376,8 @@ final class Compiler
         $this->parsedFiles = [];
         $this->resolvedImports = [];
 
-        if (!\is_null($path) && is_file($path)) {
-            $path = realpath($path) ?: $path;
+        if (!\is_null($path) && $this->fileReader->isFile($path)) {
+            $path = $this->fileReader->getKey($path);
             $this->currentDirectory = dirname($path);
             $this->rootDirectory = $this->currentDirectory;
         } else {
@@ -389,7 +410,7 @@ final class Compiler
             $sourceMapGenerator = null;
 
             if ($this->sourceMap !== self::SOURCE_MAP_NONE) {
-                $sourceMapGenerator = new SourceMapGenerator($this->sourceMapOptions);
+                $sourceMapGenerator = new SourceMapGenerator($this->fileReader, $this->sourceMapOptions);
             }
 
             assert($this->scope !== null);
@@ -461,7 +482,7 @@ final class Compiler
     {
         // check if any dependency file changed since the result was compiled
         foreach ($result->getParsedFiles() as $file => $mtime) {
-            if (! is_file($file) || filemtime($file) !== $mtime) {
+            if (! $this->fileReader->isFile($file) || $this->fileReader->getTimestamp($file) !== $mtime) {
                 return false;
             }
         }
@@ -5102,8 +5123,9 @@ EOL;
      */
     private function addParsedFile(?string $path): void
     {
-        if (! \is_null($path) && is_file($path)) {
-            $this->parsedFiles[realpath($path)] = filemtime($path);
+        if (! \is_null($path) && $this->fileReader->isFile($path)) {
+            $key = $this->fileReader->getKey($path);
+            $this->parsedFiles[$key] = $this->fileReader->getTimestamp($path);
         }
     }
 
@@ -5249,7 +5271,7 @@ EOL;
     {
         $this->pushCallStack('import ' . $this->getPrettyPath($path));
         // see if tree is cached
-        $realPath = realpath($path);
+        $realPath = $this->fileReader->getKey($path);
 
         if (substr($path, -5) === '.sass') {
             $this->sourceIndex = \count($this->sourceNames);
@@ -5265,7 +5287,7 @@ EOL;
 
             $tree = $this->importCache[$realPath];
         } else {
-            $code   = file_get_contents($path);
+            $code   = $this->fileReader->getContent($path);
             $parser = $this->parserFactory($path);
             $tree   = $parser->parse($code);
 
@@ -5428,11 +5450,11 @@ EOL;
 
         $candidates = [];
 
-        if (is_file($partial)) {
+        if ($this->fileReader->isFile($partial)) {
             $candidates[] = $partial;
         }
 
-        if (is_file($path)) {
+        if ($this->fileReader->isFile($path)) {
             $candidates[] = $path;
         }
 
@@ -5446,7 +5468,7 @@ EOL;
      */
     private function tryImportPathAsDirectory(string $path): ?string
     {
-        if (!is_dir($path)) {
+        if (!$this->fileReader->isDirectory($path)) {
             return null;
         }
 
@@ -5576,7 +5598,8 @@ EOL;
                 continue;
             }
 
-            if (realpath($file) === $name) {
+            $key = $this->fileReader->getKey($file);
+            if ($key === $name) {
                 throw $this->error('An @import loop has been found: %s imports %s', $file, basename($file));
             }
         }
