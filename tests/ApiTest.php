@@ -287,23 +287,28 @@ class ApiTest extends TestCase
                 "_virtual-file.scss" => "\$vfs-variable: yellow;",
             ];
 
-            public function isDirectory(string $key) : bool {
+            public function isDirectory(string $key): bool
+            {
                 throw new \Exception();
             }
 
-            public function isFile(string $key) : bool {
+            public function isFile(string $key): bool
+            {
                 return isset($this->fs[$key]);
             }
 
-            public function getContent(string $key) : string {
+            public function getContent(string $key): string
+            {
                 return $this->fs[$key];
             }
 
-            public function getKey(string $key) : ?string {
+            public function getKey(string $key): ?string
+            {
                 return $key;
             }
 
-            public function getTimestamp(string $key) : int {
+            public function getTimestamp(string $key): int
+            {
                 return 0;
             }
         };

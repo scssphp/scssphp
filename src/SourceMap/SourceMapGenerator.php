@@ -94,7 +94,12 @@ final class SourceMapGenerator
     private $options;
 
     /**
-     * @param FileReaderInterface $fileReader
+     * @var \ScssPhp\ScssPhp\FileReader\FileReaderInterface
+     * */
+    private $fileReader;
+
+    /**
+     * @param \ScssPhp\ScssPhp\FileReader\FileReaderInterface $fileReader
      * @phpstan-param array{sourceRoot?: string, sourceMapFilename?: string|null, sourceMapURL?: string|null, sourceMapWriteTo?: string|null, outputSourceFiles?: bool, sourceMapRootpath?: string, sourceMapBasepath?: string} $options
      */
     public function __construct($fileReader, array $options = [])

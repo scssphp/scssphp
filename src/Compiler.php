@@ -377,7 +377,7 @@ final class Compiler
         $this->resolvedImports = [];
 
         if (!\is_null($path) && $this->fileReader->isFile($path)) {
-            $path = $this->fileReader->getKey($path);
+            $path = $this->fileReader->getKey($path) ?: $path;
             $this->currentDirectory = dirname($path);
             $this->rootDirectory = $this->currentDirectory;
         } else {

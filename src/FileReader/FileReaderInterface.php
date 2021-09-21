@@ -2,14 +2,24 @@
 
 namespace ScssPhp\ScssPhp\FileReader;
 
-interface FileReaderInterface {
-    public function isDirectory(string $key) : bool;
+interface FileReaderInterface
+{
+    public function isDirectory(string $key): bool;
 
-    public function isFile(string $key) : bool;
+    public function isFile(string $key): bool;
 
-    public function getContent(string $key) : string;
+    /**
+     * @return string|false
+     * */
+    public function getContent(string $key);
 
-    public function getKey(string $key) : ?string;
+    /**
+     * @return string|false
+     * */
+    public function getKey(string $key);
 
-    public function getTimestamp(string $key) : int;
+    /**
+     * @return int|false
+     * */
+    public function getTimestamp(string $key);
 }

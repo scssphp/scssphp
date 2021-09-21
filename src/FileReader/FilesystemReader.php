@@ -2,24 +2,39 @@
 
 namespace ScssPhp\ScssPhp\FileReader;
 
-class FilesystemReader implements FileReaderInterface {
-    public function isDirectory(string $key) : bool {
+class FilesystemReader implements FileReaderInterface
+{
+    public function isDirectory(string $key): bool
+    {
         return \is_dir($key);
     }
 
-    public function isFile(string $key) : bool {
+    public function isFile(string $key): bool
+    {
         return \is_file($key);
     }
 
-    public function getContent(string $key) : string {
+    /**
+     * @return string|false
+     * */
+    public function getContent(string $key)
+    {
         return \file_get_contents($key);
     }
 
-    public function getKey(string $key) : ?string {
+    /**
+     * @return string|false
+     * */
+    public function getKey(string $key)
+    {
         return \realpath($key);
     }
 
-    public function getTimestamp(string $key) : int {
+    /**
+     * @return int|false
+     * */
+    public function getTimestamp(string $key)
+    {
         return \filemtime($key);
     }
 }
