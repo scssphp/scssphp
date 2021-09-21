@@ -279,4 +279,44 @@ class ApiTest extends TestCase
     {
         return trim($this->scss->compileString($str)->getCss());
     }
+
+    public function testFileReaderInjection()
+    {
+        $virtualFileReader = new class implements \ScssPhp\ScssPhp\FileReader\FileReaderInterface {
+            private $fs = [
+                "_virtual-file.scss" => "\$vfs-variable: yellow;",
+            ];
+
+            public function isDirectory(string $key) : bool {
+                throw new \Exception();
+            }
+
+            public function isFile(string $key) : bool {
+                return isset($this->fs[$key]);
+            }
+
+            public function getContent(string $key) : string {
+                return $this->fs[$key];
+            }
+
+            public function getKey(string $key) : ?string {
+                return $key;
+            }
+
+            public function getTimestamp(string $key) : int {
+                return 0;
+            }
+        };
+
+        $compiler = new Compiler();
+        $compiler->setFileReader($virtualFileReader);
+        $compiler->setOutputStyle(\ScssPhp\ScssPhp\OutputStyle::COMPRESSED);
+        // **magic** to make the import process consider $fileReader
+        $compiler->addImportPath("");
+
+        $this->assertEquals(
+            "h1{color:yellow}",
+            trim($compiler->compileString("@import \"_virtual-file.scss\";\nh1 { color: \$vfs-variable }")->getCss()),
+        );
+    }
 }
