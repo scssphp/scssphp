@@ -3234,24 +3234,33 @@ abstract class StylesheetParser extends Parser
         $parens = 0;
         $brackets = [];
 
-        /**
-         * Scan manually rather than using {@see scanner} and saving and restoring its
-         * state to avoid the overhead of updating line and column information.
-         */
-        $string = $this->scanner->getString();
-
-        for ($i = $this->scanner->getPosition(); $i < \strlen($string); $i++) {
-            $next = $string[$i];
+        $start = $this->scanner->getPosition();
+        while (!$this->scanner->isDone()) {
+            $next = $this->scanner->peekChar();
 
             switch ($next) {
                 case '\\':
-                    $i++;
+                    $this->scanner->readChar();
+                    $this->scanner->readUtf8Char();
+                    break;
+
+                case '/':
+                    if (!$this->scanComment()) {
+                        $this->scanner->readChar();
+                    }
+                    break;
+
+                case "'":
+                case '"':
+                    $this->interpolatedString();
                     break;
 
                 case '#':
-                    if ($parens === 0 && ($string[$i + 1] ?? '') === '{') {
+                    if ($parens === 0 && $this->scanner->peekChar(1) === '{') {
+                        $this->scanner->setPosition($start);
                         return true;
                     }
+                    $this->scanner->readChar();
                     break;
 
                 case '(':
@@ -3259,7 +3268,9 @@ abstract class StylesheetParser extends Parser
                     // fallthrough
                 case '{':
                 case '[':
+                    assert($next !== null); // https://github.com/phpstan/phpstan/issues/5678
                     $brackets[] = Character::opposite($next);
+                    $this->scanner->readChar();
                     break;
 
                 case ')':
@@ -3268,11 +3279,18 @@ abstract class StylesheetParser extends Parser
                 case '}':
                 case ']':
                     if (empty($brackets) || array_pop($brackets) !== $next) {
+                        $this->scanner->setPosition($start);
                         return false;
                     }
+                    $this->scanner->readChar();
                     break;
+
+                default:
+                    $this->scanner->readUtf8Char();
             }
         }
+
+        $this->scanner->setPosition($start);
 
         return false;
     }
