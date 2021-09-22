@@ -1,5 +1,5 @@
 {
-    "name": "scssphp/scssphp",
+    "name": "lausek/scssphp",
     "type": "library",
     "description": "scssphp is a compiler for SCSS written in PHP.",
     "keywords": ["css", "stylesheet", "scss", "sass", "less"],
@@ -17,6 +17,10 @@
             "name": "Cédric Morin",
             "email": "cedric@yterium.com",
             "homepage": "https://github.com/Cerdic"
+        },
+        {
+            "name": "lausek",
+            "homepage": "https://lausek.eu"
         }
     ],
     "autoload": {
