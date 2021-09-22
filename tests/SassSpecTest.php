@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Tests;
 
 use PHPUnit\Framework\TestCase;
+use ScssPhp\ScssPhp\Ast\Sass\Statement\Stylesheet;
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Logger\StreamLogger;
@@ -251,6 +252,12 @@ class SassSpecTest extends TestCase
 
         if (false !== strpos($fullInputs, '@forward ') || false !== strpos($fullInputs, '@use ')) {
             $this->markTestSkipped('Sass modules are not supported.');
+        }
+
+        // Our new parser is a port of the dart-sass one, so it should be able to parse all non-error specs
+        // without triggering a parsing error.
+        if (!$error && !preg_match('/:todo:\n *+- dart-sass\n/', $options) && !\in_array($this->canonicalTestName($name), ['directives/forward/escaped', 'directives/use/escaped'])) {
+            Stylesheet::parseScss($scss, null, 'input.scss');
         }
 
         if (! getenv('TEST_SASS_SPEC') && $this->matchExclusionList($name, $this->getExclusionList())) {

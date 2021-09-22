@@ -1,6 +1,16 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^PHPDoc tag @template T for class ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Statement\\\\ParentStatement with bound type array\\<ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Statement\\> is not supported\\.$#"
+			count: 1
+			path: src/Ast/Sass/Statement/ParentStatement.php
+
+		-
+			message: "#^PHPDoc tag @template T for class ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Statement\\\\ParentStatement with bound type null is not supported\\.$#"
+			count: 1
+			path: src/Ast/Sass/Statement/ParentStatement.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$children type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Block.php
@@ -44,11 +54,6 @@ parameters:
 			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, string\\|false given\\.$#"
 			count: 1
 			path: src/Cache.php
-
-		-
-			message: "#^Result of \\|\\| is always false\\.$#"
-			count: 3
-			path: src/Colors.php
 
 		-
 			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$hasValue\\.$#"
@@ -1267,7 +1272,7 @@ parameters:
 
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
-			count: 2
+			count: 1
 			path: src/Compiler.php
 
 		-
