@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
 use ScssPhp\ScssPhp\Exception\SassFormatException;
+use ScssPhp\ScssPhp\Extend\ExtendUtil;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\SelectorParser;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
@@ -101,6 +102,17 @@ final class SelectorList extends Selector
     public function accept(SelectorVisitor $visitor)
     {
         return $visitor->visitSelectorList($this);
+    }
+
+    /**
+     * Whether this is a superselector of $other.
+     *
+     * That is, whether this matches every element that $other matches, as well
+     * as possibly additional elements.
+     */
+    public function isSuperselector(SelectorList $other): bool
+    {
+        return ExtendUtil::listIsSuperselector($this->components, $other->components);
     }
 
     public function equals(object $other): bool

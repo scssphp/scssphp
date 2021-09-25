@@ -50,7 +50,7 @@ final class Serializer
     public static function serializeSelector(Selector $selector, bool $inspect = false): string
     {
         $visitor = new SerializeVisitor($inspect);
-        $selector->accept($visitor); // TODO
+        $selector->accept($visitor);
 
         return (string) $visitor->getBuffer();
     }

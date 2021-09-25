@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use ScssPhp\ScssPhp\Extend\ExtendUtil;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 
@@ -78,6 +79,15 @@ class ComplexSelector extends Selector
         return $this->components;
     }
 
+    /**
+     * @return CompoundSelector|string
+     * @phpstan-return CompoundSelector|Combinator::*
+     */
+    public function getLastComponent()
+    {
+        return $this->components[\count($this->components) - 1];
+    }
+
     public function getLineBreak(): bool
     {
         return $this->lineBreak;
@@ -117,6 +127,17 @@ class ComplexSelector extends Selector
     public function accept(SelectorVisitor $visitor)
     {
         return $visitor->visitComplexSelector($this);
+    }
+
+    /**
+     * Whether this is a superselector of $other.
+     *
+     * That is, whether this matches every element that $other matches, as well
+     * as possibly additional elements.
+     */
+    public function isSuperselector(ComplexSelector $other): bool
+    {
+        return ExtendUtil::complexIsSuperselector($this->components, $other->components);
     }
 
     public function equals(object $other): bool
