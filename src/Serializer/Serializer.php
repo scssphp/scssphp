@@ -22,7 +22,7 @@ use ScssPhp\ScssPhp\Value\Value;
 final class Serializer
 {
     /**
-     * Converts [value] to a CSS string.
+     * Converts $value to a CSS string.
      *
      * If $inspect is `true`, this will emit an unambiguous representation of the
      * source structure. Note however that, although this will be valid SCSS, it

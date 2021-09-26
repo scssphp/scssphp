@@ -107,7 +107,7 @@ final class AttributeSelector extends SimpleSelector
     }
 
     /**
-     * @phpstan-return AttributeOperator::*
+     * @phpstan-return AttributeOperator::*|null
      */
     public function getOp(): ?string
     {

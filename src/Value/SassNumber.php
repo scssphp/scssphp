@@ -364,7 +364,7 @@ abstract class SassNumber extends Value
      * Throws a SassScriptException unless $this has $unit as its only unit
      * (and as a numerator).
      *
-     * If this came from a function argument, [name] is the argument name
+     * If this came from a function argument, $name is the argument name
      * (without the `$`). It's used for error reporting.
      *
      * @throws SassScriptException
@@ -381,7 +381,7 @@ abstract class SassNumber extends Value
     /**
      * Throws a SassScriptException unless $this has no units.
      *
-     * If this came from a function argument, [name] is the argument name
+     * If this came from a function argument, $name is the argument name
      * (without the `$`). It's used for error reporting.
      *
      * @throws SassScriptException
@@ -776,7 +776,7 @@ abstract class SassNumber extends Value
             return \call_user_func($operation, $this->value, $other->coerceValueToMatch($this));
         } catch (SassScriptException $e) {
             // If the conversion fails, re-run it in the other direction. This will
-            // generate an error message that prints [this] before [other], which is
+            // generate an error message that prints $this before $other, which is
             // more readable.
             $this->coerceValueToMatch($other);
 

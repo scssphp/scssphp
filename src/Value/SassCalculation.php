@@ -173,7 +173,7 @@ final class SassCalculation extends Value
     }
 
     /**
-     * Creates a `clamp()` calculation with the given [min], [value], and [max].
+     * Creates a `clamp()` calculation with the given $min, $value, and $max.
      *
      * Each argument must be either a {@see SassNumber}, a {@see SassCalculation}, an
      * unquoted {@see SassString}, a {@see CalculationOperation}, or a
