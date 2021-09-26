@@ -18,6 +18,44 @@ namespace ScssPhp\ScssPhp\Util;
 final class ListUtil
 {
     /**
+     * Flattens the first level of nested arrays in $queues.
+     *
+     * The return value is ordered first by index in the nested iterable, then by
+     * the index *of* that iterable in $queues. For example,
+     * `flattenVertically([["1a", "1b"], ["2a", "2b"]])` returns `["1a", "2a",
+     * "1b", "2b"]`.
+     *
+     * @template T
+     *
+     * @param list<list<T>> $queues
+     *
+     * @return list<T>
+     */
+    public static function flattenVertically(array $queues): array
+    {
+        if (\count($queues) === 1) {
+            return $queues[0];
+        }
+
+        $result = [];
+
+        while (!empty($queues)) {
+            foreach ($queues as $i => &$queue) {
+                $item = array_shift($queue);
+
+                if ($item === null) {
+                    unset($queues[$i]);
+                } else {
+                    $result[] = $item;
+                }
+            }
+            unset($queue);
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns the longest common subsequence between $list1 and $list2.
      *
      * If there are more than one equally long common subsequence, returns the one

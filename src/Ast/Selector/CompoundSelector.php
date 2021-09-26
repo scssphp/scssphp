@@ -80,6 +80,11 @@ final class CompoundSelector extends Selector
         return $this->components;
     }
 
+    public function getLastComponent(): SimpleSelector
+    {
+        return $this->components[\count($this->components) - 1];
+    }
+
     public function getMinSpecificity(): int
     {
         if ($this->minSpecificity === null) {
