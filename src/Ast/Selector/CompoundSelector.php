@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
 use ScssPhp\ScssPhp\Exception\SassFormatException;
+use ScssPhp\ScssPhp\Extend\ExtendUtil;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\SelectorParser;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
@@ -79,6 +80,11 @@ final class CompoundSelector extends Selector
         return $this->components;
     }
 
+    public function getLastComponent(): SimpleSelector
+    {
+        return $this->components[\count($this->components) - 1];
+    }
+
     public function getMinSpecificity(): int
     {
         if ($this->minSpecificity === null) {
@@ -113,6 +119,17 @@ final class CompoundSelector extends Selector
     public function accept(SelectorVisitor $visitor)
     {
         return $visitor->visitCompoundSelector($this);
+    }
+
+    /**
+     * Whether this is a superselector of $other.
+     *
+     * That is, whether this matches every element that $other matches, as well
+     * as possibly additional elements.
+     */
+    public function isSuperselector(CompoundSelector $other): bool
+    {
+        return ExtendUtil::compoundIsSuperselector($this, $other);
     }
 
     public function equals(object $other): bool

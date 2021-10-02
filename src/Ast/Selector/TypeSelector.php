@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use ScssPhp\ScssPhp\Extend\ExtendUtil;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 
 /**
@@ -50,6 +51,25 @@ final class TypeSelector extends SimpleSelector
     public function addSuffix(string $suffix): SimpleSelector
     {
         return new TypeSelector(new QualifiedName($this->name->getName() . $suffix, $this->name->getNamespace()));
+    }
+
+    public function unify(array $compound): ?array
+    {
+        $first = $compound[0] ?? null;
+
+        if ($first instanceof UniversalSelector || $first instanceof TypeSelector) {
+            $unified = ExtendUtil::unifyUniversalAndElement($this, $first);
+
+            if ($unified === null) {
+                return null;
+            }
+
+            $compound[0] = $unified;
+
+            return $compound;
+        }
+
+        return array_merge([$this], $compound);
     }
 
     public function equals(object $other): bool

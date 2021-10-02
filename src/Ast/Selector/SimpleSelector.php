@@ -16,6 +16,7 @@ use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\SelectorParser;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
 
 /**
  * An abstract superclass for simple selectors.
@@ -74,5 +75,54 @@ abstract class SimpleSelector extends Selector
     public function addSuffix(string $suffix): SimpleSelector
     {
         throw new SassScriptException("Invalid parent selector \"$this\"");
+    }
+
+    /**
+     * Returns the components of a {@see CompoundSelector} that matches only elements
+     * matched by both this and $compound.
+     *
+     * By default, this just returns a copy of $compound with this selector
+     * added to the end, or returns the original array if this selector already
+     * exists in it.
+     *
+     * Returns `null` if unification is impossible—for example, if there are
+     * multiple ID selectors.
+     *
+     * @param list<SimpleSelector> $compound
+     *
+     * @return list<SimpleSelector>|null
+     */
+    public function unify(array $compound): ?array
+    {
+        if (\count($compound) === 1) {
+            $other = $compound[0];
+
+            if ($other instanceof UniversalSelector || $other instanceof PseudoSelector && ($other->isHost() || $other->isHostContext())) {
+                return $other->unify([$this]);
+            }
+        }
+
+        if (EquatableUtil::listContains($compound, $this)) {
+            return $compound;
+        }
+
+        $result = [];
+        $addedThis = false;
+
+        foreach ($compound as $simple) {
+            // Make sure pseudo selectors always come last.
+            if (!$addedThis && $simple instanceof PseudoSelector) {
+                $result[] = $this;
+                $addedThis = true;
+            }
+
+            $result[] = $simple;
+        }
+
+        if (!$addedThis) {
+            $result[] = $this;
+        }
+
+        return $result;
     }
 }

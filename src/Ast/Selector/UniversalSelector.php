@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use ScssPhp\ScssPhp\Extend\ExtendUtil;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 
 /**
@@ -50,6 +51,38 @@ final class UniversalSelector extends SimpleSelector
     public function accept(SelectorVisitor $visitor)
     {
         return $visitor->visitUniversalSelector($this);
+    }
+
+    public function unify(array $compound): ?array
+    {
+        $first = $compound[0] ?? null;
+
+        if ($first instanceof UniversalSelector || $first instanceof TypeSelector) {
+            $unified = ExtendUtil::unifyUniversalAndElement($this, $first);
+
+            if ($unified === null) {
+                return null;
+            }
+
+            $compound[0] = $unified;
+
+            return $compound;
+        }
+
+        if (\count($compound) === 1 && $first instanceof PseudoSelector && ($first->isHost() || $first->isHostContext())) {
+            return null;
+        }
+
+        if ($this->namespace !== null && $this->namespace !== '*') {
+            return array_merge([$this], $compound);
+        }
+
+        // Not-empty compound list
+        if ($first !== null) {
+            return $compound;
+        }
+
+        return [$this];
     }
 
     public function equals(object $other): bool
