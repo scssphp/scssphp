@@ -377,16 +377,6 @@ final class SassColor extends Value
     }
 
     /**
-     * @param int $colorComponent
-     *
-     * @return string
-     */
-    private static function getHexComponent(int $colorComponent): string
-    {
-        return str_pad(dechex($colorComponent), 2, '0', STR_PAD_LEFT);
-    }
-
-    /**
      * @return void
      */
     private function rgbToHsl(): void

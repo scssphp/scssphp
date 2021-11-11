@@ -96,6 +96,8 @@ final class StringScanner
 
     /**
      * @throws FormatException if the end of the string is reached
+     *
+     * @phpstan-impure
      */
     public function readChar(): string
     {
@@ -108,6 +110,8 @@ final class StringScanner
 
     /**
      * @throws FormatException if the end of the string is reached
+     *
+     * @phpstan-impure
      */
     public function readUtf8Char(): string
     {
@@ -134,6 +138,8 @@ final class StringScanner
      * @param string $char
      *
      * @return bool Whether the character was consumed.
+     *
+     * @phpstan-impure
      */
     public function scanChar(string $char): bool
     {
@@ -156,6 +162,8 @@ final class StringScanner
      * @param string $string
      *
      * @return bool Whether the string was consumed.
+     *
+     * @phpstan-impure
      */
     public function scan(string $string): bool
     {
@@ -196,6 +204,8 @@ final class StringScanner
      * @return void
      *
      * @throws FormatException
+     *
+     * @phpstan-impure
      */
     public function expectChar(string $character, ?string $name = null): void
     {
@@ -216,6 +226,8 @@ final class StringScanner
      * @return void
      *
      * @throws FormatException
+     *
+     * @phpstan-impure
      */
     public function expect(string $string): void
     {
