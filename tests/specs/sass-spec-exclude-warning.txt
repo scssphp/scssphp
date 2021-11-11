@@ -36,6 +36,11 @@ core_functions/meta/call/string/local
 css/moz_document/functions/interpolated
 css/moz_document/functions/static
 directives/warn/functions_in_stack
+directives/warn/position/function
+directives/warn/position/mixin
+directives/warn/position/property
+directives/warn/position/ruleset
+directives/warn/position/top_level
 libsass-closed-issues/issue_1060
 libsass-closed-issues/issue_1163
 libsass-closed-issues/issue_1188
@@ -66,9 +71,7 @@ libsass/variable-scoping/blead-global/expanding/at-root
 libsass/variable-scoping/blead-global/expanding/function
 libsass/variable-scoping/blead-global/expanding/mixin
 libsass/variable-scoping/blead-global/expanding/ruleset
-libsass/warn-directive-nested/inline
 non_conformant/basic/32_percentages
-non_conformant/errors/fn-warn/property
 non_conformant/operations/division/slash/with_string/slash_plus_string
 non_conformant/operations/division/slash/with_string/string_plus_slash
 non_conformant/parser/and_and

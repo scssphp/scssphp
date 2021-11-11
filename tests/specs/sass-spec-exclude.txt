@@ -33,12 +33,6 @@ core_functions/color/hsl/one_arg/special_functions/alpha/multi_argument_var/1_of
 core_functions/color/hsl/one_arg/special_functions/alpha/multi_argument_var/2_of_2
 core_functions/color/hsl/one_arg/special_functions/alpha/var/arg_3
 core_functions/color/hsl/one_arg/special_functions/alpha/var/arg_4
-core_functions/color/hue/above_max
-core_functions/color/hue/fraction
-core_functions/color/hue/max
-core_functions/color/hue/middle
-core_functions/color/hue/named
-core_functions/color/hue/negative
 core_functions/color/rgb/error/four_args/blue/type
 core_functions/color/rgb/error/four_args/green/type
 core_functions/color/rgb/error/four_args/red/type
@@ -387,10 +381,10 @@ core_functions/selector/unify/complex/combinators/child/and_next_sibling
 core_functions/selector/unify/complex/combinators/child/and_sibling
 core_functions/selector/unify/complex/combinators/initial/different
 core_functions/selector/unify/complex/combinators/initial/supersequence/non_contiguous
-core_functions/selector/unify/complex/combinators/multiple
 core_functions/selector/unify/complex/combinators/multiple/in_a_row/different
 core_functions/selector/unify/complex/combinators/multiple/in_a_row/supersequence/contiguous
 core_functions/selector/unify/complex/combinators/multiple/in_a_row/supersequence/non_contiguous
+core_functions/selector/unify/complex/combinators/multiple/isolated
 core_functions/selector/unify/complex/combinators/next_sibling/and_child
 core_functions/selector/unify/complex/combinators/next_sibling/and_descendant
 core_functions/selector/unify/complex/combinators/next_sibling/and_next_sibling/conflict
@@ -558,6 +552,11 @@ css/escape/error/syntax/too_high
 css/functions/error/single_equals/no_lhs
 css/functions/error/single_equals/no_lhs_or_rhs
 css/functions/error/single_equals/no_rhs
+css/keyframes/name/variable_like
+css/keyframes/selector/percentage/scientific/double
+css/keyframes/selector/percentage/scientific/int
+css/keyframes/selector/percentage/scientific/negative_exponent
+css/keyframes/selector/percentage/scientific/positive_exponent
 css/media/range/error/invalid_binary_operator/before_colon
 css/media/range/error/invalid_binary_operator/eq
 css/media/range/error/invalid_binary_operator/gt
@@ -666,11 +665,9 @@ libsass-closed-issues/issue_1187
 libsass-closed-issues/issue_1206
 libsass-closed-issues/issue_1208
 libsass-closed-issues/issue_1210/extend
-libsass-closed-issues/issue_1214
 libsass-closed-issues/issue_1218
 libsass-closed-issues/issue_1243/warning
 libsass-closed-issues/issue_1248
-libsass-closed-issues/issue_1253
 libsass-closed-issues/issue_1322
 libsass-closed-issues/issue_1328
 libsass-closed-issues/issue_1333
@@ -791,7 +788,6 @@ libsass-closed-issues/issue_2520
 libsass-closed-issues/issue_2560
 libsass-closed-issues/issue_2569
 libsass-closed-issues/issue_2633
-libsass-closed-issues/issue_267
 libsass-closed-issues/issue_2808
 libsass-closed-issues/issue_2884
 libsass-closed-issues/issue_2959
@@ -908,7 +904,6 @@ libsass/variable-scoping/defaults-global-null
 libsass/variable-scoping/feature-test
 libsass/variable-scoping/lexical-scope
 libsass/variable-scoping/root-scope
-libsass/warn-directive-nested/mixin
 libsass/wrapped-selector-whitespace
 non_conformant/basic/11_attribute_selectors
 non_conformant/basic/15_arithmetic_and_lists
