@@ -1,9 +1,0 @@
-// Patch submitted upstream at https://github.com/sass/sass-spec/pull/1709
-// TODO remove those tests once the PR is merged and our setup is updated.
-a {b: hue(hsl(359, 50%, 50%))}
-a {b: hue(hsl(540, 50%, 50%))}
-a {b: hue(hsl(0, 50%, 50%))}
-a {b: hue(hsl(-180, 50%, 50%))}
-a {b: hue(hsl(123, 50%, 50%))}
-a {b: hue(hsl(0.5, 50%, 50%))}
-a {b: hue($color: hsl(234, 50%, 50%))}
