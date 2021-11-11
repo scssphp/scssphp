@@ -1712,6 +1712,8 @@ abstract class StylesheetParser extends Parser
      * Consumes an expression.
      *
      * @param (callable(): bool)|null $until
+     *
+     * @phpstan-impure
      */
     protected function expression(?callable $until = null, bool $singleEquals = false, bool $bracketList = false): Expression
     {
@@ -2518,6 +2520,8 @@ abstract class StylesheetParser extends Parser
 
     /**
      * Consumes a single hexadecimal digit.
+     *
+     * @phpstan-impure
      */
     private function hexDigit(): int
     {

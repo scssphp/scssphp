@@ -1156,6 +1156,9 @@ final class Parser
      *
      * @param array|false $parsed
      * @param int $startPos
+     *
+     * @return array
+     *
      * @throws ParserException
      */
     private function assertPlainCssValid($parsed, ?int $startPos = null)
@@ -1184,7 +1187,7 @@ final class Parser
     /**
      * Check a parsed element is plain CSS Valid
      * @param array|string $parsed
-     * @return bool|array|string
+     * @return false|array|string
      */
     private function isPlainCssValidElement($parsed, bool $allowExpression = false)
     {
@@ -1583,7 +1586,7 @@ final class Parser
      * @param array|null $statement
      * @param integer $pos
      */
-    private function append(?array $statement, ?int $pos = null)
+    private function append(?array $statement, ?int $pos = null): void
     {
         if (! \is_null($statement)) {
             ! $this->cssOnly || ($statement = $this->assertPlainCssValid($statement, $pos));

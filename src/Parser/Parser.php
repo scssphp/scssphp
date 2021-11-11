@@ -602,6 +602,8 @@ class Parser
 
     /**
      * @param callable(string): bool $condition
+     *
+     * @phpstan-impure
      */
     protected function scanCharIf(callable $condition): bool
     {
