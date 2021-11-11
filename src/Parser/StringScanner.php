@@ -34,7 +34,7 @@ use ScssPhp\ScssPhp\SourceSpan\SourceFile;
  *
  * @internal
  */
-final class StringScanner
+class StringScanner
 {
     /**
      * @var string
