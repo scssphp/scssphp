@@ -36,6 +36,45 @@ final class StringUtil
         return '' === $needle || ('' !== $haystack && 0 === substr_compare($haystack, $needle, -\strlen($needle)));
     }
 
+    public static function trimAsciiRight(string $string, bool $excludeEscape = false): string
+    {
+        if (!$excludeEscape) {
+            return rtrim($string, ' ');
+        }
+
+        $end = self::lastNonWhitespace($string, $excludeEscape);
+
+        if ($end === null) {
+            return '';
+        }
+
+        return substr($string, 0, $end + 1);
+    }
+
+    /**
+     * Returns the index of the last character in $string that's not ASCII
+     * whitespace, or `null` if $string is entirely spaces.
+     *
+     * If $excludeEscape is `true`, this doesn't move past whitespace that's
+     * included in a CSS escape.
+     */
+    private static function lastNonWhitespace(string $string, bool $excludeEscape = false): ?int
+    {
+        for ($i = \strlen($string) - 1; $i >= 0; $i--) {
+            $char = $string[$i];
+
+            if (!Character::isWhitespace($char)) {
+                if ($excludeEscape && $i !== 0 && $i !== \strlen($string) && $char === '\\') {
+                    return $i + 1;
+                }
+
+                return $i;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Returns whether $string1 and $string2 are equal, ignoring ASCII case.
      *

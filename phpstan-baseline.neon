@@ -2001,6 +2001,11 @@ parameters:
 			path: src/Parser/StylesheetParser.php
 
 		-
+			message: "#^Negated boolean expression is always true\\.$#"
+			count: 1
+			path: src/Serializer/SerializeVisitor.php
+
+		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\SourceMap\\\\SourceMapGenerator\\:\\:generateJson\\(\\) should return string but returns string\\|false\\.$#"
 			count: 1
 			path: src/SourceMap/SourceMapGenerator.php

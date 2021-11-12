@@ -12,8 +12,11 @@
 
 namespace ScssPhp\ScssPhp\Serializer;
 
+use ScssPhp\ScssPhp\Ast\Css\CssNode;
 use ScssPhp\ScssPhp\Ast\Selector\Selector;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\OutputStyle;
+use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Value\Value;
 
 /**
@@ -21,6 +24,30 @@ use ScssPhp\ScssPhp\Value\Value;
  */
 final class Serializer
 {
+    /**
+     * @phpstan-param OutputStyle::* $style
+     */
+    public static function serialize(CssNode $node, bool $inspect = false, string $style = OutputStyle::EXPANDED, bool $sourceMap = false, bool $charset = true): SerializeResult
+    {
+        $visitor = new SerializeVisitor($inspect, true, $style);
+        $node->accept($visitor);
+        $css = (string) $visitor->getBuffer();
+
+        $prefix = '';
+
+        if ($charset && strlen($css) !== Util::mbStrlen($css)) {
+            if ($style === OutputStyle::COMPRESSED) {
+                $prefix = "\u{FEFF}";
+            } else {
+                $prefix = '@charset "UTF-8";' . "\n";
+            }
+        }
+
+        // TODO build the source map
+
+        return new SerializeResult($prefix . $css);
+    }
+
     /**
      * Converts $value to a CSS string.
      *

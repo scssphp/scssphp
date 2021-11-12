@@ -12,6 +12,15 @@
 
 namespace ScssPhp\ScssPhp\Serializer;
 
+use ScssPhp\ScssPhp\Ast\AstNode;
+use ScssPhp\ScssPhp\Ast\Css\CssAtRule;
+use ScssPhp\ScssPhp\Ast\Css\CssComment;
+use ScssPhp\ScssPhp\Ast\Css\CssDeclaration;
+use ScssPhp\ScssPhp\Ast\Css\CssMediaQuery;
+use ScssPhp\ScssPhp\Ast\Css\CssNode;
+use ScssPhp\ScssPhp\Ast\Css\CssParentNode;
+use ScssPhp\ScssPhp\Ast\Css\CssStyleRule;
+use ScssPhp\ScssPhp\Ast\Css\CssValue;
 use ScssPhp\ScssPhp\Ast\Selector\AttributeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\ClassSelector;
 use ScssPhp\ScssPhp\Ast\Selector\ComplexSelector;
@@ -24,9 +33,12 @@ use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\Ast\Selector\TypeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\UniversalSelector;
 use ScssPhp\ScssPhp\Colors;
+use ScssPhp\ScssPhp\Exception\SassRuntimeException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\OutputStyle;
+use ScssPhp\ScssPhp\Parser\LineScanner;
 use ScssPhp\ScssPhp\Parser\Parser;
+use ScssPhp\ScssPhp\Parser\StringScanner;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\NumberUtil;
@@ -43,21 +55,30 @@ use ScssPhp\ScssPhp\Value\SassMap;
 use ScssPhp\ScssPhp\Value\SassNumber;
 use ScssPhp\ScssPhp\Value\SassString;
 use ScssPhp\ScssPhp\Value\Value;
+use ScssPhp\ScssPhp\Visitor\CssVisitor;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
 /**
  * @internal
  *
+ * @template-implements CssVisitor<void>
  * @template-implements ValueVisitor<void>
  * @template-implements SelectorVisitor<void>
  */
-class SerializeVisitor implements ValueVisitor, SelectorVisitor
+class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisitor
 {
     /**
      * @var StringBuffer
      */
     private $buffer;
+
+    /**
+     * The current indentation of the CSS output.
+     *
+     * @var int
+     */
+    private $indentation = 0;
 
     /**
      * Whether we're emitting an unambiguous representation of the source
@@ -96,6 +117,383 @@ class SerializeVisitor implements ValueVisitor, SelectorVisitor
     public function getBuffer(): StringBuffer
     {
         return $this->buffer;
+    }
+
+    public function visitCssStylesheet($node): void
+    {
+        $previous = null;
+
+        foreach ($node->getChildren() as $child) {
+            if ($this->isInvisible($child)) {
+                continue;
+            }
+
+            if ($previous !== null) {
+                if ($this->requiresSemicolon($previous)) {
+                    $this->buffer->writeChar(';');
+                }
+                $this->writeLineFeed();
+
+                if ($previous->isGroupEnd()) {
+                    $this->writeLineFeed();
+                }
+            }
+
+            $previous = $child;
+            $child->accept($this);
+        }
+
+        if ($previous !== null && $this->requiresSemicolon($previous) && !$this->compressed) {
+            $this->buffer->writeChar(';');
+        }
+    }
+
+    public function visitCssComment($node): void
+    {
+        $this->for($node, function () use ($node) {
+            // Preserve comments that start with `/*!`.
+            if ($this->compressed && !$node->isPreserved()) {
+                return;
+            }
+
+            $minimumIndentation = $this->minimumIndentation($node->getText());
+            assert($minimumIndentation !== -1);
+
+            if ($minimumIndentation === null) {
+                $this->writeIndentation();
+                $this->buffer->write($node->getText());
+                return;
+            }
+
+            $minimumIndentation = min($minimumIndentation, $node->getSpan()->getStart()->getColumn());
+            $this->writeIndentation();
+            $this->writeWithIndent($node->getText(), $minimumIndentation);
+        });
+    }
+
+    public function visitCssAtRule($node): void
+    {
+        $this->writeIndentation();
+
+        $this->for($node, function () use ($node) {
+            $this->buffer->writeChar('@');
+            $this->write($node->getName());
+
+            $value = $node->getValue();
+
+            if ($value !== null) {
+                $this->buffer->writeChar(' ');
+                $this->write($value);
+            }
+
+            if (!$node->isChildless()) {
+                $this->writeOptionalSpace();
+                $this->visitChildren($node->getChildren());
+            }
+        });
+    }
+
+    public function visitCssMediaRule($node): void
+    {
+        $this->writeIndentation();
+
+        $this->for($node, function () use ($node) {
+            $this->buffer->write('@media');
+
+            if (!$this->compressed || !$node->getQueries()[0]->isCondition()) {
+                $this->buffer->writeChar(' ');
+            }
+
+            $this->writeBetween($node->getQueries(), $this->getCommaSeparator(), [$this, 'visitMediaQuery']);
+        });
+
+        $this->writeOptionalSpace();
+        $this->visitChildren($node->getChildren());
+    }
+
+    public function visitCssImport($node): void
+    {
+        $this->writeIndentation();
+
+        $this->for($node, function () use ($node) {
+            $this->buffer->write('@import');
+            $this->writeOptionalSpace();
+            $this->for($node->getUrl(), function () use ($node) {
+                $this->writeImportUrl($node->getUrl()->getValue());
+            });
+
+            if ($node->getSupports() !== null) {
+                $this->writeOptionalSpace();
+                $this->write($node->getSupports());
+            }
+
+            if ($node->getMedia() !== null) {
+                $this->writeOptionalSpace();
+                $this->writeBetween($node->getMedia(), $this->getCommaSeparator(), [$this, 'visitMediaQuery']);
+            }
+        });
+    }
+
+    /**
+     * Writes $url, which is an import's URL, to the buffer.
+     */
+    private function writeImportUrl(string $url): void
+    {
+        if (!$this->compressed || $url[0] !== 'u') {
+            $this->buffer->write($url);
+            return;
+        }
+
+        // If this is url(...), remove the surrounding function. This is terser and
+        // it allows us to remove whitespace between `@import` and the URL.
+        $urlContents = substr($url, 4, \strlen($url) - 5);
+
+        $maybeQuote = $urlContents[0];
+        if ($maybeQuote === "'" || $maybeQuote === '"') {
+            $this->buffer->write($urlContents);
+        } else {
+            // If the URL didn't contain quotes, write them manually.
+            $this->visitQuotedString($urlContents);
+        }
+    }
+
+    public function visitCssKeyframeBlock($node): void
+    {
+        $this->writeIndentation();
+
+        $this->for($node->getSelector(), function () use ($node) {
+            $this->writeBetween($node->getSelector()->getValue(), $this->getCommaSeparator(), [$this->buffer, 'write']);
+        });
+        $this->writeOptionalSpace();
+        $this->visitChildren($node->getChildren());
+    }
+
+    private function visitMediaQuery(CssMediaQuery $query): void
+    {
+        if ($query->getModifier() !== null) {
+            $this->buffer->write($query->getModifier());
+            $this->buffer->writeChar(' ');
+        }
+
+        if ($query->getType() !== null) {
+            $this->buffer->write($query->getType());
+
+            if (\count($query->getFeatures())) {
+                $this->buffer->write(' and ');
+            }
+        }
+
+        $this->writeBetween($query->getFeatures(), $this->compressed ? 'and ' : ' and ', [$this->buffer, 'write']);
+    }
+
+    public function visitCssStyleRule($node): void
+    {
+        $this->writeIndentation();
+
+        $this->for($node->getSelector(), function () use ($node) {
+            $node->getSelector()->getValue()->accept($this);
+        });
+        $this->writeOptionalSpace();
+        $this->visitChildren($node->getChildren());
+    }
+
+    public function visitCssSupportsRule($node): void
+    {
+        $this->writeIndentation();
+
+        $this->for($node, function () use ($node) {
+            $this->buffer->write('@supports');
+
+            if (!($this->compressed && $node->getCondition()->getValue()[0] === '(')) {
+                $this->buffer->writeChar(' ');
+            }
+
+            $this->write($node->getCondition());
+        });
+        $this->writeOptionalSpace();
+        $this->visitChildren($node->getChildren());
+    }
+
+    public function visitCssDeclaration($node): void
+    {
+        $this->writeIndentation();
+        $this->write($node->getName());
+        $this->buffer->writeChar(':');
+
+        // If `node` is a custom property that was parsed as a normal Sass-syntax
+        // property (such as `#{--foo}: ...`), we serialize its value using the
+        // normal Sass property logic as well.
+        if ($node->isCustomProperty() && $node->isParsedAsCustomProperty()) {
+            $this->for($node->getValue(), function () use ($node) {
+                if ($this->compressed) {
+                    $this->writeFoldedValue($node);
+                } else {
+                    $this->writeReindentedValue($node);
+                }
+            });
+        } else {
+            $this->writeOptionalSpace();
+
+            try {
+                // TODO implement source map tracking
+                $node->getValue()->getValue()->accept($this);
+            } catch (SassScriptException $error) {
+                throw new SassRuntimeException($error->getMessage(), $node->getValue()->getSpan(), $error);
+            }
+        }
+    }
+
+    /**
+     * Emits the value of $node, with all newlines followed by whitespace
+     */
+    private function writeFoldedValue(CssDeclaration $node): void
+    {
+        $value = $node->getValue()->getValue();
+        assert($value instanceof SassString);
+        $scannner = new StringScanner($value->getText());
+
+        while (!$scannner->isDone()) {
+            $next = $scannner->readUtf8Char();
+            if ($next !== "\n") {
+                $this->buffer->writeChar($next);
+                continue;
+            }
+
+            $this->buffer->writeChar(' ');
+            while (Character::isWhitespace($scannner->peekChar())) {
+                $scannner->readChar();
+            }
+        }
+    }
+
+    /**
+     * Emits the value of $node, re-indented relative to the current indentation.
+     */
+    private function writeReindentedValue(CssDeclaration $node): void
+    {
+        $nodeValue = $node->getValue()->getValue();
+        assert($nodeValue instanceof SassString);
+        $value = $nodeValue->getText();
+
+        $minimumIndentation = $this->minimumIndentation($value);
+        if ($minimumIndentation === null) {
+            $this->buffer->write($value);
+            return;
+        }
+
+        if ($minimumIndentation === -1) {
+            $this->buffer->write(Util\StringUtil::trimAsciiRight($value, true));
+            $this->buffer->writeChar(' ');
+            return;
+        }
+
+        $minimumIndentation = min($minimumIndentation, $node->getName()->getSpan()->getStart()->getColumn());
+        $this->writeWithIndent($value, $minimumIndentation);
+    }
+
+    /**
+     * Returns the indentation level of the least-indented non-empty line in
+     * $text after the first.
+     *
+     * Returns `null` if $text contains no newlines, and -1 if it contains
+     * newlines but no lines are indented.
+     */
+    private function minimumIndentation(string $text): ?int
+    {
+        $scanner = new LineScanner($text);
+        while (!$scanner->isDone() && $scanner->readChar() !== "\n") {
+        }
+
+        if ($scanner->isDone()) {
+            return $scanner->peekChar(-1) === "\n" ? -1 : null;
+        }
+
+        $min = null;
+        while (!$scanner->isDone()) {
+            while (!$scanner->isDone()) {
+                $next = $scanner->peekChar();
+                if ($next !== ' ' && $next !== "\t") {
+                    break;
+                }
+                $scanner->readChar();
+            }
+
+            if ($scanner->isDone() || $scanner->scanChar("\n")) {
+                continue;
+            }
+
+            $min = $min === null ? $scanner->getColumn() : min($min, $scanner->getColumn());
+
+            while (!$scanner->isDone() && $scanner->readChar() !== "\n") {
+            }
+        }
+
+        return $min ?? -1;
+    }
+
+    /**
+     * Writes $text to {@see buffer}, replacing $minimumIndentation with
+     * {@see indentation} for each non-empty line after the first.
+     *
+     * Compresses trailing empty lines of $text into a single trailing space.
+     */
+    private function writeWithIndent(string $text, int $minimumIndentation): void
+    {
+        $scanner = new LineScanner($text);
+
+        while (!$scanner->isDone()) {
+            $next = $scanner->readChar();
+
+            if ($next === "\n") {
+                break;
+            }
+            $this->buffer->writeChar($next);
+        }
+
+        while (true) {
+            assert(Character::isWhitespace($scanner->peekChar(-1)));
+            // Scan forward until we hit non-whitespace or the end of [text].
+            $lineStart = $scanner->getPosition();
+            $newlines = 1;
+
+            while (true) {
+                // If we hit the end of $text, we still need to preserve the fact that
+                // whitespace exists because it could matter for custom properties.
+                if ($scanner->isDone()) {
+                    $this->buffer->writeChar(' ');
+                    return;
+                }
+
+                $next = $scanner->readChar();
+
+                if ($next === ' ' || $next === "\t") {
+                    continue;
+                }
+
+                if ($next !== "\n") {
+                    break;
+                }
+
+                $lineStart = $scanner->getPosition();
+                $newlines++;
+            }
+
+            $this->writeTimes("\n", $newlines);
+            $this->writeIndentation();
+            $this->buffer->write($scanner->substring($lineStart + $minimumIndentation));
+
+            // Scan and write until we hit a newline or the end of $text.
+            while (true) {
+                if ($scanner->isDone()) {
+                    return;
+                }
+                $next = $scanner->readChar();
+                if ($next === "\n") {
+                    break;
+                }
+                $this->buffer->writeChar($next);
+            }
+        }
     }
 
     // ## Values
@@ -891,6 +1289,99 @@ class SerializeVisitor implements ValueVisitor, SelectorVisitor
     // ## Utilities
 
     /**
+     * Runs $callback and associates all text written within it with the span of $node
+     *
+     * @template T
+     *
+     * @param AstNode  $node
+     * @param callable(): T $callback
+     *
+     * @return T
+     */
+    private function for(AstNode $node, callable $callback)
+    {
+        // TODO implement sourcemap tracking
+        return $callback();
+    }
+
+    /**
+     * @param CssValue<string> $value
+     */
+    private function write(CssValue $value): void
+    {
+        $this->for($value, function () use ($value) {
+            $this->buffer->write($value->getValue());
+        });
+    }
+
+    /**
+     * Emits $children in a block
+     *
+     * @param CssNode[] $children
+     */
+    private function visitChildren(array $children): void
+    {
+        $this->buffer->writeChar('{');
+
+        $allInvisible = true;
+        foreach ($children as $child) {
+            if (!$this->isInvisible($child)) {
+                $allInvisible = false;
+                break;
+            }
+        }
+
+        if ($allInvisible) {
+            $this->buffer->writeChar('}');
+            return;
+        }
+
+        $this->writeLineFeed();
+        $previous = null;
+
+        $this->indent(function () use ($children, &$previous) {
+            foreach ($children as $child) {
+                if ($this->isInvisible($child)) {
+                    continue;
+                }
+
+                if ($previous !== null) {
+                    if ($this->requiresSemicolon($previous)) {
+                        $this->buffer->writeChar(';');
+                    }
+                    $this->writeLineFeed();
+
+                    if ($previous->isGroupEnd()) {
+                        $this->writeLineFeed();
+                    }
+                }
+
+                $previous = $child;
+                $child->accept($this);
+            }
+        });
+
+        if ($this->requiresSemicolon($previous) && !$this->compressed) {
+            $this->buffer->writeChar(';');
+        }
+        $this->writeLineFeed();
+        $this->writeIndentation();
+        $this->buffer->writeChar('}');
+    }
+
+    /**
+     * Whether $node requires a semicolon to be written after it.
+     */
+    private function requiresSemicolon(?CssNode $node): bool
+    {
+        if ($node instanceof CssParentNode) {
+            return $node->isChildless();
+        }
+
+        return !$node instanceof CssComment;
+    }
+
+    /**
      * Writes a line feed, unless this emitting compressed CSS.
      */
     private function writeLineFeed(): void
@@ -907,11 +1398,102 @@ class SerializeVisitor implements ValueVisitor, SelectorVisitor
         }
     }
 
+    private function writeIndentation(): void
+    {
+        if (!$this->compressed) {
+            $this->writeTimes(' ', $this->indentation * 2);
+        }
+    }
+
+    /**
+     * Writes $char to {@see buffer} with $times repetitions.
+     */
+    private function writeTimes(string $char, int $times): void
+    {
+        for ($i = 0; $i < $times; $i++) {
+            $this->buffer->writeChar($char);
+        }
+    }
+
+    /**
+     * Calls $callback to write each value in $iterable, and writes $text
+     * between each one.
+     *
+     * @template T
+     *
+     * @param iterable<T>       $iterable
+     * @param string            $text
+     * @param callable(T): void $callback
+     */
+    private function writeBetween(iterable $iterable, string $text, callable $callback): void
+    {
+        $first = true;
+
+        foreach ($iterable as $value) {
+            if ($first) {
+                $first = false;
+            } else {
+                $this->buffer->write($text);
+            }
+
+            $callback($value);
+        }
+    }
+
     /**
      * Returns a comma used to separate values in lists.
      */
     private function getCommaSeparator(): string
     {
         return $this->compressed ? ',': ', ';
+    }
+
+    /**
+     * Runs $callback with indentation increased one level.
+     *
+     * @param callable(): void $callback
+     */
+    private function indent(callable $callback): void
+    {
+        $this->indentation++;
+        $callback();
+        $this->indentation--;
+    }
+
+    /**
+     * Returns whether $node is invisible.
+     */
+    private function isInvisible(CssNode $node): bool
+    {
+        if ($this->inspect) {
+            return false;
+        }
+
+        if ($this->compressed && $node instanceof CssComment && !$node->isPreserved()) {
+            return true;
+        }
+
+        if ($node instanceof CssParentNode) {
+            // An unknown at-rule is never invisible. Because we don't know the
+            // semantics of unknown rules, we can't guarantee that (for example)
+            // `@foo {}` isn't meaningful.
+            if ($node instanceof CssAtRule) {
+                return false;
+            }
+
+            if ($node instanceof CssStyleRule && $node->getSelector()->getValue()->isInvisible()) {
+                return true;
+            }
+
+            foreach ($node->getChildren() as $child) {
+                if (!$this->isInvisible($child)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
