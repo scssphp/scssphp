@@ -1,0 +1,13 @@
+$map: (
+    600px: 20px,
+    red: blue,
+    foo: bar
+);
+@each $key, $value in $map {
+    a {
+        key: $key;
+        key-type: type-of($key);
+        value: $value;
+        value-type: type-of($value);
+    }
+}
