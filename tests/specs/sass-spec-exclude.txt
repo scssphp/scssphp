@@ -726,7 +726,6 @@ libsass-closed-issues/issue_1648
 libsass-closed-issues/issue_1650/negative
 libsass-closed-issues/issue_1650/positive
 libsass-closed-issues/issue_1658
-libsass-closed-issues/issue_1667
 libsass-closed-issues/issue_1669
 libsass-closed-issues/issue_1671
 libsass-closed-issues/issue_1681/calc

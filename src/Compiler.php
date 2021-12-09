@@ -6984,18 +6984,6 @@ EOL;
                 $key = $keys[$i];
                 $value = $values[$i];
 
-                switch ($key[0]) {
-                    case Type::T_LIST:
-                    case Type::T_MAP:
-                    case Type::T_STRING:
-                    case Type::T_NULL:
-                        break;
-
-                    default:
-                        $key = [Type::T_KEYWORD, $this->compileStringContent($this->coerceString($key))];
-                        break;
-                }
-
                 $list[] = [
                     Type::T_LIST,
                     '',
