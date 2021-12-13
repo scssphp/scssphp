@@ -137,6 +137,7 @@ class Compiler
     public static $emptyString  = [Type::T_STRING, '"', []];
     public static $with         = [Type::T_KEYWORD, 'with'];
     public static $without      = [Type::T_KEYWORD, 'without'];
+    private static $emptyArgumentList = [Type::T_LIST, '', [], []];
 
     /**
      * @var array<int, string|callable>
@@ -1587,6 +1588,8 @@ class Compiler
      * @param array $withCondition
      *
      * @return array
+     *
+     * @phpstan-return array{array<string, bool>, array<string, bool>}
      */
     protected function compileWith($withCondition)
     {
@@ -1606,9 +1609,10 @@ class Compiler
                 }
             }
 
-            if ($this->mapHasKey($withCondition, static::$with)) {
+            $withConfig = $this->mapGet($withCondition, static::$with);
+            if ($withConfig !== null) {
                 $without = []; // cancel the default
-                $list = $this->coerceList($this->libMapGet([$withCondition, static::$with]));
+                $list = $this->coerceList($withConfig);
 
                 foreach ($list[2] as $item) {
                     $keyword = $this->compileStringContent($this->coerceString($item));
@@ -1617,9 +1621,10 @@ class Compiler
                 }
             }
 
-            if ($this->mapHasKey($withCondition, static::$without)) {
+            $withoutConfig = $this->mapGet($withCondition, static::$without);
+            if ($withoutConfig !== null) {
                 $without = []; // cancel the default
-                $list = $this->coerceList($this->libMapGet([$withCondition, static::$without]));
+                $list = $this->coerceList($withoutConfig);
 
                 foreach ($list[2] as $item) {
                     $keyword = $this->compileStringContent($this->coerceString($item));
@@ -6929,14 +6934,18 @@ EOL;
     }
 
     /**
-     * Coerce something to map
+     * Tries to convert an item to a Sass map
      *
-     * @param array|Number $item
+     * @param Number|array $item
      *
-     * @return array|Number
+     * @return array|null
      */
-    protected function coerceMap($item)
+    private function tryMap($item)
     {
+        if ($item instanceof Number) {
+            return null;
+        }
+
         if ($item[0] === Type::T_MAP) {
             return $item;
         }
@@ -6946,6 +6955,24 @@ EOL;
             $item[2] === []
         ) {
             return static::$emptyMap;
+        }
+
+        return null;
+    }
+
+    /**
+     * Coerce something to map
+     *
+     * @param array|Number $item
+     *
+     * @return array|Number
+     */
+    protected function coerceMap($item)
+    {
+        $map = $this->tryMap($item);
+
+        if ($map !== null) {
+            return $map;
         }
 
         return $item;
@@ -7282,15 +7309,15 @@ EOL;
      */
     public function assertMap($value, $varName = null)
     {
-        $value = $this->coerceMap($value);
+        $map = $this->tryMap($value);
 
-        if ($value[0] !== Type::T_MAP) {
+        if ($map === null) {
             $value = $this->compileValue($value);
 
             throw SassScriptException::forArgument("$value is not a map.", $varName);
         }
 
-        return $value;
+        return $map;
     }
 
     /**
@@ -8684,23 +8711,72 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         return $list;
     }
 
-    protected static $libMapGet = ['map', 'key'];
+    protected static $libMapGet = ['map', 'key', 'keys...'];
     protected function libMapGet($args)
     {
         $map = $this->assertMap($args[0], 'map');
-        $key = $args[1];
+        if (!isset($args[2])) {
+            // BC layer for usages of the function from PHP code rather than from the Sass function
+            $args[2] = self::$emptyArgumentList;
+        }
+        $keys = array_merge([$args[1]], $args[2][2]);
+        $value = static::$null;
 
-        if (! \is_null($key)) {
-            $key = $this->compileStringContent($this->coerceString($key));
+        foreach ($keys as $key) {
+            if (!\is_array($map) || $map[0] !== Type::T_MAP) {
+                return static::$null;
+            }
 
-            for ($i = \count($map[1]) - 1; $i >= 0; $i--) {
-                if ($key === $this->compileStringContent($this->coerceString($map[1][$i]))) {
-                    return $map[2][$i];
-                }
+            $map = $this->mapGet($map, $key);
+
+            if ($map === null) {
+                return static::$null;
+            }
+
+            $value = $map;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Gets the value corresponding to that key in the map
+     *
+     * @param array        $map
+     * @param Number|array $key
+     *
+     * @return Number|array|null
+     */
+    private function mapGet(array $map, $key)
+    {
+        $index = $this->mapGetEntryIndex($map, $key);
+
+        if ($index !== null) {
+            return $map[2][$index];
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the index corresponding to that key in the map entries
+     *
+     * @param array        $map
+     * @param Number|array $key
+     *
+     * @return int|null
+     */
+    private function mapGetEntryIndex(array $map, $key)
+    {
+        $key = $this->compileStringContent($this->coerceString($key));
+
+        for ($i = \count($map[1]) - 1; $i >= 0; $i--) {
+            if ($key === $this->compileStringContent($this->coerceString($map[1][$i]))) {
+                return $i;
             }
         }
 
-        return static::$null;
+        return null;
     }
 
     protected static $libMapKeys = ['map'];
@@ -8750,12 +8826,28 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         return $map;
     }
 
-    protected static $libMapHasKey = ['map', 'key'];
+    protected static $libMapHasKey = ['map', 'key', 'keys...'];
     protected function libMapHasKey($args)
     {
         $map = $this->assertMap($args[0], 'map');
+        if (!isset($args[2])) {
+            // BC layer for usages of the function from PHP code rather than from the Sass function
+            $args[2] = self::$emptyArgumentList;
+        }
+        $keys = array_merge([$args[1]], $args[2][2]);
+        $lastKey = array_pop($keys);
 
-        return $this->toBool($this->mapHasKey($map, $args[1]));
+        foreach ($keys as $key) {
+            $value = $this->mapGet($map, $key);
+
+            if ($value === null || $value instanceof Number || $value[0] !== Type::T_MAP) {
+                return self::$false;
+            }
+
+            $map = $value;
+        }
+
+        return $this->toBool($this->mapHasKey($map, $lastKey));
     }
 
     /**
@@ -8778,24 +8870,127 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
 
     protected static $libMapMerge = [
         ['map1', 'map2'],
-        ['map-1', 'map-2']
+        ['map-1', 'map-2'],
+        ['map1', 'args...']
     ];
     protected function libMapMerge($args)
     {
         $map1 = $this->assertMap($args[0], 'map1');
-        $map2 = $this->assertMap($args[1], 'map2');
+        $map2 = $args[1];
+        $keys = [];
+        if ($map2[0] === Type::T_LIST && isset($map2[3]) && \is_array($map2[3])) {
+            // This is an argument list for the variadic signature
+            if (\count($map2[2]) === 0) {
+                throw new SassScriptException('Expected $args to contain a key.');
+            }
+            if (\count($map2[2]) === 1) {
+                throw new SassScriptException('Expected $args to contain a value.');
+            }
+            $keys = $map2[2];
+            $map2 = array_pop($keys);
+        }
+        $map2 = $this->assertMap($map2, 'map2');
 
-        foreach ($map2[1] as $i2 => $key2) {
-            $key = $this->compileStringContent($this->coerceString($key2));
+        return $this->modifyMap($map1, $keys, function ($oldValue) use ($map2) {
+            $nestedMap = $this->tryMap($oldValue);
 
-            foreach ($map1[1] as $i1 => $key1) {
-                if ($key === $this->compileStringContent($this->coerceString($key1))) {
-                    $map1[2][$i1] = $map2[2][$i2];
-                    continue 2;
-                }
+            if ($nestedMap === null) {
+                return $map2;
             }
 
-            $map1[1][] = $map2[1][$i2];
+            return $this->mergeMaps($nestedMap, $map2);
+        });
+    }
+
+    /**
+     * @param array    $map
+     * @param array    $keys
+     * @param callable $modify
+     * @param bool     $addNesting
+     *
+     * @return Number|array
+     *
+     * @phpstan-param array<Number|array> $keys
+     * @phpstan-param callable(Number|array): (Number|array) $modify
+     */
+    private function modifyMap(array $map, array $keys, callable $modify, $addNesting = true)
+    {
+        if ($keys === []) {
+            return $modify($map);
+        }
+
+        return $this->modifyNestedMap($map, $keys, $modify, $addNesting);
+    }
+
+    /**
+     * @param array    $map
+     * @param array    $keys
+     * @param callable $modify
+     * @param bool     $addNesting
+     *
+     * @return array
+     *
+     * @phpstan-param non-empty-array<Number|array> $keys
+     * @phpstan-param callable(Number|array): (Number|array) $modify
+     */
+    private function modifyNestedMap(array $map, array $keys, callable $modify, $addNesting)
+    {
+        $key = array_shift($keys);
+
+        $nestedValueIndex = $this->mapGetEntryIndex($map, $key);
+
+        if ($keys === []) {
+            if ($nestedValueIndex !== null) {
+                $map[2][$nestedValueIndex] = $modify($map[2][$nestedValueIndex]);
+            } else {
+                $map[1][] = $key;
+                $map[2][] = $modify(self::$null);
+            }
+
+            return $map;
+        }
+
+        $nestedMap = $nestedValueIndex !== null ? $this->tryMap($map[2][$nestedValueIndex]) : null;
+
+        if ($nestedMap === null && !$addNesting) {
+            return $map;
+        }
+
+        if ($nestedMap === null) {
+            $nestedMap = self::$emptyMap;
+        }
+
+        $newNestedMap = $this->modifyNestedMap($nestedMap, $keys, $modify, $addNesting);
+
+        if ($nestedValueIndex !== null) {
+            $map[2][$nestedValueIndex] = $newNestedMap;
+        } else {
+            $map[1][] = $key;
+            $map[2][] = $newNestedMap;
+        }
+
+        return $map;
+    }
+
+    /**
+     * Merges 2 Sass maps together
+     *
+     * @param array $map1
+     * @param array $map2
+     *
+     * @return array
+     */
+    private function mergeMaps(array $map1, array $map2)
+    {
+        foreach ($map2[1] as $i2 => $key2) {
+            $map1EntryIndex = $this->mapGetEntryIndex($map1, $key2);
+
+            if ($map1EntryIndex !== null) {
+                $map1[2][$map1EntryIndex] = $map2[2][$i2];
+                continue;
+            }
+
+            $map1[1][] = $key2;
             $map1[2][] = $map2[2][$i2];
         }
 
