@@ -1,5 +1,15 @@
 # Changelog
 
+## **1.9.0** -- December 13, 2021
+
+**Added**
+
+* Add support for deep map manipulation in `map-get`, `map-has-key` and `map-merge` (@stof)
+
+**Fixed**
+
+* Preserve the type of keys when iterating over maps (@stof)
+
 ## **1.8.1** -- September 18, 2021
 
 **Added**
