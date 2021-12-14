@@ -312,7 +312,7 @@ final class SourceMapGenerator
         }
 
         // Remove extra leading path separators.
-        if (strpos($filename, '\\') === 0 || strpos($filename, '/') === 0) {
+        if ($filename && (strpos($filename, '\\') === 0 || strpos($filename, '/') === 0)) {
             $filename = substr($filename, 1);
         }
 
