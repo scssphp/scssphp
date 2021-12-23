@@ -2778,7 +2778,7 @@ class Compiler
         // insert the directive as a comment
         $child = $this->makeOutputBlock(Type::T_COMMENT);
         $child->lines[]      = $line;
-        $child->sourceName   = $this->sourceNames[$this->sourceIndex];
+        $child->sourceName   = $this->sourceNames[$this->sourceIndex] ?: '(stdin)';
         $child->sourceLine   = $this->sourceLine;
         $child->sourceColumn = $this->sourceColumn;
 
