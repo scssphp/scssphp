@@ -358,6 +358,31 @@ class ApiTest extends TestCase
         );
     }
 
+    public function testSourceMapWithoutSourcePath()
+    {
+        $source = <<<'SCSS'
+@import "test.css";
+
+body {
+  background-color: orange;
+
+  h1 {
+    border: 2rem dashed black;
+  }
+}
+
+SCSS;
+
+        $compiler = new Compiler();
+        $compiler->setSourceMap(Compiler::SOURCE_MAP_FILE);
+        $compiler->setSourceMapOptions(['sourceMapURL' => 'test.css.map']);
+
+        $result = $compiler->compileString($source);
+
+        $this->assertStringEndsWith('/*# sourceMappingURL=test.css.map */', $result->getCss());
+        $this->assertNotEmpty($result->getSourceMap());
+    }
+
     public function testGetStringText()
     {
         $compiler = new Compiler();
