@@ -3946,6 +3946,10 @@ EOL;
                     unset($value['enclosing']);
                 }
 
+                if ($value[1] === '' && count($value[2]) > 1) {
+                    $value[1] = ' ';
+                }
+
                 return $value;
 
             case Type::T_STRING:
@@ -4570,6 +4574,8 @@ EOL;
                     }
                 }
 
+                $separator = $delim === '/' ? ' /' : $delim;
+
                 $prefix_value = '';
 
                 if ($delim !== ' ') {
@@ -4608,7 +4614,7 @@ EOL;
                     $filtered[] = $compiled;
                 }
 
-                return $pre . substr(implode("$delim", $filtered), \strlen($prefix_value)) . $post;
+                return $pre . substr(implode($separator, $filtered), \strlen($prefix_value)) . $post;
 
             case Type::T_MAP:
                 $keys     = $value[1];
@@ -6990,7 +6996,7 @@ EOL;
     protected function coerceList($item, $delim = ',', $removeTrailingNull = false)
     {
         if ($item instanceof Number) {
-            return [Type::T_LIST, $delim, [$item]];
+            return [Type::T_LIST, '', [$item]];
         }
 
         if ($item[0] === Type::T_LIST) {
@@ -7013,15 +7019,15 @@ EOL;
 
                 $list[] = [
                     Type::T_LIST,
-                    '',
+                    ' ',
                     [$key, $value]
                 ];
             }
 
-            return [Type::T_LIST, ',', $list];
+            return [Type::T_LIST, $list ? ',' : '', $list];
         }
 
-        return [Type::T_LIST, $delim, [$item]];
+        return [Type::T_LIST, '', [$item]];
     }
 
     /**
@@ -7745,7 +7751,6 @@ EOL;
         }
 
         $values = [];
-
 
         foreach ($list[2] as $item) {
             $values[] = $this->normalizeValue($item);
@@ -8664,12 +8669,16 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
 
         $list = $this->coerceList($args[0]);
 
-        if (\count($list[2]) <= 1 && empty($list['enclosing'])) {
+        if ($list[1] === '' && \count($list[2]) <= 1 && empty($list['enclosing'])) {
             return [Type::T_KEYWORD, 'space'];
         }
 
         if ($list[1] === ',') {
             return [Type::T_KEYWORD, 'comma'];
+        }
+
+        if ($list[1] === '/') {
+            return [Type::T_KEYWORD, 'slash'];
         }
 
         return [Type::T_KEYWORD, 'space'];
@@ -9038,9 +9047,13 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      *
      * @return string
      * @throws CompilerException
+     *
+     * @deprecated
      */
     protected function listSeparatorForJoin($list1, $sep)
     {
+        @trigger_error(sprintf('The "%s" method is deprecated.', __METHOD__), E_USER_DEPRECATED);
+
         if (! isset($sep)) {
             return $list1[1];
         }
@@ -9057,14 +9070,40 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         }
     }
 
-    protected static $libJoin = ['list1', 'list2', 'separator:null', 'bracketed:auto'];
+    protected static $libJoin = ['list1', 'list2', 'separator:auto', 'bracketed:auto'];
     protected function libJoin($args)
     {
         list($list1, $list2, $sep, $bracketed) = $args;
 
         $list1 = $this->coerceList($list1, ' ', true);
         $list2 = $this->coerceList($list2, ' ', true);
-        $sep   = $this->listSeparatorForJoin($list1, $sep);
+
+        switch ($this->compileStringContent($this->assertString($sep, 'separator'))) {
+            case 'comma':
+                $separator = ',';
+                break;
+
+            case 'space':
+                $separator = ' ';
+                break;
+
+            case 'slash':
+                $separator = '/';
+                break;
+
+            case 'auto':
+                if ($list1[1] !== '' || count($list1[2]) > 1 || !empty($list1['enclosing']) && $list1['enclosing'] !== 'parent') {
+                    $separator = $list1[1] ?: ' ';
+                } elseif ($list2[1] !== '' || count($list2[2]) > 1 || !empty($list2['enclosing']) && $list2['enclosing'] !== 'parent') {
+                    $separator = $list2[1] ?: ' ';
+                } else {
+                    $separator = ' ';
+                }
+                break;
+
+            default:
+                throw SassScriptException::forArgument('Must be "space", "comma", "slash", or "auto".', 'separator');
+        }
 
         if ($bracketed === static::$true) {
             $bracketed = true;
@@ -9091,11 +9130,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
             }
         }
 
-        $res = [Type::T_LIST, $sep, array_merge($list1[2], $list2[2])];
-
-        if (isset($list1['enclosing'])) {
-            $res['enlcosing'] = $list1['enclosing'];
-        }
+        $res = [Type::T_LIST, $separator, array_merge($list1[2], $list2[2])];
 
         if ($bracketed) {
             $res['enclosing'] = 'bracket';
@@ -9104,14 +9139,35 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         return $res;
     }
 
-    protected static $libAppend = ['list', 'val', 'separator:null'];
+    protected static $libAppend = ['list', 'val', 'separator:auto'];
     protected function libAppend($args)
     {
         list($list1, $value, $sep) = $args;
 
         $list1 = $this->coerceList($list1, ' ', true);
-        $sep   = $this->listSeparatorForJoin($list1, $sep);
-        $res   = [Type::T_LIST, $sep, array_merge($list1[2], [$value])];
+
+        switch ($this->compileStringContent($this->assertString($sep, 'separator'))) {
+            case 'comma':
+                $separator = ',';
+                break;
+
+            case 'space':
+                $separator = ' ';
+                break;
+
+            case 'slash':
+                $separator = '/';
+                break;
+
+            case 'auto':
+                $separator = $list1[1] === '' && \count($list1[2]) <= 1 && (empty($list1['enclosing']) || $list1['enclosing'] === 'parent') ? ' ' : $list1[1];
+                break;
+
+            default:
+                throw SassScriptException::forArgument('Must be "space", "comma", "slash", or "auto".', 'separator');
+        }
+
+        $res = [Type::T_LIST, $separator, array_merge($list1[2], [$value])];
 
         if (isset($list1['enclosing'])) {
             $res['enclosing'] = $list1['enclosing'];
@@ -9134,7 +9190,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
         $result = [Type::T_LIST, ',', $lists];
         if (! \is_null($firstList)) {
             foreach ($firstList[2] as $key => $item) {
-                $list = [Type::T_LIST, '', [$item]];
+                $list = [Type::T_LIST, ' ', [$item]];
 
                 foreach ($argLists as $arg) {
                     if (isset($arg[2][$key])) {
@@ -9514,6 +9570,8 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
             ) {
                 $value['enclosing'] = 'forced_' . $value['enclosing'];
                 $force_enclosing_display = true;
+            } elseif (! \count($value[2])) {
+                $value['enclosing'] = 'forced_parent';
             }
 
             foreach ($value[2] as $k => $listelement) {
