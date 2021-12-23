@@ -312,6 +312,11 @@ class SassSpecTest extends TestCase
                     fclose($fp_err_stream);
                     $this->assertNull(null);
                     return;
+                } catch (\Throwable $e) {
+                    $this->appendToExclusionList($name);
+                    fclose($fp_err_stream);
+                    $this->assertNull(null);
+                    return;
                     //throwException($e);
                 }
             } else {
@@ -377,6 +382,8 @@ class SassSpecTest extends TestCase
                     // TODO assert the error message ?
                     // Keep the test
                 } catch (\Exception $e) {
+                    $this->appendToExclusionList($name);
+                } catch (\Throwable $e) {
                     $this->appendToExclusionList($name);
                 }
                 $this->assertNull(null);
