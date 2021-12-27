@@ -147,7 +147,7 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     #[\ReturnTypeWillChange]
     public function offsetExists($offset)
@@ -173,7 +173,7 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * {@inheritdoc}
+     * @return mixed
      */
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
@@ -209,7 +209,7 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
