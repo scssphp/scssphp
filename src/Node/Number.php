@@ -200,7 +200,7 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
