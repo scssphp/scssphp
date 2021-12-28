@@ -28,18 +28,18 @@ p {
   color: arglist;
 }
 .test {
-  display: 'global';
-  display: 'test-mixin';
-  display: 'test-mixin';
-  display: 'global';
+  display: "global";
+  display: "test-mixin";
+  display: "test-mixin";
+  display: "global";
 }
 .test-inspect {
   n: null;
   b1: true;
   b2: false;
   n1: 0;
-  s1: '';
-  s2: 'hello';
+  s1: "";
+  s2: "hello";
   l1: 1 2;
   l2: 3 4;
   l3: 5, 6;

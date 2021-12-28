@@ -4,9 +4,9 @@
 @foo;
 
 @import "foo.css";
-@import 'foo.css';
+@import "foo.css";
 @import url("foo.css");
-@import url('foo.css');
+@import url("foo.css");
 @import url(foo.css);
 @import "foo.css" screen;
 @import "foo.css" screen, print;

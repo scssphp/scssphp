@@ -9,11 +9,11 @@ Here is a block comment
 div {
   border: 1px solid red;
   /* another property */
-  color: url('http://mage-page.com');
+  color: url("http://mage-page.com");
   string: "hello /* this is not a comment */";
   world: "// neither is this";
-  string: 'hello /* this is not a comment */';
-  world: '// neither is this';
+  string: "hello /* this is not a comment */";
+  world: "// neither is this";
   what-ever: 100px;
   background: url();
 }

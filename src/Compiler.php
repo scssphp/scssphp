@@ -4520,8 +4520,7 @@ EOL;
                     // force double quote as string quote for the output in certain cases
                     if (
                         $value[1] === "'" &&
-                        (strpos($content, '"') === false or strpos($content, "'") !== false) &&
-                        strpbrk($content, '{}\\\'') !== false
+                        (strpos($content, '"') === false or strpos($content, "'") !== false)
                     ) {
                         $value[1] = '"';
                     } elseif (
