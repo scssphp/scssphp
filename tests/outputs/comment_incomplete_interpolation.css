@@ -1,0 +1,14 @@
+/* This is a comment with vars references:
+color:red
+and a fake #{ doing nothing
+radius:2px
+   and also a #{$fake} interpolation that should not throw an error
+ */
+.class {
+  /* This is a comment with vars references not on root level
+  color:red
+  and a fake #{ doing nothing
+  radius:2px
+     and also a #{$fake} interpolation that should not throw an error
+  */
+}

@@ -1,0 +1,18 @@
+$color:red;
+$radius:2px;
+
+/* This is a comment with vars references:
+color:#{$color}
+and a fake #{ doing nothing
+radius:#{$radius}
+   and also a #{$fake} interpolation that should not throw an error
+ */
+
+.class {
+  /* This is a comment with vars references not on root level
+  color:#{$color}
+  and a fake #{ doing nothing
+  radius:#{$radius}
+     and also a #{$fake} interpolation that should not throw an error
+  */
+}
