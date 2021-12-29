@@ -644,7 +644,7 @@ class Compiler
      * @param array $target
      * @param array $origin
      *
-     * @return boolean
+     * @return bool
      */
     protected function isSelfExtend($target, $origin)
     {
@@ -853,10 +853,10 @@ class Compiler
     /**
      * Match extends
      *
-     * @param array   $selector
-     * @param array   $out
-     * @param integer $from
-     * @param boolean $initial
+     * @param array $selector
+     * @param array $out
+     * @param int   $from
+     * @param bool  $initial
      *
      * @return void
      */
@@ -989,7 +989,7 @@ class Compiler
      * @param string $part
      * @param array  $matches
      *
-     * @return boolean
+     * @return bool
      */
     protected function isPseudoSelector($part, &$matches)
     {
@@ -1051,11 +1051,11 @@ class Compiler
     /**
      * Match extends single
      *
-     * @param array   $rawSingle
-     * @param array   $outOrigin
-     * @param boolean $initial
+     * @param array $rawSingle
+     * @param array $outOrigin
+     * @param bool  $initial
      *
-     * @return boolean
+     * @return bool
      */
     protected function matchExtendsSingle($rawSingle, &$outOrigin, $initial = true)
     {
@@ -1461,7 +1461,7 @@ class Compiler
     }
 
     /**
-     * Filter at-root scope depending of with/without option
+     * Filter at-root scope depending on with/without option
      *
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $scope
      * @param array                                  $with
@@ -1561,7 +1561,7 @@ class Compiler
      * Find a selector by the depth node in the scope
      *
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $scope
-     * @param integer                                $depth
+     * @param int                                    $depth
      *
      * @return array
      */
@@ -1585,7 +1585,7 @@ class Compiler
     /**
      * Compile @at-root's with: inclusion / without: exclusion into 2 lists uses to filter scope/env later
      *
-     * @param array $withCondition
+     * @param array|null $withCondition
      *
      * @return array
      *
@@ -1674,7 +1674,7 @@ class Compiler
      * @param array                                                         $with
      * @param array                                                         $without
      *
-     * @return boolean
+     * @return bool
      */
     protected function isWith($block, $with, $without)
     {
@@ -1719,7 +1719,7 @@ class Compiler
      * @param array  $with
      * @param array  $without
      *
-     * @return boolean
+     * @return bool
      *   true if the block should be kept, false to reject
      */
     protected function testWithWithout($what, $with, $without)
@@ -1906,8 +1906,8 @@ class Compiler
     /**
      * Compile the value of a comment that can have interpolation
      *
-     * @param array   $value
-     * @param boolean $pushEnv
+     * @param array $value
+     * @param bool  $pushEnv
      *
      * @return string
      */
@@ -2224,7 +2224,7 @@ class Compiler
      *
      * @param array $selector
      *
-     * @return boolean
+     * @return bool
      */
     protected function hasSelectorPlaceholder($selector)
     {
@@ -2641,9 +2641,9 @@ class Compiler
      *
      * @param array                                  $rawPath
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
-     * @param boolean                                $once
+     * @param bool                                   $once
      *
-     * @return boolean
+     * @return bool
      */
     protected function compileImport($rawPath, OutputBlock $out, $once = false)
     {
@@ -3394,7 +3394,7 @@ EOL;
      *
      * @param array|Number $value
      *
-     * @return boolean
+     * @return bool
      */
     public function isTruthy($value)
     {
@@ -3406,7 +3406,7 @@ EOL;
      *
      * @param string $value
      *
-     * @return boolean
+     * @return bool
      */
     protected function isImmediateRelationshipCombinator($value)
     {
@@ -3418,7 +3418,7 @@ EOL;
      *
      * @param array $value
      *
-     * @return boolean
+     * @return bool
      */
     protected function shouldEval($value)
     {
@@ -3441,7 +3441,7 @@ EOL;
      * Reduce value
      *
      * @param array|Number $value
-     * @param boolean $inExp
+     * @param bool         $inExp
      *
      * @return array|Number
      */
@@ -4065,8 +4065,8 @@ EOL;
      * Boolean and
      *
      * @param array|Number $left
-     * @param array|Number  $right
-     * @param boolean $shouldEval
+     * @param array|Number $right
+     * @param bool         $shouldEval
      *
      * @return array|Number|null
      */
@@ -4094,7 +4094,7 @@ EOL;
      *
      * @param array|Number $left
      * @param array|Number $right
-     * @param boolean $shouldEval
+     * @param bool         $shouldEval
      *
      * @return array|Number|null
      */
@@ -4885,10 +4885,10 @@ EOL;
     /**
      * Join selectors; looks for & to replace, or append parent before child
      *
-     * @param array   $parent
-     * @param array   $child
-     * @param boolean $stillHasSelf
-     * @param array   $selfParentSelectors
+     * @param array $parent
+     * @param array $child
+     * @param bool  $stillHasSelf
+     * @param array $selfParentSelectors
 
      * @return array
      */
@@ -5100,7 +5100,7 @@ EOL;
      *
      * @param string                                $name
      * @param mixed                                 $value
-     * @param boolean                               $shadow
+     * @param bool                                  $shadow
      * @param \ScssPhp\ScssPhp\Compiler\Environment $env
      * @param mixed                                 $valueUnreduced
      *
@@ -5206,9 +5206,9 @@ EOL;
      * @internal
      *
      * @param string                                $name
-     * @param boolean                               $shouldThrow
+     * @param bool                                  $shouldThrow
      * @param \ScssPhp\ScssPhp\Compiler\Environment $env
-     * @param boolean                               $unreduced
+     * @param bool                                  $unreduced
      *
      * @return mixed|null
      */
@@ -5275,7 +5275,7 @@ EOL;
      * @param string                                $name
      * @param \ScssPhp\ScssPhp\Compiler\Environment $env
      *
-     * @return boolean
+     * @return bool
      */
     protected function has($name, Environment $env = null)
     {
@@ -5465,7 +5465,7 @@ EOL;
      *
      * @api
      *
-     * @param integer $numberPrecision
+     * @param int $numberPrecision
      *
      * @return void
      *
@@ -5566,7 +5566,7 @@ EOL;
      *
      * @api
      *
-     * @param integer $sourceMap
+     * @param int $sourceMap
      *
      * @return void
      *
@@ -5968,7 +5968,7 @@ EOL;
      *
      * @api
      *
-     * @param boolean $ignoreErrors
+     * @param bool $ignoreErrors
      *
      * @return \ScssPhp\ScssPhp\Compiler
      *
@@ -6107,7 +6107,7 @@ EOL;
     /**
      * Beautify call stack for output
      *
-     * @param boolean  $all
+     * @param bool     $all
      * @param int|null $limit
      *
      * @return string
@@ -6742,9 +6742,8 @@ EOL;
      *
      * @param array[]    $argDef
      * @param array|null $argValues
-     * @param boolean $storeInEnv
-     * @param boolean $reduce
-     *   only used if $storeInEnv = false
+     * @param bool       $storeInEnv
+     * @param bool       $reduce     only used if $storeInEnv = false
      *
      * @return array<string, array|Number>
      *
@@ -6988,7 +6987,7 @@ EOL;
      *
      * @param array|Number $item
      * @param string       $delim
-     * @param boolean      $removeTrailingNull
+     * @param bool         $removeTrailingNull
      *
      * @return array
      */
@@ -7167,10 +7166,10 @@ EOL;
     }
 
     /**
-     * @param integer|Number $value
-     * @param boolean        $isAlpha
+     * @param int|Number $value
+     * @param bool       $isAlpha
      *
-     * @return integer|mixed
+     * @return int|mixed
      */
     protected function compileRGBAValue($value, $isAlpha = false)
     {
@@ -7182,12 +7181,12 @@ EOL;
     }
 
     /**
-     * @param mixed         $value
-     * @param integer|float $min
-     * @param integer|float $max
-     * @param boolean       $isInt
+     * @param mixed     $value
+     * @param int|float $min
+     * @param int|float $max
+     * @param bool      $isInt
      *
-     * @return integer|mixed
+     * @return int|mixed
      */
     protected function compileColorPartValue($value, $min, $max, $isInt = true)
     {
@@ -7281,7 +7280,7 @@ EOL;
      *
      * @param array|Number $value
      *
-     * @return integer|float
+     * @return int|float
      *
      * @deprecated
      */
@@ -7419,7 +7418,7 @@ EOL;
      * @param array|Number $value
      * @param string|null  $varName
      *
-     * @return integer
+     * @return int
      *
      * @throws SassScriptException
      */
@@ -7483,9 +7482,9 @@ EOL;
      *
      * @internal
      *
-     * @param integer $red
-     * @param integer $green
-     * @param integer $blue
+     * @param int $red
+     * @param int $green
+     * @param int $blue
      *
      * @return array
      */
@@ -7589,9 +7588,9 @@ EOL;
      *
      * @api
      *
-     * @param integer $hue        H from 0 to 360
-     * @param integer $whiteness  W from 0 to 100
-     * @param integer $blackness  B from 0 to 100
+     * @param int $hue        H from 0 to 360
+     * @param int $whiteness  W from 0 to 100
+     * @param int $blackness  B from 0 to 100
      *
      * @return array
      */
@@ -7621,9 +7620,9 @@ EOL;
      *
      * @api
      *
-     * @param integer $red
-     * @param integer $green
-     * @param integer $blue
+     * @param int $red
+     * @param int $green
+     * @param int $blue
      *
      * @return array
      */
@@ -8379,6 +8378,13 @@ EOL;
     }
     */
 
+    /**
+     * @param array     $color
+     * @param int       $idx
+     * @param int|float $amount
+     *
+     * @return array
+     */
     protected function adjustHsl($color, $idx, $amount)
     {
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
@@ -9694,7 +9700,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      * @param array $super
      * @param array $sub
      *
-     * @return boolean
+     * @return bool
      */
     protected function isSuperSelector($super, $sub)
     {
@@ -9775,7 +9781,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      * @param array $superParts
      * @param array $subParts
      *
-     * @return boolean
+     * @return bool
      */
     protected function isSuperPart($superParts, $subParts)
     {
@@ -9912,10 +9918,10 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
      * Extend/replace in selectors
      * used by selector-extend and selector-replace that use the same logic
      *
-     * @param array   $selectors
-     * @param array   $extendee
-     * @param array   $extender
-     * @param boolean $replace
+     * @param array $selectors
+     * @param array $extendee
+     * @param array $extender
+     * @param bool  $replace
      *
      * @return array
      */

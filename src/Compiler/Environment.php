@@ -42,7 +42,7 @@ class Environment
     public $storeUnreduced;
 
     /**
-     * @var integer
+     * @var int
      */
     public $depth;
 }
