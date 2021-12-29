@@ -13,6 +13,17 @@
 namespace ScssPhp\ScssPhp;
 
 use ScssPhp\ScssPhp\Base\Range;
+use ScssPhp\ScssPhp\Block\AtRootBlock;
+use ScssPhp\ScssPhp\Block\CallableBlock;
+use ScssPhp\ScssPhp\Block\DirectiveBlock;
+use ScssPhp\ScssPhp\Block\EachBlock;
+use ScssPhp\ScssPhp\Block\ElseBlock;
+use ScssPhp\ScssPhp\Block\ElseifBlock;
+use ScssPhp\ScssPhp\Block\ForBlock;
+use ScssPhp\ScssPhp\Block\IfBlock;
+use ScssPhp\ScssPhp\Block\MediaBlock;
+use ScssPhp\ScssPhp\Block\NestedPropertyBlock;
+use ScssPhp\ScssPhp\Block\WhileBlock;
 use ScssPhp\ScssPhp\Compiler\CachedResult;
 use ScssPhp\ScssPhp\Compiler\Environment;
 use ScssPhp\ScssPhp\Exception\CompilerException;
@@ -1270,6 +1281,7 @@ class Compiler
      */
     protected function compileMedia(Block $media)
     {
+        assert($media instanceof MediaBlock);
         $this->pushEnv($media);
 
         $mediaQueries = $this->compileMediaQuery($this->multiplyMedia($this->env));
@@ -1347,7 +1359,7 @@ class Compiler
     /**
      * Compile directive
      *
-     * @param \ScssPhp\ScssPhp\Block|array $directive
+     * @param DirectiveBlock|array                   $directive
      * @param \ScssPhp\ScssPhp\Formatter\OutputBlock $out
      *
      * @return void
@@ -1413,6 +1425,7 @@ class Compiler
      */
     protected function compileAtRoot(Block $block)
     {
+        assert($block instanceof AtRootBlock);
         $env     = $this->pushEnv($block);
         $envs    = $this->compactEnv($env);
         list($with, $without) = $this->compileWith(isset($block->with) ? $block->with : null);
@@ -1684,6 +1697,7 @@ class Compiler
             }
 
             if ($block->type === Type::T_DIRECTIVE) {
+                assert($block instanceof DirectiveBlock || $block instanceof OutputBlock);
                 if (isset($block->name)) {
                     return $this->testWithWithout($this->compileDirectiveName($block->name), $with, $without);
                 } elseif (isset($block->selectors) && preg_match(',@(\w+),ims', json_encode($block->selectors), $m)) {
@@ -1774,6 +1788,7 @@ class Compiler
      */
     protected function compileNestedPropertiesBlock(Block $block, OutputBlock $out)
     {
+        assert($block instanceof NestedPropertyBlock);
         $prefix = $this->compileValue($block->prefix) . '-';
 
         $nested = $this->makeOutputBlock($block->type);
@@ -1792,6 +1807,7 @@ class Compiler
                     break;
 
                 case Type::T_NESTED_PROPERTY:
+                    assert($child[1] instanceof NestedPropertyBlock);
                     array_unshift($child[1]->prefix[2], $prefix);
                     break;
             }
@@ -1817,7 +1833,7 @@ class Compiler
 
         // wrap assign children in a block
         // except for @font-face
-        if ($block->type !== Type::T_DIRECTIVE || $this->compileDirectiveName($block->name) !== 'font-face') {
+        if (!$block instanceof DirectiveBlock || $this->compileDirectiveName($block->name) !== 'font-face') {
             // need wrapping?
             $needWrapping = false;
 
@@ -3049,6 +3065,7 @@ class Compiler
             case Type::T_MIXIN:
             case Type::T_FUNCTION:
                 list(, $block) = $child;
+                assert($block instanceof CallableBlock);
                 // the block need to be able to go up to it's parent env to resolve vars
                 $block->parentEnv = $this->getStoreEnv();
                 $this->set(static::$namespaces[$block->type] . $block->name, $block, true);
@@ -3099,6 +3116,7 @@ EOL;
 
             case Type::T_IF:
                 list(, $if) = $child;
+                assert($if instanceof IfBlock);
 
                 if ($this->isTruthy($this->reduce($if->cond, true))) {
                     return $this->compileChildren($if->children, $out);
@@ -3106,8 +3124,8 @@ EOL;
 
                 foreach ($if->cases as $case) {
                     if (
-                        $case->type === Type::T_ELSE ||
-                        $case->type === Type::T_ELSEIF && $this->isTruthy($this->reduce($case->cond))
+                        $case instanceof ElseBlock ||
+                        $case instanceof ElseifBlock && $this->isTruthy($this->reduce($case->cond))
                     ) {
                         return $this->compileChildren($case->children, $out);
                     }
@@ -3116,6 +3134,7 @@ EOL;
 
             case Type::T_EACH:
                 list(, $each) = $child;
+                assert($each instanceof EachBlock);
 
                 $list = $this->coerceList($this->reduce($each->list), ',', true);
 
@@ -3150,6 +3169,7 @@ EOL;
 
             case Type::T_WHILE:
                 list(, $while) = $child;
+                assert($while instanceof WhileBlock);
 
                 while ($this->isTruthy($this->reduce($while->cond, true))) {
                     $ret = $this->compileChildren($while->children, $out);
@@ -3162,6 +3182,7 @@ EOL;
 
             case Type::T_FOR:
                 list(, $for) = $child;
+                assert($for instanceof ForBlock);
 
                 $startNumber = $this->assertNumber($this->reduce($for->start, true));
                 $endNumber = $this->assertNumber($this->reduce($for->end, true));
@@ -3221,6 +3242,8 @@ EOL;
                 if (! $mixin) {
                     throw $this->error("Undefined mixin $name");
                 }
+
+                assert($mixin instanceof CallableBlock);
 
                 $callingScope = $this->getStoreEnv();
 
@@ -4966,6 +4989,8 @@ EOL;
             return $this->multiplyMedia($env->parent, $childQueries);
         }
 
+        assert($env->block instanceof MediaBlock);
+
         $parentQueries = isset($env->block->queryList)
             ? $env->block->queryList
             : [[[Type::T_MEDIA_VALUE, $env->block->value]]];
@@ -6167,8 +6192,8 @@ EOL;
     /**
      * Call SCSS @function
      *
-     * @param Object $func
-     * @param array  $argValues
+     * @param CallableBlock|null $func
+     * @param array              $argValues
      *
      * @return array|Number
      */

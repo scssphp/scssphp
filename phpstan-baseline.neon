@@ -1,16 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$args type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Block.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$child type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Block.php
-
-		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$children type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Block.php
@@ -21,59 +11,84 @@ parameters:
 			path: src/Block.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$cond type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Block.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$end type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Block.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$list type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Block.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$name type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Block.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$prefix type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Block.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$queryList type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Block.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$selector type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Block.php
-
-		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$selectors type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Block.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$start type has no value type specified in iterable type array\\.$#"
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\AtRootBlock\\:\\:\\$selector type has no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Block.php
+			path: src/Block/AtRootBlock.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$value type has no value type specified in iterable type array\\.$#"
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\AtRootBlock\\:\\:\\$with type has no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Block.php
+			path: src/Block/AtRootBlock.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$with type has no value type specified in iterable type array\\.$#"
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\CallableBlock\\:\\:\\$args type has no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Block.php
+			path: src/Block/CallableBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\ContentBlock\\:\\:\\$child type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/ContentBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\DirectiveBlock\\:\\:\\$name type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/DirectiveBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\DirectiveBlock\\:\\:\\$value type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/DirectiveBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\EachBlock\\:\\:\\$list type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/EachBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\ElseifBlock\\:\\:\\$cond type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/ElseifBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\ForBlock\\:\\:\\$end type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/ForBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\ForBlock\\:\\:\\$start type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/ForBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\IfBlock\\:\\:\\$cond type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/IfBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\MediaBlock\\:\\:\\$queryList type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/MediaBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\MediaBlock\\:\\:\\$value type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/MediaBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\NestedPropertyBlock\\:\\:\\$prefix type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/NestedPropertyBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\WhileBlock\\:\\:\\$cond type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/WhileBlock.php
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Cache\\:\\:cacheName\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
@@ -109,16 +124,6 @@ parameters:
 			message: "#^Result of \\|\\| is always false\\.$#"
 			count: 3
 			path: src/Colors.php
-
-		-
-			message: "#^Access to an undefined property object\\:\\:\\$children\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property object\\:\\:\\$name\\.$#"
-			count: 1
-			path: src/Compiler.php
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$sourceColumn\\.$#"
@@ -1507,7 +1512,7 @@ parameters:
 
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
-			count: 2
+			count: 1
 			path: src/Compiler.php
 
 		-
@@ -1532,11 +1537,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$dimension of class ScssPhp\\\\ScssPhp\\\\Node\\\\Number constructor expects float\\|int, float\\|int\\|string given\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$directiveName of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileDirectiveName\\(\\) expects array\\|string, array\\|string\\|null given\\.$#"
 			count: 2
 			path: src/Compiler.php
 
@@ -1617,11 +1617,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$string of function substr expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileValue\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|null given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
