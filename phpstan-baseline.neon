@@ -1,6 +1,16 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$args type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$child type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$children type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Block.php
@@ -11,7 +21,57 @@ parameters:
 			path: src/Block.php
 
 		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$cond type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$end type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$list type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$name type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$prefix type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$queryList type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$selector type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$selectors type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$start type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$value type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$with type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Block.php
 
@@ -49,51 +109,6 @@ parameters:
 			message: "#^Result of \\|\\| is always false\\.$#"
 			count: 3
 			path: src/Colors.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$hasValue\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$name\\.$#"
-			count: 3
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$prefix\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$selector\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$value\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$declarationScopeParent\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$marker\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$parentStore\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$selectors\\.$#"
-			count: 3
-			path: src/Compiler.php
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$children\\.$#"
@@ -1521,6 +1536,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Parameter \\#1 \\$directiveName of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileDirectiveName\\(\\) expects array\\|string, array\\|string\\|null given\\.$#"
+			count: 2
+			path: src/Compiler.php
+
+		-
 			message: "#^Parameter \\#1 \\$envs of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:extractEnv\\(\\) expects non\\-empty\\-array\\<ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\>, array\\<ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\> given\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1597,6 +1617,16 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$string of function substr expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileValue\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|null given\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileValue\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|string given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1776,6 +1806,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$selectors type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Compiler/Environment.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$store type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler/Environment.php
@@ -1869,96 +1904,6 @@ parameters:
 			message: "#^Offset 'numerator_units' on array\\<int, string\\> in isset\\(\\) does not exist\\.$#"
 			count: 1
 			path: src/Node/Number.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$args\\.$#"
-			count: 2
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$cases\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$child\\.$#"
-			count: 2
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$cond\\.$#"
-			count: 3
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$dontAppend\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$end\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$hasValue\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$list\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$name\\.$#"
-			count: 4
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$prefix\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$queryList\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$selector\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$start\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$until\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$value\\.$#"
-			count: 2
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$var\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$vars\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$with\\.$#"
-			count: 1
-			path: src/Parser.php
 
 		-
 			message: "#^Call to function is_string\\(\\) with array will always evaluate to false\\.$#"
