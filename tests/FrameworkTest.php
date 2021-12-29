@@ -92,14 +92,16 @@ SCSS;
 
     public static function provideBourbonEntrypoints()
     {
-        $iterator = new \RecursiveDirectoryIterator(dirname(__DIR__) . '/vendor/thoughtbot/bourbon/spec/fixtures', \FilesystemIterator::SKIP_DOTS);
+        $baseDir = dirname(__DIR__) . '/vendor/thoughtbot/bourbon/spec/fixtures';
+
+        $iterator = new \RecursiveDirectoryIterator($baseDir, \FilesystemIterator::SKIP_DOTS);
         $iterator = new \RecursiveCallbackFilterIterator($iterator, function (\SplFileInfo $current) {
             return $current->isDir() || $current->getFilename()[0] !== '_';
         });
 
         /** @var \SplFileInfo $file */
         foreach (new \RecursiveIteratorIterator($iterator) as $file) {
-            yield [$file->getRealPath()];
+            yield substr($file->getRealPath(), strlen($baseDir) + 1) => [$file->getRealPath()];
         }
     }
 }
