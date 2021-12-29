@@ -1244,7 +1244,10 @@ class Parser
 
     /**
      * Check a parsed element is plain CSS Valid
+     *
      * @param array $parsed
+     * @param bool  $allowExpression
+     *
      * @return bool|array
      */
     protected function isPlainCssValidElement($parsed, $allowExpression = false)
@@ -2106,7 +2109,7 @@ class Parser
      * Parse a function call, where externals () are part of the call
      * and not of the value list
      *
-     * @param $out
+     * @param array       $out
      * @param bool        $mandatoryEnclos
      * @param null|string $charAfter
      * @param null|bool   $eatWhiteSp
@@ -2973,6 +2976,7 @@ class Parser
      * Parse string
      *
      * @param array $out
+     * @param bool  $keepDelimWithInterpolation
      *
      * @return bool
      */

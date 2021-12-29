@@ -22,12 +22,12 @@ namespace ScssPhp\ScssPhp;
 class Block
 {
     /**
-     * @var string
+     * @var string|null
      */
     public $type;
 
     /**
-     * @var Block
+     * @var Block|null
      */
     public $parent;
 

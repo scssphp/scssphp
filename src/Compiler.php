@@ -1585,7 +1585,7 @@ class Compiler
     /**
      * Compile @at-root's with: inclusion / without: exclusion into 2 lists uses to filter scope/env later
      *
-     * @param array $withCondition
+     * @param array|null $withCondition
      *
      * @return array
      *
@@ -8378,6 +8378,13 @@ EOL;
     }
     */
 
+    /**
+     * @param array     $color
+     * @param int       $idx
+     * @param int|float $amount
+     *
+     * @return array
+     */
     protected function adjustHsl($color, $idx, $amount)
     {
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
