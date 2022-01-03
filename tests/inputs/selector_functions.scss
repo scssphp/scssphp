@@ -61,7 +61,7 @@
 }
 
 #{selector-append(".accordion, .slider", "__copy, __image")} {
-	content:'.accordion__copy, .slider__copy, .accordion__image, .slider__image';
+	content:'accordion__copy, .accordion__image, .slider__copy, .slider__image';
 }
 
 #{selector-extend("a.disabled", "a", ".link")} {
