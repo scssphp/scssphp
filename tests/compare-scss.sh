@@ -3,8 +3,9 @@
 test_dir=$(dirname $0)
 diff_tool="$1"
 sass_executable=${SASS_EXECUTABLE:-sass}
+glob=${INPUT_GLOB:-*}
 
-for file in $(ls $test_dir/inputs/*.scss); do
+for file in $(ls $test_dir/inputs/$glob.scss); do
 	out_file=$(echo $file | sed -e 's/inputs/outputs/' -e 's/\.scss$/\.css/')
 	sass=$($sass_executable --style=expanded $file 2> /dev/null)
 	if [ $? = "0" ]; then
