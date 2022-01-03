@@ -12,6 +12,18 @@
 
 namespace ScssPhp\ScssPhp;
 
+use ScssPhp\ScssPhp\Block\AtRootBlock;
+use ScssPhp\ScssPhp\Block\CallableBlock;
+use ScssPhp\ScssPhp\Block\ContentBlock;
+use ScssPhp\ScssPhp\Block\DirectiveBlock;
+use ScssPhp\ScssPhp\Block\EachBlock;
+use ScssPhp\ScssPhp\Block\ElseBlock;
+use ScssPhp\ScssPhp\Block\ElseifBlock;
+use ScssPhp\ScssPhp\Block\ForBlock;
+use ScssPhp\ScssPhp\Block\IfBlock;
+use ScssPhp\ScssPhp\Block\MediaBlock;
+use ScssPhp\ScssPhp\Block\NestedPropertyBlock;
+use ScssPhp\ScssPhp\Block\WhileBlock;
 use ScssPhp\ScssPhp\Exception\ParserException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
@@ -447,7 +459,8 @@ class Parser
             ) {
                 ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
-                $atRoot = $this->pushSpecialBlock(Type::T_AT_ROOT, $s);
+                $atRoot = new AtRootBlock();
+                $this->registerPushedBlock($atRoot, $s);
                 $atRoot->selector = $selector;
                 $atRoot->with     = $with;
 
@@ -461,7 +474,8 @@ class Parser
                 $this->mediaQueryList($mediaQueryList) &&
                 $this->matchChar('{', false)
             ) {
-                $media = $this->pushSpecialBlock(Type::T_MEDIA, $s);
+                $media = new MediaBlock();
+                $this->registerPushedBlock($media, $s);
                 $media->queryList = $mediaQueryList[2];
 
                 return true;
@@ -477,7 +491,8 @@ class Parser
             ) {
                 ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
-                $mixin = $this->pushSpecialBlock(Type::T_MIXIN, $s);
+                $mixin = new CallableBlock(Type::T_MIXIN);
+                $this->registerPushedBlock($mixin, $s);
                 $mixin->name = $mixinName;
                 $mixin->args = $args;
 
@@ -509,7 +524,8 @@ class Parser
                 ];
 
                 if (! empty($hasBlock)) {
-                    $include = $this->pushSpecialBlock(Type::T_INCLUDE, $s);
+                    $include = new ContentBlock();
+                    $this->registerPushedBlock($include, $s);
                     $include->child = $child;
                 } else {
                     $this->append($child, $s);
@@ -599,7 +615,8 @@ class Parser
             ) {
                 ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
-                $func = $this->pushSpecialBlock(Type::T_FUNCTION, $s);
+                $func = new CallableBlock(Type::T_FUNCTION);
+                $this->registerPushedBlock($func, $s);
                 $func->name = $fnName;
                 $func->args = $args;
 
@@ -631,7 +648,8 @@ class Parser
             ) {
                 ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
-                $each = $this->pushSpecialBlock(Type::T_EACH, $s);
+                $each = new EachBlock();
+                $this->registerPushedBlock($each, $s);
 
                 foreach ($varNames[2] as $varName) {
                     $each->vars[] = $varName[1];
@@ -660,7 +678,8 @@ class Parser
                     $cond = reset($cond[2]);
                 }
 
-                $while = $this->pushSpecialBlock(Type::T_WHILE, $s);
+                $while = new WhileBlock();
+                $this->registerPushedBlock($while, $s);
                 $while->cond = $cond;
 
                 return true;
@@ -680,7 +699,8 @@ class Parser
             ) {
                 ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
-                $for = $this->pushSpecialBlock(Type::T_FOR, $s);
+                $for = new ForBlock();
+                $this->registerPushedBlock($for, $s);
                 $for->var   = $varName[1];
                 $for->start = $start;
                 $for->end   = $end;
@@ -697,7 +717,8 @@ class Parser
             ) {
                 ! $this->cssOnly || $this->assertPlainCssValid(false, $s);
 
-                $if = $this->pushSpecialBlock(Type::T_IF, $s);
+                $if = new IfBlock();
+                $this->registerPushedBlock($if, $s);
 
                 while (
                     $cond[0] === Type::T_LIST &&
@@ -776,20 +797,21 @@ class Parser
 
             if (isset($last) && $last[0] === Type::T_IF) {
                 list(, $if) = $last;
+                assert($if instanceof IfBlock);
 
                 if ($this->literal('@else', 5)) {
                     if ($this->matchChar('{', false)) {
-                        $else = $this->pushSpecialBlock(Type::T_ELSE, $s);
+                        $else = new ElseBlock();
                     } elseif (
                         $this->literal('if', 2) &&
                         $this->functionCallArgumentsList($cond, false, '{', false)
                     ) {
-                        $else = $this->pushSpecialBlock(Type::T_ELSEIF, $s);
+                        $else = new ElseifBlock();
                         $else->cond = $cond;
                     }
 
                     if (isset($else)) {
-                        $else->dontAppend = true;
+                        $this->registerPushedBlock($else, $s);
                         $if->cases[] = $else;
 
                         return true;
@@ -827,7 +849,8 @@ class Parser
                 ($t1 = $this->supportsQuery($supportQuery)) &&
                 ($t2 = $this->matchChar('{', false))
             ) {
-                $directive = $this->pushSpecialBlock(Type::T_DIRECTIVE, $s);
+                $directive = new DirectiveBlock();
+                $this->registerPushedBlock($directive, $s);
                 $directive->name  = 'supports';
                 $directive->value = $supportQuery;
 
@@ -848,11 +871,12 @@ class Parser
                     $dirName = [Type::T_STRING, '', $dirName];
                 }
                 if ($dirName === 'media') {
-                    $directive = $this->pushSpecialBlock(Type::T_MEDIA, $s);
+                    $directive = new MediaBlock();
                 } else {
-                    $directive = $this->pushSpecialBlock(Type::T_DIRECTIVE, $s);
+                    $directive = new DirectiveBlock();
                     $directive->name = $dirName;
                 }
+                $this->registerPushedBlock($directive, $s);
 
                 if (isset($dirValue)) {
                     ! $this->cssOnly || ($dirValue = $this->assertPlainCssValid($dirValue));
@@ -1028,7 +1052,8 @@ class Parser
             if ($this->matchChar('{', false)) {
                 ! $this->cssOnly || $this->assertPlainCssValid(false);
 
-                $propBlock = $this->pushSpecialBlock(Type::T_NESTED_PROPERTY, $s);
+                $propBlock = new NestedPropertyBlock();
+                $this->registerPushedBlock($propBlock, $s);
                 $propBlock->prefix = $name;
                 $propBlock->hasValue = $foundSomething;
 
@@ -1054,12 +1079,13 @@ class Parser
                 }
             }
 
-            if (isset($block->type) && $block->type === Type::T_INCLUDE) {
+            if ($block instanceof ContentBlock) {
                 $include = $block->child;
+                assert(\is_array($include));
                 unset($block->child);
                 $include[3] = $block;
                 $this->append($include, $s);
-            } elseif (empty($block->dontAppend)) {
+            } elseif (!$block instanceof ElseBlock && !$block instanceof ElseifBlock) {
                 $type = isset($block->type) ? $block->type : Type::T_BLOCK;
                 $this->append([$type, $block], $s);
             }
@@ -1094,14 +1120,28 @@ class Parser
      */
     protected function pushBlock($selectors, $pos = 0)
     {
+        $b = new Block();
+        $b->selectors = $selectors;
+
+        $this->registerPushedBlock($b, $pos);
+
+        return $b;
+    }
+
+    /**
+     * @param Block $b
+     * @param int   $pos
+     *
+     * @return void
+     */
+    private function registerPushedBlock(Block $b, $pos)
+    {
         list($line, $column) = $this->getSourcePosition($pos);
 
-        $b = new Block();
         $b->sourceName   = $this->sourceName;
         $b->sourceLine   = $line;
         $b->sourceColumn = $column;
         $b->sourceIndex  = $this->sourceIndex;
-        $b->selectors    = $selectors;
         $b->comments     = [];
         $b->parent       = $this->env;
 
@@ -1126,12 +1166,12 @@ class Parser
                 $this->append(null);
             }
         }
-
-        return $b;
     }
 
     /**
      * Push special (named) block onto parse tree
+     *
+     * @deprecated
      *
      * @param string  $type
      * @param int     $pos
