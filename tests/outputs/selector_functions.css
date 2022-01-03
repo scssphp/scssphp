@@ -57,8 +57,8 @@ a.disabled {
 .accordion__copy, .accordion__image {
   content: ".accordion__copy, .accordion__image";
 }
-.accordion__copy, .slider__copy, .accordion__image, .slider__image {
-  content: ".accordion__copy, .slider__copy, .accordion__image, .slider__image";
+.accordion__copy, .accordion__image, .slider__copy, .slider__image {
+  content: "accordion__copy, .accordion__image, .slider__copy, .slider__image";
 }
 a.disabled, .disabled.link {
   content: "a.disabled, .link.disabled";

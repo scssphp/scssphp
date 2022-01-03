@@ -9848,21 +9848,18 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
             // do the trick, happening $lastSelector to $previousSelector
             $appended = [];
 
-            foreach ($lastSelectors as $lastSelector) {
-                $previous = $previousSelectors;
-
-                foreach ($lastSelector as $lastSelectorParts) {
-                    foreach ($lastSelectorParts as $lastSelectorPart) {
-                        foreach ($previous as $i => $previousSelector) {
-                            foreach ($previousSelector as $j => $previousSelectorParts) {
-                                $previous[$i][$j][] = $lastSelectorPart;
+            foreach ($previousSelectors as $previousSelector) {
+                foreach ($lastSelectors as $lastSelector) {
+                    $previous = $previousSelector;
+                    foreach ($previousSelector as $j => $previousSelectorParts) {
+                        foreach ($lastSelector as $lastSelectorParts) {
+                            foreach ($lastSelectorParts as $lastSelectorPart) {
+                                $previous[$j][] = $lastSelectorPart;
                             }
                         }
                     }
-                }
 
-                foreach ($previous as $ps) {
-                    $appended[] = $ps;
+                    $appended[] = $previous;
                 }
             }
 
