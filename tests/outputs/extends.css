@@ -98,7 +98,7 @@ wassup {
   display: block;
   width: 255px;
   height: 42px;
-  background: transparent url('images/login-btns.png') no-repeat;
+  background: transparent url("images/login-btns.png") no-repeat;
   background-position: 0 0;
 }
 #content .social-login .facebook:hover, #content .social-login .twitter:hover {

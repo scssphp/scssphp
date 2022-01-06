@@ -26,6 +26,81 @@ parameters:
 			path: src/Block.php
 
 		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\AtRootBlock\\:\\:\\$selector type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/AtRootBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\AtRootBlock\\:\\:\\$with type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/AtRootBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\CallableBlock\\:\\:\\$args type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/CallableBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\ContentBlock\\:\\:\\$child type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/ContentBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\DirectiveBlock\\:\\:\\$name type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/DirectiveBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\DirectiveBlock\\:\\:\\$value type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/DirectiveBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\EachBlock\\:\\:\\$list type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/EachBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\ElseifBlock\\:\\:\\$cond type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/ElseifBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\ForBlock\\:\\:\\$end type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/ForBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\ForBlock\\:\\:\\$start type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/ForBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\IfBlock\\:\\:\\$cond type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/IfBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\MediaBlock\\:\\:\\$queryList type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/MediaBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\MediaBlock\\:\\:\\$value type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/MediaBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\NestedPropertyBlock\\:\\:\\$prefix type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/NestedPropertyBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\WhileBlock\\:\\:\\$cond type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/WhileBlock.php
+
+		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Cache\\:\\:cacheName\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Cache.php
@@ -41,12 +116,12 @@ parameters:
 			path: src/Cache.php
 
 		-
-			message: "#^Parameter \\#1 \\$str of function sha1 expects string, string\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$data of function unserialize expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Cache.php
 
 		-
-			message: "#^Parameter \\#1 \\$variable_representation of function unserialize expects string, string\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$string of function sha1 expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Cache.php
 
@@ -54,61 +129,6 @@ parameters:
 			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, string\\|false given\\.$#"
 			count: 1
 			path: src/Cache.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$hasValue\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$name\\.$#"
-			count: 3
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$prefix\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$selector\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$value\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$declarationScopeParent\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$marker\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$parentStore\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$selectors\\.$#"
-			count: 3
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property object\\:\\:\\$children\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
-			message: "#^Access to an undefined property object\\:\\:\\$name\\.$#"
-			count: 1
-			path: src/Compiler.php
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$sourceColumn\\.$#"
@@ -177,11 +197,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:RGBtoHWB\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:adjustHsl\\(\\) has parameter \\$amount with no type specified\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1461,22 +1476,17 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$input of function str_pad expects string, int\\<\\-9999999, 9999999\\> given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Parameter \\#1 \\$name of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:handleImportLoop\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$number of function base_convert expects string, \\(float\\|int\\) given\\.$#"
+			message: "#^Parameter \\#1 \\$num of function base_convert expects string, \\(float\\|int\\) given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$number of function round expects float, float\\|int\\|string given\\.$#"
+			message: "#^Parameter \\#1 \\$num of function round expects float\\|int, float\\|int\\|string given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1521,7 +1531,17 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Parameter \\#1 \\$string of function str_pad expects string, int\\<\\-9999999, 9999999\\> given\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Parameter \\#1 \\$string of function substr expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileValue\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|string given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1557,11 +1577,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#3 \\$selfParent of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileChildrenNoReturn\\(\\) expects ScssPhp\\\\ScssPhp\\\\Block\\|null, object\\|null given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$parent \\(ScssPhp\\\\ScssPhp\\\\Block\\) in isset\\(\\) is not nullable\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1686,6 +1701,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$selectors type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Compiler/Environment.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\:\\:\\$store type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler/Environment.php
@@ -1731,96 +1751,6 @@ parameters:
 			path: src/Formatter/OutputBlock.php
 
 		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$args\\.$#"
-			count: 2
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$cases\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$child\\.$#"
-			count: 2
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$cond\\.$#"
-			count: 3
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$dontAppend\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$end\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$hasValue\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$list\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$name\\.$#"
-			count: 4
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$prefix\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$queryList\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$selector\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$start\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$until\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$value\\.$#"
-			count: 2
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$var\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$vars\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Access to an undefined property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$with\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Cannot access property \\$children on ScssPhp\\\\ScssPhp\\\\Block\\|null\\.$#"
 			count: 6
 			path: src/Parser.php
@@ -1837,7 +1767,7 @@ parameters:
 
 		-
 			message: "#^If condition is always true\\.$#"
-			count: 2
+			count: 1
 			path: src/Parser.php
 
 		-
@@ -1897,11 +1827,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:func\\(\\) has parameter \\$func with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:functionCallArgumentsList\\(\\) has parameter \\$out with no type specified\\.$#"
 			count: 1
 			path: src/Parser.php
 
@@ -1991,11 +1916,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$out\\)\\: Unexpected token \"\\$out\", expected type at offset 128$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Parameter \\#1 \\$char of method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:matchChar\\(\\) expects string, string\\|true given\\.$#"
 			count: 3
 			path: src/Parser.php
@@ -2008,16 +1928,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$code of static method ScssPhp\\\\ScssPhp\\\\Util\\:\\:mbChr\\(\\) expects int, float\\|int\\<min, 31\\> given\\.$#"
 			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$parent \\(ScssPhp\\\\ScssPhp\\\\Block\\) does not accept ScssPhp\\\\ScssPhp\\\\Block\\|null\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$type \\(string\\) in isset\\(\\) is not nullable\\.$#"
-			count: 3
 			path: src/Parser.php
 
 		-

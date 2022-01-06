@@ -105,11 +105,11 @@ final class SourceMapGenerator
     /**
      * Adds a mapping
      *
-     * @param integer $generatedLine   The line number in generated file
-     * @param integer $generatedColumn The column number in generated file
-     * @param integer $originalLine    The line number in original file
-     * @param integer $originalColumn  The column number in original file
-     * @param string  $sourceFile      The original source file
+     * @param int    $generatedLine   The line number in generated file
+     * @param int    $generatedColumn The column number in generated file
+     * @param int    $originalLine    The line number in original file
+     * @param int    $originalColumn  The column number in original file
+     * @param string $sourceFile      The original source file
      *
      * @return void
      */
@@ -286,7 +286,7 @@ final class SourceMapGenerator
      *
      * @param string $filename
      *
-     * @return integer|false
+     * @return int|false
      */
     private function findFileIndex(string $filename)
     {
@@ -322,8 +322,8 @@ final class SourceMapGenerator
     /**
      * Fix windows paths
      *
-     * @param string  $path
-     * @param boolean $addEndSlash
+     * @param string $path
+     * @param bool   $addEndSlash
      *
      * @return string
      */

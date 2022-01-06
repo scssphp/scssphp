@@ -49,16 +49,16 @@
   /* true*/
 }
 a.disabled {
-  content: 'a.disabled';
+  content: "a.disabled";
 }
 .accordion__copy {
-  content: '.accordion__copy';
+  content: ".accordion__copy";
 }
 .accordion__copy, .accordion__image {
-  content: '.accordion__copy, .accordion__image';
+  content: ".accordion__copy, .accordion__image";
 }
-.accordion__copy, .slider__copy, .accordion__image, .slider__image {
-  content: '.accordion__copy, .slider__copy, .accordion__image, .slider__image';
+.accordion__copy, .accordion__image, .slider__copy, .slider__image {
+  content: "accordion__copy, .accordion__image, .slider__copy, .slider__image";
 }
 a.disabled, .disabled.link {
   content: "a.disabled, .link.disabled";

@@ -14,18 +14,7 @@ namespace ScssPhp\ScssPhp\Tests;
 
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
-use ScssPhp\ScssPhp\Formatter\Expanded;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
-
-function _dump($value)
-{
-    fwrite(STDOUT, print_r($value, true));
-}
-
-function _quote($str)
-{
-    return preg_quote($str, '/');
-}
 
 /**
  * Input test - runs all the tests in inputs/ and compares their output to outputs/
@@ -39,12 +28,13 @@ class InputTest extends TestCase
      */
     private $scss;
 
-    protected static $inputDir = 'inputs';
-    protected static $outputDir = 'outputs';
-    protected static $outputNumberedDir = 'outputs_numbered';
+    private static $inputDir = 'inputs';
+    private static $outputDir = 'outputs';
 
     /**
      * @dataProvider fileNameProvider
+     * @param string $inFname
+     * @param string $outFname
      */
     public function testInputFile($inFname, $outFname)
     {
@@ -61,13 +51,13 @@ class InputTest extends TestCase
         }
 
         if (! is_readable($outFname)) {
-            $this->fail("$outFname is missing, consider building tests with BUILD=1");
+            $this->fail("$outFname is missing, consider building tests with \"make rebuild-outputs\".");
         }
 
         $input = file_get_contents($inFname);
         $output = file_get_contents($outFname);
 
-        $css = $this->scss->compileString($input, substr($inFname, strlen(__DIR__) + 1))->getCss();
+        $css = $this->scss->compileString($input, $inFname)->getCss();
         $this->assertEquals($output, $css);
     }
 
@@ -81,24 +71,23 @@ class InputTest extends TestCase
         );
     }
 
-    // only run when env is set
-    public function buildInput($inFname, $outFname)
+    /**
+     * @param string $inFname
+     * @param string $outFname
+     *
+     * @return void
+     */
+    private function buildInput($inFname, $outFname)
     {
-        $css = $this->scss->compileString(file_get_contents($inFname), substr($inFname, strlen(__DIR__) + 1))->getCss();
+        $css = $this->scss->compileString(file_get_contents($inFname), $inFname)->getCss();
 
         file_put_contents($outFname, $css);
     }
 
-    public static function findInputNames($pattern = '*')
+    private static function findInputNames()
     {
-        $files = glob(__DIR__ . '/' . self::$inputDir . '/' . $pattern);
+        $files = glob(__DIR__ . '/' . self::$inputDir . '/*');
         $files = array_filter($files, 'is_file');
-
-        if ($pattern = getenv('MATCH')) {
-            $files = array_filter($files, function ($fname) use ($pattern) {
-                return preg_match("/$pattern/", $fname);
-            });
-        }
 
         $filesKeys = array_map(
             function ($a) {
@@ -112,10 +101,10 @@ class InputTest extends TestCase
 
     public static function outputNameFor($input)
     {
-        $front = _quote(__DIR__ . '/');
+        $front = preg_quote(__DIR__ . '/', '/');
         $out = preg_replace("/^$front/", '', $input);
 
-        $in = _quote(self::$inputDir . '/');
+        $in = preg_quote(self::$inputDir . '/', '/');
         $out = preg_replace("/$in/", self::$outputDir . '/', $out);
         $out = preg_replace('/.scss$/', '.css', $out);
 

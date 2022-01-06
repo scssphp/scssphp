@@ -75,7 +75,7 @@ final class Number extends Node implements \ArrayAccess
     ];
 
     /**
-     * @var integer|float
+     * @var int|float
      */
     private $dimension;
 
@@ -94,7 +94,7 @@ final class Number extends Node implements \ArrayAccess
     /**
      * Initialize number
      *
-     * @param integer|float   $dimension
+     * @param int|float       $dimension
      * @param string[]|string $numeratorUnits
      * @param string[]        $denominatorUnits
      *
@@ -141,7 +141,7 @@ final class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     #[\ReturnTypeWillChange]
     public function offsetExists($offset)
@@ -167,7 +167,7 @@ final class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * {@inheritdoc}
+     * @return mixed
      */
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
@@ -194,7 +194,7 @@ final class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
@@ -203,7 +203,7 @@ final class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
@@ -214,7 +214,7 @@ final class Number extends Node implements \ArrayAccess
     /**
      * Returns true if the number is unitless
      *
-     * @return boolean
+     * @return bool
      */
     public function unitless()
     {

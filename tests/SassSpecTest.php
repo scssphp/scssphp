@@ -25,11 +25,11 @@ use ScssPhp\ScssPhp\Logger\StreamLogger;
  */
 class SassSpecTest extends TestCase
 {
-    protected static $exclusionList;
-    protected static $warningExclusionList;
+    private static $exclusionList;
+    private static $warningExclusionList;
 
-    protected static $fileExclusionList = __DIR__ . '/specs/sass-spec-exclude.txt';
-    protected static $fileWarningExclusionList = __DIR__ . '/specs/sass-spec-exclude-warning.txt';
+    private static $fileExclusionList = __DIR__ . '/specs/sass-spec-exclude.txt';
+    private static $fileWarningExclusionList = __DIR__ . '/specs/sass-spec-exclude-warning.txt';
     private $dirToClean;
 
     /**
@@ -56,17 +56,17 @@ class SassSpecTest extends TestCase
      */
     protected function getExclusionList()
     {
-        if (is_null(static::$exclusionList)) {
-            if (!file_exists(static::$fileExclusionList)) {
-                static::$exclusionList = [];
+        if (is_null(self::$exclusionList)) {
+            if (!file_exists(self::$fileExclusionList)) {
+                self::$exclusionList = [];
             } else {
-                static::$exclusionList = file(static::$fileExclusionList);
-                static::$exclusionList = array_map('trim', static::$exclusionList);
-                static::$exclusionList = array_filter(static::$exclusionList);
+                self::$exclusionList = file(self::$fileExclusionList);
+                self::$exclusionList = array_map('trim', self::$exclusionList);
+                self::$exclusionList = array_filter(self::$exclusionList);
             }
         }
 
-        return static::$exclusionList;
+        return self::$exclusionList;
     }
 
     /**
@@ -100,17 +100,17 @@ class SassSpecTest extends TestCase
      */
     protected function getWarningExclusionList()
     {
-        if (is_null(static::$warningExclusionList)) {
-            if (!file_exists(static::$fileWarningExclusionList)) {
-                static::$warningExclusionList = [];
+        if (is_null(self::$warningExclusionList)) {
+            if (!file_exists(self::$fileWarningExclusionList)) {
+                self::$warningExclusionList = [];
             } else {
-                static::$warningExclusionList = file(static::$fileWarningExclusionList);
-                static::$warningExclusionList = array_map('trim', static::$warningExclusionList);
-                static::$warningExclusionList = array_filter(static::$warningExclusionList);
+                self::$warningExclusionList = file(self::$fileWarningExclusionList);
+                self::$warningExclusionList = array_map('trim', self::$warningExclusionList);
+                self::$warningExclusionList = array_filter(self::$warningExclusionList);
             }
         }
 
-        return static::$warningExclusionList;
+        return self::$warningExclusionList;
     }
 
     /**
@@ -120,12 +120,12 @@ class SassSpecTest extends TestCase
      */
     protected function resetExclusionList()
     {
-        static::$exclusionList = [];
-        static::$warningExclusionList = [];
-        file_put_contents(static::$fileExclusionList, '');
-        file_put_contents(static::$fileWarningExclusionList, '');
+        self::$exclusionList = [];
+        self::$warningExclusionList = [];
+        file_put_contents(self::$fileExclusionList, '');
+        file_put_contents(self::$fileWarningExclusionList, '');
 
-        return static::$exclusionList;
+        return self::$exclusionList;
     }
 
     /**
@@ -135,10 +135,10 @@ class SassSpecTest extends TestCase
      */
     protected function appendToExclusionList($testName)
     {
-        static::$exclusionList[] = $this->canonicalTestName($testName);
-        file_put_contents(static::$fileExclusionList, implode("\n", static::$exclusionList) . "\n");
+        self::$exclusionList[] = $this->canonicalTestName($testName);
+        file_put_contents(self::$fileExclusionList, implode("\n", self::$exclusionList) . "\n");
 
-        return static::$exclusionList;
+        return self::$exclusionList;
     }
 
     /**
@@ -148,16 +148,16 @@ class SassSpecTest extends TestCase
      */
     protected function appendToWarningExclusionList($testName)
     {
-        static::$warningExclusionList[] = $this->canonicalTestName($testName);
-        file_put_contents(static::$fileWarningExclusionList, implode("\n", static::$warningExclusionList) . "\n");
+        self::$warningExclusionList[] = $this->canonicalTestName($testName);
+        file_put_contents(self::$fileWarningExclusionList, implode("\n", self::$warningExclusionList) . "\n");
 
-        return static::$warningExclusionList;
+        return self::$warningExclusionList;
     }
 
     /**
      * Do some normalization on css output, for comparison purpose
-     * @param $css
-     * @return string|string[]|null
+     * @param string $css
+     * @return string
      */
     protected function normalizeCssOutput($css)
     {
@@ -319,6 +319,11 @@ class SassSpecTest extends TestCase
                     fclose($fp_err_stream);
                     $this->assertNull(null);
                     return;
+                } catch (\Throwable $e) {
+                    $this->appendToExclusionList($name);
+                    fclose($fp_err_stream);
+                    $this->assertNull(null);
+                    return;
                     //throwException($e);
                 }
             } else {
@@ -384,6 +389,8 @@ class SassSpecTest extends TestCase
                     // TODO assert the error message ?
                     // Keep the test
                 } catch (\Exception $e) {
+                    $this->appendToExclusionList($name);
+                } catch (\Throwable $e) {
                     $this->appendToExclusionList($name);
                 }
                 $this->assertNull(null);

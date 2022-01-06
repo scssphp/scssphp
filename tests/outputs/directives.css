@@ -31,7 +31,7 @@ div {
   color: red;
   height: 20px;
 }
-@keyframes 'bounce' {
+@keyframes "bounce" {
   from {
     top: 100px;
     animation-timing-function: ease-out;
@@ -64,11 +64,11 @@ div {
   }
 }
 div {
-  animation-name: 'diagonal-slide';
+  animation-name: "diagonal-slide";
   animation-duration: 5s;
   animation-iteration-count: 10;
 }
-@keyframes 'diagonal-slide' {
+@keyframes "diagonal-slide" {
   from {
     left: 0;
     top: 0;
