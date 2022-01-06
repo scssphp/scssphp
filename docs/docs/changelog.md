@@ -1,5 +1,21 @@
 # Changelog
 
+## **1.10.0** -- January 6, 2022
+
+**Fixed**
+
+* Fix the generation of source maps without an input path (@stof)
+* Fix the handling of list separators in list functions (@stof)
+* Add explicit return types to avoid warnings from the Symfony DebugClassLoader (@shyim)
+
+**Changed**
+
+* Use double quotes to render strings in the generated CSS by default, to match dart-sass (@stof)
+* Remove usage of dynamic properties to avoid deprecation warnings in PHP 8.2-dev (@stof)
+* Change the order of selectors in the output of `selector-append` to match dart-sass (@stof)
+* Mark AST-only types as internal in `\ScssPhp\ScssPhp\Type` (@stof)
+* Preserve the `!` for preserved comments in the compressed output, to match dart-sass (@stof)
+
 ## **1.9.0** -- December 13, 2021
 
 **Added**
@@ -96,7 +112,7 @@
 * Add support for `$blackness` and `$whiteness` in `adjust-color`, `change-color` and `scale-color` (@Cerdic)
 * Add a new `compileString` method returning a `CompilationResult` (@Cerdic, @stof)
 * Add a new `checkImportResolutions` cache option to invalidate the compilation cache if imports would resolve differently (@Cerdic)
-* Add a `LoggerInteface` to customize the handling of warning and debug messages (@stof)
+* Add a `LoggerInterface` to customize the handling of warning and debug messages (@stof)
 * Add the `\ScssPhp\ScssPhp\Warn` API to report warnings in custom functions (@stof)
 * Add `Compiler::replaceVariables` and `Compiler::addVariables` to manage custom variables (@stof)
 * Add the `\ScssPhp\ScssPhp\ValueConverter` to produce values in the Sass value representation (@stof)
