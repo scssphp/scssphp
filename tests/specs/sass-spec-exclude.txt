@@ -477,7 +477,6 @@ core_functions/selector/unify/simple/universal/and_universal/empty/and_explicit
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_any
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_default
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_empty
-core_functions/string/insert/index/negative/after_last/less_than_double
 core_functions/string/unquote/error/type
 css/comment/error/loud/interpolation/failure
 css/comment/error/loud/interpolation/unterminated
