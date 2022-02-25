@@ -9401,7 +9401,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
             $index = $index - 1;
         }
         if ($index < 0) {
-            $index = Util::mbStrlen($stringContent) + 1 + $index;
+            $index = max(Util::mbStrlen($stringContent) + 1 + $index, 0);
         }
 
         $string[2] = [
