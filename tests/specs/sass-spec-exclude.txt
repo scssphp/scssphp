@@ -104,10 +104,6 @@ core_functions/color/rgb/one_arg/special_functions/no_alpha/min/string/arg_3
 core_functions/color/rgb/one_arg/special_functions/no_alpha/var/arg_1
 core_functions/color/rgb/one_arg/special_functions/no_alpha/var/arg_2
 core_functions/color/rgb/one_arg/special_functions/no_alpha/var/arg_3
-core_functions/color/saturation/fraction
-core_functions/color/saturation/max
-core_functions/color/saturation/middle
-core_functions/color/saturation/named
 core_functions/list/join/multi/map/second/space
 core_functions/list/join/single/both/comma/last
 core_functions/list/join/single/both/slash/last
@@ -481,6 +477,7 @@ core_functions/selector/unify/simple/universal/and_universal/empty/and_explicit
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_any
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_default
 core_functions/selector/unify/simple/universal/and_universal/explicit/and_empty
+core_functions/string/insert/index/negative/after_last/less_than_double
 core_functions/string/unquote/error/type
 css/comment/error/loud/interpolation/failure
 css/comment/error/loud/interpolation/unterminated
@@ -521,8 +518,10 @@ css/media/range/error/mismatched_range/lte_gte
 css/media/range/static
 css/media/range/with_expressions
 css/moz_document/multi_function
+css/plain/import/conditions/error/supports/declaration/custom_prop/empty
 css/plain/import/conditions/error/wrong_order
 css/plain/import/conditions/supports/condition
+css/plain/import/conditions/supports/declaration/custom_prop/whitespace
 css/plain/import/sass_takes_precedence
 css/selector/attribute/modifier/after_string
 css/selector/error/attribute/modifier/digit
@@ -538,6 +537,7 @@ css/selector/placeholder/pseudoselectors/not/with_real
 css/supports/error/syntax/anything/colon
 css/supports/error/syntax/anything/non_identifier_start
 css/supports/error/syntax/anything/not
+css/supports/error/syntax/declaration/custom_prop/empty
 css/supports/error/syntax/declaration/multiple
 css/supports/error/syntax/declaration/not
 css/supports/error/syntax/function/not
