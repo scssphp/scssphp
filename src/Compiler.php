@@ -6362,6 +6362,9 @@ EOL;
         if (\in_array($functionName, ['libRgb', 'libRgba', 'libHsl', 'libHsla'])) {
             // notation 100 127 255 / 0 is in fact a simple list of 4 values
             foreach ($args as $k => $arg) {
+                if (!isset($arg[1])) {
+                    continue; // This happens when using a trailing comma
+                }
                 if ($arg[1][0] === Type::T_LIST && \count($arg[1][2]) === 3) {
                     $args[$k][1][2] = $this->extractSlashAlphaInColorFunction($arg[1][2]);
                 }
