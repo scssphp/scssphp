@@ -211,9 +211,15 @@ class Compiler
     private $charset = true;
 
     /**
-     * @var string|\ScssPhp\ScssPhp\Formatter
+     * @var Formatter
      */
-    protected $formatter = Expanded::class;
+    protected $formatter;
+
+    /**
+     * @var string
+     * @phpstan-var class-string<Formatter>
+     */
+    private $configuredFormatter = Expanded::class;
 
     /**
      * @var Environment
@@ -381,7 +387,7 @@ class Compiler
             'encoding'           => $this->encoding,
             'sourceMap'          => serialize($this->sourceMap),
             'sourceMapOptions'   => $this->sourceMapOptions,
-            'formatter'          => $this->formatter,
+            'formatter'          => $this->configuredFormatter,
             'legacyImportPath'   => $this->legacyCwdImportPath,
         ];
 
@@ -502,7 +508,7 @@ class Compiler
             $tree         = $this->parser->parse($source);
             $this->parser = null;
 
-            $this->formatter = new $this->formatter();
+            $this->formatter = new $this->configuredFormatter();
             $this->rootBlock = null;
             $this->rootEnv   = $this->pushEnv($tree);
 
@@ -5517,11 +5523,11 @@ EOL;
     {
         switch ($style) {
             case OutputStyle::EXPANDED:
-                $this->formatter = Expanded::class;
+                $this->configuredFormatter = Expanded::class;
                 break;
 
             case OutputStyle::COMPRESSED:
-                $this->formatter = Compressed::class;
+                $this->configuredFormatter = Compressed::class;
                 break;
 
             default:
@@ -5539,6 +5545,8 @@ EOL;
      * @return void
      *
      * @deprecated Use {@see setOutputStyle} instead.
+     *
+     * @phpstan-param class-string<Formatter> $formatterName
      */
     public function setFormatter($formatterName)
     {
@@ -5547,7 +5555,7 @@ EOL;
         }
         @trigger_error('The method "setFormatter" is deprecated. Use "setOutputStyle" instead.', E_USER_DEPRECATED);
 
-        $this->formatter = $formatterName;
+        $this->configuredFormatter = $formatterName;
     }
 
     /**
