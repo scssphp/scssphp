@@ -3,6 +3,6 @@
         "sort-packages": true
     },
     "require": {
-        "phpstan/phpstan": "1.2.0"
+        "phpstan/phpstan": "1.4.6"
     }
 }
