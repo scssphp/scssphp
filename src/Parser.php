@@ -86,10 +86,6 @@ class Parser
      */
     private $sourcePositions;
     /**
-     * @var array|null
-     */
-    private $charset;
-    /**
      * The current offset in the buffer
      *
      * @var int
@@ -147,10 +143,8 @@ class Parser
     {
         $this->sourceName       = $sourceName ?: '(stdin)';
         $this->sourceIndex      = $sourceIndex;
-        $this->charset          = null;
         $this->utf8             = ! $encoding || strtolower($encoding) === 'utf-8';
         $this->patternModifiers = $this->utf8 ? 'Aisu' : 'Ais';
-        $this->commentsSeen     = [];
         $this->commentsSeen     = [];
         $this->allowVars        = true;
         $this->cssOnly          = $cssOnly;
@@ -255,7 +249,6 @@ class Parser
         if ($this->cache) {
             $cacheKey = $this->sourceName . ':' . md5($buffer);
             $parseOptions = [
-                'charset' => $this->charset,
                 'utf8' => $this->utf8,
             ];
             $v = $this->cache->getCache('parse', $cacheKey, $parseOptions);
@@ -294,10 +287,6 @@ class Parser
 
         if (! empty($this->env->parent)) {
             throw $this->parseError('unclosed block');
-        }
-
-        if ($this->charset) {
-            array_unshift($this->env->children, $this->charset);
         }
 
         $this->restoreEncoding();
@@ -827,18 +816,6 @@ class Parser
                 $this->valueList($charset) &&
                 $this->end()
             ) {
-                if (! isset($this->charset)) {
-                    $statement = [Type::T_CHARSET, $charset];
-
-                    list($line, $column) = $this->getSourcePosition($s);
-
-                    $statement[static::SOURCE_LINE]   = $line;
-                    $statement[static::SOURCE_COLUMN] = $column;
-                    $statement[static::SOURCE_INDEX]  = $this->sourceIndex;
-
-                    $this->charset = $statement;
-                }
-
                 return true;
             }
 
