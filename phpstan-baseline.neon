@@ -136,11 +136,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:HWBtoRGB\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1563,11 +1558,6 @@ parameters:
 		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\:\\:\\$children \\(array\\<ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\>\\) does not accept array\\<ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\|null\\>\\.$#"
 			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Right side of && is always true\\.$#"
-			count: 2
 			path: src/Compiler.php
 
 		-

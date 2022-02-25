@@ -3538,32 +3538,24 @@ EOL;
                 $ucLType  = ucfirst($ltype);
                 $ucRType  = ucfirst($rtype);
 
+                $shouldEval = $inParens || $inExp;
+
                 // this tries:
                 // 1. op[op name][left type][right type]
-                // 2. op[left type][right type] (passing the op as first arg
+                // 2. op[left type][right type] (passing the op as first arg)
                 // 3. op[op name]
-                $fn = "op${ucOpName}${ucLType}${ucRType}";
+                if (\is_callable([$this, $fn = "op${ucOpName}${ucLType}${ucRType}"])) {
+                    $out = $this->$fn($left, $right, $shouldEval);
+                } elseif (\is_callable([$this, $fn = "op${ucLType}${ucRType}"])) {
+                    $out = $this->$fn($op, $left, $right, $shouldEval);
+                } elseif (\is_callable([$this, $fn = "op${ucOpName}"])) {
+                    $out = $this->$fn($left, $right, $shouldEval);
+                } else {
+                    $out = null;
+                }
 
-                if (
-                    \is_callable([$this, $fn]) ||
-                    (($fn = "op${ucLType}${ucRType}") &&
-                        \is_callable([$this, $fn]) &&
-                        $passOp = true) ||
-                    (($fn = "op${ucOpName}") &&
-                        \is_callable([$this, $fn]) &&
-                        $genOp = true)
-                ) {
-                    $shouldEval = $inParens || $inExp;
-
-                    if (isset($passOp)) {
-                        $out = $this->$fn($op, $left, $right, $shouldEval);
-                    } else {
-                        $out = $this->$fn($left, $right, $shouldEval);
-                    }
-
-                    if (isset($out)) {
-                        return $out;
-                    }
+                if (isset($out)) {
+                    return $out;
                 }
 
                 return $this->expToString($value);
