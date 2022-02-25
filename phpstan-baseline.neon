@@ -136,27 +136,12 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Anonymous function should return null but returns float\\|int\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Argument of an invalid type array\\<int, string\\>\\|false supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Array \\(array\\<ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\>\\) does not accept ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\|null\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Array \\(array\\<string, ScssPhp\\\\ScssPhp\\\\Block\\>\\) does not accept key 0\\|string\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Array \\(array\\<string, int\\>\\) does not accept int\\|false\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Array \\(array\\<string, int\\>\\) does not accept key 0\\|string\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -206,13 +191,28 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^If condition is always false\\.$#"
+			message: "#^Elseif condition is always false\\.$#"
 			count: 1
+			path: src/Compiler.php
+
+		-
+			message: "#^If condition is always false\\.$#"
+			count: 2
+			path: src/Compiler.php
+
+		-
+			message: "#^Left side of && is always false\\.$#"
+			count: 2
 			path: src/Compiler.php
 
 		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 2
+			path: src/Compiler.php
+
+		-
+			message: "#^Left side of \\|\\| is always false\\.$#"
+			count: 1
 			path: src/Compiler.php
 
 		-
@@ -477,11 +477,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:combineSelectorSingle\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compactEnv\\(\\) should return non\\-empty\\-array\\<ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\> but returns array\\<int, ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\>\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1721,6 +1716,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$extendsMap \\(array\\<string, array\\<int\\>\\>\\) does not accept array\\<int\\|string, array\\<int\\>\\>\\.$#"
+			count: 2
+			path: src/Compiler.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$false has no type specified\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1731,12 +1731,22 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$importCache \\(array\\<string, ScssPhp\\\\ScssPhp\\\\Block\\>\\) does not accept array\\<int\\|string, ScssPhp\\\\ScssPhp\\\\Block\\>\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$null has no type specified\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$nullString has no type specified\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$parsedFiles \\(array\\<string, int\\>\\) does not accept array\\<int\\|string, bool\\|int\\>\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1761,6 +1771,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$warnedChildFunctions \\(array\\<string, bool\\>\\) does not accept array\\<int\\|string, bool\\>\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$with has no type specified\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1776,13 +1791,43 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\:\\:\\$children \\(array\\<ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\>\\) does not accept array\\<ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\|null\\>\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\:\\:\\$type \\(string\\) does not accept string\\|null\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
+			message: "#^Result of \\|\\| is always false\\.$#"
+			count: 4
+			path: src/Compiler.php
+
+		-
+			message: "#^Right side of && is always false\\.$#"
 			count: 1
 			path: src/Compiler.php
 
 		-
 			message: "#^Right side of && is always true\\.$#"
 			count: 4
+			path: src/Compiler.php
+
+		-
+			message: "#^Right side of \\|\\| is always false\\.$#"
+			count: 2
+			path: src/Compiler.php
+
+		-
+			message: "#^Strict comparison using \\!\\=\\= between null and null will always evaluate to false\\.$#"
+			count: 8
+			path: src/Compiler.php
+
+		-
+			message: "#^Ternary operator condition is always false\\.$#"
+			count: 1
 			path: src/Compiler.php
 
 		-
@@ -1836,11 +1881,6 @@ parameters:
 			path: src/Exception/ParserException.php
 
 		-
-			message: "#^The \"ScssPhp\\\\ScssPhp\\\\Exception\\\\ServerException\" class is deprecated\\.$#"
-			count: 1
-			path: src/Exception/ServerException.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Formatter\\:\\:format\\(\\) should return string but returns string\\|false\\.$#"
 			count: 1
 			path: src/Formatter.php
@@ -1856,11 +1896,6 @@ parameters:
 			path: src/Formatter.php
 
 		-
-			message: "#^Array \\(array\\<string\\>\\) does not accept string\\|null\\.$#"
-			count: 1
-			path: src/Formatter/Expanded.php
-
-		-
 			message: "#^Parameter \\#1 \\$string of function substr expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Formatter/Expanded.php
@@ -1871,9 +1906,9 @@ parameters:
 			path: src/Formatter/Expanded.php
 
 		-
-			message: "#^Array \\(array\\<string\\>\\) does not accept string\\|null\\.$#"
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\:\\:\\$lines \\(array\\<string\\>\\) does not accept array\\<string\\|null\\>\\.$#"
 			count: 1
-			path: src/Formatter/Nested.php
+			path: src/Formatter/Expanded.php
 
 		-
 			message: "#^Parameter \\#1 \\$string of function substr expects string, string\\|null given\\.$#"
@@ -1882,6 +1917,11 @@ parameters:
 
 		-
 			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|null given\\.$#"
+			count: 1
+			path: src/Formatter/Nested.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\:\\:\\$lines \\(array\\<string\\>\\) does not accept array\\<string\\|null\\>\\.$#"
 			count: 1
 			path: src/Formatter/Nested.php
 
