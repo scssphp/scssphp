@@ -1291,9 +1291,7 @@ abstract class StylesheetParser extends Parser
                 if ($supports === null) {
                     $name = $this->expression();
                     $this->scanner->expectChar(':');
-                    $this->whitespace();
-                    $value = $this->expression();
-                    $supports = new SupportsDeclaration($name, $value, $this->scanner->spanFrom($start));
+                    $supports = $this->supportsDeclarationValue($name, $start);
                 }
             }
 
@@ -4032,9 +4030,20 @@ abstract class StylesheetParser extends Parser
             return new SupportsAnything($contents, $this->scanner->spanFrom($start));
         }
 
-        $this->whitespace();
-        $value = $this->expression();
+        $declaration = $this->supportsDeclarationValue($name, $start);
         $this->scanner->expectChar(')');
+
+        return $declaration;
+    }
+
+    private function supportsDeclarationValue(Expression $name, int $start): SupportsDeclaration
+    {
+        if ($name instanceof StringExpression && !$name->hasQuotes() && StringUtil::startsWith($name->getText()->getInitialPlain(), '--')) {
+            $value = new StringExpression($this->interpolatedDeclarationValue());
+        } else {
+            $this->whitespace();
+            $value = $this->expression();
+        }
 
         return new SupportsDeclaration($name, $value, $this->scanner->spanFrom($start));
     }

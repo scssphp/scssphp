@@ -18,6 +18,25 @@ namespace ScssPhp\ScssPhp\Util;
 final class StringUtil
 {
     /**
+     * Checks whether $haystack starts with $needle.
+     *
+     * This is a userland implementation of `str_starts_with` of PHP 8+.
+     *
+     * @param string $haystack
+     * @param string $needle
+     *
+     * @return bool
+     */
+    public static function startsWith(string $haystack, string $needle): bool
+    {
+        if (\PHP_VERSION_ID >= 80000) {
+            return str_starts_with($haystack, $needle);
+        }
+
+        return '' === $needle || ('' !== $haystack && 0 === substr_compare($haystack, $needle, 0, \strlen($needle)));
+    }
+
+    /**
      * Checks whether $haystack ends with $needle.
      *
      * This is a userland implementation of `str_ends_with` of PHP 8+.
