@@ -1,5 +1,12 @@
 # Changelog
 
+## **1.10.1** -- February 28, 2022
+
+**Fixed**
+
+* Fix the handling of `rgb`, `rgba`, `hsl` and `hsla` called with a trailing comma in arguments (@stof)
+* Fix the handling of negative index in `str-insert` (@stof)
+
 ## **1.10.0** -- January 6, 2022
 
 **Fixed**
