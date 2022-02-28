@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Ast\\\\Sass\\\\Statement\\\\MixinRule\\:\\:\\$content \\(bool\\) in isset\\(\\) is not nullable\\.$#"
-			count: 1
-			path: src/Ast/Sass/Statement/MixinRule.php
-
-		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$children type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Block.php
