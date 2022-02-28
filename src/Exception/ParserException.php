@@ -42,6 +42,8 @@ final class ParserException extends \Exception implements SassException
      *
      * @param array $sourcePosition
      *
+     * @return void
+     *
      * @phpstan-param array{string, int, int} $sourcePosition
      */
     public function setSourcePosition(array $sourcePosition): void
