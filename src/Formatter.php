@@ -278,7 +278,15 @@ abstract class Formatter
 
         ob_start();
 
-        $this->block($block);
+        try {
+            $this->block($block);
+        } catch (\Exception $e) {
+            ob_end_clean();
+            throw $e;
+        } catch (\Throwable $e) {
+            ob_end_clean();
+            throw $e;
+        }
 
         $out = ob_get_clean();
         assert($out !== false);
