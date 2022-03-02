@@ -1,5 +1,12 @@
 # Changelog
 
+## **1.10.2** -- March 2, 2022
+
+**Fixed**
+
+* Fix the tracking of the location of comments when using sourcemaps (@stof)
+* Fix the leaking of an output buffer in case of error during the formatting of the output (@stof)
+
 ## **1.10.1** -- February 28, 2022
 
 **Fixed**
