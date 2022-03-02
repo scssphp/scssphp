@@ -1638,19 +1638,19 @@ class Parser
 
                 if (! $comment) {
                     // single part static comment
-                    $this->appendComment([Type::T_COMMENT, $c]);
+                    $commentStatement = [Type::T_COMMENT, $c];
                 } else {
                     $comment[] = $c;
                     $staticComment = substr($this->buffer, $startCommentCount, $endCommentCount - $startCommentCount);
                     $commentStatement = [Type::T_COMMENT, $staticComment, [Type::T_STRING, '', $comment]];
-
-                    list($line, $column) = $this->getSourcePosition($startCommentCount);
-                    $commentStatement[self::SOURCE_LINE] = $line;
-                    $commentStatement[self::SOURCE_COLUMN] = $column;
-                    $commentStatement[self::SOURCE_INDEX] = $this->sourceIndex;
-
-                    $this->appendComment($commentStatement);
                 }
+
+                list($line, $column) = $this->getSourcePosition($startCommentCount);
+                $commentStatement[self::SOURCE_LINE] = $line;
+                $commentStatement[self::SOURCE_COLUMN] = $column;
+                $commentStatement[self::SOURCE_INDEX] = $this->sourceIndex;
+
+                $this->appendComment($commentStatement);
 
                 $this->commentsSeen[$startCommentCount] = true;
                 $this->count = $endCommentCount;
