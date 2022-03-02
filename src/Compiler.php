@@ -722,9 +722,9 @@ class Compiler
             $out->sourceLine   = $this->env->block->sourceLine;
             $out->sourceColumn = $this->env->block->sourceColumn;
         } else {
-            $out->sourceName   = null;
-            $out->sourceLine   = null;
-            $out->sourceColumn = null;
+            $out->sourceName = isset($this->sourceNames[$this->sourceIndex]) ? $this->sourceNames[$this->sourceIndex] : '(stdin)';
+            $out->sourceLine = $this->sourceLine;
+            $out->sourceColumn = $this->sourceColumn;
         }
 
         return $out;
