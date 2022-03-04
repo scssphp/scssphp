@@ -41,6 +41,7 @@ jobs:
                     coverage: "none"
                     php-version: "${{ matrix.php }}"
                     extensions: "${{ matrix.extensions }}"
+                    ini-file: development
 
             # PHPUnit 8.5.18+ and 9.5.7+ contains a runtime check for ext-mbstring, so we need to use an older version
             # for running tests without ext-mbstring.
@@ -71,6 +72,7 @@ jobs:
                 with:
                     coverage: "none"
                     php-version: "8.0"
+                    ini-file: development
 
             -   name: Install dependencies
                 run: composer update --ansi --no-progress
