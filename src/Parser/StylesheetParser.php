@@ -81,6 +81,7 @@ use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\StringUtil;
 use ScssPhp\ScssPhp\Value\ListSeparator;
 use ScssPhp\ScssPhp\Value\SassColor;
+use ScssPhp\ScssPhp\Value\SpanColorFormat;
 
 /**
  * @internal
@@ -2434,7 +2435,7 @@ abstract class StylesheetParser extends Parser
 
         $first = $this->scanner->peekChar();
         if ($first !== null && Character::isDigit($first)) {
-            return new ColorExpression($this->hexColorContents(), $this->scanner->spanFrom($start));
+            return new ColorExpression($this->hexColorContents($start), $this->scanner->spanFrom($start));
         }
 
         $afterHash = $this->scanner->getPosition();
@@ -2442,7 +2443,7 @@ abstract class StylesheetParser extends Parser
         if ($this->isHexColor($identifier)) {
             $this->scanner->setPosition($afterHash);
 
-            return new ColorExpression($this->hexColorContents(), $this->scanner->spanFrom($start));
+            return new ColorExpression($this->hexColorContents($start), $this->scanner->spanFrom($start));
         }
 
         $buffer = new InterpolationBuffer();
@@ -2455,7 +2456,7 @@ abstract class StylesheetParser extends Parser
     /**
      * Consumes the contents of a hex color, after the `#`.
      */
-    private function hexColorContents(): SassColor
+    private function hexColorContents(int $start): SassColor
     {
         $digit1 = $this->hexDigit();
         $digit2 = $this->hexDigit();
@@ -2488,7 +2489,9 @@ abstract class StylesheetParser extends Parser
             }
         }
 
-        return SassColor::rgb($red, $green, $blue, $alpha);
+        // Don't emit four- or eight-digit hex colors as hex, since that's not
+        // yet well-supported in browsers.
+        return SassColor::rgbInternal($red, $green, $blue, $alpha, $alpha === null ? new SpanColorFormat($this->scanner->spanFrom($start)) : null);
     }
 
     private function isHexColor(Interpolation $interpolation): bool
@@ -2908,7 +2911,10 @@ abstract class StylesheetParser extends Parser
                 $color = Colors::colorNameToColor($lower);
 
                 if ($color !== null) {
-                    return new ColorExpression($color, $identifier->getSpan());
+                    return new ColorExpression(
+                        SassColor::rgbInternal($color->getRed(), $color->getGreen(), $color->getBlue(), $color->getAlpha(), new SpanColorFormat($identifier->getSpan())),
+                        $identifier->getSpan()
+                    );
                 }
             }
 

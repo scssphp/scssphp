@@ -62,11 +62,19 @@ final class SassColor extends Value
     private $lightness;
 
     /**
-     * TThis color's alpha channel, between `0` and `1`.
+     * This color's alpha channel, between `0` and `1`.
      *
      * @var int|float
+     * @readonly
      */
     private $alpha;
+
+    /**
+     * @var SpanColorFormat|string|null
+     * @phpstan-var SpanColorFormat|ColorFormat::*|null
+     * @readonly
+     */
+    private $format;
 
     /**
      * Creates a RGB color
@@ -82,6 +90,28 @@ final class SassColor extends Value
      */
     public static function rgb(int $red, int $green, int $blue, $alpha = null): SassColor
     {
+        return self::rgbInternal($red, $green, $blue, $alpha);
+    }
+
+    /**
+     * Like {@see rgb} but also takes a color format.
+     *
+     * @internal
+     *
+     * @param int $red
+     * @param int $blue
+     * @param int $green
+     * @param int|float|null $alpha
+     * @param SpanColorFormat|string|null $format
+     *
+     * @return SassColor
+     *
+     * @phpstan-param SpanColorFormat|ColorFormat::*|null $format
+     *
+     * @throws \OutOfRangeException if values are outside the expected range.
+     */
+    public static function rgbInternal(int $red, int $green, int $blue, $alpha = null, $format = null): SassColor
+    {
         if ($alpha === null) {
             $alpha = 1;
         } else {
@@ -92,7 +122,7 @@ final class SassColor extends Value
         ErrorUtil::checkIntInInterval($green, 0, 255, 'green');
         ErrorUtil::checkIntInInterval($blue, 0, 255, 'blue');
 
-        return new self($red, $green, $blue, null, null, null, $alpha);
+        return new self($red, $green, $blue, null, null, null, $alpha, $format);
     }
 
     /**
@@ -102,8 +132,32 @@ final class SassColor extends Value
      * @param int|float|null $alpha
      *
      * @return SassColor
+     *
+     * @throws \OutOfRangeException if values are outside the expected range.
      */
     public static function hsl($hue, $saturation, $lightness, $alpha = null): SassColor
+    {
+        return self::hslInternal($hue, $saturation, $lightness, $alpha);
+    }
+
+    /**
+     * Like {@see hsl} but also takes a color format.
+     *
+     * @internal
+     *
+     * @param int|float $hue
+     * @param int|float $saturation
+     * @param int|float $lightness
+     * @param int|float|null $alpha
+     * @param SpanColorFormat|string|null $format
+     *
+     * @return SassColor
+     *
+     * @throws \OutOfRangeException if values are outside the expected range.
+     *
+     * @phpstan-param SpanColorFormat|ColorFormat::*|null $format
+     */
+    public static function hslInternal($hue, $saturation, $lightness, $alpha = null, $format = null): SassColor
     {
         if ($alpha === null) {
             $alpha = 1;
@@ -115,7 +169,7 @@ final class SassColor extends Value
         $saturation = NumberUtil::fuzzyAssertRange($saturation, 0, 100, 'saturation');
         $lightness = NumberUtil::fuzzyAssertRange($lightness, 0, 100, 'lightness');
 
-        return new self(null, null, null, $hue, $saturation, $lightness, $alpha);
+        return new self(null, null, null, $hue, $saturation, $lightness, $alpha, $format);
     }
 
     /**
@@ -163,8 +217,11 @@ final class SassColor extends Value
      * @param int|float|null $saturation
      * @param int|float|null $lightness
      * @param int|float      $alpha
+     * @param SpanColorFormat|string|null $format
+     *
+     * @phpstan-param SpanColorFormat|ColorFormat::*|null $format
      */
-    private function __construct(?int $red, ?int $green, ?int $blue, $hue, $saturation, $lightness, $alpha)
+    private function __construct(?int $red, ?int $green, ?int $blue, $hue, $saturation, $lightness, $alpha, $format = null)
     {
         $this->red = $red;
         $this->green = $green;
@@ -173,6 +230,7 @@ final class SassColor extends Value
         $this->saturation = $saturation;
         $this->lightness = $lightness;
         $this->alpha = $alpha;
+        $this->format = $format;
     }
 
     public function getRed(): int
@@ -266,6 +324,21 @@ final class SassColor extends Value
     public function getAlpha()
     {
         return $this->alpha;
+    }
+
+    /**
+     * The format in which this color was originally written and should be
+     * serialized in expanded mode, or `null` if the color wasn't written in a
+     * supported format.
+     *
+     * @internal
+     *
+     * @return SpanColorFormat|string|null
+     * @phpstan-return SpanColorFormat|ColorFormat::*|null
+     */
+    public function getFormat()
+    {
+        return $this->format;
     }
 
     public function accept(ValueVisitor $visitor)

@@ -45,6 +45,7 @@ use ScssPhp\ScssPhp\Util\NumberUtil;
 use ScssPhp\ScssPhp\Value\CalculationInterpolation;
 use ScssPhp\ScssPhp\Value\CalculationOperation;
 use ScssPhp\ScssPhp\Value\CalculationOperator;
+use ScssPhp\ScssPhp\Value\ColorFormat;
 use ScssPhp\ScssPhp\Value\ListSeparator;
 use ScssPhp\ScssPhp\Value\SassBoolean;
 use ScssPhp\ScssPhp\Value\SassCalculation;
@@ -589,28 +590,46 @@ class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisitor
         $name = Colors::RGBaToColorName($value->getRed(), $value->getGreen(), $value->getBlue(), $value->getAlpha());
 
         // In compressed mode, emit colors in the shortest representation possible.
-        if ($this->compressed && NumberUtil::fuzzyEquals($value->getAlpha(), 1)) {
-            $canUseShortHex = $this->canUseShortHex($value);
-            $hexLength = $canUseShortHex ? 4 : 7;
-
-            if ($name !== null && \strlen($name) <= $hexLength) {
-                $this->buffer->write($name);
-            } elseif ($canUseShortHex) {
-                $this->buffer->writeChar('#');
-                $this->buffer->writeChar(dechex($value->getRed() & 0xF));
-                $this->buffer->writeChar(dechex($value->getGreen() & 0xF));
-                $this->buffer->writeChar(dechex($value->getBlue() & 0xF));
+        if ($this->compressed) {
+            if (!NumberUtil::fuzzyEquals($value->getAlpha(), 1)) {
+                $this->writeRgb($value);
             } else {
-                $this->buffer->writeChar('#');
-                $this->writeHexComponent($value->getRed());
-                $this->writeHexComponent($value->getGreen());
-                $this->writeHexComponent($value->getBlue());
+                $canUseShortHex = $this->canUseShortHex($value);
+                $hexLength = $canUseShortHex ? 4 : 7;
+
+                if ($name !== null && \strlen($name) <= $hexLength) {
+                    $this->buffer->write($name);
+                } elseif ($canUseShortHex) {
+                    $this->buffer->writeChar('#');
+                    $this->buffer->writeChar(dechex($value->getRed() & 0xF));
+                    $this->buffer->writeChar(dechex($value->getGreen() & 0xF));
+                    $this->buffer->writeChar(dechex($value->getBlue() & 0xF));
+                } else {
+                    $this->buffer->writeChar('#');
+                    $this->writeHexComponent($value->getRed());
+                    $this->writeHexComponent($value->getGreen());
+                    $this->writeHexComponent($value->getBlue());
+                }
             }
 
             return;
         }
 
-        if ($name !== null && !NumberUtil::fuzzyEquals($value->getAlpha(), 0)) {
+        $format = $value->getFormat();
+
+        if ($format !== null) {
+            if ($format === ColorFormat::RGB_FUNCTION) {
+                $this->writeRgb($value);
+            } elseif ($format === ColorFormat::HSL_FUNCTION) {
+                $this->writeHsl($value);
+            } else {
+                $this->buffer->write($format->getOriginal());
+            }
+        } elseif ($name !== null &&
+            // Always emit generated transparent colors in rgba format. This works
+            // around an IE bug. See https://github.com/sass/sass/issues/1782.
+            !NumberUtil::fuzzyEquals($value->getAlpha(), 0)
+        ) {
             $this->buffer->write($name);
         } elseif (NumberUtil::fuzzyEquals($value->getAlpha(), 1)) {
             $this->buffer->writeChar('#');
@@ -618,20 +637,57 @@ class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisitor
             $this->writeHexComponent($value->getGreen());
             $this->writeHexComponent($value->getBlue());
         } else {
-            $this->buffer->write('rgba(');
-            $this->buffer->write((string) $value->getRed());
-            $this->buffer->write($this->getCommaSeparator());
-            $this->buffer->write((string) $value->getGreen());
-            $this->buffer->write($this->getCommaSeparator());
-            $this->buffer->write((string) $value->getBlue());
-            $this->buffer->write($this->getCommaSeparator());
-            $this->writeNumber($value->getAlpha());
-            $this->buffer->writeChar(')');
+            $this->writeRgb($value);
         }
     }
 
     /**
-     * Returns whether $color's hex pair representation is symmetrical (e.g. `FF`)
+     * Writes $value as an `rgb` or `rgba` function.
+     */
+    private function writeRgb(SassColor $value): void
+    {
+        $opaque = NumberUtil::fuzzyEquals($value->getAlpha(), 1);
+        $this->buffer->write($opaque ? 'rgb(' : 'rgba(');
+        $this->buffer->write((string) $value->getRed());
+        $this->buffer->write($this->getCommaSeparator());
+        $this->buffer->write((string) $value->getGreen());
+        $this->buffer->write($this->getCommaSeparator());
+        $this->buffer->write((string) $value->getBlue());
+
+        if (!$opaque) {
+            $this->buffer->write($this->getCommaSeparator());
+            $this->writeNumber($value->getAlpha());
+        }
+
+        $this->buffer->writeChar(')');
+    }
+
+    /**
+     * Writes $value as an `hsl` or `hsla` function.
+     */
+    private function writeHsl(SassColor $value): void
+    {
+        $opaque = NumberUtil::fuzzyEquals($value->getAlpha(), 1);
+        $this->buffer->write($opaque ? 'hsl(' : 'hsla(');
+        $this->writeNumber($value->getHue());
+        $this->buffer->write('deg');
+        $this->buffer->write($this->getCommaSeparator());
+        $this->writeNumber($value->getSaturation());
+        $this->buffer->writeChar('%');
+        $this->buffer->write($this->getCommaSeparator());
+        $this->writeNumber($value->getLightness());
+        $this->buffer->writeChar('%');
+
+        if (!$opaque) {
+            $this->buffer->write($this->getCommaSeparator());
+            $this->writeNumber($value->getAlpha());
+        }
+
+        $this->buffer->writeChar(')');
+    }
+
+    /**
+     * Returns whether $color's hex pair representation is symmetrical (e.g. `FF`).
      */
     private function isSymmetricalHex(int $color): bool
     {
