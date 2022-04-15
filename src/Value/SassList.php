@@ -75,6 +75,10 @@ class SassList extends Value
 
     public function isBlank(): bool
     {
+        if ($this->brackets) {
+            return false;
+        }
+
         foreach ($this->contents as $element) {
             if (!$element->isBlank()) {
                 return false;
