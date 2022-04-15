@@ -151,7 +151,48 @@ abstract class SassNumber extends Value
             return new SingleUnitSassNumber($value, $numeratorUnits[0]);
         }
 
-        return new ComplexSassNumber($value, $numeratorUnits, $denominatorUnits);
+        if (empty($numeratorUnits)) {
+            return new ComplexSassNumber($value, $numeratorUnits, $denominatorUnits);
+        }
+
+        $numerators = $numeratorUnits;
+        $unsimplifiedDenominators = $denominatorUnits;
+        $denominators = [];
+
+        foreach ($unsimplifiedDenominators as $denominator) {
+            $simplifiedAway = false;
+
+            foreach ($numerators as $i => $numerator) {
+                $factor = self::getConversionFactor($denominator, $numerator);
+
+                if ($factor === null) {
+                    continue;
+                }
+
+                $value *= $factor;
+                unset($numerators[$i]);
+                $simplifiedAway = true;
+                break;
+            }
+
+            if (!$simplifiedAway) {
+                $denominators[] = $denominator;
+            }
+        }
+
+        $numerators = array_values($numerators);
+
+        if (empty($denominators)) {
+            if (empty($numerators)) {
+                return new UnitlessSassNumber($value);
+            }
+
+            if (\count($numerators) === 1) {
+                return new SingleUnitSassNumber($value, $numerators[0]);
+            }
+        }
+
+        return new ComplexSassNumber($value, $numerators, $denominators);
     }
 
     /**
@@ -396,46 +437,38 @@ abstract class SassNumber extends Value
     }
 
     /**
-     * Returns a copy of this number, converted to the same units as $other.
+     * Returns a copy of this number, converted to the units represented by $newNumeratorUnits and $newDenominatorUnits.
      *
-     * Unlike {@see convertToMatch}, this does not throw an error if this number is
-     * unitless and $other is not, or vice versa. Instead, it treats all unitless
-     * numbers as convertible to and from all units without changing the value.
-     *
-     * Note that {@see coerceValueToMatch} is generally more efficient if the value
+     * Note that {@see convertValue} is generally more efficient if the value
      * is going to be accessed directly.
      *
-     * @param SassNumber  $other
-     * @param string|null $name      The argument name if this is a function argument
-     * @param string|null $otherName The argument name for $other if this is a function argument
+     * @param list<string> $newNumeratorUnits
+     * @param list<string> $newDenominatorUnits
+     * @param string|null  $name      The argument name if this is a function argument
      *
      * @return SassNumber
      *
-     * @throws SassScriptException if the units are not compatible
+     * @throws SassScriptException if this number's units are not compatible with $newNumeratorUnits and $newDenominatorUnits, or if either number is unitless but the other is not.
      */
-    public function coerceToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null): SassNumber
+    public function convert(array $newNumeratorUnits, array $newDenominatorUnits, ?string $name = null): SassNumber
     {
-        return self::withUnits($this->coerceValueToMatch($other, $name, $otherName), $other->getNumeratorUnits(), $other->getDenominatorUnits());
+        return self::withUnits($this->convertValue($newNumeratorUnits, $newDenominatorUnits, $name), $newNumeratorUnits, $newDenominatorUnits);
     }
 
     /**
-     * Returns {@see value}, converted to the same units as $other.
+     * Returns {@see value}, converted to the units represented by $newNumeratorUnits and $newDenominatorUnits.
      *
-     * Unlike {@see convertValueToMatch}, this does not throw an error if this number
-     * is unitless and $other is not, or vice versa. Instead, it treats all unitless
-     * numbers as convertible to and from all units without changing the value.
-     *
-     * @param SassNumber  $other
-     * @param string|null $name      The argument name if this is a function argument
-     * @param string|null $otherName The argument name for $other if this is a function argument
+     * @param list<string> $newNumeratorUnits
+     * @param list<string> $newDenominatorUnits
+     * @param string|null  $name                The argument name if this is a function argument
      *
      * @return int|float
      *
-     * @throws SassScriptException if the units are not compatible
+     * @throws SassScriptException if this number's units are not compatible with $newNumeratorUnits and $newDenominatorUnits, or if either number is unitless but the other is not.
      */
-    public function coerceValueToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null)
+    public function convertValue(array $newNumeratorUnits, array $newDenominatorUnits, ?string $name = null)
     {
-        return $this->convertOrCoerceValue($other->getNumeratorUnits(), $other->getDenominatorUnits(), true, $name, $other, $otherName);
+        return $this->convertOrCoerceValue($newNumeratorUnits, $newDenominatorUnits, false, $name);
     }
 
     /**
@@ -529,6 +562,49 @@ abstract class SassNumber extends Value
     public function coerceValueToUnit(string $unit, ?string $name = null)
     {
         return $this->coerceValue([$unit], [], $name);
+    }
+
+    /**
+     * Returns a copy of this number, converted to the same units as $other.
+     *
+     * Unlike {@see convertToMatch}, this does not throw an error if this number is
+     * unitless and $other is not, or vice versa. Instead, it treats all unitless
+     * numbers as convertible to and from all units without changing the value.
+     *
+     * Note that {@see coerceValueToMatch} is generally more efficient if the value
+     * is going to be accessed directly.
+     *
+     * @param SassNumber  $other
+     * @param string|null $name      The argument name if this is a function argument
+     * @param string|null $otherName The argument name for $other if this is a function argument
+     *
+     * @return SassNumber
+     *
+     * @throws SassScriptException if the units are not compatible
+     */
+    public function coerceToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null): SassNumber
+    {
+        return self::withUnits($this->coerceValueToMatch($other, $name, $otherName), $other->getNumeratorUnits(), $other->getDenominatorUnits());
+    }
+
+    /**
+     * Returns {@see value}, converted to the same units as $other.
+     *
+     * Unlike {@see convertValueToMatch}, this does not throw an error if this number
+     * is unitless and $other is not, or vice versa. Instead, it treats all unitless
+     * numbers as convertible to and from all units without changing the value.
+     *
+     * @param SassNumber  $other
+     * @param string|null $name      The argument name if this is a function argument
+     * @param string|null $otherName The argument name for $other if this is a function argument
+     *
+     * @return int|float
+     *
+     * @throws SassScriptException if the units are not compatible
+     */
+    public function coerceValueToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null)
+    {
+        return $this->convertOrCoerceValue($other->getNumeratorUnits(), $other->getDenominatorUnits(), true, $name, $other, $otherName);
     }
 
     /**
