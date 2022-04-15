@@ -1661,11 +1661,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Parser\\:\\:\\$sourceName \\(string\\) in empty\\(\\) is not falsy\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Result of && is always false\\.$#"
 			count: 2
 			path: src/Parser.php
@@ -1716,7 +1711,7 @@ parameters:
 			path: src/SourceMap/SourceMapGenerator.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\SourceMap\\\\SourceMapGenerator\\:\\:\\$options \\(array\\{sourceRoot\\: string, sourceMapFilename\\: string\\|null, sourceMapURL\\: string\\|null, sourceMapWriteTo\\: string\\|null, outputSourceFiles\\: bool, sourceMapRootpath\\: string, sourceMapBasepath\\: string\\}\\) does not accept array\\.$#"
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\SourceMap\\\\SourceMapGenerator\\:\\:\\$options \\(array\\{sourceRoot\\: string, sourceMapFilename\\: string\\|null, sourceMapURL\\: string\\|null, sourceMapWriteTo\\: string\\|null, outputSourceFiles\\: bool, sourceMapRootpath\\: string, sourceMapBasepath\\: string\\}\\) does not accept non\\-empty\\-array\\<'outputSourceFiles'\\|'sourceMapBasepath'\\|'sourceMapFilename'\\|'sourceMapRootpath'\\|'sourceMapURL'\\|'sourceMapWriteTo'\\|'sourceRoot', bool\\|string\\|null\\>\\.$#"
 			count: 1
 			path: src/SourceMap/SourceMapGenerator.php
 
