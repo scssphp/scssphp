@@ -130,12 +130,30 @@ final class SingleUnitSassNumber extends SassNumber
 
     public function coerceToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null): SassNumber
     {
-        return $this->convertToMatch($other, $name, $otherName);
+        if ($other instanceof SingleUnitSassNumber) {
+            $coerced = $this->tryCoerceToUnit($other->unit);
+
+            if ($coerced !== null) {
+                return $coerced;
+            }
+        }
+
+        // Call the parent to generate a consistent error message.
+        return parent::coerceToMatch($other, $name, $otherName);
     }
 
     public function coerceValueToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null)
     {
-        return $this->convertValueToMatch($other, $name, $otherName);
+        if ($other instanceof SingleUnitSassNumber) {
+            $coerced = $this->tryCoerceValueToUnit($other->unit);
+
+            if ($coerced !== null) {
+                return $coerced;
+            }
+        }
+
+        // Call the parent to generate a consistent error message.
+        return parent::coerceValueToMatch($other, $name, $otherName);
     }
 
     public function convertToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null): SassNumber

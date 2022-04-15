@@ -45,6 +45,22 @@ final class SassCalculation extends Value
     private $arguments;
 
     /**
+     * Creates a new calculation with the given [name] and [arguments]
+     * that will not be simplified.
+     *
+     * @param string       $name
+     * @param list<object> $arguments
+     *
+     * @return Value
+     *
+     * @internal
+     */
+    public static function unsimplified(string $name, array $arguments): Value
+    {
+        return new SassCalculation($name, $arguments);
+    }
+
+    /**
      * Creates a `calc()` calculation with the given $argument.
      *
      * The $argument must be either a {@see SassNumber}, a {@see SassCalculation}, an
@@ -252,7 +268,7 @@ final class SassCalculation extends Value
      */
     public static function operate(string $operator, object $left, object $right): object
     {
-        return self::operateInternal($operator, $left, $right, false);
+        return self::operateInternal($operator, $left, $right, false, true);
     }
 
     /**
@@ -262,10 +278,13 @@ final class SassCalculation extends Value
      * subtracted with numbers with units, for backwards-compatibility with the
      * old global `min()` and `max()` functions.
      *
+     * If $simplify is `false`, no simplification will be done.
+     *
      * @param string $operator
      * @param object $left
      * @param object $right
      * @param bool   $inMinMax
+     * @param bool   $simplify
      *
      * @return object
      *
@@ -275,8 +294,12 @@ final class SassCalculation extends Value
      *
      * @internal
      */
-    public static function operateInternal(string $operator, object $left, object $right, bool $inMinMax): object
+    public static function operateInternal(string $operator, object $left, object $right, bool $inMinMax, bool $simplify): object
     {
+        if (!$simplify) {
+            return new CalculationOperation($operator, $left, $right);
+        }
+
         $left = self::simplify($left);
         $right = self::simplify($right);
 
