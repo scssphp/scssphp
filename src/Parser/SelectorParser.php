@@ -41,7 +41,7 @@ final class SelectorParser extends Parser
     /**
      * Pseudo-class selectors that take unadorned selectors as arguments.
      */
-    private const SELECTOR_PSEUDO_CLASSES = ['not', 'is', 'matches', 'current', 'any', 'has', 'host', 'host-context'];
+    private const SELECTOR_PSEUDO_CLASSES = ['not', 'is', 'matches', 'where', 'current', 'any', 'has', 'host', 'host-context'];
 
     /**
      * Pseudo-element selectors that take unadorned selectors as arguments.
