@@ -476,9 +476,7 @@ abstract class StylesheetParser extends Parser
         $beforeDeclaration = $this->scanner->getPosition();
 
         try {
-            $value = $this->lookingAtChildren()
-                ? new StringExpression(new Interpolation([], $this->scanner->getEmptySpan()), true)
-                : $this->expression();
+            $value = $this->expression();
 
             if ($this->lookingAtChildren()) {
                 // Properties that are ambiguous with selectors can't have additional

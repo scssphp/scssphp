@@ -1706,11 +1706,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Ternary operator condition is always false\\.$#"
-			count: 1
-			path: src/Parser/StylesheetParser.php
-
-		-
 			message: "#^Negated boolean expression is always true\\.$#"
 			count: 1
 			path: src/Serializer/SerializeVisitor.php
