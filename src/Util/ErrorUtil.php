@@ -15,7 +15,7 @@ namespace ScssPhp\ScssPhp\Util;
 /**
  * @internal
  */
-class ErrorUtil
+final class ErrorUtil
 {
     /**
      * @throws \OutOfRangeException

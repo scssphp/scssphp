@@ -12,6 +12,11 @@
 
 namespace ScssPhp\ScssPhp\Serializer;
 
+/**
+ * The result of converting a CSS AST to CSS text.
+ *
+ * @internal
+ */
 final class SerializeResult
 {
     /**

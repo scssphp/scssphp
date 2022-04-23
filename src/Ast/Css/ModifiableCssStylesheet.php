@@ -14,7 +14,12 @@ namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 
-class ModifiableCssStylesheet extends ModifiableCssParentNode implements CssStylesheet
+/**
+ * A modifiable version of {@see CssStylesheet} for use in the evaluation step.
+ *
+ * @internal
+ */
+final class ModifiableCssStylesheet extends ModifiableCssParentNode implements CssStylesheet
 {
     /**
      * @var FileSpan

@@ -21,7 +21,7 @@ use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
  *
  * @internal
  */
-class CalculationExpression implements Expression
+final class CalculationExpression implements Expression
 {
     /**
      * This calculation's name.

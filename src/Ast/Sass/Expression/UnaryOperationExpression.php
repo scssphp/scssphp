@@ -21,7 +21,7 @@ use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
  *
  * @internal
  */
-class UnaryOperationExpression implements Expression
+final class UnaryOperationExpression implements Expression
 {
     /**
      * @var UnaryOperator::*
