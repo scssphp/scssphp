@@ -28,6 +28,16 @@ use ScssPhp\ScssPhp\Util\StringUtil;
 final class Util
 {
     /**
+     * Returns $string with every line indented $indentation spaces.
+     */
+    public static function indent(string $string, int $indentation): string
+    {
+        return implode("\n", array_map(function ($line) use ($indentation) {
+            return str_repeat(' ', $indentation) . $line;
+        }, explode("\n", $string)));
+    }
+
+    /**
      * Asserts that `value` falls within `range` (inclusive), leaving
      * room for slight floating-point errors.
      *
