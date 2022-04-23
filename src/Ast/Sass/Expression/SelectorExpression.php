@@ -39,7 +39,7 @@ final class SelectorExpression implements Expression
         return $this->span;
     }
 
-    public function accepts(ExpressionVisitor $visitor)
+    public function accept(ExpressionVisitor $visitor)
     {
         return $visitor->visitSelectorExpression($this);
     }

@@ -121,7 +121,7 @@ final class FunctionExpression implements Expression, CallableInvocation, SassRe
         return SpanUtil::initialIdentifier($this->span);
     }
 
-    public function accepts(ExpressionVisitor $visitor)
+    public function accept(ExpressionVisitor $visitor)
     {
         return $visitor->visitFunctionExpression($this);
     }

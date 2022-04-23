@@ -59,7 +59,7 @@ final class IfExpression implements Expression, CallableInvocation
         return $this->span;
     }
 
-    public function accepts(ExpressionVisitor $visitor)
+    public function accept(ExpressionVisitor $visitor)
     {
         return $visitor->visitIfExpression($this);
     }

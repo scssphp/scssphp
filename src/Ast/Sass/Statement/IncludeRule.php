@@ -115,7 +115,7 @@ final class IncludeRule implements Statement, CallableInvocation, SassReference
         return SpanUtil::initialIdentifier($startSpan);
     }
 
-    public function accepts(StatementVisitor $visitor)
+    public function accept(StatementVisitor $visitor)
     {
         return $visitor->visitIncludeRule($this);
     }

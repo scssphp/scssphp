@@ -61,7 +61,7 @@ final class MixinRule extends CallableDeclaration implements SassDeclaration
         return SpanUtil::initialIdentifier($startSpan);
     }
 
-    public function accepts(StatementVisitor $visitor)
+    public function accept(StatementVisitor $visitor)
     {
         return $visitor->visitMixinRule($this);
     }

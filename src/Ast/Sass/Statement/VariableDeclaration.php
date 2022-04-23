@@ -143,7 +143,7 @@ final class VariableDeclaration implements Statement, SassDeclaration
         return SpanUtil::initialIdentifier($this->span);
     }
 
-    public function accepts(StatementVisitor $visitor)
+    public function accept(StatementVisitor $visitor)
     {
         return $visitor->visitVariableDeclaration($this);
     }

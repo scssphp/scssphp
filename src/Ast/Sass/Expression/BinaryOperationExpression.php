@@ -107,7 +107,7 @@ final class BinaryOperationExpression implements Expression
         return $leftSpan->expand($rightSpan);
     }
 
-    public function accepts(ExpressionVisitor $visitor)
+    public function accept(ExpressionVisitor $visitor)
     {
         return $visitor->visitBinaryOperationExpression($this);
     }

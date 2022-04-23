@@ -72,7 +72,7 @@ final class InterpolatedFunctionExpression implements Expression, CallableInvoca
         return $this->span;
     }
 
-    public function accepts(ExpressionVisitor $visitor)
+    public function accept(ExpressionVisitor $visitor)
     {
         return $visitor->visitInterpolatedFunctionExpression($this);
     }

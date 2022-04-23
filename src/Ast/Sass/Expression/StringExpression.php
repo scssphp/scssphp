@@ -67,7 +67,7 @@ final class StringExpression implements Expression
         return $this->text->getSpan();
     }
 
-    public function accepts(ExpressionVisitor $visitor)
+    public function accept(ExpressionVisitor $visitor)
     {
         return $visitor->visitStringExpression($this);
     }
