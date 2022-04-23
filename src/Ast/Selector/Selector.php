@@ -22,7 +22,7 @@ use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
  * This selector tree is mostly plain CSS, but also may contain a
  * {@see ParentSelector} or a {@see PlaceholderSelector}.
  *
- * Selectors have structural equality semantics
+ * Selectors have structural equality semantics.
  */
 abstract class Selector implements Equatable
 {

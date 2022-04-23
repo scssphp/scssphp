@@ -19,7 +19,7 @@ use ScssPhp\ScssPhp\Util\Equatable;
  *
  * [qualified name]: https://www.w3.org/TR/css3-namespace/#css-qnames
  */
-class QualifiedName implements Equatable
+final class QualifiedName implements Equatable
 {
     /**
      * The identifier name.

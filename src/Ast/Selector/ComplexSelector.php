@@ -16,7 +16,13 @@ use ScssPhp\ScssPhp\Extend\ExtendUtil;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 
-class ComplexSelector extends Selector
+/**
+ * A complex selector.
+ *
+ * A complex selector is composed of {@see CompoundSelector}s separated by
+ * {@see Combinator}s. It selects elements based on their parent selectors.
+ */
+final class ComplexSelector extends Selector
 {
     /**
      * The components of this selector.
