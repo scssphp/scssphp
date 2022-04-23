@@ -88,7 +88,7 @@ final class VariableExpression implements Expression, SassReference
         return SpanUtil::initialIdentifier($this->span);
     }
 
-    public function accepts(ExpressionVisitor $visitor)
+    public function accept(ExpressionVisitor $visitor)
     {
         return $visitor->visitVariableExpression($this);
     }

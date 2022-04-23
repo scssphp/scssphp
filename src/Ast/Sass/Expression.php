@@ -26,5 +26,5 @@ interface Expression extends SassNode
      * @param ExpressionVisitor<T> $visitor
      * @return T
      */
-    public function accepts(ExpressionVisitor $visitor);
+    public function accept(ExpressionVisitor $visitor);
 }

@@ -116,7 +116,7 @@ final class Declaration extends ParentStatement
         return $this->span;
     }
 
-    public function accepts(StatementVisitor $visitor)
+    public function accept(StatementVisitor $visitor)
     {
         return $visitor->visitDeclaration($this);
     }

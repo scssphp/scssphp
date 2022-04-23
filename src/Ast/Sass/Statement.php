@@ -26,5 +26,5 @@ interface Statement extends SassNode
      * @param StatementVisitor<T> $visitor
      * @return T
      */
-    public function accepts(StatementVisitor $visitor);
+    public function accept(StatementVisitor $visitor);
 }

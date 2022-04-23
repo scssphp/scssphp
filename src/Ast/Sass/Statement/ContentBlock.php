@@ -32,7 +32,7 @@ final class ContentBlock extends CallableDeclaration
         parent::__construct('@content', $arguments, $span, $children);
     }
 
-    public function accepts(StatementVisitor $visitor)
+    public function accept(StatementVisitor $visitor)
     {
         return $visitor->visitContentBlock($this);
     }

@@ -54,7 +54,7 @@ final class DebugRule implements Statement
         return $this->span;
     }
 
-    public function accepts(StatementVisitor $visitor)
+    public function accept(StatementVisitor $visitor)
     {
         return $visitor->visitDebugRule($this);
     }

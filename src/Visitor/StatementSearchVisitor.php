@@ -347,7 +347,7 @@ abstract class StatementSearchVisitor implements StatementVisitor
     protected function visitChildren(array $children)
     {
         foreach ($children as $child) {
-            $result = $child->accepts($this);
+            $result = $child->accept($this);
 
             if ($result !== null) {
                 return $result;

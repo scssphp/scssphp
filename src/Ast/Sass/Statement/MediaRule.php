@@ -63,7 +63,7 @@ final class MediaRule extends ParentStatement
         return $this->span;
     }
 
-    public function accepts(StatementVisitor $visitor)
+    public function accept(StatementVisitor $visitor)
     {
         return $visitor->visitMediaRule($this);
     }
