@@ -12,6 +12,11 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass;
 
+use ScssPhp\ScssPhp\Ast\Css\CssAtRule;
+use ScssPhp\ScssPhp\Ast\Css\CssMediaRule;
+use ScssPhp\ScssPhp\Ast\Css\CssParentNode;
+use ScssPhp\ScssPhp\Ast\Css\CssStyleRule;
+use ScssPhp\ScssPhp\Ast\Css\CssSupportsRule;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\AtRootQueryParser;
@@ -122,6 +127,34 @@ final class AtRootQuery
     public function excludesStyleRules(): bool
     {
         return ($this->all || $this->rule) !== $this->include;
+    }
+
+    /**
+     * Returns whether $this excludes $node
+     */
+    public function excludes(CssParentNode $node): bool
+    {
+        if ($this->all) {
+            return !$this->include;
+        }
+
+        if ($node instanceof CssStyleRule) {
+            return $this->excludesStyleRules();
+        }
+
+        if ($node instanceof CssMediaRule) {
+            return $this->excludesName('media');
+        }
+
+        if ($node instanceof CssSupportsRule) {
+            return $this->excludesName('supports');
+        }
+
+        if ($node instanceof CssAtRule) {
+            return $this->excludesName(strtolower($node->getName()->getValue()));
+        }
+
+        return false;
     }
 
     /**
