@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass\Expression;
 
+use ScssPhp\ScssPhp\Ast\Sass\ArgumentDeclaration;
 use ScssPhp\ScssPhp\Ast\Sass\ArgumentInvocation;
 use ScssPhp\ScssPhp\Ast\Sass\CallableInvocation;
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
@@ -43,10 +44,27 @@ final class IfExpression implements Expression, CallableInvocation
      */
     private $span;
 
+    /**
+     * @var ArgumentDeclaration|null
+     */
+    private static $declaration;
+
     public function __construct(ArgumentInvocation $arguments, FileSpan $span)
     {
         $this->span = $span;
         $this->arguments = $arguments;
+    }
+
+    /**
+     * The declaration of `if()`, as though it were a normal function.
+     */
+    public static function getDeclaration(): ArgumentDeclaration
+    {
+        if (self::$declaration === null) {
+            self::$declaration = ArgumentDeclaration::parse('@function if($condition, $if-true, $if-false) {');
+        }
+
+        return self::$declaration;
     }
 
     public function getArguments(): ArgumentInvocation
