@@ -15,6 +15,8 @@ namespace ScssPhp\ScssPhp;
 use ScssPhp\ScssPhp\Base\Range;
 use ScssPhp\ScssPhp\Exception\RangeException;
 use ScssPhp\ScssPhp\Node\Number;
+use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\StringUtil;
 
 /**
  * Utility functions
@@ -74,6 +76,22 @@ final class Util
         $revert = ['%21' => '!', '%2A' => '*', '%27' => "'", '%28' => '(', '%29' => ')'];
 
         return strtr(rawurlencode($string), $revert);
+    }
+
+    /**
+     * Returns the variable name (including the leading `$`) from a $span that
+     * covers a variable declaration, which includes the variable name as well as
+     * the colon and expression following it.
+     *
+     * This isn't particularly efficient, and should only be used for error
+     * messages.
+     */
+    public static function declarationName(FileSpan $span): string
+    {
+        $text = $span->getText();
+        $pos = strpos($text, ':');
+
+        return StringUtil::trimAsciiRight(substr($text, 0, $pos === false ? null : $pos));
     }
 
     /**

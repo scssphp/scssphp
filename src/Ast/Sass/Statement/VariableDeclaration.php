@@ -16,6 +16,7 @@ use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\Ast\Sass\SassDeclaration;
 use ScssPhp\ScssPhp\Ast\Sass\Statement;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\SpanUtil;
 use ScssPhp\ScssPhp\Visitor\StatementVisitor;
 
@@ -96,6 +97,18 @@ final class VariableDeclaration implements Statement, SassDeclaration
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * The variable name as written in the document, without underscores
+     * converted to hyphens and including the leading `$`.
+     *
+     * This isn't particularly efficient, and should only be used for error
+     * messages.
+     */
+    public function getOriginalName(): string
+    {
+        return Util::declarationName($this->span);
     }
 
     public function getComment(): ?SilentComment
