@@ -52,6 +52,21 @@ final class IterableUtil
     }
 
     /**
+     * @template T
+     *
+     * @param iterable<T> $iterable
+     * @return T|null
+     */
+    public static function firstOrNull(iterable $iterable): mixed
+    {
+        foreach ($iterable as $item) {
+            return $item;
+        }
+
+        return null;
+    }
+
+    /**
      * Returns the first `T` returned by $callback for an element of $iterable,
      * or `null` if it returns `null` for every element.
      *
