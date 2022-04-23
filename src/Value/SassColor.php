@@ -17,6 +17,9 @@ use ScssPhp\ScssPhp\Util\ErrorUtil;
 use ScssPhp\ScssPhp\Util\NumberUtil;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
+/**
+ * A SassScript color.
+ */
 final class SassColor extends Value
 {
     /**

@@ -17,6 +17,14 @@ use ScssPhp\ScssPhp\Serializer\Serializer;
 use ScssPhp\ScssPhp\Util\Equatable;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
+/**
+ * A SassScript value.
+ *
+ * All SassScript values are unmodifiable. New values can be constructed using
+ * subclass constructors like `new SassString`. Untyped values can be cast to
+ * particular types using `assert*()` functions like {@see assertString}, which
+ * throw user-friendly error messages if they fail.
+ */
 abstract class Value implements Equatable
 {
     /**

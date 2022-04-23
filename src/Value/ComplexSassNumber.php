@@ -21,11 +21,13 @@ final class ComplexSassNumber extends SassNumber
 {
     /**
      * @var list<string>
+     * @readonly
      */
     private $numeratorUnits;
 
     /**
      * @var list<string>
+     * @readonly
      */
     private $denominatorUnits;
 

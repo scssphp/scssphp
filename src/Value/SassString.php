@@ -16,6 +16,12 @@ use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
+/**
+ * A SassScript string.
+ *
+ * Strings can either be quoted or unquoted. Unquoted strings are usually CSS
+ * identifiers, but they may contain any text.
+ */
 final class SassString extends Value
 {
     /**
@@ -33,6 +39,7 @@ final class SassString extends Value
      * consider `foo` and `f\6F\6F` the same string.
      *
      * @var string
+     * @readonly
      */
     private $text;
 
@@ -40,6 +47,7 @@ final class SassString extends Value
      * Whether this string has quotes.
      *
      * @var bool
+     * @readonly
      */
     private $quotes;
 

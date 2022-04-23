@@ -24,6 +24,7 @@ final class CalculationInterpolation implements Equatable
 {
     /**
      * @var string
+     * @readonly
      */
     private $value;
 

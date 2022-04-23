@@ -15,10 +15,14 @@ namespace ScssPhp\ScssPhp\Value;
 use ScssPhp\ScssPhp\Collection\Map;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
+/**
+ * A SassScript map.
+ */
 final class SassMap extends Value
 {
     /**
      * @var Map<Value>
+     * @readonly
      */
     private $contents;
 
