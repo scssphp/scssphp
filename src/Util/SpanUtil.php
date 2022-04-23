@@ -21,6 +21,14 @@ use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 final class SpanUtil
 {
     /**
+     * Returns this span with all whitespace trimmed from both sides.
+     */
+    public static function trim(FileSpan $span): FileSpan
+    {
+        return self::trimRight(self::trimLeft($span));
+    }
+
+    /**
      * Returns this span with all leading whitespace trimmed.
      */
     public static function trimLeft(FileSpan $span): FileSpan
@@ -35,6 +43,22 @@ final class SpanUtil
 
         return $span->subspan($start);
     }
+
+    /**
+     * Returns this span with all trailing whitespace trimmed.
+     */
+    public static function trimRight(FileSpan $span): FileSpan
+    {
+        $text = $span->getText();
+        $end = \strlen($text) - 1;
+
+        while ($end >= 0 && Character::isWhitespace($text[$end])) {
+            $end--;
+        }
+
+        return $span->subspan(0, $end + 1);
+    }
+
     /**
      * Returns the span of the identifier at the start of this span.
      *
