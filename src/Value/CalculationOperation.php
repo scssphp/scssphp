@@ -21,6 +21,7 @@ final class CalculationOperation implements Equatable
 {
     /**
      * @phpstan-var CalculationOperator::*
+     * @readonly
      */
     private $operator;
 
@@ -31,6 +32,7 @@ final class CalculationOperation implements Equatable
      * {@see SassString}, a {@see CalculationOperation}, or a {@see CalculationInterpolation}.
      *
      * @var object
+     * @readonly
      */
     private $left;
 
@@ -41,6 +43,7 @@ final class CalculationOperation implements Equatable
      * {@see SassString}, a {@see CalculationOperation}, or a {@see CalculationInterpolation}.
      *
      * @var object
+     * @readonly
      */
     private $right;
 

@@ -57,6 +57,7 @@ final class SingleUnitSassNumber extends SassNumber
 
     /**
      * @var string
+     * @readonly
      */
     private $unit;
 

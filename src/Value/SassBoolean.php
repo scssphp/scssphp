@@ -14,6 +14,9 @@ namespace ScssPhp\ScssPhp\Value;
 
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
+/**
+ * A SassScript boolean value.
+ */
 final class SassBoolean extends Value
 {
     /**
@@ -28,6 +31,7 @@ final class SassBoolean extends Value
 
     /**
      * @var bool
+     * @readonly
      */
     private $value;
 

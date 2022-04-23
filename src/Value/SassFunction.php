@@ -14,6 +14,12 @@ namespace ScssPhp\ScssPhp\Value;
 
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
+/**
+ * A SassScript function reference.
+ *
+ * A function reference captures a function from the local environment so that
+ * it may be passed between modules.
+ */
 final class SassFunction extends Value
 {
     // TODO find a better representation of functions, as names won't be unique anymore once modules enter in the equation.

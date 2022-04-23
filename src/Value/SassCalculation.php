@@ -31,6 +31,7 @@ final class SassCalculation extends Value
      * The calculation's name, such as `"calc"`.
      *
      * @var string
+     * @readonly
      */
     private $name;
 
@@ -41,6 +42,7 @@ final class SassCalculation extends Value
      * {@see SassString}, a {@see CalculationOperation}, or a {@see CalculationInterpolation}.
      *
      * @var list<object>
+     * @readonly
      */
     private $arguments;
 

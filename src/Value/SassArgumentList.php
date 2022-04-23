@@ -12,10 +12,18 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
+/**
+ * A SassScript argument list.
+ *
+ * An argument list comes from a rest argument. It's distinct from a normal
+ * {@see SassList} in that it may contain a keyword map as well as the positional
+ * arguments.
+ */
 final class SassArgumentList extends SassList
 {
     /**
      * @var array<string, Value>
+     * @readonly
      */
     private $keywords;
 

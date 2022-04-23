@@ -14,6 +14,9 @@ namespace ScssPhp\ScssPhp\Value;
 
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
+/**
+ * The SassScript `null` value.
+ */
 final class SassNull extends Value
 {
     /**

@@ -14,21 +14,27 @@ namespace ScssPhp\ScssPhp\Value;
 
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
+/**
+ * A SassScript list.
+ */
 class SassList extends Value
 {
     /**
      * @var list<Value>
+     * @readonly
      */
     private $contents;
 
     /**
      * @var string
      * @phpstan-var ListSeparator::*
+     * @readonly
      */
     private $separator;
 
     /**
      * @var bool
+     * @readonly
      */
     private $brackets;
 

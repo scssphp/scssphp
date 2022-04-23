@@ -16,6 +16,14 @@ use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Util\NumberUtil;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
+/**
+ * A SassScript number.
+ *
+ * Numbers can have units. Although there's no literal syntax for it, numbers
+ * support scientific-style numerator and denominator units (for example,
+ * `miles/hour`). These are expected to be resolved before being emitted to
+ * CSS.
+ */
 abstract class SassNumber extends Value
 {
     const PRECISION = 10;
@@ -92,6 +100,7 @@ abstract class SassNumber extends Value
 
     /**
      * @var int|float
+     * @readonly
      */
     private $value;
 
@@ -99,6 +108,8 @@ abstract class SassNumber extends Value
      * The representation of this number as two slash-separated numbers, if it has one.
      *
      * @var array{SassNumber, SassNumber}|null
+     * @readonly
+     * @internal
      */
     private $asSlash;
 

@@ -12,6 +12,9 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
+/**
+ * An enum of list separator types.
+ */
 final class ListSeparator
 {
     const COMMA = ',';
