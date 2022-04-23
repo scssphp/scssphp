@@ -23,7 +23,7 @@ use ScssPhp\ScssPhp\Util\Character;
 final class KeyframeSelectorParser extends Parser
 {
     /**
-     * @return string[]
+     * @return list<string>
      *
      * @throws SassFormatException
      */
