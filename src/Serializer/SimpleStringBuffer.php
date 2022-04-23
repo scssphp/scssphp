@@ -12,7 +12,10 @@
 
 namespace ScssPhp\ScssPhp\Serializer;
 
-class SimpleStringBuffer implements StringBuffer
+/**
+ * @internal
+ */
+final class SimpleStringBuffer implements StringBuffer
 {
     /**
      * @var string

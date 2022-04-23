@@ -22,6 +22,8 @@ use ScssPhp\ScssPhp\SourceSpan\FileSpan;
  * its span.
  *
  * @template T
+ *
+ * @internal
  */
 class CssValue implements AstNode
 {

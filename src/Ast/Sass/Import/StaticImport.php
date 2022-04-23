@@ -16,7 +16,6 @@ use ScssPhp\ScssPhp\Ast\Sass\Import;
 use ScssPhp\ScssPhp\Ast\Sass\Interpolation;
 use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
-use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
 
 /**
  * An import that produces a plain CSS `@import` rule.

@@ -20,6 +20,8 @@ use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 *  * This applies style declarations to elements that match a given selector.
 *  * Note that this isn't *strictly* plain CSS, since {@see getSelector} may still
 *  * contain placeholder selectors.
+ *
+ * @internal
  */
 interface CssStyleRule extends CssParentNode
 {

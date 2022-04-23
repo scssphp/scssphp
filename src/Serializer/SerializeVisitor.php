@@ -67,7 +67,7 @@ use ScssPhp\ScssPhp\Visitor\ValueVisitor;
  * @template-implements ValueVisitor<void>
  * @template-implements SelectorVisitor<void>
  */
-class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisitor
+final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisitor
 {
     /**
      * @var StringBuffer

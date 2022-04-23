@@ -20,7 +20,7 @@ use ScssPhp\ScssPhp\Exception\SassFormatException;
  *
  * @internal
  */
-class MediaQueryParser extends Parser
+final class MediaQueryParser extends Parser
 {
     /**
      * @return list<CssMediaQuery>

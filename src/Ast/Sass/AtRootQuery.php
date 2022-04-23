@@ -21,7 +21,7 @@ use ScssPhp\ScssPhp\Parser\AtRootQueryParser;
  *
  * @internal
  */
-class AtRootQuery
+final class AtRootQuery
 {
     /**
      * Whether the query includes or excludes rules with the specified names.

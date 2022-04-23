@@ -17,8 +17,10 @@ use ScssPhp\ScssPhp\Util\Character;
 
 /**
  * A parser for `@keyframes` block selectors.
+ *
+ * @internal
  */
-class KeyframeSelectorParser extends Parser
+final class KeyframeSelectorParser extends Parser
 {
     /**
      * @return string[]

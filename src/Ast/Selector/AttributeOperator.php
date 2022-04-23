@@ -12,6 +12,9 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+/**
+ * An operator that defines the semantics of an {@see AttributeSelector}.
+ */
 final class AttributeOperator
 {
     /**

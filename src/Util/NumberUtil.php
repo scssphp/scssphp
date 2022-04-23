@@ -17,7 +17,7 @@ namespace ScssPhp\ScssPhp\Util;
  *
  * @internal
  */
-class NumberUtil
+final class NumberUtil
 {
     public const EPSILON = 0.00000000001; // 10^(-PRECISION-1)
 

@@ -16,6 +16,11 @@ use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
 
+/**
+ * A binary operator, as in `1 + 2` or `$this and $other`.
+ *
+ * @internal
+ */
 final class BinaryOperationExpression implements Expression
 {
     /**

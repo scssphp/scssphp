@@ -25,7 +25,7 @@ use ScssPhp\ScssPhp\Visitor\StatementSearchVisitor;
  *
  * @extends StatementSearchVisitor<bool>
  */
-class HasContentVisitor extends StatementSearchVisitor
+final class HasContentVisitor extends StatementSearchVisitor
 {
     public function visitContentRule(ContentRule $node): bool
     {

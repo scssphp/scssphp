@@ -16,6 +16,8 @@ namespace ScssPhp\ScssPhp\Ast\Css;
  * A plain CSS comment.
  *
  * This is always a multi-line comment.
+ *
+ * @internal
  */
 interface CssComment extends CssNode
 {

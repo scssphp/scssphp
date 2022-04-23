@@ -18,7 +18,7 @@ use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 /**
  * @internal
  */
-class SpanUtil
+final class SpanUtil
 {
     /**
      * Returns this span with all leading whitespace trimmed.

@@ -20,7 +20,7 @@ namespace ScssPhp\ScssPhp\Ast\Css;
  *
  * @internal
  */
-class ModifiableCssValue extends CssValue
+final class ModifiableCssValue extends CssValue
 {
     /**
      * @param T $value
