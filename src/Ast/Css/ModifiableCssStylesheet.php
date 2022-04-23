@@ -29,10 +29,11 @@ final class ModifiableCssStylesheet extends ModifiableCssParentNode implements C
 
     /**
      * @param FileSpan $span
+     * @param list<ModifiableCssNode> $children
      */
-    public function __construct(FileSpan $span)
+    public function __construct(FileSpan $span, array $children = [])
     {
-        parent::__construct();
+        parent::__construct($children);
         $this->span = $span;
     }
 
