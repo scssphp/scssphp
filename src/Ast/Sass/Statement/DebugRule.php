@@ -58,4 +58,9 @@ final class DebugRule implements Statement
     {
         return $visitor->visitDebugRule($this);
     }
+
+    public function __toString(): string
+    {
+        return '@debug ' . $this->expression . ';';
+    }
 }

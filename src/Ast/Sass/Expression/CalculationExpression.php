@@ -227,4 +227,9 @@ final class CalculationExpression implements Expression
 
         throw new \InvalidArgumentException('Invalid calculation argument.');
     }
+
+    public function __toString(): string
+    {
+        return $this->name . '(' . implode(', ', $this->arguments) . ')';
+    }
 }

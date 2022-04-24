@@ -116,4 +116,33 @@ final class BinaryOperationExpression implements Expression
     {
         return $visitor->visitBinaryOperationExpression($this);
     }
+
+    public function __toString(): string
+    {
+        $buffer = '';
+
+        $leftNeedsParens = $this->left instanceof BinaryOperationExpression && BinaryOperator::getPrecedence($this->left->getOperator()) < BinaryOperator::getPrecedence($this->operator);
+        if ($leftNeedsParens) {
+            $buffer .= '(';
+        }
+        $buffer .= $this->left;
+        if ($leftNeedsParens) {
+            $buffer .= ')';
+        }
+
+        $buffer .= ' ';
+        $buffer .= $this->operator;
+        $buffer .= ' ';
+
+        $rightNeedsParens = $this->right instanceof BinaryOperationExpression && BinaryOperator::getPrecedence($this->right->getOperator()) <= BinaryOperator::getPrecedence($this->operator);
+        if ($rightNeedsParens) {
+            $buffer .= '(';
+        }
+        $buffer .= $this->right;
+        if ($rightNeedsParens) {
+            $buffer .= ')';
+        }
+
+        return $buffer;
+    }
 }

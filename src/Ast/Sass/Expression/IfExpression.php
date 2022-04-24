@@ -63,4 +63,9 @@ final class IfExpression implements Expression, CallableInvocation
     {
         return $visitor->visitIfExpression($this);
     }
+
+    public function __toString(): string
+    {
+        return 'if' . $this->arguments;
+    }
 }

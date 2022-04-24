@@ -78,4 +78,17 @@ final class ArgumentDeclaration implements SassNode
     {
         return $this->span;
     }
+
+    public function __toString(): string
+    {
+        $parts = [];
+        foreach ($this->arguments as $arg) {
+            $parts[] = "\$$arg";
+        }
+        if ($this->restArgument !== null) {
+            $parts[] = "\$$this->restArgument...";
+        }
+
+        return implode(', ', $parts);
+    }
 }

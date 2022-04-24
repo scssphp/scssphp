@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass\Import;
 
+use ScssPhp\ScssPhp\Ast\Sass\Expression\StringExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Import;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 
@@ -52,5 +53,10 @@ final class DynamicImport implements Import
     public function getSpan(): FileSpan
     {
         return $this->span;
+    }
+
+    public function __toString(): string
+    {
+        return StringExpression::quoteText($this->urlString);
     }
 }

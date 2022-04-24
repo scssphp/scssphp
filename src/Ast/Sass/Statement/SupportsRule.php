@@ -62,4 +62,9 @@ final class SupportsRule extends ParentStatement
     {
         return $visitor->visitSupportsRule($this);
     }
+
+    public function __toString(): string
+    {
+        return '@supports ' . $this->condition . ' {' . implode(' ', $this->getChildren()) . '}';
+    }
 }

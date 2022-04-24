@@ -36,4 +36,11 @@ final class ContentBlock extends CallableDeclaration
     {
         return $visitor->visitContentBlock($this);
     }
+
+    public function __toString(): string
+    {
+        $buffer = $this->getArguments()->isEmpty() ? '' : ' using (' . $this->getArguments() . ')';
+
+        return $buffer . '{' . implode(' ', $this->getChildren()) . '}';
+    }
 }

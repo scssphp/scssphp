@@ -63,4 +63,9 @@ final class ContentRule implements Statement
     {
         return $visitor->visitContentRule($this);
     }
+
+    public function __toString(): string
+    {
+        return $this->arguments->isEmpty() ? '@content;' : "@content($this->arguments);";
+    }
 }

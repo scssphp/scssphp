@@ -59,4 +59,13 @@ class CssValue implements AstNode
     {
         return $this->span;
     }
+
+    public function __toString(): string
+    {
+        if (\is_array($this->value)) {
+            return implode($this->value);
+        }
+
+        return (string) $this->value;
+    }
 }

@@ -19,4 +19,8 @@ namespace ScssPhp\ScssPhp\Ast\Sass\Statement;
  */
 final class ElseClause extends IfRuleClause
 {
+    public function __toString(): string
+    {
+        return '@else {' . implode(' ', $this->getChildren()) . '}';
+    }
 }

@@ -108,4 +108,20 @@ final class ArgumentInvocation implements SassNode
     {
         return $this->span;
     }
+
+    public function __toString(): string
+    {
+        $parts = $this->positional;
+        foreach ($this->named as $name => $arg) {
+            $parts[] = "\$$name: $arg";
+        }
+        if ($this->rest !== null) {
+            $parts[] = "$this->rest...";
+        }
+        if ($this->keywordRest !== null) {
+            $parts[] = "$this->keywordRest...";
+        }
+
+        return '(' . implode(', ', $parts) . ')';
+    }
 }

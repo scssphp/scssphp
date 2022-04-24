@@ -51,4 +51,13 @@ final class SupportsNegation implements SupportsCondition
     {
         return $this->span;
     }
+
+    public function __toString(): string
+    {
+        if ($this->condition instanceof SupportsNegation || $this->condition instanceof SupportsOperation) {
+            return "not ($this->condition)";
+        }
+
+        return 'not ' . $this->condition;
+    }
 }

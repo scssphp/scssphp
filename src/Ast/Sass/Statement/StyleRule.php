@@ -69,4 +69,9 @@ final class StyleRule extends ParentStatement
     {
         return $visitor->visitStyleRule($this);
     }
+
+    public function __toString(): string
+    {
+        return $this->selector . ' {' . implode(' ', $this->getChildren()) . '}';
+    }
 }

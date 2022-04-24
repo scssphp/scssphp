@@ -35,4 +35,9 @@ final class FunctionRule extends CallableDeclaration implements SassDeclaration
     {
         return $visitor->visitFunctionRule($this);
     }
+
+    public function __toString(): string
+    {
+        return '@function ' . $this->getName() . '(' . $this->getArguments() . ') {' . implode(' ', $this->getChildren()) . '}';
+    }
 }

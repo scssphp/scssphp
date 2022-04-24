@@ -67,4 +67,14 @@ final class AtRootRule extends ParentStatement
     {
         return $visitor->visitAtRootRule($this);
     }
+
+    public function __toString(): string
+    {
+        $buffer = '@at-root ';
+        if ($this->query !== null) {
+            $buffer .= $this->query . ' ';
+        }
+
+        return $buffer . '{' . implode(' ', $this->getChildren()) . '}';
+    }
 }

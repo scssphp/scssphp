@@ -67,4 +67,9 @@ final class MediaRule extends ParentStatement
     {
         return $visitor->visitMediaRule($this);
     }
+
+    public function __toString(): string
+    {
+        return '@media ' . $this->query . ' {' . implode(' ', $this->getChildren()) . '}';
+    }
 }

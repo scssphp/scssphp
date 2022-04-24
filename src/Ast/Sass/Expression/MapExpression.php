@@ -61,4 +61,11 @@ final class MapExpression implements Expression
     {
         return $visitor->visitMapExpression($this);
     }
+
+    public function __toString(): string
+    {
+        return '(' . implode(', ', array_map(function ($pair) {
+            return $pair[0] . ': ' . $pair[1];
+        }, $this->pairs)) . ')';
+    }
 }

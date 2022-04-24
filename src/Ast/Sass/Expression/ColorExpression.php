@@ -56,4 +56,9 @@ final class ColorExpression implements Expression
     {
         return $visitor->visitColorExpression($this);
     }
+
+    public function __toString(): string
+    {
+        return (string) $this->value;
+    }
 }
