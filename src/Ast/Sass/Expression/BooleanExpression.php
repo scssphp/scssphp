@@ -55,4 +55,9 @@ final class BooleanExpression implements Expression
     {
         return $visitor->visitBooleanExpression($this);
     }
+
+    public function __toString(): string
+    {
+        return $this->value ? 'true' : 'false';
+    }
 }

@@ -119,4 +119,22 @@ final class IncludeRule implements Statement, CallableInvocation, SassReference
     {
         return $visitor->visitIncludeRule($this);
     }
+
+    public function __toString(): string
+    {
+        $buffer = '@include ';
+
+        if ($this->namespace !== null) {
+            $buffer .= $this->namespace . '.';
+        }
+        $buffer .= $this->name;
+
+        if (!$this->arguments->isEmpty()) {
+            $buffer .= "($this->arguments)";
+        }
+
+        $buffer .= $this->content === null ? ';' : ' ' . $this->content;
+
+        return $buffer;
+    }
 }

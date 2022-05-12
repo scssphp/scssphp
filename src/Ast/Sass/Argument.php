@@ -70,4 +70,13 @@ final class Argument implements SassNode, SassDeclaration
     {
         return $this->span;
     }
+
+    public function __toString(): string
+    {
+        if ($this->defaultValue === null) {
+            return $this->name;
+        }
+
+        return $this->name . ': ' . $this->defaultValue;
+    }
 }

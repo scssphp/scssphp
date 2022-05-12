@@ -118,4 +118,9 @@ final class Stylesheet extends ParentStatement
     {
         return (new CssParser($contents, $logger, $sourceUrl))->parse();
     }
+
+    public function __toString(): string
+    {
+        return implode(' ', $this->getChildren());
+    }
 }

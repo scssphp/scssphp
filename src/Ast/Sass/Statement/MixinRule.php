@@ -65,4 +65,17 @@ final class MixinRule extends CallableDeclaration implements SassDeclaration
     {
         return $visitor->visitMixinRule($this);
     }
+
+    public function __toString(): string
+    {
+        $buffer = '@mixin ' . $this->getName();
+
+        if (!$this->getArguments()->isEmpty()) {
+            $buffer .= "({$this->getArguments()})";
+        }
+
+        $buffer .= ' {' . implode(' ', $this->getChildren()) . '}';
+
+        return $buffer;
+    }
 }

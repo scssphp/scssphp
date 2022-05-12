@@ -73,4 +73,9 @@ final class NumberExpression implements Expression
     {
         return $visitor->visitNumberExpression($this);
     }
+
+    public function __toString(): string
+    {
+        return $this->value . ($this->unit ?? '');
+    }
 }

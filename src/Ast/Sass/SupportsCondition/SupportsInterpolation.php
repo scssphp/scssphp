@@ -52,4 +52,9 @@ final class SupportsInterpolation implements SupportsCondition
     {
         return $this->span;
     }
+
+    public function __toString(): string
+    {
+        return '#{' . $this->expression . '}';
+    }
 }

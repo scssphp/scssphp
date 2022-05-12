@@ -73,4 +73,15 @@ final class UnaryOperationExpression implements Expression
     {
         return $visitor->visitUnaryOperationExpression($this);
     }
+
+    public function __toString(): string
+    {
+        $buffer = $this->operator;
+        if ($this->operator === UnaryOperator::NOT) {
+            $buffer .= ' ';
+        }
+        $buffer .= $this->operand;
+
+        return $buffer;
+    }
 }

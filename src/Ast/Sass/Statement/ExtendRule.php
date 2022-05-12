@@ -76,4 +76,9 @@ final class ExtendRule implements Statement
     {
         return $visitor->visitExtendRule($this);
     }
+
+    public function __toString(): string
+    {
+        return '@extend ' . $this->selector . ($this->optional ? ' !optional' : '') . ';';
+    }
 }

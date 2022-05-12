@@ -65,4 +65,9 @@ final class WhileRule extends ParentStatement
     {
         return $visitor->visitWhileRule($this);
     }
+
+    public function __toString(): string
+    {
+        return '@while ' . $this->condition . ' {' . implode(' ', $this->getChildren()) . '}';
+    }
 }

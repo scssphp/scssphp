@@ -55,4 +55,9 @@ final class SilentComment implements Statement
     {
         return $visitor->visitSilentComment($this);
     }
+
+    public function __toString(): string
+    {
+        return $this->text;
+    }
 }

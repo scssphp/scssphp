@@ -78,4 +78,9 @@ final class ConfiguredVariable implements SassNode, SassDeclaration
     {
         return SpanUtil::initialIdentifier($this->span, 1);
     }
+
+    public function __toString(): string
+    {
+        return '$' . $this->name . ': ' . $this->expression . ($this->guarded ? ' !default' : '');
+    }
 }

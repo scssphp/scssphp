@@ -58,4 +58,9 @@ final class ErrorRule implements Statement
     {
         return $visitor->visitErrorRule($this);
     }
+
+    public function __toString(): string
+    {
+        return '@error ' . $this->expression . ';';
+    }
 }

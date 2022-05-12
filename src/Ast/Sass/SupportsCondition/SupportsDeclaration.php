@@ -83,4 +83,9 @@ final class SupportsDeclaration implements SupportsCondition
     {
         return $this->name instanceof StringExpression && !$this->name->hasQuotes() && StringUtil::startsWith($this->name->getText()->getInitialPlain(), '--');
     }
+
+    public function __toString(): string
+    {
+        return "($this->name: $this->value)";
+    }
 }

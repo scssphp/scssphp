@@ -92,4 +92,51 @@ final class ListExpression implements Expression
     {
         return $visitor->visitListExpression($this);
     }
+
+    public function __toString(): string
+    {
+        $buffer = '';
+        if ($this->hasBrackets()) {
+            $buffer .= '[';
+        }
+
+        $buffer .= implode($this->separator === ListSeparator::COMMA ? ', ' : ' ', array_map(function ($element) {
+            return $this->elementNeedsParens($element) ? "($element)" : (string) $element;
+        }, $this->contents));
+
+        if ($this->hasBrackets()) {
+            $buffer .= ']';
+        }
+
+        return $buffer;
+    }
+
+    /**
+     * Returns whether $expression, contained in $this, needs parentheses when
+     * printed as Sass source.
+     */
+    private function elementNeedsParens(Expression $expression): bool
+    {
+        if ($expression instanceof ListExpression) {
+            if (\count($expression->contents) < 2) {
+                return false;
+            }
+
+            if ($expression->brackets) {
+                return false;
+            }
+
+            return $this->separator === ListSeparator::COMMA ? $expression->separator === ListSeparator::COMMA : $expression->separator !== ListSeparator::UNDECIDED;
+        }
+
+        if ($this->separator !== ListSeparator::SPACE) {
+            return false;
+        }
+
+        if ($expression instanceof UnaryOperationExpression) {
+            return $expression->getOperator() === UnaryOperator::PLUS || $expression->getOperator() === UnaryOperator::MINUS;
+        }
+
+        return false;
+    }
 }

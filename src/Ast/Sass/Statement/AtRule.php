@@ -74,4 +74,20 @@ final class AtRule extends ParentStatement
     {
         return $visitor->visitAtRule($this);
     }
+
+    public function __toString(): string
+    {
+        $buffer = '@' . $this->name;
+        if ($this->value !== null) {
+            $buffer .= ' ' . $this->value;
+        }
+
+        $children = $this->getChildren();
+
+        if ($children === null) {
+            return $buffer . ';';
+        }
+
+        return $buffer . '{' . implode(' ', $children) . '}';
+    }
 }

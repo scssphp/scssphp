@@ -55,4 +55,9 @@ final class ParenthesizedExpression implements Expression
     {
         return $visitor->visitParenthesizedExpression($this);
     }
+
+    public function __toString(): string
+    {
+        return '(' . $this->expression . ')';
+    }
 }

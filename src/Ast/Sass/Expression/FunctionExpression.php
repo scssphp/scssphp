@@ -125,4 +125,17 @@ final class FunctionExpression implements Expression, CallableInvocation, SassRe
     {
         return $visitor->visitFunctionExpression($this);
     }
+
+    public function __toString(): string
+    {
+        $buffer = '';
+
+        if ($this->namespace !== null) {
+            $buffer .= $this->namespace . '.';
+        }
+
+        $buffer .= $this->originalName . $this->arguments;
+
+        return $buffer;
+    }
 }

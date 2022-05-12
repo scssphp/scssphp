@@ -53,4 +53,9 @@ final class SupportsAnything implements SupportsCondition
     {
         return $this->span;
     }
+
+    public function __toString(): string
+    {
+        return "($this->contents)";
+    }
 }

@@ -62,4 +62,9 @@ final class ImportRule implements Statement
     {
         return $visitor->visitImportRule($this);
     }
+
+    public function __toString(): string
+    {
+        return '@import ' . implode(', ', $this->imports) . ';';
+    }
 }

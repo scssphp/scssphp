@@ -22,4 +22,6 @@ use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 interface AstNode
 {
     public function getSpan(): FileSpan;
+
+    public function __toString(): string;
 }

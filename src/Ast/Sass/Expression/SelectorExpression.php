@@ -43,4 +43,9 @@ final class SelectorExpression implements Expression
     {
         return $visitor->visitSelectorExpression($this);
     }
+
+    public function __toString(): string
+    {
+        return '&';
+    }
 }

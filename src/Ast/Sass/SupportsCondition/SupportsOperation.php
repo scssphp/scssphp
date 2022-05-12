@@ -77,4 +77,18 @@ final class SupportsOperation implements SupportsCondition
     {
         return $this->span;
     }
+
+    public function __toString(): string
+    {
+        return $this->parenthesize($this->left) . ' ' . $this->operator . ' ' . $this->parenthesize($this->right);
+    }
+
+    private function parenthesize(SupportsCondition $condition): string
+    {
+        if ($condition instanceof SupportsNegation || $condition instanceof SupportsOperation && $condition->operator === $this->operator) {
+            return "($condition)";
+        }
+
+        return (string) $condition;
+    }
 }

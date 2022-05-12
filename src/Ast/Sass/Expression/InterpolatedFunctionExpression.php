@@ -76,4 +76,9 @@ final class InterpolatedFunctionExpression implements Expression, CallableInvoca
     {
         return $visitor->visitInterpolatedFunctionExpression($this);
     }
+
+    public function __toString(): string
+    {
+        return $this->name . $this->arguments;
+    }
 }

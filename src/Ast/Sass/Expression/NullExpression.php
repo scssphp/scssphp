@@ -43,4 +43,9 @@ final class NullExpression implements Expression
     {
         return $visitor->visitNullExpression($this);
     }
+
+    public function __toString(): string
+    {
+        return 'null';
+    }
 }

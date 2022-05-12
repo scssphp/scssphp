@@ -58,4 +58,9 @@ final class ReturnRule implements Statement
     {
         return $visitor->visitReturnRule($this);
     }
+
+    public function __toString(): string
+    {
+        return '@return ' . $this->expression . ';';
+    }
 }

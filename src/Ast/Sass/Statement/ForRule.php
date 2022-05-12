@@ -103,4 +103,9 @@ final class ForRule extends ParentStatement
     {
         return $visitor->visitForRule($this);
     }
+
+    public function __toString(): string
+    {
+        return '@for $' . $this->variable . ' from ' . $this->from . ($this->exclusive ? ' to ' : ' through ') . $this->to . '{' . implode(' ', $this->getChildren()) . '}';
+    }
 }

@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Css;
 
+use ScssPhp\ScssPhp\Serializer\Serializer;
 use ScssPhp\ScssPhp\Visitor\ModifiableCssVisitor;
 
 /**
@@ -160,5 +161,10 @@ abstract class ModifiableCssNode implements CssNode
         }
         $this->parent = null;
         $this->indexInParent = null;
+    }
+
+    public function __toString(): string
+    {
+        return Serializer::serialize($this, true)->getCss();
     }
 }

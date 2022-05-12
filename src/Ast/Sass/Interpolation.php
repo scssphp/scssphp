@@ -102,4 +102,11 @@ final class Interpolation implements SassNode
 
         return '';
     }
+
+    public function __toString(): string
+    {
+        return implode('', array_map(function ($value) {
+            return \is_string($value) ? $value : '#{' . $value .'}';
+        }, $this->contents));
+    }
 }

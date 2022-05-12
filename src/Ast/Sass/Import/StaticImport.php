@@ -79,4 +79,19 @@ final class StaticImport implements Import
     {
         return $this->span;
     }
+
+    public function __toString(): string
+    {
+        $buffer = (string) $this->url;
+
+        if ($this->supports !== null) {
+            $buffer .= " supports($this->supports)";
+        }
+
+        if ($this->media !== null) {
+            $buffer .= ' ' . $this->media;
+        }
+
+        return $buffer;
+    }
 }

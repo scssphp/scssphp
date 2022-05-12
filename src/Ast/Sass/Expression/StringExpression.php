@@ -52,6 +52,20 @@ final class StringExpression implements Expression
         return new self(new Interpolation([$text], $span), $quotes);
     }
 
+    /**
+     * Returns Sass source for a quoted string that, when evaluated, will have
+     * $text as its contents.
+     */
+    public static function quoteText(string $text): string
+    {
+        $quote = self::bestQuote([$text]);
+        $buffer = $quote;
+        $buffer .= self::quoteInnerText($text, $quote, true);
+        $buffer .= $quote;
+
+        return $buffer;
+    }
+
     public function getText(): Interpolation
     {
         return $this->text;
@@ -87,7 +101,7 @@ final class StringExpression implements Expression
             if ($value instanceof Expression) {
                 $buffer->add($value);
             } else {
-                self::quoteInnerText($value, $quote, $buffer, $static);
+                $buffer->write(self::quoteInnerText($value, $quote, $static));
             }
         }
 
@@ -96,41 +110,43 @@ final class StringExpression implements Expression
         return $buffer->buildInterpolation($this->text->getSpan());
     }
 
-    private static function quoteInnerText(string $value, string $quote, InterpolationBuffer $buffer, bool $static = false): void
+    private static function quoteInnerText(string $value, string $quote, bool $static = false): string
     {
+        $buffer = '';
         $length = \strlen($value);
 
         for ($i = 0; $i < $length; $i++) {
             $char = $value[$i];
 
             if (Character::isNewline($char)) {
-                $buffer->write('\\a');
+                $buffer .= '\\a';
 
                 if ($i !== $length - 1) {
                     $next = $value[$i + 1];
 
                     if (Character::isWhitespace($next) || Character::isHex($next)) {
-                        $buffer->write(' ');
+                        $buffer .= ' ';
                     }
                 }
             } else {
                 if ($char === $quote || $char === '\\' || ($static && $char === '#' && $i < $length - 1 && $value[$i + 1] === '{')) {
-                    $buffer->write('\\');
+                    $buffer .= '\\';
                 }
 
                 if (\ord($char) < 0x80) {
-                    $buffer->write($char);
+                    $buffer .= $char;
                 } else {
                     if (!preg_match('/./usA', $value, $m, 0, $i)) {
                         throw new \UnexpectedValueException('Invalid UTF-8 char');
                     }
 
-                    $buffer->write($m[0]);
+                    $buffer .= $m[0];
                     $i += \strlen($m[0]) - 1; // skip over the extra bytes that have been processed.
                 }
             }
         }
 
+        return $buffer;
     }
 
     /**
@@ -157,5 +173,10 @@ final class StringExpression implements Expression
         }
 
         return $containsDoubleQuote ? "'": '"';
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->asInterpolation();
     }
 }
