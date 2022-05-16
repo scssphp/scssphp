@@ -1,5 +1,15 @@
 # Changelog
 
+## **1.10.3** -- May 16, 2022
+
+**Fixed**
+
+* Fix the handling of nested at-root in mixins (@stof)
+
+**Changed**
+
+* Mark the logger implementations as `@final` to prepare for 2.0 (@stof)
+
 ## **1.10.2** -- March 2, 2022
 
 **Fixed**

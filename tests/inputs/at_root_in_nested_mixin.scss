@@ -1,0 +1,26 @@
+@mixin context($old-context, $new-context) {
+    $parent: &;
+
+    @at-root #{selector-replace($parent, $old-context, $new-context)} {
+        @content;
+    }
+}
+
+.select2-container {
+    .select2-selection--single{
+        .select2-selection__rendered {
+            @include context(
+                    ".select2-container",
+                    ".select2-container.select2-container--default"
+            ) {
+                color: red;
+                @include context(
+                        ".select2-container--default",
+                        ".select2-container--default.select2-container--open"
+                ) {
+                    color: white;
+                }
+            }
+        }
+    }
+}
