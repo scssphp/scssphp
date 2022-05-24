@@ -106,11 +106,11 @@ final class CssParser extends ScssParser
         $urlSpan = $this->scanner->spanFrom($urlStart);
 
         $this->whitespace();
-        list($supports, $media) = $this->tryImportQueries();
+        $modifiers = $this->tryImportModifiers();
         $this->expectStatementSeparator('@import rule');
 
         return new ImportRule([
-            new StaticImport(new Interpolation([$url], $urlSpan), $this->scanner->spanFrom($start), $supports, $media)
+            new StaticImport(new Interpolation([$url], $urlSpan), $this->scanner->spanFrom($start), $modifiers)
         ], $this->scanner->spanFrom($start));
     }
 

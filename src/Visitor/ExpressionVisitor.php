@@ -26,6 +26,7 @@ use ScssPhp\ScssPhp\Ast\Sass\Expression\NumberExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\ParenthesizedExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\SelectorExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\StringExpression;
+use ScssPhp\ScssPhp\Ast\Sass\Expression\SupportsExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\UnaryOperationExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\ValueExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\VariableExpression;
@@ -108,6 +109,11 @@ interface ExpressionVisitor
      * @return T
      */
     public function visitStringExpression(StringExpression $node);
+
+    /**
+     * @return T
+     */
+    public function visitSupportsExpression(SupportsExpression $node);
 
     /**
      * @return T
