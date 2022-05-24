@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass;
 
+use ScssPhp\ScssPhp\Parser\InterpolationBuffer;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 
 /**
@@ -32,6 +33,31 @@ final class Interpolation implements SassNode
      * @readonly
      */
     private $span;
+
+    /**
+     * Creates a new {@see Interpolation} by concatenating a sequence of strings,
+     * {@see Expression}s, or nested {@see Interpolation}s.
+     *
+     * @param array<string|Expression|Interpolation> $contents
+     */
+    public static function concat(array $contents, FileSpan $span): Interpolation
+    {
+        $buffer = new InterpolationBuffer();
+
+        foreach ($contents as $element) {
+            if (\is_string($element)) {
+                $buffer->write($element);
+            } elseif ($element instanceof Expression) {
+                $buffer->add($element);
+            } elseif ($element instanceof Interpolation) {
+                $buffer->addInterpolation($element);
+            } else {
+                throw new \InvalidArgumentException(sprintf('The elements in $contents may only contains strings, Expressions, or Interpolations, "%s" given.', \is_object($element) ? get_class($element) : gettype($element)));
+            }
+        }
+
+        return $buffer->buildInterpolation($span);
+    }
 
     /**
      * @param list<string|Expression> $contents

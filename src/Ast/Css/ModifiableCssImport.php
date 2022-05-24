@@ -35,13 +35,7 @@ final class ModifiableCssImport extends ModifiableCssNode implements CssImport
      * @var CssValue<string>|null
      * @readonly
      */
-    private $supports;
-
-    /**
-     * @var list<CssMediaQuery>|null
-     * @readonly
-     */
-    private $media;
+    private $modifiers;
 
     /**
      * @var FileSpan
@@ -52,14 +46,12 @@ final class ModifiableCssImport extends ModifiableCssNode implements CssImport
     /**
      * @param CssValue<string>         $url
      * @param FileSpan                 $span
-     * @param CssValue<string>|null    $supports
-     * @param list<CssMediaQuery>|null $media
+     * @param CssValue<string>|null    $modifiers
      */
-    public function __construct(CssValue $url, FileSpan $span, ?CssValue $supports = null, ?array $media = null)
+    public function __construct(CssValue $url, FileSpan $span, ?CssValue $modifiers = null)
     {
         $this->url = $url;
-        $this->supports = $supports;
-        $this->media = $media;
+        $this->modifiers = $modifiers;
         $this->span = $span;
     }
 
@@ -68,14 +60,9 @@ final class ModifiableCssImport extends ModifiableCssNode implements CssImport
         return $this->url;
     }
 
-    public function getSupports(): ?CssValue
+    public function getModifiers(): ?CssValue
     {
-        return $this->supports;
-    }
-
-    public function getMedia(): ?array
-    {
-        return $this->media;
+        return $this->modifiers;
     }
 
     public function getSpan(): FileSpan

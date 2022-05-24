@@ -31,6 +31,7 @@ use ScssPhp\ScssPhp\Ast\Sass\Expression\NumberExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\ParenthesizedExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\SelectorExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\StringExpression;
+use ScssPhp\ScssPhp\Ast\Sass\Expression\SupportsExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\UnaryOperationExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\UnaryOperator;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\VariableExpression;
@@ -1198,19 +1199,18 @@ abstract class StylesheetParser extends Parser
         if ($next === 'u' || $next === 'U') {
             $url = $this->dynamicUrl();
             $this->whitespace();
-            list($supports, $media) = $this->tryImportQueries();
+            $modifiers = $this->tryImportModifiers();
 
-            return new StaticImport(new Interpolation([$url], $this->scanner->spanFrom($start)), $this->scanner->spanFrom($start), $supports, $media);
+            return new StaticImport(new Interpolation([$url], $this->scanner->spanFrom($start)), $this->scanner->spanFrom($start), $modifiers);
         }
 
         $url = $this->string();
         $urlSpan = $this->scanner->spanFrom($start);
         $this->whitespace();
-        list($supports, $media) = $this->tryImportQueries();
+        $modifiers = $this->tryImportModifiers();
 
-        if ($this->isPlainImportUrl($url) || $supports !== null || $media !== null) {
-
-            return new StaticImport(new Interpolation([$urlSpan->getText()], $urlSpan), $this->scanner->spanFrom($start), $supports, $media);
+        if ($this->isPlainImportUrl($url) || $modifiers !== null) {
+            return new StaticImport(new Interpolation([$urlSpan->getText()], $urlSpan), $this->scanner->spanFrom($start), $modifiers);
         }
 
         // TODO catch the exception of parseImportUrl once it validates the URI format
@@ -1252,55 +1252,127 @@ abstract class StylesheetParser extends Parser
     }
 
     /**
-     * Consumes a supports condition and/or a media query after an `@import`.
-     *
-     * @return array{SupportsCondition|null, Interpolation|null}
+     * Returns `null` if there are no modifiers.
      */
-    protected function tryImportQueries(): array
+    protected function tryImportModifiers(): ?Interpolation
     {
-        $supports = null;
-
-        if ($this->scanIdentifier('supports')) {
-            $this->scanner->expectChar('(');
-            $start = $this->scanner->getPosition();
-
-            if ($this->scanIdentifier('not')) {
-                $this->whitespace();
-                $supports = new SupportsNegation($this->supportsConditionInParens(), $this->scanner->spanFrom($start));
-            } elseif ($this->scanner->peekChar() === '(') {
-                $supports = $this->supportsCondition();
-            } else {
-                if ($this->lookingAtInterpolatedIdentifier()) {
-                    $identifier = $this->interpolatedIdentifier();
-
-                    if ($identifier->getAsPlain() !== null && strtolower($identifier->getAsPlain()) === 'not') {
-                        $this->error('"not" is not a valid identifier here.', $identifier->getSpan());
-                    }
-
-                    if ($this->scanner->scanChar('(')) {
-                        $arguments = $this->interpolatedDeclarationValue(true, true);
-                        $this->scanner->expectChar(')');
-                        $supports = new SupportsFunction($identifier, $arguments, $this->scanner->spanFrom($start));
-                    } else {
-                        // Backtrack to parse a variable declaration
-                        $this->scanner->setPosition($start);
-                    }
-                }
-
-                if ($supports === null) {
-                    $name = $this->expression();
-                    $this->scanner->expectChar(':');
-                    $supports = $this->supportsDeclarationValue($name, $start);
-                }
-            }
-
-            $this->scanner->expectChar(')');
-            $this->whitespace();
+        // Exit before allocating anything if we're not looking at any modifiers, as
+        // is the most common case.
+        if (!$this->lookingAtInterpolatedIdentifier() && $this->scanner->peekChar() !== '(') {
+            return null;
         }
 
-        $media = $this->lookingAtInterpolatedIdentifier() || $this->scanner->peekChar() === '(' ? $this->mediaQueryList() : null;
+        $start = $this->scanner->getPosition();
+        $buffer = new InterpolationBuffer();
 
-        return [$supports, $media];
+        while (true) {
+            if ($this->lookingAtInterpolatedIdentifier()) {
+                if (!$buffer->isEmpty()) {
+                    $buffer->write(' ');
+                }
+
+                $identifier = $this->interpolatedIdentifier();
+                $buffer->addInterpolation($identifier);
+
+                $name = $identifier->getAsPlain() !== null ? strtolower($identifier->getAsPlain()) : null;
+
+                if ($name !== 'and' && $this->scanner->scanChar('(')) {
+                    if ($name === 'supports') {
+                        $query = $this->importSupportsQuery();
+
+                        if (!$query instanceof SupportsDeclaration) {
+                            $buffer->write('(');
+                        }
+
+                        $buffer->add(new SupportsExpression($query));
+
+                        if (!$query instanceof SupportsDeclaration) {
+                            $buffer->write(')');
+                        }
+                    } else {
+                        $buffer->write('(');
+                        $buffer->addInterpolation($this->interpolatedDeclarationValue(true, true));
+                        $buffer->write(')');
+                    }
+
+                    $this->scanner->expectChar(')');
+                    $this->whitespace();
+                } else {
+                    $this->whitespace();
+                    if ($this->scanner->scanChar(',')) {
+                        $buffer->write(', ');
+                        $buffer->addInterpolation($this->mediaQueryList());
+
+                        return $buffer->buildInterpolation($this->scanner->spanFrom($start));
+                    }
+                }
+            } elseif ($this->scanner->peekChar() === '(') {
+                if (!$buffer->isEmpty()) {
+                    $buffer->write(' ');
+                }
+                $buffer->addInterpolation($this->mediaQueryList());
+
+                return $buffer->buildInterpolation($this->scanner->spanFrom($start));
+            } else {
+                return $buffer->buildInterpolation($this->scanner->spanFrom($start));
+            }
+        }
+    }
+
+    /**
+     * Consumes the contents of a `supports()` function after an `@import` rule
+     * (but not the function name or parentheses).
+     */
+    private function importSupportsQuery(): SupportsCondition
+    {
+        if ($this->scanIdentifier('not')) {
+            $this->whitespace();
+            $start = $this->scanner->getPosition();
+
+            return new SupportsNegation($this->supportsConditionInParens(), $this->scanner->spanFrom($start));
+        }
+
+        if ($this->scanner->peekChar() === '(') {
+            return $this->supportsCondition();
+        }
+
+        $function = $this->tryImportSupportsFunction();
+
+        if ($function !== null) {
+            return $function;
+        }
+
+        $start = $this->scanner->getPosition();
+        $name = $this->expression();
+        $this->scanner->expectChar(':');
+
+        return $this->supportsDeclarationValue($name, $start);
+    }
+
+    /**
+     * Consumes a function call within a `supports()` function after an
+     * `@import` if available.
+     */
+    private function tryImportSupportsFunction(): ?SupportsCondition
+    {
+        if (!$this->lookingAtInterpolatedIdentifier()) {
+            return null;
+        }
+
+        $start = $this->scanner->getPosition();
+        $name = $this->interpolatedIdentifier();
+        assert($name->getAsPlain() !== 'not');
+
+        if (!$this->scanner->scanChar('(')) {
+            $this->scanner->setPosition($start);
+
+            return null;
+        }
+
+        $value = $this->interpolatedDeclarationValue(true, true);
+        $this->scanner->expectChar(')');
+
+        return new SupportsFunction($name, $value, $this->scanner->spanFrom($start));
     }
 
     /**

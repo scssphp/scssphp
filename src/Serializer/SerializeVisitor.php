@@ -223,14 +223,9 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 $this->writeImportUrl($node->getUrl()->getValue());
             });
 
-            if ($node->getSupports() !== null) {
+            if ($node->getModifiers() !== null) {
                 $this->writeOptionalSpace();
-                $this->write($node->getSupports());
-            }
-
-            if ($node->getMedia() !== null) {
-                $this->writeOptionalSpace();
-                $this->writeBetween($node->getMedia(), $this->getCommaSeparator(), [$this, 'visitMediaQuery']);
+                $this->write($node->getModifiers());
             }
         });
     }

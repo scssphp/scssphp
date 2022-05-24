@@ -29,16 +29,9 @@ interface CssImport extends CssNode
     public function getUrl(): CssValue;
 
     /**
-     * The supports condition attached to this import.
+     * The modifiers (such as media or supports queries) attached to this import.
      *
      * @return CssValue<string>|null
      */
-    public function getSupports(): ?CssValue;
-
-    /**
-     * The media query attached to this import.
-     *
-     * @return list<CssMediaQuery>|null
-     */
-    public function getMedia(): ?array;
+    public function getModifiers(): ?CssValue;
 }
