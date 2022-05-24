@@ -12,9 +12,6 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass\Statement;
 
-use ScssPhp\ScssPhp\Ast\Sass\ArgumentInvocation;
-use ScssPhp\ScssPhp\Ast\Sass\Interpolation;
-use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition;
 use ScssPhp\ScssPhp\Visitor\StatementSearchVisitor;
 
 /**
@@ -30,20 +27,5 @@ final class HasContentVisitor extends StatementSearchVisitor
     public function visitContentRule(ContentRule $node): bool
     {
         return true;
-    }
-
-    protected function visitArgumentInvocation(ArgumentInvocation $invocation): ?bool
-    {
-        return null;
-    }
-
-    protected function visitSupportsCondition(SupportsCondition $condition): ?bool
-    {
-        return null;
-    }
-
-    protected function visitInterpolation(Interpolation $interpolation): ?bool
-    {
-        return null;
     }
 }
