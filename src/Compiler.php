@@ -3544,11 +3544,11 @@ EOL;
                 // 1. op[op name][left type][right type]
                 // 2. op[left type][right type] (passing the op as first arg)
                 // 3. op[op name]
-                if (\is_callable([$this, $fn = "op${ucOpName}${ucLType}${ucRType}"])) {
+                if (\is_callable([$this, $fn = "op{$ucOpName}{$ucLType}{$ucRType}"])) {
                     $out = $this->$fn($left, $right, $shouldEval);
-                } elseif (\is_callable([$this, $fn = "op${ucLType}${ucRType}"])) {
+                } elseif (\is_callable([$this, $fn = "op{$ucLType}{$ucRType}"])) {
                     $out = $this->$fn($op, $left, $right, $shouldEval);
-                } elseif (\is_callable([$this, $fn = "op${ucOpName}"])) {
+                } elseif (\is_callable([$this, $fn = "op{$ucOpName}"])) {
                     $out = $this->$fn($left, $right, $shouldEval);
                 } else {
                     $out = null;
