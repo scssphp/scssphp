@@ -4570,6 +4570,9 @@ EOL;
         $parts = [];
 
         foreach ($string[2] as $part) {
+            if( is_string( $part ) && strstr( $part,"~" ) && !empty( $this->registeredVars['path_for_tilde'] )){
+                $part = str_replace( '~', $this->registeredVars['path_for_tilde'], $part);
+            }
             if (\is_array($part) || $part instanceof Number) {
                 $parts[] = $this->compileValue($part, $quote);
             } else {
