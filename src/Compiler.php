@@ -4570,9 +4570,6 @@ EOL;
         $parts = [];
 
         foreach ($string[2] as $part) {
-            if( is_string( $part ) && strstr( $part,"~" ) && !empty( $this->registeredVars['path_for_tilde'] )){
-                $part = str_replace( '~', $this->registeredVars['path_for_tilde'], $part);
-            }
             if (\is_array($part) || $part instanceof Number) {
                 $parts[] = $this->compileValue($part, $quote);
             } else {
@@ -5416,6 +5413,9 @@ EOL;
      */
     private function resolveImportPath(string $url, string $baseDir): ?string
     {
+        if( is_string( $url ) && strstr( $url,"~" ) && !empty( $this->registeredVars['path_for_tilde'] )){
+            $url = str_replace( '~', $this->registeredVars['path_for_tilde'], $url);
+        }
         $path = Path::join($baseDir, $url);
 
         $hasExtension = preg_match('/.s[ac]ss$/', $url);
