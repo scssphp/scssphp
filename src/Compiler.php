@@ -3398,11 +3398,11 @@ EOL;
                 // 1. op[op name][left type][right type]
                 // 2. op[left type][right type] (passing the op as first arg)
                 // 3. op[op name]
-                if (\is_callable([$this, $fn = "op${ucOpName}${ucLType}${ucRType}"])) {
+                if (\is_callable([$this, $fn = "op{$ucOpName}{$ucLType}{$ucRType}"])) {
                     $out = $this->$fn($left, $right, $shouldEval);
-                } elseif (\is_callable([$this, $fn = "op${ucLType}${ucRType}"])) {
+                } elseif (\is_callable([$this, $fn = "op{$ucLType}{$ucRType}"])) {
                     $out = $this->$fn($op, $left, $right, $shouldEval);
-                } elseif (\is_callable([$this, $fn = "op${ucOpName}"])) {
+                } elseif (\is_callable([$this, $fn = "op{$ucOpName}"])) {
                     $out = $this->$fn($left, $right, $shouldEval);
                 } else {
                     $out = null;
@@ -3746,7 +3746,7 @@ EOL;
 
         // Special functions overriding a CSS function are case-insensitive. We normalize them as lowercase
         // to avoid the deprecation warning about the wrong case being used.
-        if ($lowercasedName === 'min' || $lowercasedName === 'max') {
+        if ($lowercasedName === 'min' || $lowercasedName === 'max' || $lowercasedName === 'rgb' || $lowercasedName === 'rgba' || $lowercasedName === 'hsl' || $lowercasedName === 'hsla') {
             $normalizedName = $lowercasedName;
         }
 
