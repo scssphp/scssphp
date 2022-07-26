@@ -23,6 +23,8 @@ use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 final class TypeSelector extends SimpleSelector
 {
     /**
+     * The element name being selected.
+     *
      * @var QualifiedName
      * @readonly
      */

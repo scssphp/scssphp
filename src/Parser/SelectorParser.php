@@ -82,6 +82,21 @@ final class SelectorParser extends Parser
         }
     }
 
+    public function parseComplexSelector(): ComplexSelector
+    {
+        try {
+            $complex = $this->complexSelector();
+
+            if (!$this->scanner->isDone()) {
+                $this->scanner->error('expected selector.');
+            }
+
+            return $complex;
+        } catch (FormatException $e) {
+            throw $this->wrapException($e);
+        }
+    }
+
     public function parseCompoundSelector(): CompoundSelector
     {
         try {

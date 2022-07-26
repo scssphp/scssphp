@@ -27,7 +27,7 @@ use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 /**
  * A selector list.
  *
- * A selector list is composed of {@see ComplexSelector}s. It matches an element
+ * A selector list is composed of {@see ComplexSelector}s. It matches any element
  * that matches any of the component selectors.
  */
 final class SelectorList extends Selector

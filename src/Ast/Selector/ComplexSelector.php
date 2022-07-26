@@ -12,7 +12,10 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Extend\ExtendUtil;
+use ScssPhp\ScssPhp\Logger\LoggerInterface;
+use ScssPhp\ScssPhp\Parser\SelectorParser;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 
@@ -74,6 +77,20 @@ final class ComplexSelector extends Selector
 
         $this->components = $components;
         $this->lineBreak = $lineBreak;
+    }
+
+    /**
+     * Parses a complex selector from $contents.
+     *
+     * If passed, $url is the name of the file from which $contents comes.
+     * $allowParent controls whether a {@see ParentSelector} is allowed in this
+     * selector.
+     *
+     * @throws SassFormatException if parsing fails.
+     */
+    public static function parse(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true): ComplexSelector
+    {
+        return (new SelectorParser($contents, $logger, $url, $allowParent))->parseComplexSelector();
     }
 
     /**

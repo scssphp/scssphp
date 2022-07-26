@@ -12,6 +12,11 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
+use ScssPhp\ScssPhp\Ast\Selector\ComplexSelector;
+use ScssPhp\ScssPhp\Ast\Selector\CompoundSelector;
+use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
+use ScssPhp\ScssPhp\Ast\Selector\SimpleSelector;
+use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Serializer\Serializer;
 use ScssPhp\ScssPhp\Util\Equatable;
@@ -261,6 +266,179 @@ abstract class Value implements Equatable
     public function assertString(?string $name = null): SassString
     {
         throw SassScriptException::forArgument("$this is not a string.", $name);
+    }
+
+    /**
+     * Parses $this as a selector list, in the same manner as the
+     * `selector-parse()` function.
+     *
+     * @throws SassScriptException if this isn't a type that can be parsed as a
+     * selector, or if parsing fails. If $allowParent is `true`, this allows
+     * {@see ParentSelector}s. Otherwise, they're considered parse errors.
+     *
+     * If this came from a function argument, $name is the argument name
+     * (without the `$`). It's used for error reporting.
+     *
+     * @internal
+     */
+    public function assertSelector(?string $name = null, bool $allowParent = false): SelectorList
+    {
+        $string = $this->selectorString($name);
+
+        try {
+            return SelectorList::parse($string, null, null, $allowParent);
+        } catch (SassFormatException $e) {
+            throw SassScriptException::forArgument($e->getMessage(), $name, $e);
+        }
+    }
+
+    /**
+     * Parses $this as a simple selector, in the same manner as the
+     * `selector-parse()` function.
+     *
+     * @throws SassScriptException if this isn't a type that can be parsed as a
+     * selector, or if parsing fails. If $allowParent is `true`, this allows
+     * {@see ParentSelector}s. Otherwise, they're considered parse errors.
+     *
+     * If this came from a function argument, $name is the argument name
+     * (without the `$`). It's used for error reporting.
+     *
+     * @internal
+     */
+    public function assertSimpleSelector(?string $name = null, bool $allowParent = false): SimpleSelector
+    {
+        $string = $this->selectorString($name);
+
+        try {
+            return SimpleSelector::parse($string, null, null, $allowParent);
+        } catch (SassFormatException $e) {
+            throw SassScriptException::forArgument($e->getMessage(), $name, $e);
+        }
+    }
+
+    /**
+     * Parses $this as a compound selector, in the same manner as the
+     * `selector-parse()` function.
+     *
+     * @throws SassScriptException if this isn't a type that can be parsed as a
+     * selector, or if parsing fails. If $allowParent is `true`, this allows
+     * {@see ParentSelector}s. Otherwise, they're considered parse errors.
+     *
+     * If this came from a function argument, $name is the argument name
+     * (without the `$`). It's used for error reporting.
+     *
+     * @internal
+     */
+    public function assertCompoundSelector(?string $name = null, bool $allowParent = false): CompoundSelector
+    {
+        $string = $this->selectorString($name);
+
+        try {
+            return CompoundSelector::parse($string, null, null, $allowParent);
+        } catch (SassFormatException $e) {
+            throw SassScriptException::forArgument($e->getMessage(), $name, $e);
+        }
+    }
+
+    /**
+     * Parses $this as a complex selector, in the same manner as the
+     * `selector-parse()` function.
+     *
+     * @throws SassScriptException if this isn't a type that can be parsed as a
+     * selector, or if parsing fails. If $allowParent is `true`, this allows
+     * {@see ParentSelector}s. Otherwise, they're considered parse errors.
+     *
+     * If this came from a function argument, $name is the argument name
+     * (without the `$`). It's used for error reporting.
+     *
+     * @internal
+     */
+    public function assertComplexSelector(?string $name = null, bool $allowParent = false): ComplexSelector
+    {
+        $string = $this->selectorString($name);
+
+        try {
+            return ComplexSelector::parse($string, null, null, $allowParent);
+        } catch (SassFormatException $e) {
+            throw SassScriptException::forArgument($e->getMessage(), $name, $e);
+        }
+    }
+
+    /**
+     * Converts a `selector-parse()`-style input into a string that can be
+     * parsed.
+     *
+     * @throws SassScriptException if $this isn't a type or a structure that
+     * can be parsed as a selector.
+     */
+    private function selectorString(?string $name): string
+    {
+        $string = $this->selectorStringOrNull();
+
+        if ($string !== null) {
+            return $string;
+        }
+
+        throw SassScriptException::forArgument("$this is not a valid selector: it must be a string,\na list of strings, or a list of lists of strings.", $name);
+    }
+
+    /**
+     * Converts a `selector-parse()`-style input into a string that can be
+     * parsed.
+     *
+     * Returns `null` if $this isn't a type or a structure that can be parsed as
+     * a selector.
+     */
+    private function selectorStringOrNull(): ?string
+    {
+        if ($this instanceof SassString) {
+            return $this->getText();
+        }
+
+        if (!$this instanceof SassList) {
+            return null;
+        }
+
+        $list = $this;
+        if (\count($list->asList()) === 0) {
+            return null;
+        }
+
+        $result = [];
+        switch ($list->getSeparator()) {
+            case ListSeparator::COMMA:
+                foreach ($list->asList() as $complex) {
+                    if ($complex instanceof SassString) {
+                        $result[] = $complex->getText();
+                    } elseif ($complex instanceof SassList && $complex->getSeparator() === ListSeparator::SPACE) {
+                        $string = $complex->selectorStringOrNull();
+
+                        if ($string === null) {
+                            return null;
+                        }
+
+                        $result[] = $string;
+                    } else {
+                        return null;
+                    }
+                }
+                break;
+
+            case ListSeparator::SLASH:
+                return null;
+
+            default:
+                foreach ($list->asList() as $compound) {
+                    if ($compound instanceof SassString) {
+                        $result[] = $compound->getText();
+                    } else {
+                        return null;
+                    }
+                }
+                break;
+        }
+
+        return implode($list->getSeparator() === ListSeparator::COMMA ? ', ' : ' ', $result);
     }
 
     /**
