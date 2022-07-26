@@ -1203,32 +1203,40 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
     public function visitComplexSelector(ComplexSelector $complex)
     {
-        $lastComponent = null;
+        $this->writeCombinators($complex->getLeadingCombinators());
 
-        foreach ($complex->getComponents() as $component) {
-            if ($lastComponent !== null && !$this->omitSpacesAround($lastComponent) && !$this->omitSpacesAround($component)) {
+        if (\count($complex->getLeadingCombinators()) !== 0 && \count($complex->getComponents()) !== 0) {
+            $this->writeOptionalSpace();
+        }
+
+        foreach ($complex->getComponents() as $i => $component) {
+            $this->visitCompoundSelector($component->getSelector());
+
+            if (\count($component->getCombinators()) !== 0) {
+                $this->writeOptionalSpace();
+            }
+
+            $this->writeCombinators($component->getCombinators());
+
+            if ($i !== \count($complex->getComponents()) - 1 && (!$this->compressed || \count($component->getCombinators()) === 0)) {
                 $this->buffer->writeChar(' ');
             }
-
-            if ($component instanceof CompoundSelector) {
-                $this->visitCompoundSelector($component);
-            } else {
-                $this->buffer->write($component);
-            }
-
-            $lastComponent = $component;
         }
     }
 
     /**
-     * @param CompoundSelector|string $component
+     * Writes $combinators to {@see buffer}, with spaces in between in expanded
+     * mode.
      *
-     * @return bool
+     * @param string[] $combinators
+     *
+     * @return void
      */
-    private function omitSpacesAround($component): bool
+    private function writeCombinators(array $combinators): void
     {
-        // Combinator values
-        return $this->compressed && \is_string($component);
+        $this->writeBetween($combinators, $this->compressed ? '' : ' ', function ($text) {
+            $this->buffer->write($text);
+        });
     }
 
     public function visitCompoundSelector(CompoundSelector $compound)
@@ -1569,35 +1577,6 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      */
     private function isInvisible(CssNode $node): bool
     {
-        if ($this->inspect) {
-            return false;
-        }
-
-        if ($this->compressed && $node instanceof CssComment && !$node->isPreserved()) {
-            return true;
-        }
-
-        if ($node instanceof CssParentNode) {
-            // An unknown at-rule is never invisible. Because we don't know the
-            // semantics of unknown rules, we can't guarantee that (for example)
-            // `@foo {}` isn't meaningful.
-            if ($node instanceof CssAtRule) {
-                return false;
-            }
-
-            if ($node instanceof CssStyleRule && $node->getSelector()->getValue()->isInvisible()) {
-                return true;
-            }
-
-            foreach ($node->getChildren() as $child) {
-                if (!$this->isInvisible($child)) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        return false;
+        return !$this->inspect && ($this->compressed ? $node->isInvisibleHidingComments() : $node->isInvisible());
     }
 }

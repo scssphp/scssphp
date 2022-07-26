@@ -231,19 +231,6 @@ final class PseudoSelector extends SimpleSelector
         return $this->maxSpecificity;
     }
 
-    public function isInvisible(): bool
-    {
-        if ($this->selector === null) {
-            return false;
-        }
-
-        // We don't consider `:not(%foo)` to be invisible because, semantically, it
-        // means "doesn't match this selector that matches nothing", so it's
-        // equivalent to *. If the entire compound selector is composed of `:not`s
-        // with invisible lists, the serializer emits it as `*`.
-        return 'not' !== $this->name && $this->selector->isInvisible();
-    }
-
     public function withSelector(SelectorList $selector): PseudoSelector
     {
         return new PseudoSelector($this->name, $this->isElement(), $this->argument, $selector);

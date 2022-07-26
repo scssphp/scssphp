@@ -17,6 +17,7 @@ use ScssPhp\ScssPhp\Ast\Selector\AttributeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\ClassSelector;
 use ScssPhp\ScssPhp\Ast\Selector\Combinator;
 use ScssPhp\ScssPhp\Ast\Selector\ComplexSelector;
+use ScssPhp\ScssPhp\Ast\Selector\ComplexSelectorComponent;
 use ScssPhp\ScssPhp\Ast\Selector\CompoundSelector;
 use ScssPhp\ScssPhp\Ast\Selector\IDSelector;
 use ScssPhp\ScssPhp\Ast\Selector\ParentSelector;
@@ -168,6 +169,10 @@ final class SelectorParser extends Parser
      */
     private function complexSelector(bool $lineBreak = false): ComplexSelector
     {
+        $lastCompound = null;
+        $combinators = [];
+
+        $initialCombinators = null;
         $components = [];
 
         while (true) {
@@ -178,39 +183,32 @@ final class SelectorParser extends Parser
             switch ($next) {
                 case '+':
                     $this->scanner->readChar();
-                    $components[] = Combinator::NEXT_SIBLING;
+                    $combinators[] = Combinator::NEXT_SIBLING;
                     break;
 
                 case '>':
                     $this->scanner->readChar();
-                    $components[] = Combinator::CHILD;
+                    $combinators[] = Combinator::CHILD;
                     break;
 
                 case '~':
                     $this->scanner->readChar();
-                    $components[] = Combinator::FOLLOWING_SIBLING;
-                    break;
-
-                case '[':
-                case '.':
-                case '#':
-                case '%':
-                case ':':
-                case '&':
-                case '*':
-                case '|':
-                    $components[] = $this->compoundSelector();
-
-                    if ($this->scanner->peekChar() === '&') {
-                        $this->scanner->error('"&" may only used at the beginning of a compound selector.');
-                    }
+                    $combinators[] = Combinator::FOLLOWING_SIBLING;
                     break;
 
                 default:
-                    if ($next === null || !$this->lookingAtIdentifier()) {
+                    if ($next === null || (!\in_array($next, ['[', '.', '#', '%', ':', '&', '*', '|'], true) && !$this->lookingAtIdentifier())) {
                         break 2;
                     }
-                    $components[] = $this->compoundSelector();
+
+                    if ($lastCompound !== null) {
+                        $components[] = new ComplexSelectorComponent($lastCompound, $combinators);
+                    } elseif (\count($combinators) !== 0) {
+                        \assert($initialCombinators === null);
+                        $initialCombinators = $combinators;
+                    }
+                    $lastCompound = $this->compoundSelector();
+                    $combinators = [];
 
                     if ($this->scanner->peekChar() === '&') {
                         $this->scanner->error('"&" may only used at the beginning of a compound selector.');
@@ -219,11 +217,15 @@ final class SelectorParser extends Parser
             }
         }
 
-        if (\count($components) === 0) {
+        if ($lastCompound !== null) {
+            $components[] = new ComplexSelectorComponent($lastCompound, $combinators);
+        } elseif (\count($combinators) !== 0) {
+            $initialCombinators = $combinators;
+        } else {
             $this->scanner->error('expected selector.');
         }
 
-        return new ComplexSelector($components, $lineBreak);
+        return new ComplexSelector($initialCombinators ?? [], $components, $lineBreak);
     }
 
     /**

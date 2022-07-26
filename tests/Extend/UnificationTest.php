@@ -80,13 +80,13 @@ class UnificationTest extends TestCase
         yield ['> .c.d', '> .c', '.d'];
         yield ['~ .c.d', '.c', '~ .d'];
         yield ['+ .c.d', '+ .c', '+ .d'];
-        yield ['> + ~ > > .c.d', '+ ~ > .c', '> + ~ > > .d'];
-        yield ['+ > ~ ~ > .c.d', '+ ~ > .c', '+ > ~ ~ > .d'];
+        yield [null, '+ ~ > .c', '> + ~ > > .d'];
+        yield [null, '+ ~ > .c', '+ > ~ ~ > .d'];
         yield [null, '+ ~ > .c', '+ > ~ ~ .d'];
         yield ['.f .c > .g ~ .d + .e.h, .f .c > .g.d + .e.h', '.c > .d + .e', '.f .g ~ .h'];
-        yield ['.c .e + ~ > .d.f, .e .c + ~ > .d.f', '.c + ~ > .d', '.e + ~ > .f'];
-        yield ['.c .e > + ~ > > .d.f, .e .c > + ~ > > .d.f', '.c + ~ > .d', '.e > + ~ > > .f'];
-        yield ['.c .e + > ~ ~ > .d.f, .e .c + > ~ ~ > .d.f', '.c + ~ > .d', '.e + > ~ ~ > .f'];
+        yield [null, '.c + ~ > .d', '.e + ~ > .f'];
+        yield [null, '.c + ~ > .d', '.e > + ~ > > .f'];
+        yield [null, '.c + ~ > .d', '.e + > ~ ~ > .f'];
         yield [null, '.c + ~ > .d', '.e + > ~ ~ .f'];
         // complex/distinct
         yield ['.c .e .d.f, .e .c .d.f', '.c .d', '.e .f'];
