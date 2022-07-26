@@ -1,5 +1,15 @@
 # Changelog
 
+## **1.10.4** -- July 26,2022
+
+**Fixed**
+
+* Remove false positive deprecation warnings when compiling Bootstrap 5.2.0 (@stof)
+
+**Changed**
+
+* Remove usage of interpolation syntax deprecated in PHP 8.2 (@shyim)
+
 ## **1.10.3** -- May 16, 2022
 
 **Fixed**
