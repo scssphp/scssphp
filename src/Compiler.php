@@ -3892,7 +3892,7 @@ EOL;
 
         // Special functions overriding a CSS function are case-insensitive. We normalize them as lowercase
         // to avoid the deprecation warning about the wrong case being used.
-        if ($lowercasedName === 'min' || $lowercasedName === 'max') {
+        if ($lowercasedName === 'min' || $lowercasedName === 'max' || $lowercasedName === 'rgb' || $lowercasedName === 'rgba' || $lowercasedName === 'hsl' || $lowercasedName === 'hsla') {
             $normalizedName = $lowercasedName;
         }
 
