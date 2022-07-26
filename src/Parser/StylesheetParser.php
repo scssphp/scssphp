@@ -1723,8 +1723,12 @@ abstract class StylesheetParser extends Parser
      * If $mixin is `true`, this is parsed as a mixin invocation. Mixin
      * invocations don't allow the Microsoft-style `=` operator at the top level,
      * but function invocations do.
+     *
+     * If $allowEmptySecondArg is `true`, this allows the second argument to be
+     * omitted, in which case an unquoted empty string will be passed in its
+     * place.
      */
-    private function argumentInvocation(bool $mixin = false): ArgumentInvocation
+    private function argumentInvocation(bool $mixin = false, bool $allowEmptySecondArg = false): ArgumentInvocation
     {
         $start = $this->scanner->getPosition();
         $this->scanner->expectChar('(');
@@ -1770,6 +1774,11 @@ abstract class StylesheetParser extends Parser
                 break;
             }
             $this->whitespace();
+
+            if ($allowEmptySecondArg && \count($positional) === 1 && \count($named) === 0 && $rest === null && $this->scanner->peekChar() === ')') {
+                $positional[] = StringExpression::plain('', $this->scanner->getEmptySpan());
+                break;
+            }
         }
 
         $this->scanner->expectChar(')');
@@ -1784,7 +1793,7 @@ abstract class StylesheetParser extends Parser
      *
      * @phpstan-impure
      */
-    protected function expression(?callable $until = null, bool $singleEquals = false, bool $bracketList = false): Expression
+    private function expression(?callable $until = null, bool $singleEquals = false, bool $bracketList = false): Expression
     {
         if ($until !== null && $until()) {
             $this->scanner->error('Expected expression.');
@@ -2260,8 +2269,10 @@ abstract class StylesheetParser extends Parser
      *
      * If $singleEquals is true, this will allow the Microsoft-style `=`
      * operator at the top level.
+     *
+     * @phpstan-impure
      */
-    private function expressionUntilComma(bool $singleEquals = false): Expression
+    protected function expressionUntilComma(bool $singleEquals = false): Expression
     {
         return $this->expression(function () {
             return $this->scanner->peekChar() === ',';
@@ -3016,7 +3027,7 @@ abstract class StylesheetParser extends Parser
                     return new InterpolatedFunctionExpression($identifier, $this->argumentInvocation(), $this->scanner->spanFrom($start));
                 }
 
-                return new FunctionExpression($plain, $this->argumentInvocation(), $this->scanner->spanFrom($start));
+                return new FunctionExpression($plain, $this->argumentInvocation(false, $lower === 'var'), $this->scanner->spanFrom($start));
 
             default:
                 return new StringExpression($identifier);
