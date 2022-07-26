@@ -81,4 +81,4 @@ jobs:
                 run: composer bin phpstan update --ansi --no-progress
 
             -   name: Run phpstan
-                run: vendor/bin/phpstan analyse --ansi --no-progress
+                run: vendor-bin/phpstan/vendor/bin/phpstan analyse --ansi --no-progress
