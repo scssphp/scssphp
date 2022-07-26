@@ -88,6 +88,17 @@ final class SpanUtil
     }
 
     /**
+     * Whether $span contains the $target FileSpan.
+     *
+     * Validates the FileSpans to be in the same file and for the $target to be
+     * within $span FileSpan inclusive range [start,end].
+     */
+    public static function contains(FileSpan $span, FileSpan $target): bool
+    {
+        return $span->getFile() === $target->getFile() && $span->getStart()->getOffset() <= $target->getStart()->getOffset() && $span->getEnd()->getOffset() >= $target->getEnd()->getOffset();
+    }
+
+    /**
      * Consumes an identifier from $scanner.
      */
     private static function scanIdentifier(StringScanner $scanner): void
