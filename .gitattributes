@@ -6,6 +6,7 @@ MAINTENANCE.md export-ignore
 .gitignore export-ignore
 .travis.yml export-ignore
 docs/ export-ignore
+phpcs.xml.dist export-ignore
 phpstan*.neon export-ignore
 phpunit.xml.dist export-ignore
 tests/ export-ignore
