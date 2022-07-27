@@ -41,6 +41,7 @@ final class ExtendUtil
     private const SUBSELECTOR_PSEUDOS = [
         'is',
         'matches',
+        'where',
         'any',
         'nth-child',
         'nth-last-child',
@@ -1088,6 +1089,7 @@ final class ExtendUtil
             case 'is':
             case 'matches':
             case 'any':
+            case 'where':
                 $selectors = self::selectorPseudoArgs($compound2, $pseudo1->getName());
 
                 foreach ($selectors as $selector2) {
