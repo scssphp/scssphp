@@ -225,6 +225,25 @@ abstract class StylesheetParser extends Parser
         }
     }
 
+    public function parseArgumentDeclaration(): ArgumentDeclaration
+    {
+        try {
+            $this->scanner->expectChar('@', '@-rule');
+            $this->identifier();
+            $this->whitespace();
+            $this->identifier();
+            $arguments = $this->argumentDeclaration();
+            $this->whitespace();
+            $this->scanner->expectChar('{');
+
+            $this->scanner->expectDone();
+
+            return $arguments;
+        } catch (FormatException $e) {
+            throw $this->wrapException($e);
+        }
+    }
+
     /**
      * Consumes a statement that's allowed at the top level of the stylesheet or
      * within nested style and at rules.
