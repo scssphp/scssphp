@@ -18,15 +18,16 @@ final class SassScriptException extends \Exception
      * This helper ensures a consistent handling of argument names in the
      * error message, without duplicating it.
      *
-     * @param string      $message
-     * @param string|null $name    The argument name, without $
+     * @param string          $message
+     * @param string|null     $name     The argument name, without $
+     * @param \Throwable|null $previous
      *
      * @return SassScriptException
      */
-    public static function forArgument(string $message, ?string $name = null): SassScriptException
+    public static function forArgument(string $message, ?string $name = null, ?\Throwable $previous = null): SassScriptException
     {
         $varDisplay = !\is_null($name) ? "\${$name}: " : '';
 
-        return new self($varDisplay . $message);
+        return new self($varDisplay . $message, 0, $previous);
     }
 }

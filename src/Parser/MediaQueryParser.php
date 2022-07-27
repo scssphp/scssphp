@@ -35,6 +35,7 @@ final class MediaQueryParser extends Parser
             do {
                 $this->whitespace();
                 $queries[] = $this->mediaQuery();
+                $this->whitespace();
             } while ($this->scanner->scanChar(','));
             $this->scanner->expectDone();
 
@@ -49,56 +50,105 @@ final class MediaQueryParser extends Parser
      */
     private function mediaQuery(): CssMediaQuery
     {
+        if ($this->scanner->peekChar() === '(') {
+            $conditions = [$this->mediaInParens()];
+            $this->whitespace();
+
+            $conjunction = true;
+
+            if ($this->scanIdentifier('and')) {
+                $this->expectWhitespace();
+                $conditions = array_merge($conditions, $this->mediaLogicSequence('and'));
+            } elseif ($this->scanIdentifier('or')) {
+                $this->expectWhitespace();
+                $conjunction = false;
+                $conditions = array_merge($conditions, $this->mediaLogicSequence('or'));
+            }
+
+            return CssMediaQuery::condition($conditions, $conjunction);
+        }
         $modifier = null;
         $type = null;
 
-        if ($this->scanner->peekChar() !== '(') {
-            $identifier1 = $this->identifier();
-            $this->whitespace();
+        $identifier1 = $this->identifier();
+
+        if (strtolower($identifier1) === 'not') {
+            $this->expectWhitespace();
 
             if (!$this->lookingAtIdentifier()) {
-                // For example, "@media screen {"
-                return new CssMediaQuery($identifier1);
+                // For example, "@media not (...) {"
+                return CssMediaQuery::condition(['(not ' . $this->mediaInParens() . ')']);
             }
+        }
 
-            $identifier2 = $this->identifier();
+        $this->whitespace();
+
+        if (!$this->lookingAtIdentifier()) {
+            // For example, "@media screen {"
+            return CssMediaQuery::type($identifier1);
+        }
+
+        $identifier2 = $this->identifier();
+
+        if (strtolower($identifier2) === 'and') {
+            $this->expectWhitespace();
+            // For example, "@media screen and ..."
+            $type = $identifier1;
+        } else {
             $this->whitespace();
+            $modifier = $identifier1;
+            $type = $identifier2;
 
-            if (strtolower($identifier2) === 'and') {
-                // For example, "@media screen and ..."
-                $type = $identifier1;
+            if ($this->scanIdentifier('and')) {
+                // For example, "@media only screen and ..."
+                $this->expectWhitespace();
             } else {
-                $modifier = $identifier1;
-                $type = $identifier2;
-
-                if ($this->scanIdentifier('and')) {
-                    // For example, "@media only screen and ..."
-                    $this->whitespace();
-                } else {
-                    // For example, "@media only screen {"
-                    return new CssMediaQuery($type, $modifier);
-                }
+                // For example, "@media only screen {"
+                return CssMediaQuery::type($type, $modifier);
             }
         }
 
-        // We've consumed either `IDENTIFIER "and"`, `IDENTIFIER IDENTIFIER "and"`,
-        // or no text.
+        // We've consumed either `IDENTIFIER "and"` or
+        // `IDENTIFIER IDENTIFIER "and"`.
 
-        $features = [];
-
-        do {
-            $this->whitespace();
-            $this->scanner->expectChar('(');
-            $feature = $this->declarationValue();
-            $features[] = "($feature)";
-            $this->scanner->expectChar(')');
-            $this->whitespace();
-        } while ($this->scanIdentifier('and'));
-
-        if ($type === null) {
-            return CssMediaQuery::condition($features);
+        if ($this->scanIdentifier('not')) {
+            // For example, "@media screen and not (...) {"
+            return CssMediaQuery::type($type, $modifier, ['(not ' . $this->mediaInParens() . ')']);
         }
 
-        return new CssMediaQuery($type, $modifier, $features);
+        return CssMediaQuery::type($type, $modifier, $this->mediaLogicSequence('and'));
+    }
+
+    /**
+     * Consumes one or more `<media-in-parens>` expressions separated by
+     * $operator and returns them.
+     *
+     * @return list<string>
+     */
+    private function mediaLogicSequence(string $operator): array
+    {
+        $result = [];
+        while (true) {
+            $result[] = $this->mediaInParens();
+            $this->whitespace();
+
+            if (!$this->scanIdentifier($operator)) {
+                return $result;
+            }
+            $this->expectWhitespace();
+        }
+    }
+
+    /**
+     * Consumes a `<media-in-parens>` expression and returns it, parentheses
+     * included.
+     */
+    private function mediaInParens(): string
+    {
+        $this->scanner->expectChar('(', 'media condition in parentheses');
+        $result = '(' . $this->declarationValue() . ')';
+        $this->scanner->expectChar(')');
+
+        return $result;
     }
 }

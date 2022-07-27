@@ -105,15 +105,15 @@ final class CompoundSelector extends Selector
         return $this->maxSpecificity;
     }
 
-    public function isInvisible(): bool
+    /**
+     * If this compound selector is composed of a single simple selector, returns
+     * it.
+     *
+     * Otherwise, returns null.
+     */
+    public function getSingleSimple(): ?SimpleSelector
     {
-        foreach ($this->components as $component) {
-            if ($component->isInvisible()) {
-                return true;
-            }
-        }
-
-        return false;
+        return \count($this->components) === 1 ? $this->components[0] : null;
     }
 
     public function accept(SelectorVisitor $visitor)

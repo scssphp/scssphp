@@ -231,19 +231,6 @@ final class PseudoSelector extends SimpleSelector
         return $this->maxSpecificity;
     }
 
-    public function isInvisible(): bool
-    {
-        if ($this->selector === null) {
-            return false;
-        }
-
-        // We don't consider `:not(%foo)` to be invisible because, semantically, it
-        // means "doesn't match this selector that matches nothing", so it's
-        // equivalent to *. If the entire compound selector is composed of `:not`s
-        // with invisible lists, the serializer emits it as `*`.
-        return 'not' !== $this->name && $this->selector->isInvisible();
-    }
-
     public function withSelector(SelectorList $selector): PseudoSelector
     {
         return new PseudoSelector($this->name, $this->isElement(), $this->argument, $selector);
@@ -303,6 +290,31 @@ final class PseudoSelector extends SimpleSelector
         }
 
         return $result;
+    }
+
+    public function isSuperselector(SimpleSelector $other): bool
+    {
+        if (parent::isSuperselector($other)) {
+            return true;
+        }
+
+        $selector = $this->selector;
+
+        if ($selector === null) {
+            return $this === $other || $this->equals($other);
+        }
+
+        if ($other instanceof PseudoSelector && $this->isElement() && $other->isElement() && $this->normalizedName === 'slotted' && $other->name === $this->name) {
+            if ($other->getSelector() !== null) {
+                return $selector->isSuperselector($other->getSelector());
+            }
+
+            return false;
+        }
+
+        // Fall back to the logic defined in ExtendUtil, which knows how to
+        // compare selector pseudoclasses against raw selectors.
+        return (new CompoundSelector([$this]))->isSuperselector(new CompoundSelector([$other]));
     }
 
     public function accept(SelectorVisitor $visitor)

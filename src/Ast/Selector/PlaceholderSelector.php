@@ -42,11 +42,6 @@ final class PlaceholderSelector extends SimpleSelector
         return $this->name;
     }
 
-    public function isInvisible(): bool
-    {
-        return true;
-    }
-
     /**
      * Returns whether this is a private selector (that is, whether it begins
      * with `-` or `_`).

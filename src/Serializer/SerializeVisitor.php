@@ -42,6 +42,8 @@ use ScssPhp\ScssPhp\Parser\StringScanner;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\NumberUtil;
+use ScssPhp\ScssPhp\Util\SpanUtil;
+use ScssPhp\ScssPhp\Util\StringUtil;
 use ScssPhp\ScssPhp\Value\CalculationInterpolation;
 use ScssPhp\ScssPhp\Value\CalculationOperation;
 use ScssPhp\ScssPhp\Value\CalculationOperator;
@@ -133,10 +135,15 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 if ($this->requiresSemicolon($previous)) {
                     $this->buffer->writeChar(';');
                 }
-                $this->writeLineFeed();
 
-                if ($previous->isGroupEnd()) {
+                if ($this->isTrailingComment($child, $previous)) {
+                    $this->writeOptionalSpace();
+                } else {
                     $this->writeLineFeed();
+
+                    if ($previous->isGroupEnd()) {
+                        $this->writeLineFeed();
+                    }
                 }
             }
 
@@ -189,7 +196,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
             if (!$node->isChildless()) {
                 $this->writeOptionalSpace();
-                $this->visitChildren($node->getChildren());
+                $this->visitChildren($node);
             }
         });
     }
@@ -201,7 +208,9 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         $this->for($node, function () use ($node) {
             $this->buffer->write('@media');
 
-            if (!$this->compressed || !$node->getQueries()[0]->isCondition()) {
+            $firstQuery = $node->getQueries()[0];
+
+            if (!$this->compressed || $firstQuery->getModifier() !== null || $firstQuery->getType() !== null || (\count($firstQuery->getConditions()) === 1) && StringUtil::startsWith($firstQuery->getConditions()[0], '(not ')) {
                 $this->buffer->writeChar(' ');
             }
 
@@ -209,7 +218,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         });
 
         $this->writeOptionalSpace();
-        $this->visitChildren($node->getChildren());
+        $this->visitChildren($node);
     }
 
     public function visitCssImport($node): void
@@ -261,7 +270,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             $this->writeBetween($node->getSelector()->getValue(), $this->getCommaSeparator(), [$this->buffer, 'write']);
         });
         $this->writeOptionalSpace();
-        $this->visitChildren($node->getChildren());
+        $this->visitChildren($node);
     }
 
     private function visitMediaQuery(CssMediaQuery $query): void
@@ -274,12 +283,20 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         if ($query->getType() !== null) {
             $this->buffer->write($query->getType());
 
-            if (\count($query->getFeatures())) {
+            if (\count($query->getConditions())) {
                 $this->buffer->write(' and ');
             }
         }
 
-        $this->writeBetween($query->getFeatures(), $this->compressed ? 'and ' : ' and ', [$this->buffer, 'write']);
+        if (\count($query->getConditions()) === 1 && StringUtil::startsWith($query->getConditions()[0], '(not ')) {
+            $this->buffer->write('not ');
+            $condition = $query->getConditions()[0];
+            $this->buffer->write(substr($condition, \strlen('(not '), \strlen($condition) - (\strlen('(not ') + 1)));
+        } else {
+            $operator = $query->isConjunction() ? 'and' : 'or';
+
+            $this->writeBetween($query->getConditions(), $this->compressed ? "$operator " : " $operator ", [$this->buffer, 'write']);
+        }
     }
 
     public function visitCssStyleRule($node): void
@@ -290,7 +307,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             $node->getSelector()->getValue()->accept($this);
         });
         $this->writeOptionalSpace();
-        $this->visitChildren($node->getChildren());
+        $this->visitChildren($node);
     }
 
     public function visitCssSupportsRule($node): void
@@ -307,7 +324,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             $this->write($node->getCondition());
         });
         $this->writeOptionalSpace();
-        $this->visitChildren($node->getChildren());
+        $this->visitChildren($node);
     }
 
     public function visitCssDeclaration($node): void
@@ -378,7 +395,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
 
         if ($minimumIndentation === -1) {
-            $this->buffer->write(Util\StringUtil::trimAsciiRight($value, true));
+            $this->buffer->write(StringUtil::trimAsciiRight($value, true));
             $this->buffer->writeChar(' ');
             return;
         }
@@ -1197,32 +1214,40 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
     public function visitComplexSelector(ComplexSelector $complex)
     {
-        $lastComponent = null;
+        $this->writeCombinators($complex->getLeadingCombinators());
 
-        foreach ($complex->getComponents() as $component) {
-            if ($lastComponent !== null && !$this->omitSpacesAround($lastComponent) && !$this->omitSpacesAround($component)) {
+        if (\count($complex->getLeadingCombinators()) !== 0 && \count($complex->getComponents()) !== 0) {
+            $this->writeOptionalSpace();
+        }
+
+        foreach ($complex->getComponents() as $i => $component) {
+            $this->visitCompoundSelector($component->getSelector());
+
+            if (\count($component->getCombinators()) !== 0) {
+                $this->writeOptionalSpace();
+            }
+
+            $this->writeCombinators($component->getCombinators());
+
+            if ($i !== \count($complex->getComponents()) - 1 && (!$this->compressed || \count($component->getCombinators()) === 0)) {
                 $this->buffer->writeChar(' ');
             }
-
-            if ($component instanceof CompoundSelector) {
-                $this->visitCompoundSelector($component);
-            } else {
-                $this->buffer->write($component);
-            }
-
-            $lastComponent = $component;
         }
     }
 
     /**
-     * @param CompoundSelector|string $component
+     * Writes $combinators to {@see buffer}, with spaces in between in expanded
+     * mode.
      *
-     * @return bool
+     * @param string[] $combinators
+     *
+     * @return void
      */
-    private function omitSpacesAround($component): bool
+    private function writeCombinators(array $combinators): void
     {
-        // Combinator values
-        return $this->compressed && \is_string($component);
+        $this->writeBetween($combinators, $this->compressed ? '' : ' ', function ($text) {
+            $this->buffer->write($text);
+        });
     }
 
     public function visitCompoundSelector(CompoundSelector $compound)
@@ -1366,70 +1391,104 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
     }
 
     /**
-     * Emits $children in a block
-     *
-     * @param CssNode[] $children
+     * Emits `$parent->getChildren()` in a block
      */
-    private function visitChildren(array $children): void
+    private function visitChildren(CssParentNode $parent): void
     {
         $this->buffer->writeChar('{');
 
-        $allInvisible = true;
-        foreach ($children as $child) {
-            if (!$this->isInvisible($child)) {
-                $allInvisible = false;
-                break;
-            }
-        }
-
-        if ($allInvisible) {
-            $this->buffer->writeChar('}');
-            return;
-        }
-
-        $this->writeLineFeed();
+        $prePrevious = null;
         $previous = null;
 
-        $this->indent(function () use ($children, &$previous) {
-            foreach ($children as $child) {
-                if ($this->isInvisible($child)) {
-                    continue;
-                }
-
-                if ($previous !== null) {
-                    if ($this->requiresSemicolon($previous)) {
-                        $this->buffer->writeChar(';');
-                    }
-                    $this->writeLineFeed();
-
-                    if ($previous->isGroupEnd()) {
-                        $this->writeLineFeed();
-                    }
-                }
-
-                $previous = $child;
-                $child->accept($this);
+        foreach ($parent->getChildren() as $child) {
+            if ($this->isInvisible($child)) {
+                continue;
             }
-        });
 
-        if ($this->requiresSemicolon($previous) && !$this->compressed) {
-            $this->buffer->writeChar(';');
+            if ($previous !== null && $this->requiresSemicolon($previous)) {
+                $this->buffer->writeChar(';');
+            }
+
+            if ($this->isTrailingComment($child, $previous ?? $parent)) {
+                $this->writeOptionalSpace();
+                $this->withoutIndendation(function () use ($child) {
+                    $child->accept($this);
+                });
+            } else {
+                $this->writeLineFeed();
+                $this->indent(function () use ($child) {
+                    $child->accept($this);
+                });
+            }
+
+            $prePrevious = $previous;
+            $previous = $child;
         }
-        $this->writeLineFeed();
-        $this->writeIndentation();
+
+        if ($previous !== null) {
+            if ($this->requiresSemicolon($previous) && !$this->compressed) {
+                $this->buffer->writeChar(';');
+            }
+
+            if ($prePrevious !== null && $this->isTrailingComment($previous, $parent)) {
+                $this->writeOptionalSpace();
+            } else {
+                $this->writeLineFeed();
+                $this->writeIndentation();
+            }
+        }
+
         $this->buffer->writeChar('}');
     }
 
     /**
      * Whether $node requires a semicolon to be written after it.
      */
-    private function requiresSemicolon(?CssNode $node): bool
+    private function requiresSemicolon(CssNode $node): bool
     {
         if ($node instanceof CssParentNode) {
             return $node->isChildless();
         }
 
         return !$node instanceof CssComment;
+    }
+
+    private function isTrailingComment(CssNode $node, CssNode $previous): bool
+    {
+        // Short-circuit in compressed mode to avoid expensive span shenanigans
+        // (shespanigans?), since we're compressing all whitespace anyway.
+        if ($this->compressed) {
+            return false;
+        }
+
+        if (!$node instanceof CssComment) {
+            return false;
+        }
+
+        if (!SpanUtil::contains($previous->getSpan(), $node->getSpan())) {
+            return $node->getSpan()->getStart()->getLine() === $previous->getSpan()->getEnd()->getLine();
+        }
+
+        // Walk back from just before the current node starts looking for the
+        // parent's left brace (to open the child block). This is safer than a
+        // simple forward search of the previous.span.text as that might contain
+        // other left braces.
+        $searchFrom = $node->getSpan()->getStart()->getOffset() - $previous->getSpan()->getStart()->getOffset() - 1;
+
+        // Imports can cause a node to be "contained" by another node when they are
+        // actually the same node twice in a row.
+        if ($searchFrom < 0) {
+            return false;
+        }
+
+        $endOffset = strrpos($previous->getSpan()->getText(), '{', $searchFrom);
+        if ($endOffset === false) {
+            $endOffset = 0;
+        }
+
+        $span = $previous->getSpan()->getFile()->span($previous->getSpan()->getStart()->getOffset(), $previous->getSpan()->getStart()->getOffset() + $endOffset);
+
+        return $node->getSpan()->getStart()->getLine() === $span->getEnd()->getLine();
     }
 
     /**
@@ -1512,39 +1571,23 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
     }
 
     /**
+     * Runs $callback without any indentation.
+     *
+     * @param callable(): void $callback
+     */
+    private function withoutIndendation(callable $callback): void
+    {
+        $savedIndentation = $this->indentation;
+        $this->indentation = 0;
+        $callback();
+        $this->indentation = $savedIndentation;
+    }
+
+    /**
      * Returns whether $node is invisible.
      */
     private function isInvisible(CssNode $node): bool
     {
-        if ($this->inspect) {
-            return false;
-        }
-
-        if ($this->compressed && $node instanceof CssComment && !$node->isPreserved()) {
-            return true;
-        }
-
-        if ($node instanceof CssParentNode) {
-            // An unknown at-rule is never invisible. Because we don't know the
-            // semantics of unknown rules, we can't guarantee that (for example)
-            // `@foo {}` isn't meaningful.
-            if ($node instanceof CssAtRule) {
-                return false;
-            }
-
-            if ($node instanceof CssStyleRule && $node->getSelector()->getValue()->isInvisible()) {
-                return true;
-            }
-
-            foreach ($node->getChildren() as $child) {
-                if (!$this->isInvisible($child)) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        return false;
+        return !$this->inspect && ($this->compressed ? $node->isInvisibleHidingComments() : $node->isInvisible());
     }
 }
