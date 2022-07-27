@@ -33,21 +33,6 @@ use ScssPhp\ScssPhp\Util\ListUtil;
 final class ExtendUtil
 {
     /**
-     * Names of pseudo selectors that take selectors as arguments, and that are
-     * subselectors of their arguments.
-     *
-     * For example, `.foo` is a superselector of `:matches(.foo)`.
-     */
-    private const SUBSELECTOR_PSEUDOS = [
-        'is',
-        'matches',
-        'where',
-        'any',
-        'nth-child',
-        'nth-last-child',
-    ];
-
-    /**
      * Returns the contents of a {@see SelectorList} that matches only elements that are
      * matched by every complex selector in $complexes.
      *
@@ -993,14 +978,40 @@ final class ExtendUtil
      * relevant for pseudo selectors with selector arguments, where we may need to
      * know if the parent selectors in the selector argument match $parents.
      *
-     * @param CompoundSelector                     $compound1
-     * @param CompoundSelector                     $compound2
+     * @param CompoundSelector                    $compound1
+     * @param CompoundSelector                    $compound2
      * @param list<ComplexSelectorComponent>|null $parents
      *
      * @return bool
      */
     public static function compoundIsSuperselector(CompoundSelector $compound1, CompoundSelector $compound2, ?array $parents = null): bool
     {
+        // Pseudo elements effectively change the target of a compound selector rather
+        // than narrowing the set of elements to which it applies like other
+        // selectors. As such, if either selector has a pseudo element, they both must
+        // have the _same_ pseudo element.
+        //
+        // In addition, order matters when pseudo-elements are involved. The selectors
+        // before them must
+        $tuple1 = self::findPseudoElementIndexed($compound1);
+        $tuple2 = self::findPseudoElementIndexed($compound2);
+
+        if ($tuple1 !== null && $tuple2 !== null) {
+            return $tuple1[0]->isSuperselector($tuple2[0]) &&
+                self::compoundComponentsIsSuperselector(
+                    array_slice($compound1->getComponents(), 0, $tuple1[1]),
+                    array_slice($compound2->getComponents(), 0, $tuple2[1]),
+                    $parents
+                ) &&
+                self::compoundComponentsIsSuperselector(
+                    array_slice($compound1->getComponents(), $tuple1[1] + 1),
+                    array_slice($compound2->getComponents(), $tuple2[1] + 1),
+                    $parents
+                );
+        } elseif ($tuple1 !== null || $tuple2 !== null) {
+            return false;
+        }
+
         // Every selector in `$compound1->getComponents()` must have a matching selector in
         // `$compound2->getComponents()`.
         foreach ($compound1->getComponents() as $simple1) {
@@ -1008,15 +1019,13 @@ final class ExtendUtil
                 if (!self::selectorPseudoIsSuperselector($simple1, $compound2, $parents)) {
                     return false;
                 }
-            } elseif (!self::simpleIsSuperselectorOfCompound($simple1, $compound2)) {
-                return false;
-            }
-        }
+            } else {
+                foreach ($compound2->getComponents() as $simple2) {
+                    if ($simple1->isSuperselector($simple2)) {
+                        continue 2;
+                    }
+                }
 
-        // $compound1 can't be a superselector of a selector with non-selector
-        // pseudo-elements that $compound2 doesn't share.
-        foreach ($compound2->getComponents() as $simple2) {
-            if ($simple2 instanceof PseudoSelector && $simple2->isElement() && $simple2->getSelector() === null && !self::simpleIsSuperselectorOfCompound($simple2, $compound1)) {
                 return false;
             }
         }
@@ -1025,42 +1034,43 @@ final class ExtendUtil
     }
 
     /**
-     * Returns whether $simple is a superselector of $compound.
+     * If $compound contains a pseudo-element, returns it and its index in
+     * `$compound->getComponents()`.
      *
-     * That is, whether $simple matches every element that $compound matches, as
-     * well as possibly additional elements.
+     * @return array{PseudoSelector, int}|null
      */
-    private static function simpleIsSuperselectorOfCompound(SimpleSelector $simple, CompoundSelector $compound): bool
+    private static function findPseudoElementIndexed(CompoundSelector $compound): ?array
     {
-        foreach ($compound->getComponents() as $theirSimple) {
-            if ($simple->equals($theirSimple)) {
-                return true;
+        foreach ($compound->getComponents() as $i => $simple) {
+            if ($simple instanceof PseudoSelector && $simple->isElement()) {
+                return [$simple, $i];
             }
+        }
 
-            // Some selector pseudoclasses can match normal selectors.
-            if (!$theirSimple instanceof PseudoSelector) {
-                continue;
-            }
-            $selector = $theirSimple->getSelector();
-            if ($selector === null) {
-                continue;
-            }
-            if (!\in_array($theirSimple->getNormalizedName(), self::SUBSELECTOR_PSEUDOS, true)) {
-                return false;
-            }
+        return null;
+    }
 
-            foreach ($selector->getComponents() as $complex) {
-                $innerCompound = $complex->getSingleCompound();
-
-                if ($innerCompound === null || !EquatableUtil::listContains($innerCompound->getComponents(), $simple)) {
-                    continue 2;
-                }
-            }
-
+    /**
+     * Like {@see compoundIsSuperselector} but operates on the underlying lists of
+     * simple selectors.
+     *
+     * @param list<SimpleSelector>                $compound1
+     * @param list<SimpleSelector>                $compound2
+     * @param list<ComplexSelectorComponent>|null $parents
+     *
+     * @return bool
+     */
+    private static function compoundComponentsIsSuperselector(array $compound1, array $compound2, ?array $parents = null): bool
+    {
+        if (\count($compound1) === 0) {
             return true;
         }
 
-        return false;
+        if (\count($compound2) === 0) {
+            $compound2 = [new UniversalSelector('*')];
+        }
+
+        return self::compoundIsSuperselector(new CompoundSelector($compound1), new CompoundSelector($compound2), $parents);
     }
 
     /**

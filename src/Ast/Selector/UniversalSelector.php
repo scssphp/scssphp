@@ -85,6 +85,23 @@ final class UniversalSelector extends SimpleSelector
         return [$this];
     }
 
+    public function isSuperselector(SimpleSelector $other): bool
+    {
+        if ($this->namespace === '*') {
+            return true;
+        }
+
+        if ($other instanceof TypeSelector) {
+            return $this->namespace === $other->getName()->getNamespace();
+        }
+
+        if ($other instanceof UniversalSelector) {
+            return $this->namespace === $other->namespace;
+        }
+
+        return $this->namespace === null || parent::isSuperselector($other);
+    }
+
     public function equals(object $other): bool
     {
         return $other instanceof UniversalSelector && $other->namespace === $this->namespace;

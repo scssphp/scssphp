@@ -175,12 +175,19 @@ class SuperselectorTest extends TestCase
         yield [false, '|c', 'c'];
         yield [true, '|c', '|c'];
         yield [false, '|c', '*|c'];
+        yield [true, '*|c', 'd|c'];
+        yield [true, '*|c', 'c'];
+        yield [true, '*|c', '|c'];
         yield [true, '*|c', '*|c'];
         // simple/universal
         yield [true, '*', '*'];
+        yield [true, '*', 'c'];
+        yield [true, '*', '.c'];
+        yield [true, 'c|*', 'c|d'];
         yield [false, 'c|*', 'e|d'];
         yield [false, 'c|*', 'd'];
         yield [false, 'c|*', '|d'];
+        yield [true, 'c|*', 'c|*'];
         yield [false, 'c|*', 'd|*'];
         yield [false, 'c|*', '*'];
         yield [false, 'c|*', '|*'];
@@ -188,12 +195,20 @@ class SuperselectorTest extends TestCase
         yield [false, 'c|*', '.d'];
         yield [false, '|*', 'c|d'];
         yield [false, '|*', 'd'];
+        yield [true, '|*', '|d'];
         yield [false, '|*', 'c|*'];
         yield [false, '|*', '*'];
         yield [true, '|*', '|*'];
         yield [false, '|*', '*|*'];
         yield [false, '|*', '.d'];
+        yield [true, '*|*', 'c|d'];
+        yield [true, '*|*', 'd'];
+        yield [true, '*|*', '|d'];
+        yield [true, '*|*', 'c|*'];
+        yield [true, '*|*', '*'];
+        yield [true, '*|*', '|*'];
         yield [true, '*|*', '*|*'];
+        yield [true, '*|*', '.d'];
         // complex
         yield [true, 'c', 'd c'];
         yield [false, 'c d', 'd'];
@@ -241,7 +256,13 @@ class SuperselectorTest extends TestCase
         yield [false, 'c.d', 'c'];
         yield [true, '::d', 'c::d'];
         yield [false, 'c', 'c::d'];
+        yield [false, 'c::d', 'c'];
+        yield [true, '.c::d', '.c.e::d'];
+        yield [true, '::d:c', '::d:c:e'];
+        yield [false, '.c.e::d', '.c::d'];
+        yield [false, '::d:c:e', '::d:c'];
         yield [true, '::d:e', '::d:e'];
+        yield [false, ':e::d', '::d:e'];
         yield [false, 'c', 'c:before'];
         yield [false, 'c', 'c:after'];
         yield [false, 'c', 'c:first-line'];

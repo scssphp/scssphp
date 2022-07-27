@@ -292,6 +292,31 @@ final class PseudoSelector extends SimpleSelector
         return $result;
     }
 
+    public function isSuperselector(SimpleSelector $other): bool
+    {
+        if (parent::isSuperselector($other)) {
+            return true;
+        }
+
+        $selector = $this->selector;
+
+        if ($selector === null) {
+            return $this === $other || $this->equals($other);
+        }
+
+        if ($other instanceof PseudoSelector && $this->isElement() && $other->isElement() && $this->normalizedName === 'slotted' && $other->name === $this->name) {
+            if ($other->getSelector() !== null) {
+                return $selector->isSuperselector($other->getSelector());
+            }
+
+            return false;
+        }
+
+        // Fall back to the logic defined in ExtendUtil, which knows how to
+        // compare selector pseudoclasses against raw selectors.
+        return (new CompoundSelector([$this]))->isSuperselector(new CompoundSelector([$other]));
+    }
+
     public function accept(SelectorVisitor $visitor)
     {
         return $visitor->visitPseudoSelector($this);
