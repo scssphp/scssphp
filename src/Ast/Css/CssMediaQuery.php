@@ -39,7 +39,7 @@ final class CssMediaQuery
     /**
      * The media type, for example "screen" or "print".
      *
-     * This may be `null`. If so, {@see $features} will not be empty.
+     * This may be `null`. If so, {@see $conditions} will not be empty.
      *
      * @var string|null
      * @readonly
@@ -47,12 +47,30 @@ final class CssMediaQuery
     private $type;
 
     /**
-     * Feature queries, including parentheses.
+     * Whether {@see $conditions} is a conjunction or a disjunction.
      *
-     * @var string[]
+     * In other words, if this is `true` this query matches when _all_
+     * {@see $conditions} are met, and if it's `false` this query matches when _any_
+     * condition in {@see $conditions} is met.
+     *
+     * If this is `false`, {@see $modifier} and {@see $type} will both be `null`.
+     *
+     * @var bool
      * @readonly
      */
-    private $features;
+    private $conjunction;
+
+    /**
+     * Media conditions, including parentheses.
+     *
+     * This is anything that can appear in the [`<media-in-parens>`] production.
+     *
+     * [`<media-in-parens>`]: https://drafts.csswg.org/mediaqueries-4/#typedef-media-in-parens
+     *
+     * @var list<string>
+     * @readonly
+     */
+    private $conditions;
 
     /**
      * Parses a media query from $contents.
@@ -69,27 +87,44 @@ final class CssMediaQuery
     }
 
     /**
-     * @param string|null $type
-     * @param string|null $modifier
-     * @param string[]    $features
+     * @param list<string> $conditions
      */
-    public function __construct(?string $type, ?string $modifier = null, array $features = [])
+    private function __construct(array $conditions = [], bool $conjunction = true, ?string $type = null, ?string $modifier = null)
     {
         $this->modifier = $modifier;
         $this->type = $type;
-        $this->features = $features;
+        $this->conditions = $conditions;
+        $this->conjunction = $conjunction;
     }
 
     /**
-     * Creates a media query that only specifies features.
+     * Creates a media query specifies a type and, optionally, conditions.
      *
-     * @param string[] $features
+     * This always sets {@see $conjunction} to `true`.
      *
-     * @return CssMediaQuery
+     * @param list<string> $conditions
      */
-    public static function condition(array $features): CssMediaQuery
+    public static function type(?string $type, ?string $modifier = null, array $conditions = []): CssMediaQuery
     {
-        return new CssMediaQuery(null, null, $features);
+        return new CssMediaQuery($conditions, true, $type, $modifier);
+    }
+
+    /**
+     * Creates a media query that matches $conditions according to
+     * $conjunction.
+     *
+     * The $conjunction argument may not be null if $conditions is longer than
+     * a single element.
+     *
+     * @param list<string> $conditions
+     */
+    public static function condition(array $conditions, ?bool $conjunction = null): CssMediaQuery
+    {
+        if (\count($conditions) > 1 && $conjunction === null) {
+            throw new \InvalidArgumentException('If conditions is longer than one element, conjunction may not be null.');
+        }
+
+        return new CssMediaQuery($conditions, $conjunction ?? true);
     }
 
     public function getModifier(): ?string
@@ -102,20 +137,17 @@ final class CssMediaQuery
         return $this->type;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getFeatures(): array
+    public function isConjunction(): bool
     {
-        return $this->features;
+        return $this->conjunction;
     }
 
     /**
-     * Whether this media query only specifies features.
+     * @return list<string>
      */
-    public function isCondition(): bool
+    public function getConditions(): array
     {
-        return $this->modifier === null && $this->type === null;
+        return $this->conditions;
     }
 
     /**
@@ -135,28 +167,32 @@ final class CssMediaQuery
      */
     public function merge(CssMediaQuery $other)
     {
+        if (!$this->conjunction || !$other->conjunction) {
+            return self::MERGE_RESULT_UNREPRESENTABLE;
+        }
+
         $ourModifier = $this->modifier !== null ? strtolower($this->modifier) : null;
         $ourType = $this->type !== null ? strtolower($this->type) : null;
         $theirModifier = $other->modifier !== null ? strtolower($other->modifier) : null;
         $theirType = $other->type !== null ? strtolower($other->type) : null;
 
         if ($ourType === null && $theirType === null) {
-            return self::condition(array_merge($this->features, $other->features));
+            return self::condition(array_merge($this->conditions, $other->conditions), true);
         }
 
         if (($ourModifier === 'not') !== ($theirModifier === 'not')) {
             if ($ourType === $theirType) {
-                $negativeFeatures = $ourModifier === 'not' ? $this->features : $other->features;
-                $positiveFeatures = $ourModifier === 'not' ? $other->features : $this->features;
+                $negativeConditions = $ourModifier === 'not' ? $this->conditions : $other->conditions;
+                $positiveConditions = $ourModifier === 'not' ? $other->conditions : $this->conditions;
 
-                // If the negative features are a subset of the positive features, the
+                // If the negative conditions are a subset of the positive conditions, the
                 // query is empty. For example, `not screen and (color)` has no
                 // intersection with `screen and (color) and (grid)`.
                 //
                 // However, `not screen and (color)` *does* intersect with `screen and
                 // (grid)`, because it means `not (screen and (color))` and so it allows
                 // a screen with no color but with a grid.
-                if (empty(array_diff($negativeFeatures, $positiveFeatures))) {
+                if (empty(array_diff($negativeConditions, $positiveConditions))) {
                     return self::MERGE_RESULT_EMPTY;
                 }
 
@@ -170,11 +206,11 @@ final class CssMediaQuery
             if ($ourModifier === 'not') {
                 $modifier = $theirModifier;
                 $type = $theirType;
-                $features = $other->features;
+                $conditions = $other->conditions;
             } else {
                 $modifier = $ourModifier;
                 $type = $ourType;
-                $features = $this->features;
+                $conditions = $this->conditions;
             }
         } elseif ($ourModifier === 'not') {
             // CSS has no way of representing "neither screen nor print".
@@ -182,15 +218,15 @@ final class CssMediaQuery
                 return self::MERGE_RESULT_UNREPRESENTABLE;
             }
 
-            $moreFeatures = \count($this->features) > \count($other->features) ? $this->features : $other->features;
-            $fewerFeatures = \count($this->features) > \count($other->features) ? $other->features : $this->features;
+            $moreConditions = \count($this->conditions) > \count($other->conditions) ? $this->conditions : $other->conditions;
+            $fewerConditions = \count($this->conditions) > \count($other->conditions) ? $other->conditions : $this->conditions;
 
             // If one set of features is a superset of the other, use those features
             // because they're strictly narrower.
-            if (empty(array_diff($fewerFeatures, $moreFeatures))) {
+            if (empty(array_diff($fewerConditions, $moreConditions))) {
                 $modifier = $ourModifier; // "not"
                 $type = $ourType;
-                $features = $moreFeatures;
+                $conditions = $moreConditions;
             } else {
                 // Otherwise, there's no way to represent the intersection.
                 return self::MERGE_RESULT_UNREPRESENTABLE;
@@ -200,23 +236,23 @@ final class CssMediaQuery
             // Omit the type if either input query did, since that indicates that they
             // aren't targeting a browser that requires "all and".
             $type = $other->matchesAllTypes() && $ourType === null ? null : $theirType;
-            $features = array_merge($this->features, $other->features);
+            $conditions = array_merge($this->conditions, $other->conditions);
         } elseif ($other->matchesAllTypes()) {
             $modifier = $ourModifier;
             $type = $ourType;
-            $features = array_merge($this->features, $other->features);
+            $conditions = array_merge($this->conditions, $other->conditions);
         } elseif ($ourType !== $theirType) {
             return self::MERGE_RESULT_EMPTY;
         } else {
             $modifier = $ourModifier ?? $theirModifier;
             $type = $ourType;
-            $features = array_merge($this->features, $other->features);
+            $conditions = array_merge($this->conditions, $other->conditions);
         }
 
-        return new CssMediaQuery(
+        return CssMediaQuery::type(
             $type === $ourType ? $this->type : $other->type,
             $modifier === $ourModifier ? $this->modifier : $other->modifier,
-            $features
+            $conditions
         );
     }
 }

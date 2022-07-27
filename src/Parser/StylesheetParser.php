@@ -3844,6 +3844,7 @@ abstract class StylesheetParser extends Parser
         while (true) {
             $this->whitespace();
             $this->mediaQuery($buffer);
+            $this->whitespace();
 
             if (!$this->scanner->scanChar(',')) {
                 break;
@@ -3860,70 +3861,139 @@ abstract class StylesheetParser extends Parser
      */
     private function mediaQuery(InterpolationBuffer $buffer): void
     {
-        if ($this->scanner->peekChar() !== '(') {
-            $buffer->addInterpolation($this->interpolatedIdentifier());
+        if ($this->scanner->peekChar() === '(') {
+            $this->mediaInParens($buffer);
             $this->whitespace();
 
-            if (!$this->lookingAtInterpolatedIdentifier()) {
-                // For example, "@media screen {".
-                return;
+            if ($this->scanIdentifier('and')) {
+                $buffer->write(' and ');
+                $this->expectWhitespace();
+                $this->mediaLogicSequence($buffer, 'and');
+            } elseif ($this->scanIdentifier('or')) {
+                $buffer->write(' or ');
+                $this->expectWhitespace();
+                $this->mediaLogicSequence($buffer, 'or');
             }
 
-            $buffer->write(' ');
-            $identifier = $this->interpolatedIdentifier();
-            $this->whitespace();
+            return;
+        }
 
-            if (StringUtil::equalsIgnoreCase($identifier->getAsPlain(), 'and')) {
-                // For example, "@media screen and ..."
+        $identifier1 = $this->interpolatedIdentifier();
+
+        if (StringUtil::equalsIgnoreCase($identifier1->getAsPlain(), 'not')) {
+            // For example, "@media not (...) {"
+            $this->expectWhitespace();
+
+            if (!$this->lookingAtInterpolatedIdentifier()) {
+                $buffer->write('not ');
+                $this->mediaOrInterp($buffer);
+
+                return;
+            }
+        }
+
+        $this->whitespace();
+        $buffer->addInterpolation($identifier1);
+
+        if (!$this->lookingAtInterpolatedIdentifier()) {
+            // For example, "@media screen {".
+            return;
+        }
+
+        $buffer->write(' ');
+
+        $identifier2 = $this->interpolatedIdentifier();
+
+        if (StringUtil::equalsIgnoreCase($identifier2->getAsPlain(), 'and')) {
+            $this->expectWhitespace();
+            // For example, "@media screen and ..."
+            $buffer->write(' and ');
+        } else {
+            $this->whitespace();
+            $buffer->addInterpolation($identifier2);
+
+            if ($this->scanIdentifier('and')) {
+                // For example, "@media only screen and ..."
+                $this->expectWhitespace();
                 $buffer->write(' and ');
             } else {
-                $buffer->addInterpolation($identifier);
-
-                if ($this->scanIdentifier('and')) {
-                    // For example, "@media only screen and ..."
-                    $this->whitespace();
-                    $buffer->write(' and ');
-                } else {
-                    // For example, "@media only screen {"
-                    return;
-                }
+                // For example, "@media only screen {"
+                return;
             }
         }
 
         // We've consumed either `IDENTIFIER "and"` or
         // `IDENTIFIER IDENTIFIER "and"`.
 
+        if ($this->scanIdentifier('not')) {
+            // For example, "@media screen and not (...) {"
+            $this->expectWhitespace();
+            $buffer->write('not ');
+            $this->mediaOrInterp($buffer);
+            return;
+        }
+
+        $this->mediaLogicSequence($buffer, 'and');
+    }
+
+    /**
+     * Consumes one or more `MediaOrInterp` expressions separated by $operator
+     * and writes them to $buffer.
+     */
+    private function mediaLogicSequence(InterpolationBuffer $buffer, string $operator): void
+    {
         while (true) {
-            $this->whitespace();
-            $buffer->addInterpolation($this->mediaFeature());
+            $this->mediaOrInterp($buffer);
             $this->whitespace();
 
-            if (!$this->scanIdentifier('and')) {
-                break;
+            if (!$this->scanIdentifier($operator)) {
+                return;
             }
+            $this->expectWhitespace();
 
-            $buffer->write(' and ');
+            $buffer->write(' ');
+            $buffer->write($operator);
+            $buffer->write(' ');
         }
     }
 
     /**
-     * Consumes a media query feature.
+     * Consumes a `MediaOrInterp` expression and writes it to $buffer.
      */
-    private function mediaFeature(): Interpolation
+    private function mediaOrInterp(InterpolationBuffer $buffer): void
     {
         if ($this->scanner->peekChar() === '#') {
             $interpolation = $this->singleInterpolation();
 
-            return new Interpolation([$interpolation], $interpolation->getSpan());
+            $buffer->addInterpolation(new Interpolation([$interpolation], $interpolation->getSpan()));
+        } else {
+            $this->mediaInParens($buffer);
         }
+    }
 
-        $start = $this->scanner->getPosition();
-        $buffer = new InterpolationBuffer();
-        $this->scanner->expectChar('(');
+    /**
+     * Consumes a `MediaInParens` expression and writes it to $buffer.
+     */
+    private function mediaInParens(InterpolationBuffer $buffer): void
+    {
+        $this->scanner->expectChar('(', 'media condition in parentheses');
         $buffer->write('(');
         $this->whitespace();
 
-        $buffer->add($this->expressionUntilComparison());
+        $needsParenDeprecation = $this->scanner->peekChar() === '(';
+        $needsNotDeprecation = $this->matchesIdentifier('not');
+        $expression = $this->expressionUntilComparison();
+
+        if ($needsParenDeprecation || $needsNotDeprecation) {
+            $this->logger->warn($expression->getSpan()->message(sprintf(
+                "Starting a @media query with \"%s\" is deprecated because it conflicts with official CSS syntax.\n\nTo preserve existing behavior: #{%s}\nTo migrate to new behavior: #{\"%s\"}\n\nFor details, see https://sass-lang.com/d/media-logic",
+                $needsParenDeprecation ? '(' : 'not',
+                $expression,
+                $expression
+            )), true);
+        }
+
+        $buffer->add($expression);
 
         if ($this->scanner->scanChar(':')) {
             $this->whitespace();
@@ -3960,8 +4030,6 @@ abstract class StylesheetParser extends Parser
         $this->scanner->expectChar(')');
         $this->whitespace();
         $buffer->write(')');
-
-        return $buffer->buildInterpolation($this->scanner->spanFrom($start));
     }
 
     /**

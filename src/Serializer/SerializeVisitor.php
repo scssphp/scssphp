@@ -43,6 +43,7 @@ use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\NumberUtil;
 use ScssPhp\ScssPhp\Util\SpanUtil;
+use ScssPhp\ScssPhp\Util\StringUtil;
 use ScssPhp\ScssPhp\Value\CalculationInterpolation;
 use ScssPhp\ScssPhp\Value\CalculationOperation;
 use ScssPhp\ScssPhp\Value\CalculationOperator;
@@ -207,7 +208,9 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         $this->for($node, function () use ($node) {
             $this->buffer->write('@media');
 
-            if (!$this->compressed || !$node->getQueries()[0]->isCondition()) {
+            $firstQuery = $node->getQueries()[0];
+
+            if (!$this->compressed || $firstQuery->getModifier() !== null || $firstQuery->getType() !== null || (\count($firstQuery->getConditions()) === 1) && StringUtil::startsWith($firstQuery->getConditions()[0], '(not ')) {
                 $this->buffer->writeChar(' ');
             }
 
@@ -280,12 +283,20 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         if ($query->getType() !== null) {
             $this->buffer->write($query->getType());
 
-            if (\count($query->getFeatures())) {
+            if (\count($query->getConditions())) {
                 $this->buffer->write(' and ');
             }
         }
 
-        $this->writeBetween($query->getFeatures(), $this->compressed ? 'and ' : ' and ', [$this->buffer, 'write']);
+        if (\count($query->getConditions()) === 1 && StringUtil::startsWith($query->getConditions()[0], '(not ')) {
+            $this->buffer->write('not ');
+            $condition = $query->getConditions()[0];
+            $this->buffer->write(substr($condition, \strlen('(not '), \strlen($condition) - (\strlen('(not ') + 1)));
+        } else {
+            $operator = $query->isConjunction() ? 'and' : 'or';
+
+            $this->writeBetween($query->getConditions(), $this->compressed ? "$operator " : " $operator ", [$this->buffer, 'write']);
+        }
     }
 
     public function visitCssStyleRule($node): void
@@ -384,7 +395,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
 
         if ($minimumIndentation === -1) {
-            $this->buffer->write(Util\StringUtil::trimAsciiRight($value, true));
+            $this->buffer->write(StringUtil::trimAsciiRight($value, true));
             $this->buffer->writeChar(' ');
             return;
         }

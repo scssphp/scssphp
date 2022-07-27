@@ -20,7 +20,7 @@ class MediaQueryParserTest extends TestCase
     public function testParsesOnlyType()
     {
         $this->assertEquals(
-            [new CssMediaQuery('screen')],
+            [CssMediaQuery::type('screen')],
             CssMediaQuery::parseList('screen')
         );
     }
@@ -28,7 +28,7 @@ class MediaQueryParserTest extends TestCase
     public function testParsesTypeAndModifier()
     {
         $this->assertEquals(
-            [new CssMediaQuery('screen', 'only')],
+            [CssMediaQuery::type('screen', 'only')],
             CssMediaQuery::parseList('only screen')
         );
     }
@@ -36,7 +36,7 @@ class MediaQueryParserTest extends TestCase
     public function testParsesTypeAndFeature()
     {
         $this->assertEquals(
-            [new CssMediaQuery('screen', null, ['( a: b )'])],
+            [CssMediaQuery::type('screen', null, ['( a: b )'])],
             CssMediaQuery::parseList('screen and ( a: b )')
         );
     }
@@ -44,7 +44,7 @@ class MediaQueryParserTest extends TestCase
     public function testParsesTypeAndModifierAndFeature()
     {
         $this->assertEquals(
-            [new CssMediaQuery('screen', 'not', ['( a: b )'])],
+            [CssMediaQuery::type('screen', 'not', ['( a: b )'])],
             CssMediaQuery::parseList('not screen and ( a: b )')
         );
     }
@@ -52,7 +52,7 @@ class MediaQueryParserTest extends TestCase
     public function testParsesOnlyFeature()
     {
         $this->assertEquals(
-            [new CssMediaQuery(null, null, ['(a: b)'])],
+            [CssMediaQuery::condition(['(a: b)'])],
             CssMediaQuery::parseList('(a: b)')
         );
     }
@@ -60,7 +60,7 @@ class MediaQueryParserTest extends TestCase
     public function testParsesMultipleFeatures()
     {
         $this->assertEquals(
-            [new CssMediaQuery(null, null, ['(a: b)', '(c: d)'])],
+            [CssMediaQuery::condition(['(a: b)', '(c: d)'], true)],
             CssMediaQuery::parseList('(a: b) and (c: d)')
         );
     }
@@ -68,7 +68,7 @@ class MediaQueryParserTest extends TestCase
     public function testParsesMultipleQueries()
     {
         $this->assertEquals(
-            [new CssMediaQuery('print'), new CssMediaQuery(null, null, ['(a: b)', '(c: d)'])],
+            [CssMediaQuery::type('print'), CssMediaQuery::condition(['(a: b)', '(c: d)'], true)],
             CssMediaQuery::parseList('print, (a: b) and (c: d)')
         );
     }
