@@ -8132,7 +8132,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     private function libNth($args)
     {
         $list = $this->coerceList($args[0], ',', false);
-        $n = $this->assertNumber($args[1])->getDimension();
+        $n = $this->assertInteger($args[1]);
 
         if ($n > 0) {
             $n--;
@@ -8147,7 +8147,7 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     private function libSetNth($args)
     {
         $list = $this->coerceList($args[0]);
-        $n = $this->assertNumber($args[1])->getDimension();
+        $n = $this->assertInteger($args[1]);
 
         if ($n > 0) {
             $n--;

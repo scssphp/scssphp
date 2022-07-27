@@ -1,5 +1,11 @@
 # Changelog
 
+## **1.10.5** -- July 27, 2022
+
+**Fixed**
+
+* Fix the handling of non-integer numbers in `nth` and `set-nth` (@max-m)
+
 ## **1.10.4** -- July 26,2022
 
 **Fixed**

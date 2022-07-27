@@ -126,6 +126,24 @@ END_OF_SCSS
                 ,
                 'file not found for @import'
             ],
+            [<<<'END_OF_SCSS'
+.test {
+    $list: 1, 2, 3;
+    value: nth($list, 1.5);
+}
+END_OF_SCSS
+                ,
+                '1.5 is not an integer.'
+            ],
+            [<<<'END_OF_SCSS'
+.test {
+    $list: 1, 2, 3;
+    $new-list: set-nth($list, 1.5, 5);
+}
+END_OF_SCSS
+                ,
+                '1.5 is not an integer.'
+            ],
         ];
     }
 
