@@ -79,12 +79,7 @@ final class PseudoSelector extends SimpleSelector
     /**
      * @var int|null
      */
-    private $minSpecificity;
-
-    /**
-     * @var int|null
-     */
-    private $maxSpecificity;
+    private $specificity;
 
     public function __construct(string $name, bool $element = false, ?string $argument = null, ?SelectorList $selector = null)
     {
@@ -211,24 +206,54 @@ final class PseudoSelector extends SimpleSelector
         return $this->selector;
     }
 
-    public function getMinSpecificity(): int
+    public function getSpecificity(): int
     {
-        if ($this->minSpecificity === null) {
-            $this->computeSpecificity();
-            assert($this->minSpecificity !== null);
+        if ($this->specificity === null) {
+            $this->specificity = $this->computeSpecificity();
         }
 
-        return $this->minSpecificity;
+        return $this->specificity;
     }
 
-    public function getMaxSpecificity(): int
+    private function computeSpecificity(): int
     {
-        if ($this->maxSpecificity === null) {
-            $this->computeSpecificity();
-            assert($this->maxSpecificity !== null);
+        if ($this->isElement()) {
+            return 1;
         }
 
-        return $this->maxSpecificity;
+        $selector = $this->selector;
+
+        if ($selector === null) {
+            return parent::getSpecificity();
+        }
+
+        // https://www.w3.org/TR/selectors-4/#specificity-rules
+        switch ($this->normalizedName) {
+            case 'where':
+                return 0;
+            case 'is':
+            case 'not':
+            case 'has':
+            case 'matches':
+                $maxSpecificity = 0;
+
+                foreach ($selector->getComponents() as $complex) {
+                    $maxSpecificity = max($maxSpecificity, $complex->getSpecificity());
+                }
+
+                return $maxSpecificity;
+            case 'nth-child':
+            case 'nth-last-child':
+                $maxSpecificity = 0;
+
+                foreach ($selector->getComponents() as $complex) {
+                    $maxSpecificity = max($maxSpecificity, $complex->getSpecificity());
+                }
+
+                return parent::getSpecificity() + $maxSpecificity;
+            default:
+                return parent::getSpecificity();
+        }
     }
 
     public function withSelector(SelectorList $selector): PseudoSelector
@@ -329,52 +354,5 @@ final class PseudoSelector extends SimpleSelector
             $other->isClass === $this->isClass &&
             $other->argument === $this->argument &&
             ($this->selector === $other->selector || ($this->selector !== null && $other->selector !== null && $this->selector->equals($other->selector)));
-    }
-
-    /**
-     * Computes {@see minSpecificity} and {@see maxSpecificity}.
-     */
-    private function computeSpecificity(): void
-    {
-        if ($this->isElement()) {
-            $this->minSpecificity = 1;
-            $this->maxSpecificity = 1;
-
-            return;
-        }
-
-        $selector = $this->selector;
-
-        if ($selector === null) {
-            $this->minSpecificity = parent::getMinSpecificity();
-            $this->maxSpecificity = parent::getMaxSpecificity();
-
-            return;
-        }
-
-        if ($this->name === 'not') {
-            $minSpecificity = 0;
-            $maxSpecificity = 0;
-
-            foreach ($selector->getComponents() as $complex) {
-                $minSpecificity = max($minSpecificity, $complex->getMinSpecificity());
-                $maxSpecificity = max($maxSpecificity, $complex->getMaxSpecificity());
-            }
-
-            $this->minSpecificity = $minSpecificity;
-            $this->maxSpecificity = $maxSpecificity;
-        } else {
-            // This is higher than any selector's specificity can actually be.
-            $minSpecificity = parent::getMinSpecificity() ** 3;
-            $maxSpecificity = 0;
-
-            foreach ($selector->getComponents() as $complex) {
-                $minSpecificity = min($minSpecificity, $complex->getMinSpecificity());
-                $maxSpecificity = max($maxSpecificity, $complex->getMaxSpecificity());
-            }
-
-            $this->minSpecificity = $minSpecificity;
-            $this->maxSpecificity = $maxSpecificity;
-        }
     }
 }

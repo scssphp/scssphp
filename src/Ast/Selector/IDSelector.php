@@ -39,9 +39,9 @@ final class IDSelector extends SimpleSelector
         return $this->name;
     }
 
-    public function getMinSpecificity(): int
+    public function getSpecificity(): int
     {
-        return parent::getMinSpecificity() ** 2;
+        return parent::getSpecificity() ** 2;
     }
 
     public function accept(SelectorVisitor $visitor)
