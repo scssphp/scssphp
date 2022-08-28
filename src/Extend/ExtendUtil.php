@@ -33,6 +33,12 @@ use ScssPhp\ScssPhp\Util\ListUtil;
 final class ExtendUtil
 {
     /**
+     * Pseudo-selectors that can only meaningfully appear in the first component of
+     * a complex selector.
+     */
+    private const ROOTISH_PSEUDO_CLASSES = ['root', 'scope', 'host', 'host-context'];
+
+    /**
      * Returns the contents of a {@see SelectorList} that matches only elements that are
      * matched by every complex selector in $complexes.
      *
@@ -295,23 +301,27 @@ final class ExtendUtil
             return null;
         }
 
-        // Make sure there's at most one `:root` in the output.
-        $root1 = self::firstIfRoot($queue1);
-        $root2 = self::firstIfRoot($queue2);
+        // Make sure all selectors that are required to be at the root are unified
+        // with one another.
+        $rootish1 = self::firstIfRootish($queue1);
+        $rootish2 = self::firstIfRootish($queue2);
 
-        if ($root1 !== null && $root2 !== null) {
-            $root = self::unifyCompound($root1->getSelector()->getComponents(), $root2->getSelector()->getComponents());
+        if ($rootish1 !== null && $rootish2 !== null) {
+            $rootish = self::unifyCompound($rootish1->getSelector()->getComponents(), $rootish2->getSelector()->getComponents());
 
-            if ($root === null) {
+            if ($rootish === null) {
                 return null;
             }
 
-            array_unshift($queue1, new ComplexSelectorComponent($root, $root1->getCombinators()));
-            array_unshift($queue2, new ComplexSelectorComponent($root, $root2->getCombinators()));
-        } elseif ($root1 !== null) {
-            array_unshift($queue2, $root1);
-        } elseif ($root2 !== null) {
-            array_unshift($queue1, $root2);
+            array_unshift($queue1, new ComplexSelectorComponent($rootish, $rootish1->getCombinators()));
+            array_unshift($queue2, new ComplexSelectorComponent($rootish, $rootish2->getCombinators()));
+        } elseif ($rootish1 !== null || $rootish2 !== null) {
+            // If there's only one rootish selector, it should only appear in the first
+            // position of the resulting selector. We can ensure that happens by adding
+            // it to the beginning of _both_ queues.
+            $rootish = $rootish1 ?? $rootish2;
+            array_unshift($queue1, $rootish);
+            array_unshift($queue2, $rootish);
         }
 
         $groups1 = self::groupSelectors($queue1);
@@ -415,7 +425,7 @@ final class ExtendUtil
      *
      * @return ComplexSelectorComponent|null
      */
-    private static function firstIfRoot(array &$queue): ?ComplexSelectorComponent
+    private static function firstIfRootish(array &$queue): ?ComplexSelectorComponent
     {
         if (empty($queue)) {
             return null;
@@ -423,13 +433,15 @@ final class ExtendUtil
 
         $first = $queue[0];
 
-        if (!self::hasRoot($first->getSelector())) {
-            return null;
+        foreach ($first->getSelector()->getComponents() as $simple) {
+            if ($simple instanceof PseudoSelector && $simple->isClass() && \in_array($simple->getNormalizedName(), self::ROOTISH_PSEUDO_CLASSES, true)) {
+                array_shift($queue);
+
+                return $first;
+            }
         }
 
-        array_shift($queue);
-
-        return $first;
+        return null;
     }
 
     /**
@@ -446,7 +458,7 @@ final class ExtendUtil
      * @phpstan-param list<Combinator::*> $combinators1
      * @phpstan-param list<Combinator::*> $combinators2
      *
-     * @return list<Combinator::*>|null
+     * @phpstan-return list<Combinator::*>|null
      */
     private static function mergeLeadingCombinators(?array $combinators1, ?array $combinators2): ?array
     {
@@ -778,20 +790,6 @@ final class ExtendUtil
         }
 
         return $groups;
-    }
-
-    /**
-     * Returns whether or not $compound contains a `:root` selector.
-     */
-    private static function hasRoot(CompoundSelector $compound): bool
-    {
-        foreach ($compound->getComponents() as $simple) {
-            if ($simple instanceof PseudoSelector && $simple->isClass() && $simple->getNormalizedName() === 'root') {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
