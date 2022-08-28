@@ -12,18 +12,11 @@ core_functions/color/change_color/units/lightness/unitless
 core_functions/color/change_color/units/lightness/unknown
 core_functions/color/change_color/units/saturation/unitless
 core_functions/color/change_color/units/saturation/unknown
-core_functions/color/hsl/one_arg/no_alpha/units/lightness/unitless
-core_functions/color/hsl/one_arg/no_alpha/units/saturation/unitless
-core_functions/color/hsl/three_args/units/hue/angle
-core_functions/color/hsl/three_args/units/hue/unknown
-core_functions/color/hsl/three_args/units/lightness/unitless
-core_functions/color/hsl/three_args/units/lightness/unknown
-core_functions/color/hsl/three_args/units/saturation/unitless
-core_functions/color/hsl/three_args/units/saturation/unknown
 core_functions/math/abs/preserves_units
 core_functions/math/ceil/preserves_units
 core_functions/math/comparable/unit/to_inverse
 core_functions/math/floor/preserves_units
+core_functions/math/random/ignores_units
 core_functions/math/round/preserves_units
 core_functions/math/unit/multiple_denominators
 core_functions/math/unit/numerator_and_denominator/multiple
@@ -58,6 +51,7 @@ libsass-closed-issues/issue_246
 libsass-closed-issues/issue_2472
 libsass-closed-issues/issue_2582
 libsass-closed-issues/issue_308
+libsass-closed-issues/issue_485
 libsass-closed-issues/issue_759
 libsass/conversions
 libsass/rel
