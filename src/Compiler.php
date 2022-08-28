@@ -7947,7 +7947,11 @@ EOL;
                 $max = 100;
             }
 
-            return $number->valueInRange($change ? 0 : -$max, $max, $name);
+            if ($scale || $assertPercent) {
+                return $number->valueInRange($change ? 0 : -$max, $max, $name);
+            }
+
+            return $number->valueInRangeWithUnit($change ? 0 : -$max, $max, $name, $checkPercent ? '%' : '');
         };
 
         $alpha = $getParam('alpha', 1);
@@ -8582,7 +8586,7 @@ EOL;
         $color = $this->assertColor($args[0], 'color');
         $amount = $this->assertNumber($args[1], 'amount');
 
-        $color[4] = (isset($color[4]) ? $color[4] : 1) + $amount->valueInRange(0, 1, 'amount');
+        $color[4] = (isset($color[4]) ? $color[4] : 1) + $amount->valueInRangeWithUnit(0, 1, 'amount', '');
         $color[4] = min(1, max(0, $color[4]));
 
         return $color;
@@ -8601,7 +8605,7 @@ EOL;
         $color = $this->assertColor($args[0], 'color');
         $amount = $this->assertNumber($args[1], 'amount');
 
-        $color[4] = (isset($color[4]) ? $color[4] : 1) - $amount->valueInRange(0, 1, 'amount');
+        $color[4] = (isset($color[4]) ? $color[4] : 1) - $amount->valueInRangeWithUnit(0, 1, 'amount', '');
         $color[4] = min(1, max(0, $color[4]));
 
         return $color;
