@@ -249,6 +249,9 @@ class SuperselectorTest extends TestCase
         yield [false, 'd + c', 'd + e + c'];
         yield [true, 'e + c', 'd + e + c'];
         yield [false, 'f + c', 'd + e + c'];
+        // complex/bogus
+        yield [false, '> c', 'c'];
+        yield [false, 'c', 'd + ~ c'];
         // complex/child
         yield [true, 'c', 'd > c'];
         yield [false, 'c > d', 'd'];

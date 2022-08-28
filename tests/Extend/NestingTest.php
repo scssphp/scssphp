@@ -33,21 +33,38 @@ class NestingTest extends TestCase
     }
 
     /**
-     * Provide selector nesting tests taken from sass-spec in spec/core_functions/selector/nest.hrx
+     * Provide selector nesting tests taken from sass-spec in spec/core_functions/selector/nest/
      */
     public static function provideNestingTests(): iterable
     {
         yield ['c d', 'c', 'd'];
+        // combinators
+        yield ['> c d', '> c', 'd'];
+        yield ['c + d', 'c', '+ d'];
+        yield ['c ~ d', 'c ~', 'd'];
+        yield ['c d >', 'c', 'd >'];
+        yield ['c > > d e', 'c > > d', 'e'];
+        yield ['~ ~ c d', '~ ~ c', 'd'];
+        yield ['c + > d', 'c', '+ > d'];
+        yield ['c > ~ d', 'c > ~', 'd'];
+        yield ['c d + >', 'c', 'd + >'];
+        yield ['~ c', '~', 'c'];
+        yield ['c +', 'c', '+'];
+        // parent
         yield ['c', 'c', '&'];
         yield ['c.d', 'c', '&.d'];
         yield ['cd', 'c', '&d'];
         yield ['d c.e', 'c', 'd &.e'];
         yield ['e c d.f', 'c d', 'e &.f'];
         yield [':is(c)', 'c', ':is(&)'];
+        yield [':where(c)', 'c', ':where(&)'];
         yield [':matches(c)', 'c', ':matches(&)'];
+        yield [':is(c d)', 'c d', ':is(&)'];
+        yield [':where(c d)', 'c d', ':where(&)'];
         yield [':matches(c d)', 'c d', ':matches(&)'];
         yield ['c.d c.e', 'c', '&.d &.e'];
         yield ['c.d, c e', 'c', '&.d, e'];
+        // list
         yield ['c e, d e', 'c, d', 'e'];
         yield ['c d, c e', 'c', 'd, e'];
         yield ['c, d', 'c, d', '&'];
@@ -55,6 +72,7 @@ class NestingTest extends TestCase
         yield ['ce, de', 'c, d', '&e'];
         yield ['e c.f, e d.f', 'c, d', 'e &.f'];
         yield [':is(c, d)', 'c, d', ':is(&)'];
+        yield [':where(c, d)', 'c, d', ':where(&)'];
         yield [':matches(c, d)', 'c, d', ':matches(&)'];
         yield ['c.e c.f, c.e d.f, d.e c.f, d.e d.f', 'c, d', '&.e &.f'];
         yield ['c.e, c f, d.e, d f', 'c, d', '&.e, f'];
