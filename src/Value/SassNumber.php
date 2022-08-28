@@ -359,6 +359,36 @@ abstract class SassNumber extends Value
     }
 
     /**
+     * Like {@see valueInRange}, but with an explicit unit for the expected upper and
+     * lower bounds.
+     *
+     * This exists to solve the confusing error message in https://github.com/sass/dart-sass/issues/1745,
+     * and should be removed once https://github.com/sass/sass/issues/3374 fully lands and unitless values
+     * are required in these positions.
+     *
+     * @param int|float $min
+     * @param int|float $max
+     * @param string    $name
+     * @param string    $unit
+     *
+     * @return int|float
+     *
+     * @throws SassScriptException if the value is outside the range
+     *
+     * @internal
+     */
+    public function valueInRangeWithUnit($min, $max, string $name, string $unit)
+    {
+        $result = NumberUtil::fuzzyCheckRange($this->value, $min, $max);
+
+        if ($result !== null) {
+            return $result;
+        }
+
+        throw SassScriptException::forArgument("Expected $this to be within $min$unit and $max$unit.", $name);
+    }
+
+    /**
      * Returns true if the number has units.
      *
      * @return boolean
