@@ -2461,7 +2461,7 @@ class Parser
         $whiteBefore = isset($this->buffer[$this->count - 1]) &&
             ctype_space($this->buffer[$this->count - 1]);
 
-        while ($this->match($operators, $m, false) && static::$precedence[$m[1]] >= $minP) {
+        while ($this->match($operators, $m, false) && static::$precedence[strtolower($m[1])] >= $minP) {
             $whiteAfter = isset($this->buffer[$this->count]) &&
                 ctype_space($this->buffer[$this->count]);
             $varAfter = isset($this->buffer[$this->count]) &&
@@ -2485,7 +2485,7 @@ class Parser
             }
 
             // consume higher-precedence operators on the right-hand side
-            $rhs = $this->expHelper($rhs, static::$precedence[$op] + 1);
+            $rhs = $this->expHelper($rhs, static::$precedence[strtolower($op)] + 1);
 
             $lhs = [Type::T_EXPRESSION, $op, $lhs, $rhs, $this->inParens, $whiteBefore, $whiteAfter];
 
