@@ -928,42 +928,46 @@ final class ExtendUtil
             $combinator1 = $component1->getCombinators()[0] ?? null;
             $combinator2 = $component2->getCombinators()[0] ?? null;
 
-            if ($combinator1 !== null) {
-                if ($combinator2 === null) {
-                    return false;
-                }
+            if (!self::isSupercombinator($combinator1, $combinator2)) {
+                return false;
+            }
 
-                // `.foo ~ .bar` is a superselector of `.foo + .bar`, but otherwise the
-                // combinators must match.
+            $i1++;
+            $i2 = $endOfSubselector + 1;
+
+            if (\count($complex1) - $i1 === 1) {
                 if ($combinator1 === Combinator::FOLLOWING_SIBLING) {
-                    if ($combinator2 === Combinator::CHILD) {
+                    // The selector `.foo ~ .bar` is only a superselector of selectors that
+                    // *exclusively* contain subcombinators of `~`.
+                    for ($index = $i2; $index < \count($complex2) - 1; $index++) {
+                        $component = $complex2[$index];
+
+                        if (!self::isSupercombinator($combinator1, $component->getCombinators()[0] ?? null)) {
+                            return false;
+                        }
+                    }
+                } elseif ($combinator1 !== null) {
+                    // `.foo > .bar` and `.foo + bar` aren't superselectors of any selectors
+                    // with more than one combinator.
+                    if (\count($complex2) - $i2 > 1) {
                         return false;
                     }
-                } elseif ($combinator1 !== $combinator2) {
-                    return false;
                 }
-
-                // `.foo > .baz` is not a superselector of `.foo > .bar > .baz` or
-                // `.foo > .bar .baz`, despite the fact that `.baz` is a superselector of
-                // `.bar > .baz` and `.bar .baz`. Same goes for `+` and `~`.
-                if ($remaining1 === 2 && $remaining2 > 2) {
-                    return false;
-                }
-
-                $i1++;
-                $i2 = $endOfSubselector + 1;
-            } elseif ($combinator2 !== null) {
-                if ($combinator2 !== Combinator::CHILD) {
-                    return false;
-                }
-
-                $i1++;
-                $i2 = $endOfSubselector + 1;
-            } else {
-                $i1++;
-                $i2 = $endOfSubselector;
             }
         }
+    }
+
+    /**
+     * Returns whether $combinator1 is a supercombinator of $combinator2.
+     *
+     * That is, whether `X $combinator1 Y` is a superselector of `X $combinator2 Y`.
+     *
+     * @phpstan-param Combinator::*|null $combinator1
+     * @phpstan-param Combinator::*|null $combinator2
+     */
+    private static function isSupercombinator(?string $combinator1, ?string $combinator2): bool
+    {
+        return $combinator1 === $combinator2 || ($combinator1 === null && $combinator2 === Combinator::CHILD) || ($combinator1 === Combinator::FOLLOWING_SIBLING && $combinator2 === Combinator::NEXT_SIBLING);
     }
 
     /**

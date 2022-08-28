@@ -209,7 +209,7 @@ class SuperselectorTest extends TestCase
         yield [true, '*|*', '|*'];
         yield [true, '*|*', '*|*'];
         yield [true, '*|*', '.d'];
-        // complex
+        // complex/descendant
         yield [true, 'c', 'd c'];
         yield [false, 'c d', 'd'];
         yield [true, 'c d', 'c d'];
@@ -224,16 +224,22 @@ class SuperselectorTest extends TestCase
         yield [true, 'd c', 'd > e > c'];
         yield [true, 'e c', 'd > e > c'];
         yield [false, 'f c', 'd > e > c'];
+        // complex/sibling
         yield [true, 'c', 'd ~ c'];
         yield [false, 'c ~ d', 'd'];
         yield [true, 'c ~ d', 'c ~ d'];
         yield [true, 'c ~ d', 'c.e ~ d.f'];
         yield [false, 'c.e ~ d.f', 'c ~ d'];
         yield [true, 'c', 'd ~ e ~ c'];
+        yield [true, 'd ~ c', 'd ~ e ~ c'];
+        yield [true, 'e ~ c', 'd ~ e ~ c'];
         yield [false, 'f ~ c', 'd ~ e ~ c'];
         yield [true, 'd ~ c', 'd + c'];
         yield [false, 'd + c', 'd ~ c'];
+        yield [true, 'd ~ c', 'd + e + c'];
+        yield [true, 'e ~ c', 'd + e + c'];
         yield [false, 'f ~ c', 'd + e + c'];
+        // complex/adjacent_sibling
         yield [true, 'c', 'd + c'];
         yield [false, 'c + d', 'd'];
         yield [true, 'c + d', 'c + d'];
@@ -241,7 +247,9 @@ class SuperselectorTest extends TestCase
         yield [false, 'c.e + d.f', 'c + d'];
         yield [true, 'c', 'd + e + c'];
         yield [false, 'd + c', 'd + e + c'];
+        yield [true, 'e + c', 'd + e + c'];
         yield [false, 'f + c', 'd + e + c'];
+        // complex/child
         yield [true, 'c', 'd > c'];
         yield [false, 'c > d', 'd'];
         yield [true, 'c > d', 'c > d'];
@@ -249,6 +257,7 @@ class SuperselectorTest extends TestCase
         yield [false, 'c.e > d.f', 'c > d'];
         yield [true, 'c', 'd > e > c'];
         yield [false, 'd > c', 'd > e > c'];
+        yield [true, 'e > c', 'd > e > c'];
         yield [false, 'f > c', 'd > e > c'];
         // compound
         yield [true, 'c', 'c.d'];
