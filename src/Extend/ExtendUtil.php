@@ -33,6 +33,12 @@ use ScssPhp\ScssPhp\Util\ListUtil;
 final class ExtendUtil
 {
     /**
+     * Pseudo-selectors that can only meaningfully appear in the first component of
+     * a complex selector.
+     */
+    private const ROOTISH_PSEUDO_CLASSES = ['root', 'scope', 'host', 'host-context'];
+
+    /**
      * Returns the contents of a {@see SelectorList} that matches only elements that are
      * matched by every complex selector in $complexes.
      *
@@ -295,23 +301,27 @@ final class ExtendUtil
             return null;
         }
 
-        // Make sure there's at most one `:root` in the output.
-        $root1 = self::firstIfRoot($queue1);
-        $root2 = self::firstIfRoot($queue2);
+        // Make sure all selectors that are required to be at the root are unified
+        // with one another.
+        $rootish1 = self::firstIfRootish($queue1);
+        $rootish2 = self::firstIfRootish($queue2);
 
-        if ($root1 !== null && $root2 !== null) {
-            $root = self::unifyCompound($root1->getSelector()->getComponents(), $root2->getSelector()->getComponents());
+        if ($rootish1 !== null && $rootish2 !== null) {
+            $rootish = self::unifyCompound($rootish1->getSelector()->getComponents(), $rootish2->getSelector()->getComponents());
 
-            if ($root === null) {
+            if ($rootish === null) {
                 return null;
             }
 
-            array_unshift($queue1, new ComplexSelectorComponent($root, $root1->getCombinators()));
-            array_unshift($queue2, new ComplexSelectorComponent($root, $root2->getCombinators()));
-        } elseif ($root1 !== null) {
-            array_unshift($queue2, $root1);
-        } elseif ($root2 !== null) {
-            array_unshift($queue1, $root2);
+            array_unshift($queue1, new ComplexSelectorComponent($rootish, $rootish1->getCombinators()));
+            array_unshift($queue2, new ComplexSelectorComponent($rootish, $rootish2->getCombinators()));
+        } elseif ($rootish1 !== null || $rootish2 !== null) {
+            // If there's only one rootish selector, it should only appear in the first
+            // position of the resulting selector. We can ensure that happens by adding
+            // it to the beginning of _both_ queues.
+            $rootish = $rootish1 ?? $rootish2;
+            array_unshift($queue1, $rootish);
+            array_unshift($queue2, $rootish);
         }
 
         $groups1 = self::groupSelectors($queue1);
@@ -415,7 +425,7 @@ final class ExtendUtil
      *
      * @return ComplexSelectorComponent|null
      */
-    private static function firstIfRoot(array &$queue): ?ComplexSelectorComponent
+    private static function firstIfRootish(array &$queue): ?ComplexSelectorComponent
     {
         if (empty($queue)) {
             return null;
@@ -423,13 +433,15 @@ final class ExtendUtil
 
         $first = $queue[0];
 
-        if (!self::hasRoot($first->getSelector())) {
-            return null;
+        foreach ($first->getSelector()->getComponents() as $simple) {
+            if ($simple instanceof PseudoSelector && $simple->isClass() && \in_array($simple->getNormalizedName(), self::ROOTISH_PSEUDO_CLASSES, true)) {
+                array_shift($queue);
+
+                return $first;
+            }
         }
 
-        array_shift($queue);
-
-        return $first;
+        return null;
     }
 
     /**
@@ -446,7 +458,7 @@ final class ExtendUtil
      * @phpstan-param list<Combinator::*> $combinators1
      * @phpstan-param list<Combinator::*> $combinators2
      *
-     * @return list<Combinator::*>|null
+     * @phpstan-return list<Combinator::*>|null
      */
     private static function mergeLeadingCombinators(?array $combinators1, ?array $combinators2): ?array
     {
@@ -781,20 +793,6 @@ final class ExtendUtil
     }
 
     /**
-     * Returns whether or not $compound contains a `:root` selector.
-     */
-    private static function hasRoot(CompoundSelector $compound): bool
-    {
-        foreach ($compound->getComponents() as $simple) {
-            if ($simple instanceof PseudoSelector && $simple->isClass() && $simple->getNormalizedName() === 'root') {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Returns whether $list1 is a superselector of $list2.
      *
      * That is, whether $list1 matches every element that $list2 matches, as well
@@ -930,42 +928,46 @@ final class ExtendUtil
             $combinator1 = $component1->getCombinators()[0] ?? null;
             $combinator2 = $component2->getCombinators()[0] ?? null;
 
-            if ($combinator1 !== null) {
-                if ($combinator2 === null) {
-                    return false;
-                }
+            if (!self::isSupercombinator($combinator1, $combinator2)) {
+                return false;
+            }
 
-                // `.foo ~ .bar` is a superselector of `.foo + .bar`, but otherwise the
-                // combinators must match.
+            $i1++;
+            $i2 = $endOfSubselector + 1;
+
+            if (\count($complex1) - $i1 === 1) {
                 if ($combinator1 === Combinator::FOLLOWING_SIBLING) {
-                    if ($combinator2 === Combinator::CHILD) {
+                    // The selector `.foo ~ .bar` is only a superselector of selectors that
+                    // *exclusively* contain subcombinators of `~`.
+                    for ($index = $i2; $index < \count($complex2) - 1; $index++) {
+                        $component = $complex2[$index];
+
+                        if (!self::isSupercombinator($combinator1, $component->getCombinators()[0] ?? null)) {
+                            return false;
+                        }
+                    }
+                } elseif ($combinator1 !== null) {
+                    // `.foo > .bar` and `.foo + bar` aren't superselectors of any selectors
+                    // with more than one combinator.
+                    if (\count($complex2) - $i2 > 1) {
                         return false;
                     }
-                } elseif ($combinator1 !== $combinator2) {
-                    return false;
                 }
-
-                // `.foo > .baz` is not a superselector of `.foo > .bar > .baz` or
-                // `.foo > .bar .baz`, despite the fact that `.baz` is a superselector of
-                // `.bar > .baz` and `.bar .baz`. Same goes for `+` and `~`.
-                if ($remaining1 === 2 && $remaining2 > 2) {
-                    return false;
-                }
-
-                $i1++;
-                $i2 = $endOfSubselector + 1;
-            } elseif ($combinator2 !== null) {
-                if ($combinator2 !== Combinator::CHILD) {
-                    return false;
-                }
-
-                $i1++;
-                $i2 = $endOfSubselector + 1;
-            } else {
-                $i1++;
-                $i2 = $endOfSubselector;
             }
         }
+    }
+
+    /**
+     * Returns whether $combinator1 is a supercombinator of $combinator2.
+     *
+     * That is, whether `X $combinator1 Y` is a superselector of `X $combinator2 Y`.
+     *
+     * @phpstan-param Combinator::*|null $combinator1
+     * @phpstan-param Combinator::*|null $combinator2
+     */
+    private static function isSupercombinator(?string $combinator1, ?string $combinator2): bool
+    {
+        return $combinator1 === $combinator2 || ($combinator1 === null && $combinator2 === Combinator::CHILD) || ($combinator1 === Combinator::FOLLOWING_SIBLING && $combinator2 === Combinator::NEXT_SIBLING);
     }
 
     /**

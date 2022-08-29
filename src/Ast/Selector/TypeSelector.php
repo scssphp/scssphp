@@ -40,7 +40,7 @@ final class TypeSelector extends SimpleSelector
         return $this->name;
     }
 
-    public function getMinSpecificity(): int
+    public function getSpecificity(): int
     {
         return 1;
     }

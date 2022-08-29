@@ -43,7 +43,7 @@ final class UniversalSelector extends SimpleSelector
         return $this->namespace;
     }
 
-    public function getMinSpecificity(): int
+    public function getSpecificity(): int
     {
         return 0;
     }

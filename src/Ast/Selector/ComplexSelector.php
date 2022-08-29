@@ -69,12 +69,7 @@ final class ComplexSelector extends Selector
     /**
      * @var int|null
      */
-    private $minSpecificity;
-
-    /**
-     * @var int|null
-     */
-    private $maxSpecificity;
+    private $specificity;
 
     /**
      * @param list<string>                   $leadingCombinators
@@ -156,24 +151,26 @@ final class ComplexSelector extends Selector
         return $this->lineBreak;
     }
 
-    public function getMinSpecificity(): int
+    /**
+     * This selector's specificity.
+     *
+     * Specificity is represented in base 1000. The spec says this should be
+     * "sufficiently high"; it's extremely unlikely that any single selector
+     * sequence will contain 1000 simple selectors.
+     */
+    public function getSpecificity(): int
     {
-        if ($this->minSpecificity === null) {
-            $this->computeSpecificity();
-            assert($this->minSpecificity !== null);
+        if ($this->specificity === null) {
+            $specificity = 0;
+
+            foreach ($this->components as $component) {
+                $specificity += $component->getSelector()->getSpecificity();
+            }
+
+            $this->specificity = $specificity;
         }
 
-        return $this->minSpecificity;
-    }
-
-    public function getMaxSpecificity(): int
-    {
-        if ($this->maxSpecificity === null) {
-            $this->computeSpecificity();
-            assert($this->maxSpecificity !== null);
-        }
-
-        return $this->maxSpecificity;
+        return $this->specificity;
     }
 
     public function accept(SelectorVisitor $visitor)
@@ -196,24 +193,6 @@ final class ComplexSelector extends Selector
     {
         return $other instanceof ComplexSelector && $this->leadingCombinators === $other->leadingCombinators && EquatableUtil::listEquals($this->components, $other->components);
     }
-
-    /**
-     * Computes {@see minSpecificity} and {@see maxSpecificity}.
-     */
-    private function computeSpecificity(): void
-    {
-        $minSpecificity = 0;
-        $maxSpecificity = 0;
-
-        foreach ($this->components as $component) {
-            $minSpecificity += $component->getSelector()->getMinSpecificity();
-            $maxSpecificity += $component->getSelector()->getMaxSpecificity();
-        }
-
-        $this->minSpecificity = $minSpecificity;
-        $this->maxSpecificity = $maxSpecificity;
-    }
-
 
     /**
      * Returns a copy of `$this` with $combinators added to the end of the final
