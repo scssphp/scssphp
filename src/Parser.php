@@ -2804,6 +2804,10 @@ class Parser
                     $this->argValues($args) &&
                     $this->matchChar(')')
                 ) {
+                    if ($name === 'var' && \count($args) === 2 && $args[1][0] === Type::T_NULL) {
+                        $args[1] = [null, [Type::T_STRING, '', [' ']], false];
+                    }
+
                     $func = [Type::T_FUNCTION_CALL, $name, $args];
 
                     return true;
