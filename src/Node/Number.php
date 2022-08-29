@@ -266,7 +266,27 @@ class Number extends Node implements \ArrayAccess
         try {
             return Util::checkRange('', new Range($min, $max), $this);
         } catch (RangeException $e) {
-            throw SassScriptException::forArgument(sprintf('Expected %s to be within %s%s and %s%3$s', $this, $min, $this->unitStr(), $max), $name);
+            throw SassScriptException::forArgument(sprintf('Expected %s to be within %s%s and %s%3$s.', $this, $min, $this->unitStr(), $max), $name);
+        }
+    }
+
+    /**
+     * @param float|int $min
+     * @param float|int $max
+     * @param string    $name
+     * @param string    $unit
+     *
+     * @return float|int
+     * @throws SassScriptException
+     *
+     * @internal
+     */
+    public function valueInRangeWithUnit($min, $max, $name, $unit)
+    {
+        try {
+            return Util::checkRange('', new Range($min, $max), $this);
+        } catch (RangeException $e) {
+            throw SassScriptException::forArgument(sprintf('Expected %s to be within %s%s and %s%3$s.', $this, $min, $unit, $max), $name);
         }
     }
 
