@@ -9593,7 +9593,25 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     protected function libRandom($args)
     {
         if (isset($args[0]) && $args[0] !== static::$null) {
-            $n = $this->assertInteger($args[0], 'limit');
+            $limit = $this->assertNumber($args[0], 'limit');
+
+            if ($limit->hasUnits()) {
+                $unitString = $limit->unitStr();
+                $message = <<<TXT
+random() will no longer ignore \$limit units ($limit) in a future release.
+
+Recommendation: random(\$limit / 1$unitString) * 1$unitString
+
+To preserve current behavior: random(\$limit / 1$unitString)
+
+More info: https://sass-lang.com/d/random-with-units
+
+TXT;
+
+                Warn::deprecation($this->addLocationToMessage($message));
+            }
+
+            $n = $this->assertInteger($limit, 'limit');
 
             if ($n < 1) {
                 throw new SassScriptException("\$limit: Must be greater than 0, was $n.");

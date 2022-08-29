@@ -228,6 +228,16 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
+     * Returns true if the number has any units
+     *
+     * @return bool
+     */
+    public function hasUnits()
+    {
+        return !$this->unitless();
+    }
+
+    /**
      * Checks whether the number has exactly this unit
      *
      * @param string $unit
