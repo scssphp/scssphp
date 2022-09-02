@@ -16,6 +16,7 @@ core_functions/math/abs/preserves_units
 core_functions/math/ceil/preserves_units
 core_functions/math/comparable/unit/to_inverse
 core_functions/math/floor/preserves_units
+core_functions/math/random/ignores_units
 core_functions/math/round/preserves_units
 core_functions/math/unit/multiple_denominators
 core_functions/math/unit/numerator_and_denominator/multiple
@@ -25,6 +26,8 @@ core_functions/math/unitless/denominator
 core_functions/math/unitless/numerator_and_denominator
 core_functions/meta/call/string/built_in
 core_functions/meta/call/string/local
+css/media/logic/nested/raw/and/mixed_case
+css/media/logic/nested/raw/or/mixed_case
 css/moz_document/functions/interpolated
 css/moz_document/functions/static
 directives/warn/functions_in_stack

@@ -122,7 +122,7 @@ parameters:
 
 		-
 			message: "#^Anonymous function should return null but returns float\\|int\\.$#"
-			count: 1
+			count: 2
 			path: src/Compiler.php
 
 		-

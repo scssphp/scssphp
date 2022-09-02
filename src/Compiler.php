@@ -7310,7 +7310,11 @@ EOL;
                 $max = 100;
             }
 
-            return $number->valueInRange($change ? 0 : -$max, $max, $name);
+            if ($scale || $assertPercent) {
+                return $number->valueInRange($change ? 0 : -$max, $max, $name);
+            }
+
+            return $number->valueInRangeWithUnit($change ? 0 : -$max, $max, $name, $checkPercent ? '%' : '');
         };
 
         $alpha = $getParam('alpha', 1);
@@ -7945,7 +7949,7 @@ EOL;
         $color = $this->assertColor($args[0], 'color');
         $amount = $this->assertNumber($args[1], 'amount');
 
-        $color[4] = (isset($color[4]) ? $color[4] : 1) + $amount->valueInRange(0, 1, 'amount');
+        $color[4] = (isset($color[4]) ? $color[4] : 1) + $amount->valueInRangeWithUnit(0, 1, 'amount', '');
         $color[4] = min(1, max(0, $color[4]));
 
         return $color;
@@ -7964,7 +7968,7 @@ EOL;
         $color = $this->assertColor($args[0], 'color');
         $amount = $this->assertNumber($args[1], 'amount');
 
-        $color[4] = (isset($color[4]) ? $color[4] : 1) - $amount->valueInRange(0, 1, 'amount');
+        $color[4] = (isset($color[4]) ? $color[4] : 1) - $amount->valueInRangeWithUnit(0, 1, 'amount', '');
         $color[4] = min(1, max(0, $color[4]));
 
         return $color;
@@ -8937,7 +8941,25 @@ will be an error in future versions of Sass.\n         on line $line of $fname";
     private function libRandom($args)
     {
         if (isset($args[0]) && $args[0] !== self::$null) {
-            $n = $this->assertInteger($args[0], 'limit');
+            $limit = $this->assertNumber($args[0], 'limit');
+
+            if ($limit->hasUnits()) {
+                $unitString = $limit->unitStr();
+                $message = <<<TXT
+random() will no longer ignore \$limit units ($limit) in a future release.
+
+Recommendation: random(\$limit / 1$unitString) * 1$unitString
+
+To preserve current behavior: random(\$limit / 1$unitString)
+
+More info: https://sass-lang.com/d/random-with-units
+
+TXT;
+
+                Warn::deprecation($this->addLocationToMessage($message));
+            }
+
+            $n = $this->assertInteger($limit, 'limit');
 
             if ($n < 1) {
                 throw new SassScriptException("\$limit: Must be greater than 0, was $n.");

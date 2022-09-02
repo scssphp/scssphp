@@ -86,6 +86,14 @@ END_OF_SCSS
                 ,
                 '$color: cobaltgreen is not a color.'
             ),
+            array(<<<'END_OF_SCSS'
+div {
+  color: fade-out(#FFF, 100%);
+}
+END_OF_SCSS
+                ,
+                '$amount: Expected 100% to be within 0 and 1.'
+            ),
             [<<<'END_OF_SCSS'
 BODY {
     DIV {

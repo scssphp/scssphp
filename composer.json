@@ -50,16 +50,16 @@
             "type": "package",
             "package": {
                 "name": "sass/sass-spec",
-                "version": "2022.07.22",
+                "version": "2022.08.19",
                 "source": {
                     "type": "git",
                     "url": "https://github.com/sass/sass-spec.git",
-                    "reference": "fc0218a8584c35ed4190022fd5411d8d2b8f4686"
+                    "reference": "2bdc199723a3445d5badac3ac774105698f08861"
                 },
                 "dist": {
                     "type": "zip",
-                    "url": "https://api.github.com/repos/sass/sass-spec/zipball/fc0218a8584c35ed4190022fd5411d8d2b8f4686",
-                    "reference": "fc0218a8584c35ed4190022fd5411d8d2b8f4686",
+                    "url": "https://api.github.com/repos/sass/sass-spec/zipball/2bdc199723a3445d5badac3ac774105698f08861",
+                    "reference": "2bdc199723a3445d5badac3ac774105698f08861",
                     "shasum": ""
                 }
             }
