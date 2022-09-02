@@ -1,5 +1,23 @@
 # Changelog
 
+## **1.11.0** -- September 2, 2022
+
+**Deprecated**
+
+* Deprecate passing a limit with unit to `random()` (@stof)
+
+**Added**
+
+* Add support for empty fallback in `var()` (@stof)
+
+**Fixed**
+
+* Fix the handling of mixed case operators in media queries (@stof)
+
+**Changed**
+
+* Improve error messages for incorrect units in color functions (@stof)
+
 ## **1.10.5** -- July 27, 2022
 
 **Fixed**
