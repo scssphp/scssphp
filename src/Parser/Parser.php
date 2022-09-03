@@ -897,9 +897,9 @@ class Parser
      *
      * @return never-returns
      */
-    protected function error(string $message, FileSpan $span): void
+    protected function error(string $message, FileSpan $span, ?\Throwable $previous = null): void
     {
-        throw new FormatException($message, $span);
+        throw new FormatException($message, $span, $previous);
     }
 
     protected function wrapException(FormatException $error): SassFormatException

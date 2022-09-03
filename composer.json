@@ -27,8 +27,10 @@
     },
     "require": {
         "php": ">=7.2",
+        "ext-ctype": "*",
         "ext-json": "*",
-        "ext-ctype": "*"
+        "league/uri": "^6.4.0",
+        "league/uri-interfaces": "^2.3"
     },
     "suggest": {
         "ext-mbstring": "For best performance, mbstring should be installed as it is faster than ext-iconv",
