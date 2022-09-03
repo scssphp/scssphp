@@ -13,6 +13,8 @@
 namespace ScssPhp\ScssPhp\Parser;
 
 use ScssPhp\ScssPhp\Exception\SassFormatException;
+use ScssPhp\ScssPhp\Logger\AdaptingLogger;
+use ScssPhp\ScssPhp\Logger\LocationAwareLoggerInterface;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
@@ -32,7 +34,7 @@ class Parser
     protected $scanner;
 
     /**
-     * @var LoggerInterface
+     * @var LocationAwareLoggerInterface
      * @readonly
      */
     protected $logger;
@@ -70,7 +72,7 @@ class Parser
     public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null)
     {
         $this->scanner = new StringScanner($contents);
-        $this->logger = $logger ?: new QuietLogger();
+        $this->logger = AdaptingLogger::adaptLogger($logger ?? new QuietLogger());
         $this->sourceUrl = $sourceUrl;
     }
 
@@ -887,7 +889,7 @@ class Parser
      */
     protected function warn(string $message, FileSpan $span): void
     {
-        $this->logger->warn($span->message($message));
+        $this->logger->warn($message, false, $span);
     }
 
     /**

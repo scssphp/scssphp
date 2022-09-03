@@ -80,19 +80,7 @@ class ScssParser extends StylesheetParser
             }
 
             if ($this->scanIdentifier('elseif', true)) {
-                $span = $this->scanner->spanFrom($beforeAt);
-                $line = $span->getStart()->getLine() + 1;
-                $column = $span->getStart()->getColumn() + 1;
-                $sourceUrl = $this->sourceUrl;
-
-                $message = "@elseif is deprecated and will not be supported in future Sass versions.\nUse \"@else if\" instead.";
-                $message .= "\n    on line $line, column $column";
-
-                if ($sourceUrl !== null) {
-                    $message .= " of $sourceUrl";
-                }
-
-                $this->logger->warn($message, true);
+                $this->logger->warn("@elseif is deprecated and will not be supported in future Sass versions.\n\nRecommendation: @else if", true, $this->scanner->spanFrom($beforeAt));
 
                 $this->scanner->setPosition($this->scanner->getPosition() - 2);
 

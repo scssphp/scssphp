@@ -1574,7 +1574,7 @@ abstract class StylesheetParser extends Parser
 
         return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($name, $value, $needsDeprecationWarning) {
             if ($needsDeprecationWarning) {
-                $this->logger->warn($span->message("@-moz-document is deprecated and support will be removed in Dart Sass 2.0.0.\n\nFor details, see http://bit.ly/MozDocument."), true);
+                $this->logger->warn("@-moz-document is deprecated and support will be removed in Dart Sass 2.0.0.\n\nFor details, see http://bit.ly/MozDocument.", true, $span);
             }
 
             return new AtRule($name, $span, $value, $children);
@@ -4004,12 +4004,12 @@ abstract class StylesheetParser extends Parser
         $expression = $this->expressionUntilComparison();
 
         if ($needsParenDeprecation || $needsNotDeprecation) {
-            $this->logger->warn($expression->getSpan()->message(sprintf(
+            $this->logger->warn(sprintf(
                 "Starting a @media query with \"%s\" is deprecated because it conflicts with official CSS syntax.\n\nTo preserve existing behavior: #{%s}\nTo migrate to new behavior: #{\"%s\"}\n\nFor details, see https://sass-lang.com/d/media-logic",
                 $needsParenDeprecation ? '(' : 'not',
                 $expression,
                 $expression
-            )), true);
+            ), true, $expression->getSpan());
         }
 
         $buffer->add($expression);
