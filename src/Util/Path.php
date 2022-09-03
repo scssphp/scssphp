@@ -22,8 +22,26 @@ final class Path
             return true;
         }
 
-        if (\DIRECTORY_SEPARATOR !== '\\') {
+        if (\DIRECTORY_SEPARATOR === '\\') {
+            return self::isWindowsAbsolute($path);
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return bool
+     */
+    public static function isWindowsAbsolute(string $path): bool
+    {
+        if ($path === '') {
             return false;
+        }
+
+        if ($path[0] === '/') {
+            return true;
         }
 
         if ($path[0] === '\\') {

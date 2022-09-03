@@ -12,6 +12,8 @@
 
 namespace ScssPhp\ScssPhp\Parser;
 
+use League\Uri\Exceptions\SyntaxError;
+use League\Uri\Uri;
 use ScssPhp\ScssPhp\Ast\Sass\Argument;
 use ScssPhp\ScssPhp\Ast\Sass\ArgumentDeclaration;
 use ScssPhp\ScssPhp\Ast\Sass\ArgumentInvocation;
@@ -79,6 +81,7 @@ use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
+use ScssPhp\ScssPhp\Util\Path;
 use ScssPhp\ScssPhp\Util\StringUtil;
 use ScssPhp\ScssPhp\Value\ListSeparator;
 use ScssPhp\ScssPhp\Value\SassColor;
@@ -1232,18 +1235,33 @@ abstract class StylesheetParser extends Parser
             return new StaticImport(new Interpolation([$urlSpan->getText()], $urlSpan), $this->scanner->spanFrom($start), $modifiers);
         }
 
-        // TODO catch the exception of parseImportUrl once it validates the URI format
-
-        return new DynamicImport($this->parseImportUrl($url), $urlSpan);
+        try {
+            return new DynamicImport($this->parseImportUrl($url), $urlSpan);
+        } catch (SyntaxError $e) {
+            $this->error('Invalid URL: ' . $e->getMessage(), $urlSpan, $e);
+        }
     }
 
     /**
      * Parses $url as an import URL.
+     *
+     * @throws SyntaxError
      */
     protected function parseImportUrl(string $url): string
     {
-        // TODO implement URI parsing to enforce well-formed URI for imports ?
+        // Backwards-compatibility for implementations that allow absolute Windows
+        // paths in imports.
+        if (Path::isWindowsAbsolute($url) && !self::isRootRelativeUrl($url)) {
+            return (string) Uri::createFromWindowsPath($url);
+        }
+
+        Uri::createFromString($url);
         return $url;
+    }
+
+    private static function isRootRelativeUrl(string $path): bool
+    {
+        return $path !== '' && $path[0] === '/';
     }
 
     /**
