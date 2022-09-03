@@ -239,7 +239,7 @@ final class ExtendUtil
 
             if (\count($complex->getComponents()) === 1) {
                 foreach ($prefixes as $i => $prefix) {
-                    $prefixes[$i][] = $prefix->concatenate($complex, $forceLineBreak);
+                    $prefixes[$i] = $prefix->concatenate($complex, $forceLineBreak);
                 }
 
                 continue;
