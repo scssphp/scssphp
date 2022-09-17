@@ -1928,6 +1928,31 @@ abstract class StylesheetParser extends Parser
             } else {
                 $singleExpression = new BinaryOperationExpression($operator, $left, $right);
                 $allowSlash = false;
+
+                if ($operator === BinaryOperator::PLUS || $operator === BinaryOperator::MINUS) {
+                    if (
+                        $this->scanner->substring($right->getSpan()->getStart()->getOffset() - 1, $right->getSpan()->getStart()->getOffset()) === $operator
+                        && Character::isWhitespace($this->scanner->getString()[$left->getSpan()->getEnd()->getOffset()])
+                    ) {
+                        $message = <<<WARNING
+This operation is parsed as:
+
+    $left $operator $right
+
+but you may have intended it to mean:
+
+    $left ($operator$right)
+
+Add a space after $operator to clarify that it's meant to be a binary operation, or wrap
+it in parentheses to make it a unary operation. This will be an error in future
+versions of Sass.
+
+More info and automated migrator: https://sass-lang.com/d/strict-unary
+WARNING;
+
+                        $this->logger->warn($message, true, $singleExpression->getSpan());
+                    }
+                }
             }
         };
 
