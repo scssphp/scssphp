@@ -34,7 +34,7 @@ class UnitlessIntegerTest extends ValueTestCase
     public function testHasTheCorrectValue()
     {
         $this->assertEquals(123, $this->value->getValue());
-        $this->assertIsInt($this->value->getValue());
+        $this->assertIsFloat($this->value->getValue());
     }
 
     public function testHasNoUnits()

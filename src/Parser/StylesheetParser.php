@@ -2754,19 +2754,24 @@ abstract class StylesheetParser extends Parser
     {
         $start = $this->scanner->getPosition();
         $first = $this->scanner->peekChar();
-        $sign = $first === '-' ? -1 : 1;
 
         if ($first === '+' || $first === '-') {
             $this->scanner->readChar();
         }
 
-        $number = $this->scanner->peekChar() === '.' ? 0 : $this->naturalNumber();
+        if ($this->scanner->peekChar() !== '.') {
+            $this->consumeNaturalNumber();
+        }
 
         // Don't complain about a dot after a number unless the number starts with a
         // dot. We don't allow a plain ".", but we need to allow "1." so that
         // "1..." will work as a rest argument.
-        $number += $this->tryDecimal($this->scanner->getPosition() !== $start);
-        $number *= $this->tryExponent();
+        $this->tryDecimal($this->scanner->getPosition() !== $start);
+        $this->tryExponent();
+
+        // Use PHP's built-in double parsing so that we don't accumulate
+        // floating-point errors for numbers with lots of digits.
+        $number = floatval($this->scanner->substring($start));
 
         $unit = null;
         if ($this->scanner->scanChar('%')) {
@@ -2775,32 +2780,41 @@ abstract class StylesheetParser extends Parser
             $unit = $this->identifier(false, true);
         }
 
-        return new NumberExpression($sign * $number, $this->scanner->spanFrom($start), $unit);
+        return new NumberExpression($number, $this->scanner->spanFrom($start), $unit);
     }
 
     /**
-     * Consumes the decimal component of a number and returns its value, or 0 if
-     * there is no decimal component.
+     * Consumes a natural number (that is, a non-negative integer).
+     *
+     * Doesn't support scientific notation.
+     */
+    private function consumeNaturalNumber(): void
+    {
+        if (!Character::isDigit($this->scanner->readChar())) {
+            $this->scanner->error('Expected digit.', $this->scanner->getPosition() - 1);
+        }
+
+        while (Character::isDigit($this->scanner->peekChar())) {
+            $this->scanner->readChar();
+        }
+    }
+
+    /**
+     * Consumes the decimal component of a number if it exists.
      *
      * If $allowTrailingDot is `false`, this will throw an error if there's a
      * dot without any numbers following it. Otherwise, it will ignore the dot
      * without consuming it.
-     *
-     * @param bool $allowTrailingDot
-     *
-     * @return int|float
      */
-    private function tryDecimal(bool $allowTrailingDot = false)
+    private function tryDecimal(bool $allowTrailingDot = false): void
     {
-        $start = $this->scanner->getPosition();
-
         if ($this->scanner->peekChar() !== '.') {
-            return 0;
+            return;
         }
 
         if (!Character::isDigit($this->scanner->peekChar(1))) {
             if ($allowTrailingDot) {
-                return 0;
+                return;
             }
 
             $this->scanner->error('Expected digit.', $this->scanner->getPosition() + 1);
@@ -2810,34 +2824,26 @@ abstract class StylesheetParser extends Parser
         while (Character::isDigit($this->scanner->peekChar())) {
             $this->scanner->readChar();
         }
-
-        // Use PHP's built-in float parsing so that we don't accumulate
-        // floating-point errors for numbers with lots of digits.
-        return floatval($this->scanner->substring($start));
     }
 
     /**
-     * Consumes the exponent component of a number and returns its value, or 1 if
-     * there is no exponent component.
-     *
-     * @return int|float
+     * Consumes the exponent component of a number if it exists.
      */
-    private function tryExponent()
+    private function tryExponent(): void
     {
         $first = $this->scanner->peekChar();
 
         if ($first !== 'e' && $first !== 'E') {
-            return 1;
+            return;
         }
 
         $next = $this->scanner->peekChar(1);
 
         if (!Character::isDigit($next) && $next !== '-' && $next !== '+') {
-            return 1;
+            return;
         }
 
         $this->scanner->readChar();
-        $exponentSign = $next === '-' ? -1 : 1;
         if ($next === '+' || $next === '-') {
             $this->scanner->readChar();
         }
@@ -2846,14 +2852,9 @@ abstract class StylesheetParser extends Parser
             $this->scanner->error('Expected digit.');
         }
 
-        $exponent = 0.0;
-
         while (Character::isDigit($this->scanner->peekChar())) {
-            $exponent *= 10;
-            $exponent += \ord($this->scanner->readChar()) - \ord('0');
+            $this->scanner->readChar();
         }
-
-        return pow(10, $exponentSign * $exponent);
     }
 
     /**
