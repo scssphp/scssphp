@@ -45,13 +45,24 @@ final class SourceLocation
         return $this->offset;
     }
 
+    /**
+     * The 0-based line of that location
+     */
     public function getLine(): int
     {
         return $this->file->getLine($this->offset);
     }
 
+    /**
+     * The 0-based column of that location
+     */
     public function getColumn(): int
     {
         return $this->file->getColumn($this->offset);
+    }
+
+    public function getSourceUrl(): ?string
+    {
+        return $this->file->getSourceUrl();
     }
 }
