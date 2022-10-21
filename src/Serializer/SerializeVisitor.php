@@ -13,13 +13,11 @@
 namespace ScssPhp\ScssPhp\Serializer;
 
 use ScssPhp\ScssPhp\Ast\AstNode;
-use ScssPhp\ScssPhp\Ast\Css\CssAtRule;
 use ScssPhp\ScssPhp\Ast\Css\CssComment;
 use ScssPhp\ScssPhp\Ast\Css\CssDeclaration;
 use ScssPhp\ScssPhp\Ast\Css\CssMediaQuery;
 use ScssPhp\ScssPhp\Ast\Css\CssNode;
 use ScssPhp\ScssPhp\Ast\Css\CssParentNode;
-use ScssPhp\ScssPhp\Ast\Css\CssStyleRule;
 use ScssPhp\ScssPhp\Ast\Css\CssValue;
 use ScssPhp\ScssPhp\Ast\Selector\AttributeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\ClassSelector;
@@ -934,9 +932,9 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      * Writes $number without exponent notation and with at most
      * {@see SassNumber::PRECISION} digits after the decimal point.
      *
-     * @param int|float $number
+     * @param float $number
      */
-    private function writeNumber($number): void
+    private function writeNumber(float $number): void
     {
         if (is_nan($number)) {
             $this->buffer->write('NaN');

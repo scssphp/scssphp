@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Ast\Sass\Expression;
 
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Value\SassNumber;
 use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
 
 /**
@@ -24,7 +25,7 @@ use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
 final class NumberExpression implements Expression
 {
     /**
-     * @var float|int
+     * @var float
      * @readonly
      */
     private $value;
@@ -41,20 +42,14 @@ final class NumberExpression implements Expression
      */
     private $unit;
 
-    /**
-     * @param int|float $value
-     */
-    public function __construct($value, FileSpan $span, ?string $unit = null)
+    public function __construct(float $value, FileSpan $span, ?string $unit = null)
     {
         $this->value = $value;
         $this->span = $span;
         $this->unit = $unit;
     }
 
-    /**
-     * @return float|int
-     */
-    public function getValue()
+    public function getValue(): float
     {
         return $this->value;
     }
@@ -76,6 +71,6 @@ final class NumberExpression implements Expression
 
     public function __toString(): string
     {
-        return $this->value . ($this->unit ?? '');
+        return (string) SassNumber::create($this->value, $this->unit);
     }
 }

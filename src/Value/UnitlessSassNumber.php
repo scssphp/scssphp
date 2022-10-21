@@ -22,10 +22,10 @@ use ScssPhp\ScssPhp\Util\NumberUtil;
 final class UnitlessSassNumber extends SassNumber
 {
     /**
-     * @param int|float  $value
+     * @param float                              $value
      * @param array{SassNumber, SassNumber}|null $asSlash
      */
-    public function __construct($value, array $asSlash = null)
+    public function __construct(float $value, array $asSlash = null)
     {
         parent::__construct($value, $asSlash);
     }
@@ -45,7 +45,7 @@ final class UnitlessSassNumber extends SassNumber
         return false;
     }
 
-    protected function withValue($value): SassNumber
+    protected function withValue(float $value): SassNumber
     {
         return new self($value);
     }
@@ -80,7 +80,7 @@ final class UnitlessSassNumber extends SassNumber
         return $other->withValue($this->getValue());
     }
 
-    public function coerceValueToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null)
+    public function coerceValueToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null): float
     {
         return $this->getValue();
     }
@@ -95,7 +95,7 @@ final class UnitlessSassNumber extends SassNumber
         return parent::convertToMatch($other, $name, $otherName);
     }
 
-    public function convertValueToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null)
+    public function convertValueToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null): float
     {
         if (!$other->hasUnits()) {
             return $this->getValue();
@@ -110,12 +110,12 @@ final class UnitlessSassNumber extends SassNumber
         return SassNumber::withUnits($this->getValue(), $newNumeratorUnits, $newDenominatorUnits);
     }
 
-    public function coerceValue(array $newNumeratorUnits, array $newDenominatorUnits, ?string $name = null)
+    public function coerceValue(array $newNumeratorUnits, array $newDenominatorUnits, ?string $name = null): float
     {
         return $this->getValue();
     }
 
-    public function coerceValueToUnit(string $unit, ?string $name = null)
+    public function coerceValueToUnit(string $unit, ?string $name = null): float
     {
         return $this->getValue();
     }

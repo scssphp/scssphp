@@ -12,6 +12,8 @@
 
 namespace ScssPhp\ScssPhp\Util;
 
+use ScssPhp\ScssPhp\Value\SassNumber;
+
 /**
  * Utilities to deal with numbers with fuzziness for the Sass precision
  *
@@ -19,108 +21,70 @@ namespace ScssPhp\ScssPhp\Util;
  */
 final class NumberUtil
 {
-    public const EPSILON = 0.00000000001; // 10^(-PRECISION-1)
-
     /**
-     * @param int|float $number1
-     * @param int|float $number2
+     * The power of ten to which to round Sass numbers to determine if they're
+     * fuzzy equal to one another
      *
-     * @return bool
+     * This is also the minimum distance such that `a - b > EPSILON` implies that
+     * `a` isn't fuzzy-equal to `b`. Note that the inverse implication is not
+     * necessarily true! For example, if `a = 5.1e-11` and `b = 4.4e-11`, then
+     * `a - b < 1e-11` but `a` fuzzy-equals 5e-11 and b fuzzy-equals 4e-11.
+     *
+     * @see https://github.com/sass/sass/blob/main/spec/types/number.md#fuzzy-equality
      */
-    public static function fuzzyEquals($number1, $number2): bool
+    private const EPSILON = 10 ** (-SassNumber::PRECISION - 1);
+    private const INVERSE_EPSILON = 10 ** (SassNumber::PRECISION + 1);
+
+    public static function fuzzyEquals(float $number1, float $number2): bool
     {
-        return abs($number1 - $number2) < self::EPSILON;
+        if ($number1 == $number2) {
+            return true;
+        }
+        return abs($number1 - $number2) <= self::EPSILON && round($number1 * self::INVERSE_EPSILON) === round($number2 * self::INVERSE_EPSILON);
     }
 
-    /**
-     * @param int|float $number1
-     * @param int|float $number2
-     *
-     * @return bool
-     */
-    public static function fuzzyLessThan($number1, $number2): bool
+    public static function fuzzyLessThan(float $number1, float $number2): bool
     {
         return $number1 < $number2 && !self::fuzzyEquals($number1, $number2);
     }
 
-    /**
-     * @param int|float $number1
-     * @param int|float $number2
-     *
-     * @return bool
-     */
-    public static function fuzzyLessThanOrEquals($number1, $number2): bool
+    public static function fuzzyLessThanOrEquals(float $number1, float $number2): bool
     {
         return $number1 <= $number2 || self::fuzzyEquals($number1, $number2);
     }
 
-    /**
-     * @param int|float $number1
-     * @param int|float $number2
-     *
-     * @return bool
-     */
-    public static function fuzzyGreaterThan($number1, $number2): bool
+    public static function fuzzyGreaterThan(float $number1, float $number2): bool
     {
         return $number1 > $number2 && !self::fuzzyEquals($number1, $number2);
     }
 
-    /**
-     * @param int|float $number1
-     * @param int|float $number2
-     *
-     * @return bool
-     */
-    public static function fuzzyGreaterThanOrEquals($number1, $number2): bool
+    public static function fuzzyGreaterThanOrEquals(float $number1, float $number2): bool
     {
         return $number1 >= $number2 || self::fuzzyEquals($number1, $number2);
     }
 
-    /**
-     * @param int|float $number
-     *
-     * @return bool
-     */
-    public static function fuzzyIsInt($number): bool
+    public static function fuzzyIsInt(float $number): bool
     {
-        if (\is_int($number)) {
-            return true;
+        if (is_infinite($number) || is_nan($number)) {
+            return false;
         }
 
-        // Check against 0.5 rather than 0.0 so that we catch numbers that are both
-        // very slightly above an integer, and very slightly below.
-        return self::fuzzyEquals(fmod(abs($number - 0.5), 1), 0.5);
+        return self::fuzzyEquals($number, round($number));
     }
 
-    /**
-     * @param int|float $number
-     *
-     * @return int|null
-     */
-    public static function fuzzyAsInt($number): ?int
+    public static function fuzzyAsInt(float $number): ?int
     {
-        if (\is_int($number)) {
-            return $number;
+        if (is_infinite($number) || is_nan($number)) {
+            return null;
         }
 
-        if (self::fuzzyIsInt($number)) {
-            return (int) round($number);
-        }
+        $rounded = (int) round($number);
 
-        return null;
+        return self::fuzzyEquals($number, $rounded) ? $rounded : null;
     }
 
-    /**
-     * @param int|float $number
-     *
-     * @return int
-     */
-    public static function fuzzyRound($number): int
+    public static function fuzzyRound(float $number): int
     {
-        if (\is_int($number)) {
-            return $number;
-        }
-
         if ($number > 0) {
             return intval(self::fuzzyLessThan(fmod($number, 1), 0.5) ? floor($number) : ceil($number));
         }
@@ -128,14 +92,7 @@ final class NumberUtil
         return intval(self::fuzzyLessThanOrEquals(fmod($number, 1), 0.5) ? floor($number) : ceil($number));
     }
 
-    /**
-     * @param int|float $number
-     * @param int|float $min
-     * @param int|float $max
-     *
-     * @return int|float|null
-     */
-    public static function fuzzyCheckRange($number, $min, $max)
+    public static function fuzzyCheckRange(float $number, float $min, float $max): ?float
     {
         if (self::fuzzyEquals($number, $min)) {
             return $min;
@@ -153,16 +110,16 @@ final class NumberUtil
     }
 
     /**
-     * @param int|float $number
-     * @param int|float $min
-     * @param int|float $max
+     * @param float       $number
+     * @param float       $min
+     * @param float       $max
      * @param string|null $name
      *
-     * @return int|float
+     * @return float
      *
      * @throws \OutOfRangeException
      */
-    public static function fuzzyAssertRange($number, $min, $max, ?string $name = null)
+    public static function fuzzyAssertRange(float $number, float $min, float $max, ?string $name = null): float
     {
         $result = self::fuzzyCheckRange($number, $min, $max);
 
@@ -180,12 +137,12 @@ final class NumberUtil
      *
      * Sass allows dividing by 0.
      *
-     * @param int|float $num1
-     * @param int|float $num2
+     * @param float $num1
+     * @param float $num2
      *
-     * @return int|float
+     * @return float
      */
-    public static function divideLikeSass($num1, $num2)
+    public static function divideLikeSass(float $num1, float $num2): float
     {
         if ($num2 == 0) {
             if ($num1 == 0) {
@@ -203,16 +160,12 @@ final class NumberUtil
     }
 
     /**
-     * Returns $num1 module $num2, using Sass's modulo semantic, which is inherited from Ruby.
+     * Return $num1 modulo $num2, using Sass's [floored division] modulo
+     * semantics, which it inherited from Ruby and which differ from Dart's.
      *
-     * PHP's fdiv has a different semantic when the 2 numbers have a different sign.
-     *
-     * @param int|float $num1
-     * @param int|float $num2
-     *
-     * @return int|float
+     * [floored division]: https://en.wikipedia.org/wiki/Modulo_operation#Variants_of_the_definition
      */
-    public static function moduloLikeSass($num1, $num2)
+    public static function moduloLikeSass(float $num1, float $num2): float
     {
         if ($num2 == 0) {
             return NAN;
@@ -224,6 +177,7 @@ final class NumberUtil
             return 0;
         }
 
+        // PHP's fdiv has a different semantic when the 2 numbers have a different sign.
         if ($num2 < 0 xor $num1 < 0) {
             $result += $num2;
         }

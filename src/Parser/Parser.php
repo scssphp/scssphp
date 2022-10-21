@@ -337,11 +337,11 @@ class Parser
     }
 
     /**
-     * Consumes and returns a natural number (that is, a non-negative integer).
+     * Consumes and returns a natural number (that is, a non-negative integer) as a double.
      *
      * Doesn't support scientific notation.
      */
-    protected function naturalNumber(): int
+    protected function naturalNumber(): float
     {
         $first = $this->scanner->readChar();
 
@@ -349,16 +349,14 @@ class Parser
             $this->scanner->error('Expected digit.', $this->scanner->getPosition() - 1);
         }
 
-        $number = $first;
+        $number = (float) intval($first);
 
-        $next = $this->scanner->peekChar();
-
-        while ($next !== null && Character::isDigit($next)) {
-            $number .= $this->scanner->readChar();
-            $next = $this->scanner->peekChar();
+        while (Character::isDigit($this->scanner->peekChar())) {
+            $number *= 10;
+            $number += intval($this->scanner->readChar());
         }
 
-        return intval($number);
+        return $number;
     }
 
     /**
