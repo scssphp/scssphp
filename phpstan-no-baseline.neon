@@ -4,8 +4,6 @@ parameters:
     treatPhpDocTypesAsCertain: false
     paths:
         - ./src/
-    scanDirectories:
-        - vendor-bin/phpstan/vendor/symfony/
     ignoreErrors:
         # We want to document the enum as return type, without caring about the exact values.
         -

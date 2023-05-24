@@ -121,7 +121,8 @@ final class CssParser extends ScssParser
         $plain = $identifier->getAsPlain();
         assert($plain !== null); // CSS doesn't allow non-plain identifiers
 
-        $specialFunction = $this->trySpecialFunction(strtolower($plain), $start);
+        $lower = strtolower($plain);
+        $specialFunction = $this->trySpecialFunction($lower, $start);
 
         if ($specialFunction !== null) {
             return $specialFunction;
@@ -132,12 +133,19 @@ final class CssParser extends ScssParser
             return new StringExpression($identifier);
         }
 
+        $allowEmptySecondArg = $lower === 'var';
         $arguments = [];
 
         if (!$this->scanner->scanChar(')')) {
             do {
                 $this->whitespace();
-                $arguments[] = $this->expression(null, true);
+
+                if ($allowEmptySecondArg && \count($arguments) === 1 && $this->scanner->peekChar() === ')') {
+                    $arguments[] = StringExpression::plain('', $this->scanner->getEmptySpan());
+                    break;
+                }
+
+                $arguments[] = $this->expressionUntilComma(true);
                 $this->whitespace();
             } while ($this->scanner->scanChar(','));
             $this->scanner->expectChar(')');

@@ -33,30 +33,30 @@ abstract class SassNumber extends Value
      */
     private const CONVERSIONS = [
         'in' => [
-            'in' => 1,
-            'pc' => 6,
-            'pt' => 72,
-            'px' => 96,
+            'in' => 1.0,
+            'pc' => 6.0,
+            'pt' => 72.0,
+            'px' => 96.0,
             'cm' => 2.54,
             'mm' => 25.4,
             'q'  => 101.6,
         ],
         'deg' => [
-            'deg'  => 360,
-            'grad' => 400,
-            'rad'  => 6.28318530717958647692528676, // 2 * M_PI
-            'turn' => 1,
+            'deg'  => 360.0,
+            'grad' => 400.0,
+            'rad'  => 2 * M_PI,
+            'turn' => 1.0,
         ],
         's' => [
-            's'  => 1,
-            'ms' => 1000,
+            's'  => 1.0,
+            'ms' => 1000.0,
         ],
         'Hz' => [
-            'Hz'  => 1,
+            'Hz'  => 1.0,
             'kHz' => 0.001,
         ],
         'dpi' => [
-            'dpi'  => 1,
+            'dpi'  => 1.0,
             'dpcm' => 1 / 2.54,
             'dppx' => 1 / 96,
         ],
@@ -99,7 +99,7 @@ abstract class SassNumber extends Value
     ];
 
     /**
-     * @var int|float
+     * @var float
      * @readonly
      */
     private $value;
@@ -114,10 +114,10 @@ abstract class SassNumber extends Value
     private $asSlash;
 
     /**
-     * @param int|float  $value
+     * @param float                              $value
      * @param array{SassNumber, SassNumber}|null $asSlash
      */
-    protected function __construct($value, array $asSlash = null)
+    protected function __construct(float $value, array $asSlash = null)
     {
         $this->value = $value;
         $this->asSlash = $asSlash;
@@ -129,12 +129,12 @@ abstract class SassNumber extends Value
      * This matches the numbers that can be written as literals.
      * {@see SassNumber::withUnits} can be used to construct more complex units.
      *
-     * @param int|float   $value
+     * @param float       $value
      * @param string|null $unit
      *
      * @return self
      */
-    final public static function create($value, ?string $unit = null): SassNumber
+    final public static function create(float $value, ?string $unit = null): SassNumber
     {
         if ($unit === null) {
             return new UnitlessSassNumber($value);
@@ -146,13 +146,13 @@ abstract class SassNumber extends Value
     /**
      * Creates a number with full $numeratorUnits and $denominatorUnits.
      *
-     * @param int|float    $value
+     * @param float        $value
      * @param list<string> $numeratorUnits
      * @param list<string> $denominatorUnits
      *
      * @return self
      */
-    final public static function withUnits($value, array $numeratorUnits = [], array $denominatorUnits = []): SassNumber
+    final public static function withUnits(float $value, array $numeratorUnits = [], array $denominatorUnits = []): SassNumber
     {
         if (empty($numeratorUnits) && empty($denominatorUnits)) {
             return new UnitlessSassNumber($value);
@@ -213,10 +213,8 @@ abstract class SassNumber extends Value
      * float even if $this represents an int from Sass's perspective. Use
      * {@see isInt} to determine whether this is an integer, {@see asInt} to get its
      * integer value, or {@see assertInt} to do both at once.
-     *
-     * @return float|int
      */
-    public function getValue()
+    public function getValue(): float
     {
         return $this->value;
     }
@@ -249,11 +247,11 @@ abstract class SassNumber extends Value
     /**
      * Returns a SassNumber with this value and the same units.
      *
-     * @param int|float $value
+     * @param float $value
      *
      * @return self
      */
-    abstract protected function withValue($value): SassNumber;
+    abstract protected function withValue(float $value): SassNumber;
 
     /**
      * @param SassNumber $numerator
@@ -337,15 +335,15 @@ abstract class SassNumber extends Value
      * came from a function argument, $name is the argument name (without the
      * `$`). It's used for error reporting.
      *
-     * @param int|float   $min
-     * @param int|float   $max
+     * @param float       $min
+     * @param float       $max
      * @param string|null $name
      *
-     * @return int|float
+     * @return float
      *
      * @throws SassScriptException if the value is outside the range
      */
-    public function valueInRange($min, $max, ?string $name = null)
+    public function valueInRange(float $min, float $max, ?string $name = null): float
     {
         $result = NumberUtil::fuzzyCheckRange($this->value, $min, $max);
 
@@ -356,6 +354,36 @@ abstract class SassNumber extends Value
         $unitString = $this->getUnitString();
 
         throw SassScriptException::forArgument("Expected $this to be within $min$unitString and $max$unitString.", $name);
+    }
+
+    /**
+     * Like {@see valueInRange}, but with an explicit unit for the expected upper and
+     * lower bounds.
+     *
+     * This exists to solve the confusing error message in https://github.com/sass/dart-sass/issues/1745,
+     * and should be removed once https://github.com/sass/sass/issues/3374 fully lands and unitless values
+     * are required in these positions.
+     *
+     * @param float  $min
+     * @param float  $max
+     * @param string $name
+     * @param string $unit
+     *
+     * @return float
+     *
+     * @throws SassScriptException if the value is outside the range
+     *
+     * @internal
+     */
+    public function valueInRangeWithUnit(float $min, float $max, string $name, string $unit): float
+    {
+        $result = NumberUtil::fuzzyCheckRange($this->value, $min, $max);
+
+        if ($result !== null) {
+            return $result;
+        }
+
+        throw SassScriptException::forArgument("Expected $this to be within $min$unit and $max$unit.", $name);
     }
 
     /**
@@ -473,11 +501,11 @@ abstract class SassNumber extends Value
      * @param list<string> $newDenominatorUnits
      * @param string|null  $name                The argument name if this is a function argument
      *
-     * @return int|float
+     * @return float
      *
      * @throws SassScriptException if this number's units are not compatible with $newNumeratorUnits and $newDenominatorUnits, or if either number is unitless but the other is not.
      */
-    public function convertValue(array $newNumeratorUnits, array $newDenominatorUnits, ?string $name = null)
+    public function convertValue(array $newNumeratorUnits, array $newDenominatorUnits, ?string $name = null): float
     {
         return $this->convertOrCoerceValue($newNumeratorUnits, $newDenominatorUnits, false, $name);
     }
@@ -508,11 +536,11 @@ abstract class SassNumber extends Value
      * @param string|null $name      The argument name if this is a function argument
      * @param string|null $otherName The argument name for $other if this is a function argument
      *
-     * @return int|float
+     * @return float
      *
      * @throws SassScriptException if the units are not compatible or if either number is unitless but the other is not.
      */
-    public function convertValueToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null)
+    public function convertValueToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null): float
     {
         return $this->convertOrCoerceValue($other->getNumeratorUnits(), $other->getDenominatorUnits(), false, $name, $other, $otherName);
     }
@@ -553,11 +581,11 @@ abstract class SassNumber extends Value
      * @param list<string> $newDenominatorUnits
      * @param string|null  $name                The argument name if this is a function argument
      *
-     * @return int|float
+     * @return float
      *
      * @throws SassScriptException if this number's units are not compatible with $newNumeratorUnits and $newDenominatorUnits
      */
-    public function coerceValue(array $newNumeratorUnits, array $newDenominatorUnits, ?string $name = null)
+    public function coerceValue(array $newNumeratorUnits, array $newDenominatorUnits, ?string $name = null): float
     {
         return $this->convertOrCoerceValue($newNumeratorUnits, $newDenominatorUnits, true, $name);
     }
@@ -568,9 +596,9 @@ abstract class SassNumber extends Value
      * @param string      $unit
      * @param string|null $name The argument name if this is a function argument
      *
-     * @return int|float
+     * @return float
      */
-    public function coerceValueToUnit(string $unit, ?string $name = null)
+    public function coerceValueToUnit(string $unit, ?string $name = null): float
     {
         return $this->coerceValue([$unit], [], $name);
     }
@@ -609,11 +637,11 @@ abstract class SassNumber extends Value
      * @param string|null $name      The argument name if this is a function argument
      * @param string|null $otherName The argument name for $other if this is a function argument
      *
-     * @return int|float
+     * @return float
      *
      * @throws SassScriptException if the units are not compatible
      */
-    public function coerceValueToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null)
+    public function coerceValueToMatch(SassNumber $other, ?string $name = null, ?string $otherName = null): float
     {
         return $this->convertOrCoerceValue($other->getNumeratorUnits(), $other->getDenominatorUnits(), true, $name, $other, $otherName);
     }
@@ -785,22 +813,15 @@ abstract class SassNumber extends Value
 
     /**
      * @param list<string> $units
-     *
-     * @return float|int
      */
-    private static function getCanonicalMultiplier(array $units)
+    private static function getCanonicalMultiplier(array $units): float
     {
         return array_reduce($units, function ($multiplier, $unit) {
             return $multiplier * self::getCanonicalMultiplierForUnit($unit);
-        }, 1);
+        }, 1.0);
     }
 
-    /**
-     * @param string $unit
-     *
-     * @return float|int
-     */
-    private static function getCanonicalMultiplierForUnit(string $unit)
+    private static function getCanonicalMultiplierForUnit(string $unit): float
     {
         foreach (self::CONVERSIONS as $canonicalUnit => $conversions) {
             if (isset($conversions[$unit])) {
@@ -808,7 +829,7 @@ abstract class SassNumber extends Value
             }
         }
 
-        return 1;
+        return 1.0;
     }
 
     /**
@@ -852,8 +873,8 @@ abstract class SassNumber extends Value
     /**
      * @template T
      *
-     * @param SassNumber                        $other
-     * @param callable(int|float, int|float): T $operation
+     * @param SassNumber                $other
+     * @param callable(float, float): T $operation
      *
      * @return T
      */
@@ -879,11 +900,11 @@ abstract class SassNumber extends Value
      * @param SassNumber|null $other
      * @param string|null     $otherName The argument name for $other if this is a function argument
      *
-     * @return int|float
+     * @return float
      *
      * @throws SassScriptException if this number's units are not compatible with $newNumeratorUnits and $newDenominatorUnits
      */
-    private function convertOrCoerceValue(array $newNumeratorUnits, array $newDenominatorUnits, bool $coerceUnitless, ?string $name = null, SassNumber $other = null, ?string $otherName = null)
+    private function convertOrCoerceValue(array $newNumeratorUnits, array $newDenominatorUnits, bool $coerceUnitless, ?string $name = null, SassNumber $other = null, ?string $otherName = null): float
     {
         assert($other === null || ($other->getNumeratorUnits() === $newNumeratorUnits && $other->getDenominatorUnits() === $newDenominatorUnits), sprintf("Expected %s to have units %s.", $other, self::buildUnitString($newNumeratorUnits, $newDenominatorUnits)));
 
@@ -985,13 +1006,13 @@ abstract class SassNumber extends Value
     }
 
     /**
-     * @param int|float    $value
+     * @param float        $value
      * @param list<string> $otherNumerators
      * @param list<string> $otherDenominators
      *
      * @return SassNumber
      */
-    protected function multiplyUnits($value, array $otherNumerators, array $otherDenominators): SassNumber
+    protected function multiplyUnits(float $value, array $otherNumerators, array $otherDenominators): SassNumber
     {
         $newNumerators = array();
 
@@ -1042,9 +1063,9 @@ abstract class SassNumber extends Value
      * @param string $unit1
      * @param string $unit2
      *
-     * @return float|int|null
+     * @return float|null
      */
-    protected static function getConversionFactor(string $unit1, string $unit2)
+    protected static function getConversionFactor(string $unit1, string $unit2): ?float
     {
         if ($unit1 === $unit2) {
             return 1;

@@ -115,4 +115,40 @@ final class ListUtil
 
         return $backtrack(\count($list1) - 1, \count($list2) - 1);
     }
+
+    /**
+     * @template T
+     *
+     * @param list<T> $list
+     *
+     * @return T
+     */
+    public static function last(array $list)
+    {
+        $count = count($list);
+
+        if ($count === 0) {
+            throw new \LogicException('The list may not be empty.');
+        }
+
+        return $list[$count - 1];
+    }
+
+    /**
+     * @template T
+     *
+     * @param list<T> $list
+     *
+     * @return list<T>
+     */
+    public static function exceptLast(array $list): array
+    {
+        $count = count($list);
+
+        if ($count === 0) {
+            throw new \LogicException('The list may not be empty.');
+        }
+
+        return array_slice($list, 0, $count - 1);
+    }
 }

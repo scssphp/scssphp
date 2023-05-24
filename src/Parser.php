@@ -2397,7 +2397,7 @@ final class Parser
         $whiteBefore = isset($this->buffer[$this->count - 1]) &&
             ctype_space($this->buffer[$this->count - 1]);
 
-        while ($this->match($operators, $m, false) && self::$precedence[$m[1]] >= $minP) {
+        while ($this->match($operators, $m, false) && self::$precedence[strtolower($m[1])] >= $minP) {
             $whiteAfter = isset($this->buffer[$this->count]) &&
                 ctype_space($this->buffer[$this->count]);
             $varAfter = isset($this->buffer[$this->count]) &&
@@ -2421,7 +2421,7 @@ final class Parser
             }
 
             // consume higher-precedence operators on the right-hand side
-            $rhs = $this->expHelper($rhs, self::$precedence[$op] + 1);
+            $rhs = $this->expHelper($rhs, self::$precedence[strtolower($op)] + 1);
 
             $lhs = [Type::T_EXPRESSION, $op, $lhs, $rhs, $this->inParens, $whiteBefore, $whiteAfter];
 
@@ -2740,6 +2740,10 @@ final class Parser
                     $this->argValues($args) &&
                     $this->matchChar(')')
                 ) {
+                    if (strtolower($name) === 'var' && \count($args) === 2 && $args[1][0] === Type::T_NULL) {
+                        $args[1] = [null, [Type::T_STRING, '', [' ']], false];
+                    }
+
                     $func = [Type::T_FUNCTION_CALL, $name, $args];
 
                     return true;

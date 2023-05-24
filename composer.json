@@ -27,8 +27,10 @@
     },
     "require": {
         "php": ">=7.2",
+        "ext-ctype": "*",
         "ext-json": "*",
-        "ext-ctype": "*"
+        "league/uri": "^6.4.0",
+        "league/uri-interfaces": "^2.3"
     },
     "suggest": {
         "ext-mbstring": "For best performance, mbstring should be installed as it is faster than ext-iconv",
@@ -50,16 +52,16 @@
             "type": "package",
             "package": {
                 "name": "sass/sass-spec",
-                "version": "2022.04.14",
+                "version": "2022.08.19",
                 "source": {
                     "type": "git",
                     "url": "https://github.com/sass/sass-spec.git",
-                    "reference": "6008e117872e3fc06cc47e7ea79b0a3014973c60"
+                    "reference": "2bdc199723a3445d5badac3ac774105698f08861"
                 },
                 "dist": {
                     "type": "zip",
-                    "url": "https://api.github.com/repos/sass/sass-spec/zipball/6008e117872e3fc06cc47e7ea79b0a3014973c60",
-                    "reference": "6008e117872e3fc06cc47e7ea79b0a3014973c60",
+                    "url": "https://api.github.com/repos/sass/sass-spec/zipball/2bdc199723a3445d5badac3ac774105698f08861",
+                    "reference": "2bdc199723a3445d5badac3ac774105698f08861",
                     "shasum": ""
                 }
             }
@@ -105,6 +107,12 @@
         "sort-packages": true,
         "allow-plugins": {
             "bamarni/composer-bin-plugin": true
+        }
+    },
+    "extra": {
+        "bamarni-bin": {
+            "forward-command": false,
+            "bin-links": false
         }
     }
 }

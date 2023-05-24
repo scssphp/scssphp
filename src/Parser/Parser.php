@@ -13,6 +13,8 @@
 namespace ScssPhp\ScssPhp\Parser;
 
 use ScssPhp\ScssPhp\Exception\SassFormatException;
+use ScssPhp\ScssPhp\Logger\AdaptingLogger;
+use ScssPhp\ScssPhp\Logger\LocationAwareLoggerInterface;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
@@ -32,7 +34,7 @@ class Parser
     protected $scanner;
 
     /**
-     * @var LoggerInterface
+     * @var LocationAwareLoggerInterface
      * @readonly
      */
     protected $logger;
@@ -70,7 +72,7 @@ class Parser
     public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null)
     {
         $this->scanner = new StringScanner($contents);
-        $this->logger = $logger ?: new QuietLogger();
+        $this->logger = AdaptingLogger::adaptLogger($logger ?? new QuietLogger());
         $this->sourceUrl = $sourceUrl;
     }
 
@@ -144,6 +146,18 @@ class Parser
         }
 
         return false;
+    }
+
+    /**
+     * Like {@see whitespace}, but throws an error if no whitespace is consumed.
+     */
+    protected function expectWhitespace(): void
+    {
+        if ($this->scanner->isDone() || !(Character::isWhitespace($this->scanner->peekChar()) || $this->scanComment())) {
+            $this->scanner->error('Expected whitespace.');
+        }
+
+        $this->whitespace();
     }
 
     /**
@@ -323,11 +337,11 @@ class Parser
     }
 
     /**
-     * Consumes and returns a natural number (that is, a non-negative integer).
+     * Consumes and returns a natural number (that is, a non-negative integer) as a double.
      *
      * Doesn't support scientific notation.
      */
-    protected function naturalNumber(): int
+    protected function naturalNumber(): float
     {
         $first = $this->scanner->readChar();
 
@@ -335,16 +349,14 @@ class Parser
             $this->scanner->error('Expected digit.', $this->scanner->getPosition() - 1);
         }
 
-        $number = $first;
+        $number = (float) intval($first);
 
-        $next = $this->scanner->peekChar();
-
-        while ($next !== null && Character::isDigit($next)) {
-            $number .= $this->scanner->readChar();
-            $next = $this->scanner->peekChar();
+        while (Character::isDigit($this->scanner->peekChar())) {
+            $number *= 10;
+            $number += intval($this->scanner->readChar());
         }
 
-        return intval($number);
+        return $number;
     }
 
     /**
@@ -783,23 +795,50 @@ class Parser
 
         $start = $this->scanner->getPosition();
 
-        for ($i = 0; $i < \strlen($text); $i++) {
-            if ($this->scanIdentChar($text[$i], $caseSensitive)) {
-                continue;
-            }
-
-            $this->scanner->setPosition($start);
-
-            return false;
-        }
-
-        if (!$this->lookingAtIdentifierBody()) {
+        if ($this->consumeIdentifier($text, $caseSensitive) && !$this->lookingAtIdentifierBody()) {
             return true;
         }
 
         $this->scanner->setPosition($start);
 
         return false;
+    }
+
+    /**
+     * Returns whether an identifier whose name exactly matches $text is at the
+     * current scanner position.
+     *
+     * This doesn't move the scan pointer forward
+     */
+    protected function matchesIdentifier(string $text, bool $caseSensitive = false): bool
+    {
+        if (!$this->lookingAtIdentifier()) {
+            return false;
+        }
+
+        $start = $this->scanner->getPosition();
+        $result = $this->consumeIdentifier($text, $caseSensitive) && !$this->lookingAtIdentifierBody();
+        $this->scanner->setPosition($start);
+
+        return $result;
+    }
+
+    /**
+     * Consumes $text as an identifer, but doesn't verify whether there's
+     * additional identifier text afterwards.
+     *
+     * Returns `true` if the full $text is consumed and `false` otherwise, but
+     * doesn't reset the scan pointer.
+     */
+    private function consumeIdentifier(string $text, bool $caseSensitive): bool
+    {
+        for ($i = 0; $i < \strlen($text); $i++) {
+            if (!$this->scanIdentChar($text[$i], $caseSensitive)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -848,7 +887,7 @@ class Parser
      */
     protected function warn(string $message, FileSpan $span): void
     {
-        $this->logger->warn($span->message($message));
+        $this->logger->warn($message, false, $span);
     }
 
     /**
@@ -858,9 +897,9 @@ class Parser
      *
      * @return never-returns
      */
-    protected function error(string $message, FileSpan $span): void
+    protected function error(string $message, FileSpan $span, ?\Throwable $previous = null): void
     {
-        throw new FormatException($message, $span);
+        throw new FormatException($message, $span, $previous);
     }
 
     protected function wrapException(FormatException $error): SassFormatException

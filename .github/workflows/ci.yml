@@ -13,18 +13,18 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [ '7.2', '7.3', '7.4', '8.0', '8.1' ]
+                php: [ '7.2', '7.3', '7.4', '8.0', '8.1', '8.2' ]
                 extensions: [ '' ]
                 os: [ubuntu-latest]
                 include:
-                    - php: '8.0'
+                    - php: '8.1'
                       os: ubuntu-latest
                       extensions: ':mbstring'
                       name_suffix: ' without mbstring'
-                    - php: '8.0'
+                    - php: '8.1'
                       os: windows-latest
                       name_suffix: ' on Windows'
-                    - php: '8.0'
+                    - php: '8.1'
                       os: macos-latest
                       name_suffix: ' on macOS'
 
@@ -54,7 +54,7 @@ jobs:
                 # - the testdox, JUnit and XML result printers
                 # - the StringContains assertion when ignoring case
                 # Ignoring the requirement is necessary for the job running the testsuite without mbstring
-                run: composer update --ansi --no-progress --ignore-platform-req=ext-mbstring
+                run: composer update --ansi --no-progress --ignore-platform-req=ext-mbstring --ignore-platform-req=php+
 
             -   name: Run tests
                 run: vendor/bin/phpunit --colors=always
@@ -71,7 +71,7 @@ jobs:
                 uses: shivammathur/setup-php@v2
                 with:
                     coverage: "none"
-                    php-version: "8.0"
+                    php-version: "8.1"
                     ini-file: development
 
             -   name: Install dependencies
@@ -81,4 +81,4 @@ jobs:
                 run: composer bin phpstan update --ansi --no-progress
 
             -   name: Run phpstan
-                run: vendor/bin/phpstan analyse --ansi --no-progress
+                run: vendor-bin/phpstan/vendor/bin/phpstan analyse --ansi --no-progress

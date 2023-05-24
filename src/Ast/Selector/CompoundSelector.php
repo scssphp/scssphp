@@ -39,12 +39,7 @@ final class CompoundSelector extends Selector
     /**
      * @var int|null
      */
-    private $minSpecificity;
-
-    /**
-     * @var int|null
-     */
-    private $maxSpecificity;
+    private $specificity;
 
     /**
      * Parses a compound selector from $contents.
@@ -85,35 +80,37 @@ final class CompoundSelector extends Selector
         return $this->components[\count($this->components) - 1];
     }
 
-    public function getMinSpecificity(): int
+    /**
+     * This selector's specificity.
+     *
+     * Specificity is represented in base 1000. The spec says this should be
+     * "sufficiently high"; it's extremely unlikely that any single selector
+     * sequence will contain 1000 simple selectors.
+     */
+    public function getSpecificity(): int
     {
-        if ($this->minSpecificity === null) {
-            $this->computeSpecificity();
-            assert($this->minSpecificity !== null);
-        }
+        if ($this->specificity === null) {
+            $specificity = 0;
 
-        return $this->minSpecificity;
-    }
-
-    public function getMaxSpecificity(): int
-    {
-        if ($this->maxSpecificity === null) {
-            $this->computeSpecificity();
-            assert($this->maxSpecificity !== null);
-        }
-
-        return $this->maxSpecificity;
-    }
-
-    public function isInvisible(): bool
-    {
-        foreach ($this->components as $component) {
-            if ($component->isInvisible()) {
-                return true;
+            foreach ($this->components as $component) {
+                $specificity += $component->getSpecificity();
             }
+
+            $this->specificity = $specificity;
         }
 
-        return false;
+        return $this->specificity;
+    }
+
+    /**
+     * If this compound selector is composed of a single simple selector, returns
+     * it.
+     *
+     * Otherwise, returns null.
+     */
+    public function getSingleSimple(): ?SimpleSelector
+    {
+        return \count($this->components) === 1 ? $this->components[0] : null;
     }
 
     public function accept(SelectorVisitor $visitor)
@@ -135,22 +132,5 @@ final class CompoundSelector extends Selector
     public function equals(object $other): bool
     {
         return $other instanceof CompoundSelector && EquatableUtil::listEquals($this->components, $other->components);
-    }
-
-    /**
-     * Computes {@see minSpecificity} and {@see maxSpecificity}.
-     */
-    private function computeSpecificity(): void
-    {
-        $minSpecificity = 0;
-        $maxSpecificity = 0;
-
-        foreach ($this->components as $simple) {
-            $minSpecificity += $simple->getMinSpecificity();
-            $maxSpecificity += $simple->getMaxSpecificity();
-        }
-
-        $this->minSpecificity = $minSpecificity;
-        $this->maxSpecificity = $maxSpecificity;
     }
 }

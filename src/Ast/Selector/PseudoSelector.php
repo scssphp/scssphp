@@ -79,12 +79,7 @@ final class PseudoSelector extends SimpleSelector
     /**
      * @var int|null
      */
-    private $minSpecificity;
-
-    /**
-     * @var int|null
-     */
-    private $maxSpecificity;
+    private $specificity;
 
     public function __construct(string $name, bool $element = false, ?string $argument = null, ?SelectorList $selector = null)
     {
@@ -211,37 +206,54 @@ final class PseudoSelector extends SimpleSelector
         return $this->selector;
     }
 
-    public function getMinSpecificity(): int
+    public function getSpecificity(): int
     {
-        if ($this->minSpecificity === null) {
-            $this->computeSpecificity();
-            assert($this->minSpecificity !== null);
+        if ($this->specificity === null) {
+            $this->specificity = $this->computeSpecificity();
         }
 
-        return $this->minSpecificity;
+        return $this->specificity;
     }
 
-    public function getMaxSpecificity(): int
+    private function computeSpecificity(): int
     {
-        if ($this->maxSpecificity === null) {
-            $this->computeSpecificity();
-            assert($this->maxSpecificity !== null);
+        if ($this->isElement()) {
+            return 1;
         }
 
-        return $this->maxSpecificity;
-    }
+        $selector = $this->selector;
 
-    public function isInvisible(): bool
-    {
-        if ($this->selector === null) {
-            return false;
+        if ($selector === null) {
+            return parent::getSpecificity();
         }
 
-        // We don't consider `:not(%foo)` to be invisible because, semantically, it
-        // means "doesn't match this selector that matches nothing", so it's
-        // equivalent to *. If the entire compound selector is composed of `:not`s
-        // with invisible lists, the serializer emits it as `*`.
-        return 'not' !== $this->name && $this->selector->isInvisible();
+        // https://www.w3.org/TR/selectors-4/#specificity-rules
+        switch ($this->normalizedName) {
+            case 'where':
+                return 0;
+            case 'is':
+            case 'not':
+            case 'has':
+            case 'matches':
+                $maxSpecificity = 0;
+
+                foreach ($selector->getComponents() as $complex) {
+                    $maxSpecificity = max($maxSpecificity, $complex->getSpecificity());
+                }
+
+                return $maxSpecificity;
+            case 'nth-child':
+            case 'nth-last-child':
+                $maxSpecificity = 0;
+
+                foreach ($selector->getComponents() as $complex) {
+                    $maxSpecificity = max($maxSpecificity, $complex->getSpecificity());
+                }
+
+                return parent::getSpecificity() + $maxSpecificity;
+            default:
+                return parent::getSpecificity();
+        }
     }
 
     public function withSelector(SelectorList $selector): PseudoSelector
@@ -305,6 +317,31 @@ final class PseudoSelector extends SimpleSelector
         return $result;
     }
 
+    public function isSuperselector(SimpleSelector $other): bool
+    {
+        if (parent::isSuperselector($other)) {
+            return true;
+        }
+
+        $selector = $this->selector;
+
+        if ($selector === null) {
+            return $this === $other || $this->equals($other);
+        }
+
+        if ($other instanceof PseudoSelector && $this->isElement() && $other->isElement() && $this->normalizedName === 'slotted' && $other->name === $this->name) {
+            if ($other->getSelector() !== null) {
+                return $selector->isSuperselector($other->getSelector());
+            }
+
+            return false;
+        }
+
+        // Fall back to the logic defined in ExtendUtil, which knows how to
+        // compare selector pseudoclasses against raw selectors.
+        return (new CompoundSelector([$this]))->isSuperselector(new CompoundSelector([$other]));
+    }
+
     public function accept(SelectorVisitor $visitor)
     {
         return $visitor->visitPseudoSelector($this);
@@ -317,52 +354,5 @@ final class PseudoSelector extends SimpleSelector
             $other->isClass === $this->isClass &&
             $other->argument === $this->argument &&
             ($this->selector === $other->selector || ($this->selector !== null && $other->selector !== null && $this->selector->equals($other->selector)));
-    }
-
-    /**
-     * Computes {@see minSpecificity} and {@see maxSpecificity}.
-     */
-    private function computeSpecificity(): void
-    {
-        if ($this->isElement()) {
-            $this->minSpecificity = 1;
-            $this->maxSpecificity = 1;
-
-            return;
-        }
-
-        $selector = $this->selector;
-
-        if ($selector === null) {
-            $this->minSpecificity = parent::getMinSpecificity();
-            $this->maxSpecificity = parent::getMaxSpecificity();
-
-            return;
-        }
-
-        if ($this->name === 'not') {
-            $minSpecificity = 0;
-            $maxSpecificity = 0;
-
-            foreach ($selector->getComponents() as $complex) {
-                $minSpecificity = max($minSpecificity, $complex->getMinSpecificity());
-                $maxSpecificity = max($maxSpecificity, $complex->getMaxSpecificity());
-            }
-
-            $this->minSpecificity = $minSpecificity;
-            $this->maxSpecificity = $maxSpecificity;
-        } else {
-            // This is higher than any selector's specificity can actually be.
-            $minSpecificity = parent::getMinSpecificity() ** 3;
-            $maxSpecificity = 0;
-
-            foreach ($selector->getComponents() as $complex) {
-                $minSpecificity = min($minSpecificity, $complex->getMinSpecificity());
-                $maxSpecificity = max($maxSpecificity, $complex->getMaxSpecificity());
-            }
-
-            $this->minSpecificity = $minSpecificity;
-            $this->maxSpecificity = $maxSpecificity;
-        }
     }
 }

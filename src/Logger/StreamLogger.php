@@ -14,6 +14,8 @@ namespace ScssPhp\ScssPhp\Logger;
 
 /**
  * A logger that prints to a PHP stream (for instance stderr)
+ *
+ * TODO implement LocationAwareLoggerInterface once the compiler is migrated to actually provide the location
  */
 final class StreamLogger implements LoggerInterface
 {

@@ -83,7 +83,7 @@ abstract class ModifiableCssNode implements CssNode
         for ($i = $this->indexInParent + 1; $i < \count($siblings); $i++) {
             $sibling = $siblings[$i];
 
-            if (!$this->isInvisible($sibling)) {
+            if (!$sibling->isInvisible()) {
                 return true;
             }
         }
@@ -91,38 +91,19 @@ abstract class ModifiableCssNode implements CssNode
         return false;
     }
 
-    /**
-     * Returns whether $node is invisible for the purposes of
-     * {@see hasFollowingSibling}.
-     *
-     * This can return a false negative for a comment node in compressed mode,
-     * since the AST doesn't know the output style, but that's an extremely
-     * narrow edge case so we don't worry about it.
-     */
-    private function isInvisible(CssNode $node): bool
+    public function isInvisible(): bool
     {
-        if ($node instanceof CssParentNode) {
-            // An unknown at-rule is never invisible. Because we don't know the
-            // semantics of unknown rules, we can't guarantee that (for example)
-            // `@foo {}` isn't meaningful.
-            if ($node instanceof CssAtRule) {
-                return false;
-            }
+        return $this->accept(new IsInvisibleVisitor(true, false));
+    }
 
-            if ($node instanceof CssStyleRule && $node->getSelector()->getValue()->isInvisible()) {
-                return true;
-            }
+    public function isInvisibleOtherThanBogusCombinators(): bool
+    {
+        return $this->accept(new IsInvisibleVisitor(false, false));
+    }
 
-            foreach ($node->getChildren() as $child) {
-                if (!$this->isInvisible($child)) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        return false;
+    public function isInvisibleHidingComments(): bool
+    {
+        return $this->accept(new IsInvisibleVisitor(true, true));
     }
 
     /**

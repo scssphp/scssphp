@@ -23,6 +23,8 @@ use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 final class TypeSelector extends SimpleSelector
 {
     /**
+     * The element name being selected.
+     *
      * @var QualifiedName
      * @readonly
      */
@@ -38,7 +40,7 @@ final class TypeSelector extends SimpleSelector
         return $this->name;
     }
 
-    public function getMinSpecificity(): int
+    public function getSpecificity(): int
     {
         return 1;
     }
@@ -70,6 +72,11 @@ final class TypeSelector extends SimpleSelector
         }
 
         return array_merge([$this], $compound);
+    }
+
+    public function isSuperselector(SimpleSelector $other): bool
+    {
+        return parent::isSuperselector($other) || ($other instanceof TypeSelector && $this->name->getName() === $other->getName()->getName() && ($this->name->getNamespace() === '*' || $this->name->getNamespace() === $other->getName()->getNamespace()));
     }
 
     public function equals(object $other): bool

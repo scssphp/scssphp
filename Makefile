@@ -18,10 +18,10 @@ vendor: composer.json
 	touch $@
 
 phpstan: vendor-bin/phpstan/vendor
-	vendor/bin/phpstan analyse
+	vendor-bin/phpstan/vendor/bin/phpstan analyse
 
 phpstan-baseline: vendor-bin/phpstan/vendor
-	vendor/bin/phpstan analyse --generate-baseline
+	vendor-bin/phpstan/vendor/bin/phpstan analyse --generate-baseline
 
 vendor-bin/phpstan/vendor: vendor vendor-bin/phpstan/composer.json
 	composer bin phpstan update

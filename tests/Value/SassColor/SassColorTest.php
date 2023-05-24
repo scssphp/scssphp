@@ -13,7 +13,6 @@
 namespace ScssPhp\ScssPhp\Tests\Value\SassColor;
 
 use ScssPhp\ScssPhp\Tests\Value\ValueTestCase;
-use ScssPhp\ScssPhp\Util\NumberUtil;
 use ScssPhp\ScssPhp\Value\SassColor;
 
 class SassColorTest extends ValueTestCase
@@ -22,7 +21,7 @@ class SassColorTest extends ValueTestCase
     {
         /** @var SassColor $color */
         $color = self::parseValue('rgba(10, 20, 30, 0.7)');
-        $this->assertEqualsWithDelta(0.7, $color->getAlpha(), NumberUtil::EPSILON);
+        $this->assertEqualsWithDelta(0.7, $color->getAlpha(), 1e-11);
     }
 
     /**

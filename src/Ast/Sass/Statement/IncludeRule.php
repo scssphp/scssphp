@@ -91,6 +91,15 @@ final class IncludeRule implements Statement, CallableInvocation, SassReference
         return $this->span;
     }
 
+    public function getSpanWithoutContent(): FileSpan
+    {
+        if ($this->content === null) {
+            return $this->span;
+        }
+
+        return SpanUtil::trim($this->span->getFile()->span($this->span->getStart()->getOffset(), $this->arguments->getSpan()->getEnd()->getOffset()));
+    }
+
     public function getNameSpan(): FileSpan
     {
         $startSpan = $this->span->getText()[0] === '+' ? SpanUtil::trimLeft($this->span->subspan(1)) : SpanUtil::withoutInitialAtRule($this->span);

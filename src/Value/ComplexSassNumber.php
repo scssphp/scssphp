@@ -32,12 +32,12 @@ final class ComplexSassNumber extends SassNumber
     private $denominatorUnits;
 
     /**
-     * @param int|float                          $value
+     * @param float                              $value
      * @param list<string>                       $numeratorUnits
      * @param list<string>                       $denominatorUnits
      * @param array{SassNumber, SassNumber}|null $asSlash
      */
-    public function __construct($value, array $numeratorUnits, array $denominatorUnits, array $asSlash = null)
+    public function __construct(float $value, array $numeratorUnits, array $denominatorUnits, array $asSlash = null)
     {
         assert(\count($numeratorUnits) > 1 || \count($denominatorUnits) > 0);
 
@@ -78,7 +78,7 @@ final class ComplexSassNumber extends SassNumber
         throw new \BadMethodCallException(__METHOD__ . 'is not implemented.');
     }
 
-    protected function withValue($value): SassNumber
+    protected function withValue(float $value): SassNumber
     {
         return new self($value, $this->numeratorUnits, $this->denominatorUnits);
     }

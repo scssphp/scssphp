@@ -175,12 +175,19 @@ class SuperselectorTest extends TestCase
         yield [false, '|c', 'c'];
         yield [true, '|c', '|c'];
         yield [false, '|c', '*|c'];
+        yield [true, '*|c', 'd|c'];
+        yield [true, '*|c', 'c'];
+        yield [true, '*|c', '|c'];
         yield [true, '*|c', '*|c'];
         // simple/universal
         yield [true, '*', '*'];
+        yield [true, '*', 'c'];
+        yield [true, '*', '.c'];
+        yield [true, 'c|*', 'c|d'];
         yield [false, 'c|*', 'e|d'];
         yield [false, 'c|*', 'd'];
         yield [false, 'c|*', '|d'];
+        yield [true, 'c|*', 'c|*'];
         yield [false, 'c|*', 'd|*'];
         yield [false, 'c|*', '*'];
         yield [false, 'c|*', '|*'];
@@ -188,13 +195,21 @@ class SuperselectorTest extends TestCase
         yield [false, 'c|*', '.d'];
         yield [false, '|*', 'c|d'];
         yield [false, '|*', 'd'];
+        yield [true, '|*', '|d'];
         yield [false, '|*', 'c|*'];
         yield [false, '|*', '*'];
         yield [true, '|*', '|*'];
         yield [false, '|*', '*|*'];
         yield [false, '|*', '.d'];
+        yield [true, '*|*', 'c|d'];
+        yield [true, '*|*', 'd'];
+        yield [true, '*|*', '|d'];
+        yield [true, '*|*', 'c|*'];
+        yield [true, '*|*', '*'];
+        yield [true, '*|*', '|*'];
         yield [true, '*|*', '*|*'];
-        // complex
+        yield [true, '*|*', '.d'];
+        // complex/descendant
         yield [true, 'c', 'd c'];
         yield [false, 'c d', 'd'];
         yield [true, 'c d', 'c d'];
@@ -209,16 +224,22 @@ class SuperselectorTest extends TestCase
         yield [true, 'd c', 'd > e > c'];
         yield [true, 'e c', 'd > e > c'];
         yield [false, 'f c', 'd > e > c'];
+        // complex/sibling
         yield [true, 'c', 'd ~ c'];
         yield [false, 'c ~ d', 'd'];
         yield [true, 'c ~ d', 'c ~ d'];
         yield [true, 'c ~ d', 'c.e ~ d.f'];
         yield [false, 'c.e ~ d.f', 'c ~ d'];
         yield [true, 'c', 'd ~ e ~ c'];
+        yield [true, 'd ~ c', 'd ~ e ~ c'];
+        yield [true, 'e ~ c', 'd ~ e ~ c'];
         yield [false, 'f ~ c', 'd ~ e ~ c'];
         yield [true, 'd ~ c', 'd + c'];
         yield [false, 'd + c', 'd ~ c'];
+        yield [true, 'd ~ c', 'd + e + c'];
+        yield [true, 'e ~ c', 'd + e + c'];
         yield [false, 'f ~ c', 'd + e + c'];
+        // complex/adjacent_sibling
         yield [true, 'c', 'd + c'];
         yield [false, 'c + d', 'd'];
         yield [true, 'c + d', 'c + d'];
@@ -226,7 +247,12 @@ class SuperselectorTest extends TestCase
         yield [false, 'c.e + d.f', 'c + d'];
         yield [true, 'c', 'd + e + c'];
         yield [false, 'd + c', 'd + e + c'];
+        yield [true, 'e + c', 'd + e + c'];
         yield [false, 'f + c', 'd + e + c'];
+        // complex/bogus
+        yield [false, '> c', 'c'];
+        yield [false, 'c', 'd + ~ c'];
+        // complex/child
         yield [true, 'c', 'd > c'];
         yield [false, 'c > d', 'd'];
         yield [true, 'c > d', 'c > d'];
@@ -234,6 +260,7 @@ class SuperselectorTest extends TestCase
         yield [false, 'c.e > d.f', 'c > d'];
         yield [true, 'c', 'd > e > c'];
         yield [false, 'd > c', 'd > e > c'];
+        yield [true, 'e > c', 'd > e > c'];
         yield [false, 'f > c', 'd > e > c'];
         // compound
         yield [true, 'c', 'c.d'];
@@ -241,7 +268,13 @@ class SuperselectorTest extends TestCase
         yield [false, 'c.d', 'c'];
         yield [true, '::d', 'c::d'];
         yield [false, 'c', 'c::d'];
+        yield [false, 'c::d', 'c'];
+        yield [true, '.c::d', '.c.e::d'];
+        yield [true, '::d:c', '::d:c:e'];
+        yield [false, '.c.e::d', '.c::d'];
+        yield [false, '::d:c:e', '::d:c'];
         yield [true, '::d:e', '::d:e'];
+        yield [false, ':e::d', '::d:e'];
         yield [false, 'c', 'c:before'];
         yield [false, 'c', 'c:after'];
         yield [false, 'c', 'c:first-line'];
