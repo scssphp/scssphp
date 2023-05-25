@@ -5423,7 +5423,7 @@ EOL;
 
                 }
             }
-            $url = str_replace( '~', $pathForTilde, $url);
+            $url = substr_replace( $url, $pathForTilde, 0, 1);
         }
         $path = Path::join($baseDir, $url);
 
