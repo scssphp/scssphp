@@ -5413,8 +5413,17 @@ EOL;
      */
     private function resolveImportPath(string $url, string $baseDir): ?string
     {
-        if( is_string( $url ) && strstr( $url,"~" ) && !empty( $this->registeredVars['path_for_tilde'] )){
-            $url = str_replace( '~', $this->registeredVars['path_for_tilde'], $url);
+        if( is_string( $url ) && strpos( $url,"~" ) == 0 && !empty( $this->registeredVars['path_for_tilde'] ) ){
+            $pathForTilde = $this->registeredVars['path_for_tilde'];
+            if( is_array( $this->registeredVars['path_for_tilde'] ) ){
+                if( $this->registeredVars['path_for_tilde'][0] == 'string' && isset( $this->registeredVars['path_for_tilde'][2] ) ){
+                    $pathForTilde = $this->registeredVars['path_for_tilde'][2][0];
+                }else{
+                    $pathForTilde = $this->registeredVars['path_for_tilde'][0];
+
+                }
+            }
+            $url = str_replace( '~', $pathForTilde, $url);
         }
         $path = Path::join($baseDir, $url);
 
