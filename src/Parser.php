@@ -1229,6 +1229,7 @@ final class Parser
                 'alpha',
                 'attr',
                 'calc',
+                'counter',
                 'cubic-bezier',
                 'env',
                 'grayscale',
