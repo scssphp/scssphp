@@ -1954,6 +1954,11 @@ final class Compiler
             foreach ($selector as $node) {
                 $compound = '';
 
+                if (!is_array($node)) {
+                    $output[] = $node;
+                    continue;
+                }
+
                 array_walk_recursive(
                     $node,
                     function ($value, $key) use (&$compound) {
@@ -1988,12 +1993,16 @@ final class Compiler
             foreach ($selector as $node) {
                 $compound = '';
 
-                array_walk_recursive(
-                    $node,
-                    function ($value, $key) use (&$compound) {
-                        $compound .= $value;
-                    }
-                );
+                if (!is_array($node)) {
+                    $compound .= $node;
+                } else {
+                    array_walk_recursive(
+                        $node,
+                        function ($value, $key) use (&$compound) {
+                            $compound .= $value;
+                        }
+                    );
+                }
 
                 if ($this->isImmediateRelationshipCombinator($compound)) {
                     if (\count($output)) {
