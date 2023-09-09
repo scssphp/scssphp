@@ -2626,7 +2626,7 @@ final class Parser
 
         // unicode range with wildcards
         if (
-            $this->literal('U+', 2) &&
+            $this->literal(strtolower('U+'), 2) &&
             $this->match('\?+|([0-9A-F]+(\?+|(-[0-9A-F]+))?)', $m, false)
         ) {
             $unicode = explode('-', $m[0]);
