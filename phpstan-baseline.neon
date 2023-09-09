@@ -121,8 +121,8 @@ parameters:
 			path: src/Cache.php
 
 		-
-			message: "#^Anonymous function should return null but returns float\\|int\\.$#"
-			count: 2
+			message: "#^Cannot access property \\$parent on ScssPhp\\\\ScssPhp\\\\Formatter\\\\OutputBlock\\|null\\.$#"
+			count: 3
 			path: src/Compiler.php
 
 		-
@@ -1336,8 +1336,13 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Parameter \\#1 \\$dimension of class ScssPhp\\\\ScssPhp\\\\Node\\\\Number constructor expects float\\|int, float\\|int\\<min, 0\\>\\|string given\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Parameter \\#1 \\$dimension of class ScssPhp\\\\ScssPhp\\\\Node\\\\Number constructor expects float\\|int, float\\|int\\|string given\\.$#"
-			count: 2
+			count: 1
 			path: src/Compiler.php
 
 		-
@@ -1376,7 +1381,7 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$string of function str_pad expects string, int\\<\\-9999999, 9999999\\> given\\.$#"
+			message: "#^Parameter \\#1 \\$string of function str_pad expects string, int\\<0, 9999999\\> given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1658,11 +1663,6 @@ parameters:
 		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Parser\\:\\:\\$logger is never read, only written\\.$#"
 			count: 1
-			path: src/Parser.php
-
-		-
-			message: "#^Result of && is always false\\.$#"
-			count: 2
 			path: src/Parser.php
 
 		-
