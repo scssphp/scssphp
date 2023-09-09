@@ -2175,13 +2175,14 @@ final class Parser
         $items = [];
         /** @var array|Number|null $value */
         $value = null;
+        $lowerDelim = strtolower($delim);
 
         while ($this->$parseItem($value)) {
             $trailing_delim = false;
             $items[] = $value;
 
             if ($delim) {
-                if (! $this->literal($delim, \strlen($delim))) {
+                if (! $this->literal($lowerDelim, \strlen($delim))) {
                     break;
                 }
 
