@@ -114,6 +114,10 @@ final class Parser
      */
     private $buffer;
     /**
+     * @var string
+     */
+    private $lowercaseBuffer;
+    /**
      * @var string|null
      */
     private $encoding;
@@ -227,6 +231,7 @@ final class Parser
         }
 
         $this->buffer          = rtrim($buffer, "\x00..\x1f");
+        $this->lowercaseBuffer = strtolower($this->buffer);
         $this->count           = 0;
         $this->env             = null;
         $this->inParens        = false;
@@ -277,6 +282,7 @@ final class Parser
         $this->inParens        = false;
         $this->eatWhiteDefault = true;
         $this->buffer          = $buffer;
+        $this->lowercaseBuffer = strtolower($this->buffer);
 
         $this->saveEncoding();
         $this->extractLineNumbers($this->buffer);
@@ -304,6 +310,7 @@ final class Parser
         $this->inParens        = false;
         $this->eatWhiteDefault = true;
         $this->buffer          = $buffer;
+        $this->lowercaseBuffer = strtolower($this->buffer);
 
         $this->saveEncoding();
         $this->extractLineNumbers($this->buffer);
@@ -339,6 +346,7 @@ final class Parser
         $this->inParens        = false;
         $this->eatWhiteDefault = true;
         $this->buffer          = $buffer;
+        $this->lowercaseBuffer = strtolower($this->buffer);
 
         $this->saveEncoding();
         $this->extractLineNumbers($this->buffer);
@@ -1492,7 +1500,7 @@ final class Parser
     /**
      * Match literal string
      *
-     * @param string $what
+     * @param lowercase-string $what
      * @param int    $len
      * @param bool   $eatWhitespace
      *
@@ -1502,7 +1510,13 @@ final class Parser
      */
     private function literal(string $what, int $len, ?bool $eatWhitespace = null): bool
     {
-        if (strcasecmp(substr($this->buffer, $this->count, $len), $what) !== 0) {
+        if (isset($this->lowercaseBuffer[$this->count])
+            && $this->lowercaseBuffer[$this->count] !== $what[0]
+        ) {
+            return false;
+        }
+
+        if (substr($this->lowercaseBuffer, $this->count, $len) !== $what) {
             return false;
         }
 
