@@ -113,6 +113,10 @@ class Parser
      * @var string
      */
     private $buffer;
+    /**
+     * @var string
+     */
+    private $lowercaseBuffer;
     private $utf8;
     /**
      * @var string|null
@@ -265,6 +269,7 @@ class Parser
         }
 
         $this->buffer          = rtrim($buffer, "\x00..\x1f");
+        $this->lowercaseBuffer = strtolower($this->buffer);
         $this->count           = 0;
         $this->env             = null;
         $this->inParens        = false;
@@ -322,6 +327,7 @@ class Parser
         $this->inParens        = false;
         $this->eatWhiteDefault = true;
         $this->buffer          = (string) $buffer;
+        $this->lowercaseBuffer = strtolower($this->buffer);
 
         $this->saveEncoding();
         $this->extractLineNumbers($this->buffer);
@@ -351,6 +357,7 @@ class Parser
         $this->inParens        = false;
         $this->eatWhiteDefault = true;
         $this->buffer          = (string) $buffer;
+        $this->lowercaseBuffer = strtolower($this->buffer);
 
         $this->saveEncoding();
         $this->extractLineNumbers($this->buffer);
@@ -388,6 +395,7 @@ class Parser
         $this->inParens        = false;
         $this->eatWhiteDefault = true;
         $this->buffer          = (string) $buffer;
+        $this->lowercaseBuffer = strtolower($this->buffer);
 
         $this->saveEncoding();
         $this->extractLineNumbers($this->buffer);
@@ -1569,7 +1577,13 @@ class Parser
      */
     protected function literal($what, $len, $eatWhitespace = null)
     {
-        if (strcasecmp(substr($this->buffer, $this->count, $len), $what) !== 0) {
+        if (isset($this->lowercaseBuffer[$this->count])
+            && $this->lowercaseBuffer[$this->count] !== $what[0]
+        ) {
+            return false;
+        }
+
+        if (substr($this->lowercaseBuffer, $this->count, $len) !== $what) {
             return false;
         }
 
@@ -2230,13 +2244,14 @@ class Parser
         $items = [];
         /** @var array|Number|null $value */
         $value = null;
+        $lowerDelim = strtolower($delim);
 
         while ($this->$parseItem($value)) {
             $trailing_delim = false;
             $items[] = $value;
 
             if ($delim) {
-                if (! $this->literal($delim, \strlen($delim))) {
+                if (! $this->literal($lowerDelim, \strlen($delim))) {
                     break;
                 }
 
@@ -2681,7 +2696,7 @@ class Parser
 
         // unicode range with wildcards
         if (
-            $this->literal('U+', 2) &&
+            $this->literal(strtolower('U+'), 2) &&
             $this->match('\?+|([0-9A-F]+(\?+|(-[0-9A-F]+))?)', $m, false)
         ) {
             $unicode = explode('-', $m[0]);
