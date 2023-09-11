@@ -118,7 +118,7 @@ class Parser
      */
     private $lowercaseBuffer;
     /**
-     * @var bool 
+     * @var bool
      */
     private $utf8;
     /**
@@ -1570,7 +1570,7 @@ class Parser
     /**
      * Match literal string
      *
-     * @param string $what
+     * @param string $what literal to match in lower-case
      * @param int    $len
      * @param bool   $eatWhitespace
      *
