@@ -117,6 +117,9 @@ class Parser
      * @var string
      */
     private $lowercaseBuffer;
+    /**
+     * @var bool 
+     */
     private $utf8;
     /**
      * @var string|null
