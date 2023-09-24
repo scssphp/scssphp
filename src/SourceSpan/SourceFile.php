@@ -79,7 +79,7 @@ final class SourceFile
             $end = \strlen($this->string);
         }
 
-        return new FileSpan($this, $start, $end);
+        return new ConcreteFileSpan($this, $start, $end);
     }
 
     public function getSourceUrl(): ?string
