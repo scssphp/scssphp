@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 
 /**
@@ -19,6 +20,8 @@ use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
  *
  * This is not a plain CSS selector—it should be removed before emitting a CSS
  * document.
+ *
+ * @internal
  */
 final class ParentSelector extends SimpleSelector
 {
@@ -34,9 +37,10 @@ final class ParentSelector extends SimpleSelector
      */
     private $suffix;
 
-    public function __construct(?string $suffix)
+    public function __construct(FileSpan $span, ?string $suffix = null)
     {
         $this->suffix = $suffix;
+        parent::__construct($span);
     }
 
     public function getSuffix(): ?string

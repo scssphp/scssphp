@@ -151,4 +151,28 @@ final class ListUtil
 
         return array_slice($list, 0, $count - 1);
     }
+
+    /**
+     * Returns the first `T` returned by $callback for an element of $iterable,
+     * or `null` if it returns `null` for every element.
+     *
+     * @template T
+     * @template E
+     * @param iterable<E> $iterable
+     * @param callable(E): (T|null) $callback
+     *
+     * @return T|null
+     */
+    public static function search(iterable $iterable, callable $callback)
+    {
+        foreach ($iterable as $element) {
+            $value = $callback($element);
+
+            if ($value !== null) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
 }

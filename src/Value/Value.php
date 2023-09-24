@@ -286,7 +286,7 @@ abstract class Value implements Equatable
         $string = $this->selectorString($name);
 
         try {
-            return SelectorList::parse($string, null, null, $allowParent);
+            return SelectorList::parse($string, null, null, null, $allowParent);
         } catch (SassFormatException $e) {
             throw SassScriptException::forArgument($e->getMessage(), $name, $e);
         }

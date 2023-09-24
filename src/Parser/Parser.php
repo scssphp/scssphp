@@ -18,6 +18,8 @@ use ScssPhp\ScssPhp\Logger\LocationAwareLoggerInterface;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\SourceSpan\LazyFileSpan;
+use ScssPhp\ScssPhp\SourceSpan\SourceLocation;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\ParserUtil;
@@ -38,6 +40,16 @@ class Parser
      * @readonly
      */
     protected $logger;
+
+    /**
+     * A map used to map source spans in the text being parsed back to their
+     * original locations in the source file, if this isn't being parsed directly
+     * from source.
+     *
+     * @var InterpolationMap|null
+     * @readonly
+     */
+    private $interpolationMap;
 
     /**
      * @var string|null
@@ -69,11 +81,12 @@ class Parser
         }
     }
 
-    public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null)
+    public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null, ?InterpolationMap $interpolationMap = null)
     {
         $this->scanner = new StringScanner($contents);
         $this->logger = AdaptingLogger::adaptLogger($logger ?? new QuietLogger());
         $this->sourceUrl = $sourceUrl;
+        $this->interpolationMap = $interpolationMap;
     }
 
     /**
@@ -883,6 +896,24 @@ class Parser
     }
 
     /**
+     * Like {@see StringScanner::spanFrom()} but passes the span through {@see $interpolationMap} if it's available.
+     */
+    protected function spanFrom(int $position): FileSpan
+    {
+        $span = $this->scanner->spanFrom($position);
+
+        if ($this->interpolationMap === null) {
+            return $span;
+        }
+
+        $interpolationMap = $this->interpolationMap;
+
+        return new LazyFileSpan(static function () use ($interpolationMap, $span) {
+            return $interpolationMap->mapSpan($span);
+        });
+    }
+
+    /**
      * Prints a warning to standard error, associated with $span.
      */
     protected function warn(string $message, FileSpan $span): void
@@ -906,42 +937,54 @@ class Parser
     {
         $span = $error->getSpan();
 
-        if ($span->getLength() === 0 && 0 === stripos($error->getMessage(), 'expected')) {
-            $startPosition = $this->firstNewlineBefore($span->getStart()->getOffset());
+        // TODO map exceptions
 
-            if ($startPosition !== $span->getStart()->getOffset()) {
-                $span = $span->getFile()->span($startPosition, $startPosition);
-            }
+        if (0 === stripos($error->getMessage(), 'expected')) {
+            $span = $this->adjustExceptionSpan($span);
         }
 
         return new SassFormatException($error->getMessage(), $span, $error);
     }
 
     /**
-     * If [position] is separated from the previous non-whitespace character in
-     * `$scanner->getString()` by one or more newlines, returns the offset of the last
+     * Moves span to {@see firstNewlineBefore} if necessary.
+     */
+    private function adjustExceptionSpan(FileSpan $span): FileSpan
+    {
+        if ($span->getLength() > 0) {
+            return $span;
+        }
+
+        $start = $this->firstNewlineBefore($span->getStart());
+
+        if ($start === $span->getStart()) {
+            return $span;
+        }
+
+        return $start->pointSpan();
+    }
+
+    /**
+     * If $location is separated from the previous non-whitespace character in
+     * `$scanner->getString()` by one or more newlines, returns the location of the last
      * separating newline.
      *
-     * Otherwise returns $position.
+     * Otherwise returns $location.
      *
      * This helps avoid missing token errors pointing at the next closing bracket
      * rather than the line where the problem actually occurred.
-     *
-     * @param int $position
-     *
-     * @return int
      */
-    private function firstNewlineBefore(int $position): int
+    private function firstNewlineBefore(SourceLocation $location): SourceLocation
     {
-        $index = $position - 1;
+        $text = $location->getFile()->getText(0, $location->getOffset());
+        $index = $location->getOffset() - 1;
         $lastNewline = null;
-        $string = $this->scanner->getString();
 
         while ($index >= 0) {
-            $char = $string[$index];
+            $char = $text[$index];
 
             if (!Character::isWhitespace($char)) {
-                return $lastNewline ?? $position;
+                return $lastNewline === null ? $location : $location->getFile()->location($lastNewline);
             }
 
             if (Character::isNewline($char)) {
@@ -950,9 +993,9 @@ class Parser
             $index--;
         }
 
-        // If the document *only* contains whitespace before $position, always
-        // return $position.
+        // If the document *only* contains whitespace before $location, always
+        // return $location.
 
-        return $position;
+        return $location;
     }
 }

@@ -27,10 +27,8 @@ interface CssStyleRule extends CssParentNode
 {
     /**
      * The selector for this rule.
-     *
-     * @return CssValue<SelectorList>
      */
-    public function getSelector(): CssValue;
+    public function getSelector(): SelectorList;
 
     /**
      * The selector for this rule, before any extensions were applied.

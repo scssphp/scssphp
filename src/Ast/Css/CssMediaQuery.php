@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
+use ScssPhp\ScssPhp\Parser\InterpolationMap;
 use ScssPhp\ScssPhp\Parser\MediaQueryParser;
 
 /**
@@ -81,9 +82,9 @@ final class CssMediaQuery
      *
      * @throws SassFormatException if parsing fails
      */
-    public static function parseList(string $contents, ?LoggerInterface $logger = null, ?string $url = null): array
+    public static function parseList(string $contents, ?LoggerInterface $logger = null, ?string $url = null, ?InterpolationMap $interpolationMap = null): array
     {
-        return (new MediaQueryParser($contents, $logger, $url))->parse();
+        return (new MediaQueryParser($contents, $logger, $url, $interpolationMap))->parse();
     }
 
     /**

@@ -21,6 +21,7 @@ use ScssPhp\ScssPhp\Ast\Css\CssParentNode;
 use ScssPhp\ScssPhp\Ast\Css\CssValue;
 use ScssPhp\ScssPhp\Ast\Selector\AttributeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\ClassSelector;
+use ScssPhp\ScssPhp\Ast\Selector\Combinator;
 use ScssPhp\ScssPhp\Ast\Selector\ComplexSelector;
 use ScssPhp\ScssPhp\Ast\Selector\CompoundSelector;
 use ScssPhp\ScssPhp\Ast\Selector\IDSelector;
@@ -302,7 +303,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         $this->writeIndentation();
 
         $this->for($node->getSelector(), function () use ($node) {
-            $node->getSelector()->getValue()->accept($this);
+            $node->getSelector()->accept($this);
         });
         $this->writeOptionalSpace();
         $this->visitChildren($node);
@@ -1237,9 +1238,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      * Writes $combinators to {@see buffer}, with spaces in between in expanded
      * mode.
      *
-     * @param string[] $combinators
-     *
-     * @return void
+     * @param list<CssValue<Combinator::*>> $combinators
      */
     private function writeCombinators(array $combinators): void
     {

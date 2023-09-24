@@ -18,6 +18,8 @@ use ScssPhp\ScssPhp\Util\Equatable;
  * A [qualified name][].
  *
  * [qualified name]: https://www.w3.org/TR/css3-namespace/#css-qnames
+ *
+ * @internal
  */
 final class QualifiedName implements Equatable
 {

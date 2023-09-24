@@ -47,7 +47,7 @@ final class SourceFile
      */
     private $cachedLine;
 
-    public function __construct(string $content, ?string $sourceUrl)
+    public function __construct(string $content, ?string $sourceUrl = null)
     {
         $this->string = $content;
         $this->sourceUrl = $sourceUrl;
@@ -82,9 +82,29 @@ final class SourceFile
         return new ConcreteFileSpan($this, $start, $end);
     }
 
+    public function location(int $offset): SourceLocation
+    {
+        if ($offset < 0) {
+            throw new \RangeException("Offset may not be negative, was $offset.");
+        }
+
+        if ($offset > \strlen($this->string)) {
+            $fileLength = \strlen($this->string);
+
+            throw new \RangeException("Offset $offset must not be greater than the number of characters in the file, $fileLength.");
+        }
+
+        return new SourceLocation($this, $offset);
+    }
+
     public function getSourceUrl(): ?string
     {
         return $this->sourceUrl;
+    }
+
+    public function getString(): string
+    {
+        return $this->string;
     }
 
     /**

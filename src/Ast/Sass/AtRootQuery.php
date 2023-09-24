@@ -20,6 +20,7 @@ use ScssPhp\ScssPhp\Ast\Css\CssSupportsRule;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\AtRootQueryParser;
+use ScssPhp\ScssPhp\Parser\InterpolationMap;
 
 /**
  * A query for the `@at-root` rule.
@@ -70,9 +71,9 @@ final class AtRootQuery
      *
      * @throws SassFormatException if parsing fails
      */
-    public static function parse(string $contents, ?LoggerInterface $logger = null, ?string $url = null): AtRootQuery
+    public static function parse(string $contents, ?LoggerInterface $logger = null, ?string $url = null, ?InterpolationMap $interpolationMap = null): AtRootQuery
     {
-        return (new AtRootQueryParser($contents, $logger, $url))->parse();
+        return (new AtRootQueryParser($contents, $logger, $url, $interpolationMap))->parse();
     }
 
     /**

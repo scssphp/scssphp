@@ -12,7 +12,10 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use ScssPhp\ScssPhp\Ast\AstNode;
+use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Serializer\Serializer;
+use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\Equatable;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 use ScssPhp\ScssPhp\Warn;
@@ -24,9 +27,27 @@ use ScssPhp\ScssPhp\Warn;
  * {@see ParentSelector} or a {@see PlaceholderSelector}.
  *
  * Selectors have structural equality semantics.
+ *
+ * @internal
  */
-abstract class Selector implements Equatable
+abstract class Selector implements AstNode, Equatable
 {
+    /**
+     * @var FileSpan
+     * @readonly
+     */
+    private $span;
+
+    public function __construct(FileSpan $span)
+    {
+        $this->span = $span;
+    }
+
+    public function getSpan(): FileSpan
+    {
+        return $this->span;
+    }
+
     /**
      * Whether this selector, and complex selectors containing it, should not be
      * emitted.
@@ -78,7 +99,7 @@ abstract class Selector implements Equatable
      * Prints a warning if $this is a bogus selector.
      *
      * This may only be called from within a custom Sass function. This will
-     * throw a {@see SassScriptException} in a future major version.
+     * throw a {@see SassException} in a future major version.
      */
     public function assertNotBogus(?string $name = null): void
     {

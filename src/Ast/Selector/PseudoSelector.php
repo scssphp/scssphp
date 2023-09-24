@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
@@ -23,6 +24,8 @@ use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
  * selectors take arguments, including other selectors. Sass manually encodes
  * logic for each pseudo selector that takes a selector as an argument, to
  * ensure that extension and other selector operations work properly.
+ *
+ * @internal
  */
 final class PseudoSelector extends SimpleSelector
 {
@@ -81,7 +84,7 @@ final class PseudoSelector extends SimpleSelector
      */
     private $specificity;
 
-    public function __construct(string $name, bool $element = false, ?string $argument = null, ?SelectorList $selector = null)
+    public function __construct(string $name, FileSpan $span, bool $element = false, ?string $argument = null, ?SelectorList $selector = null)
     {
         $this->name = $name;
         $this->isClass = !$element && !self::isFakePseudoElement($name);
@@ -89,6 +92,7 @@ final class PseudoSelector extends SimpleSelector
         $this->argument = $argument;
         $this->selector = $selector;
         $this->normalizedName = Util::unvendor($name);
+        parent::__construct($span);
     }
 
     /**
@@ -258,7 +262,7 @@ final class PseudoSelector extends SimpleSelector
 
     public function withSelector(SelectorList $selector): PseudoSelector
     {
-        return new PseudoSelector($this->name, $this->isElement(), $this->argument, $selector);
+        return new PseudoSelector($this->name, $this->getSpan(), $this->isElement(), $this->argument, $selector);
     }
 
     public function addSuffix(string $suffix): SimpleSelector
@@ -267,7 +271,7 @@ final class PseudoSelector extends SimpleSelector
             parent::addSuffix($suffix);
         }
 
-        return new PseudoSelector($this->name . $suffix, $this->isElement());
+        return new PseudoSelector($this->name . $suffix, $this->getSpan(), $this->isElement());
     }
 
     public function unify(array $compound): ?array
@@ -339,7 +343,7 @@ final class PseudoSelector extends SimpleSelector
 
         // Fall back to the logic defined in ExtendUtil, which knows how to
         // compare selector pseudoclasses against raw selectors.
-        return (new CompoundSelector([$this]))->isSuperselector(new CompoundSelector([$other]));
+        return (new CompoundSelector([$this], $this->getSpan()))->isSuperselector(new CompoundSelector([$other], $this->getSpan()));
     }
 
     public function accept(SelectorVisitor $visitor)
