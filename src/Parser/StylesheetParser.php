@@ -330,10 +330,16 @@ abstract class StylesheetParser extends Parser
         while ($this->scanner->scanChar('!')) {
             $flag = $this->identifier();
             if ($flag === 'default') {
+                if ($guarded) {
+                    $this->logger->warn("!default should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", true, $this->scanner->spanFrom($flagStart));
+                }
+
                 $guarded = true;
             } elseif ($flag === 'global') {
                 if ($namespace !== null) {
                     $this->error("!global isn't allowed for variables in other modules.", $this->scanner->spanFrom($flagStart));
+                } elseif ($global) {
+                    $this->logger->warn("!global should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", true, $this->scanner->spanFrom($flagStart));
                 }
 
                 $global = true;
