@@ -235,6 +235,11 @@ final class Parser
         $this->saveEncoding();
         $this->extractLineNumbers($buffer);
 
+        if (!preg_match('//u', $buffer)) {
+            $message = $this->sourceName ? 'Invalid UTF-8 file: ' . $this->sourceName : 'Invalid UTF-8 file';
+            throw new ParserException($message);
+        }
+
         $this->pushBlock(null); // root block
         $this->whitespace();
         $this->pushBlock(null);

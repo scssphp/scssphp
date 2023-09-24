@@ -1380,6 +1380,7 @@ final class Compiler
         // start from the root
         while ($scope->parent && $scope->parent->type !== Type::T_ROOT) {
             array_unshift($childStash, $scope);
+            \assert($scope->parent !== null);
             $scope = $scope->parent;
         }
 
@@ -1954,6 +1955,11 @@ final class Compiler
             foreach ($selector as $node) {
                 $compound = '';
 
+                if (!is_array($node)) {
+                    $output[] = $node;
+                    continue;
+                }
+
                 array_walk_recursive(
                     $node,
                     function ($value, $key) use (&$compound) {
@@ -1988,12 +1994,16 @@ final class Compiler
             foreach ($selector as $node) {
                 $compound = '';
 
-                array_walk_recursive(
-                    $node,
-                    function ($value, $key) use (&$compound) {
-                        $compound .= $value;
-                    }
-                );
+                if (!is_array($node)) {
+                    $compound .= $node;
+                } else {
+                    array_walk_recursive(
+                        $node,
+                        function ($value, $key) use (&$compound) {
+                            $compound .= $value;
+                        }
+                    );
+                }
 
                 if ($this->isImmediateRelationshipCombinator($compound)) {
                     if (\count($output)) {
@@ -2745,7 +2755,7 @@ final class Compiler
     {
         if (isset($child[Parser::SOURCE_LINE])) {
             $this->sourceIndex  = isset($child[Parser::SOURCE_INDEX]) ? $child[Parser::SOURCE_INDEX] : null;
-            $this->sourceLine   = isset($child[Parser::SOURCE_LINE]) ? $child[Parser::SOURCE_LINE] : -1;
+            $this->sourceLine   = $child[Parser::SOURCE_LINE];
             $this->sourceColumn = isset($child[Parser::SOURCE_COLUMN]) ? $child[Parser::SOURCE_COLUMN] : -1;
         } elseif (\is_array($child) && isset($child[1]->sourceLine) && $child[1] instanceof Block) {
             $this->sourceIndex  = $child[1]->sourceIndex;
@@ -4278,8 +4288,10 @@ EOL;
                             return $colorName;
                         }
 
-                        if (is_numeric($alpha)) {
+                        if (\is_int($alpha) || \is_float($alpha)) {
                             $a = new Number($alpha, '');
+                        } elseif (is_numeric($alpha)) {
+                            $a = new Number((float) $alpha, '');
                         } else {
                             $a = $alpha;
                         }
@@ -6391,8 +6403,12 @@ EOL;
             return self::$null;
         }
 
-        if (is_numeric($value)) {
+        if (\is_int($value) || \is_float($value)) {
             return new Number($value, '');
+        }
+
+        if (is_numeric($value)) {
+            return new Number((float) $value, '');
         }
 
         if ($value === '') {

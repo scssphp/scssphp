@@ -152,6 +152,10 @@ END_OF_SCSS
                 ,
                 '1.5 is not an integer.'
             ],
+            [
+                ".foo { } .bar { } /* comment with \xd6-character */",
+                'Invalid UTF-8 file',
+            ]
         ];
     }
 
