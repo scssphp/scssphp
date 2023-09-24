@@ -68,10 +68,10 @@ class UnificationTest extends TestCase
         yield ['#s1-1 ~ #s2-1 + .s1-2.s2-2', '#s1-1 ~ .s1-2', '#s2-1 + .s2-2'];
         yield ['.c .c + .s1.s2', '.c + .s1', '.c .s2'];
         yield ['.c > .c + .s1.s2', '.c + .s1', '.c > .s2'];
-        yield ['.e ~ .c + .d.f, .e.c + .d.f', '.c + .d', '.e ~ .f'];
+        yield ['.e ~ .c + .d.f, .c.e + .d.f', '.c + .d', '.e ~ .f'];
         yield ['.c + .s1.s2', '.c + .s1', '.c ~ .s2'];
         yield ['.c.s1-1 + .s1-2.s2', '.c.s1-1 + .s1-2', '.c ~ .s2'];
-        yield ['.c.s2-1 ~ .c.s1-1 + .s1-2.s2-2, .c.s2-1.s1-1 + .s1-2.s2-2', '.c.s1-1 + .s1-2', '.c.s2-1 ~ .s2-2'];
+        yield ['.c.s2-1 ~ .c.s1-1 + .s1-2.s2-2, .c.s1-1.s2-1 + .s1-2.s2-2', '.c.s1-1 + .s1-2', '.c.s2-1 ~ .s2-2'];
         yield ['#s2-1 ~ #s1-1 + .s1-2.s2-2', '#s1-1 + .s1-2', '#s2-1 ~ .s2-2'];
         yield ['.e.c + .d.f', '.c + .d', '.e + .f'];
         yield ['.c.s1-1 + .s1-2.s2', '.c.s1-1 + .s1-2', '.c + .s2'];
@@ -83,7 +83,7 @@ class UnificationTest extends TestCase
         yield [null, '+ ~ > .c', '> + ~ > > .d'];
         yield [null, '+ ~ > .c', '+ > ~ ~ > .d'];
         yield [null, '+ ~ > .c', '+ > ~ ~ .d'];
-        yield ['.f .c > .g ~ .d + .e.h, .f .c > .g.d + .e.h', '.c > .d + .e', '.f .g ~ .h'];
+        yield ['.f .c > .g ~ .d + .e.h, .f .c > .d.g + .e.h', '.c > .d + .e', '.f .g ~ .h'];
         yield [null, '.c + ~ > .d', '.e + ~ > .f'];
         yield [null, '.c + ~ > .d', '.e > + ~ > > .f'];
         yield [null, '.c + ~ > .d', '.e + > ~ ~ > .f'];

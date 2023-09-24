@@ -156,25 +156,8 @@ final class ExtendUtil
      */
     public static function unifyUniversalAndElement(SimpleSelector $selector1, SimpleSelector $selector2): ?SimpleSelector
     {
-        $name1 = null;
-        if ($selector1 instanceof UniversalSelector) {
-            $namespace1 = $selector1->getNamespace();
-        } elseif ($selector1 instanceof TypeSelector) {
-            $namespace1 = $selector1->getName()->getNamespace();
-            $name1 = $selector1->getName()->getName();
-        } else {
-            throw new \InvalidArgumentException('selector1 must be a UniversalSelector or a TypeSelector');
-        }
-
-        $name2 = null;
-        if ($selector2 instanceof UniversalSelector) {
-            $namespace2 = $selector2->getNamespace();
-        } elseif ($selector2 instanceof TypeSelector) {
-            $namespace2 = $selector2->getName()->getNamespace();
-            $name2 = $selector2->getName()->getName();
-        } else {
-            throw new \InvalidArgumentException('selector2 must be a UniversalSelector or a TypeSelector');
-        }
+        [$namespace1, $name1] = self::namespaceAndName($selector1, 'selector1');
+        [$namespace2, $name2] = self::namespaceAndName($selector2, 'selector2');
 
         if ($namespace1 === $namespace2 || $namespace2 === '*') {
             $namespace = $namespace1;
@@ -197,6 +180,27 @@ final class ExtendUtil
         }
 
         return new TypeSelector(new QualifiedName($name, $namespace), $selector1->getSpan());
+    }
+
+    /**
+     * Returns the namespace and name for $selector, which must be a
+     * {@see UniversalSelector} or a {@see TypeSelector}.
+     *
+     * The $name parameter is used for error reporting.
+     *
+     * @return array{string|null, string|null} The namespace and the name
+     */
+    private static function namespaceAndName(SimpleSelector $selector, string $name): array
+    {
+        if ($selector instanceof UniversalSelector) {
+            return [$selector->getNamespace(), null];
+        }
+
+        if ($selector instanceof TypeSelector) {
+            return [$selector->getName()->getNamespace(), $selector->getName()->getName()];
+        }
+
+        throw new \InvalidArgumentException("Argument $name must be a UniversalSelector or a TypeSelector.");
     }
 
     /**
@@ -558,7 +562,7 @@ final class ExtendUtil
                 if ($followingSiblingComponent->getSelector()->isSuperselector($nextSiblingComponent->getSelector())) {
                     array_unshift($result, [[$nextSiblingComponent]]);
                 } else {
-                    $unified = self::unifyCompound($component1->getSelector(), $component2->getSelector());
+                    $unified = self::unifyCompound($followingSiblingComponent->getSelector(), $nextSiblingComponent->getSelector());
 
                     $choices = [
                         [$followingSiblingComponent, $nextSiblingComponent],
@@ -614,7 +618,7 @@ final class ExtendUtil
 
         array_unshift($result, [[$component2]]);
 
-        return self::mergeTrailingCombinators($components2, $components1, $span, $result);
+        return self::mergeTrailingCombinators($components1, $components2, $span, $result);
     }
 
     /**
