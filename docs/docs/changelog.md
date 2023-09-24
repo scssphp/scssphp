@@ -411,7 +411,7 @@
 
 ## **1.0.0** -- June 4, 2019
   * Moving development to ScssPhp organization, https://github.com/scssphp/
-  * Online documentation can be found at http://scssphp.github.com/scssphp/
+  * Online documentation can be found at https://scssphp.github.io/scssphp/
   * Renamed namespace from Leafo to ScssPhp
 
 ## **0.8.4** -- June 18, 2019
@@ -758,7 +758,7 @@
   * Add `ie_hex_str`, `abs`, `min`, `max` functions (Martin Hasoň)
   * Ignore expressions inside of `calc()` (Martin Hasoň)
   * Improve operator evaluation (Martin Hasoň)
-  * Add [`@content`](http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#mixin-content) support.
+  * Add [`@content`](https://sass-lang.com/documentation/at-rules/mixin/#content-blocks) support.
   * Misc bug fixes.
 
 ## **0.0.3** -- August 2nd, 2012

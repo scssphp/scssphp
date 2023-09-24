@@ -63,7 +63,7 @@ abstract class SassNumber extends Value
     ];
 
     /**
-     * A map from human-readable names of unit types to the convertable units that
+     * A map from human-readable names of unit types to the convertible units that
      * fall into those types.
      */
     private const UNITS_BY_TYPE = [
