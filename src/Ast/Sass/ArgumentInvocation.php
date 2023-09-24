@@ -12,7 +12,9 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass;
 
+use ScssPhp\ScssPhp\Ast\Sass\Expression\ListExpression;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Value\ListSeparator;
 
 /**
  * A set of arguments passed in to a function or mixin.
@@ -111,17 +113,29 @@ final class ArgumentInvocation implements SassNode
 
     public function __toString(): string
     {
-        $parts = $this->positional;
+        $parts = [];
+        foreach ($this->positional as $argument) {
+            $parts[] = $this->parenthesizeArgument($argument);
+        }
         foreach ($this->named as $name => $arg) {
-            $parts[] = "\$$name: $arg";
+            $parts[] = "\$$name: {$this->parenthesizeArgument($arg)}";
         }
         if ($this->rest !== null) {
-            $parts[] = "$this->rest...";
+            $parts[] = "{$this->parenthesizeArgument($this->rest)}...";
         }
         if ($this->keywordRest !== null) {
-            $parts[] = "$this->keywordRest...";
+            $parts[] = "{$this->parenthesizeArgument($this->keywordRest)}...";
         }
 
         return '(' . implode(', ', $parts) . ')';
+    }
+
+    private function parenthesizeArgument(Expression $argument): string
+    {
+        if ($argument instanceof ListExpression && $argument->getSeparator() === ListSeparator::COMMA && !$argument->hasBrackets() && \count($argument->getContents()) > 1) {
+            return "($argument)";
+        }
+
+        return (string) $argument;
     }
 }
