@@ -2785,7 +2785,7 @@ WARNING;
         // Don't complain about a dot after a number unless the number starts with a
         // dot. We don't allow a plain ".", but we need to allow "1." so that
         // "1..." will work as a rest argument.
-        $this->tryDecimal($this->scanner->getPosition() !== $start);
+        $this->tryDecimal($this->scanner->getPosition() !== $start && $first !== '+' && $first !== '-');
         $this->tryExponent();
 
         // Use PHP's built-in double parsing so that we don't accumulate
