@@ -919,12 +919,6 @@ abstract class StylesheetParser extends Parser
      */
     private function atRootQuery(): Interpolation
     {
-        if ($this->scanner->peekChar() === '#') {
-            $interpolation = $this->singleInterpolation();
-
-            return new Interpolation([$interpolation], $interpolation->getSpan());
-        }
-
         $start = $this->scanner->getPosition();
         $buffer = new InterpolationBuffer();
         $this->scanner->expectChar('(');
