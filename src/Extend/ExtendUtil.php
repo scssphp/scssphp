@@ -868,6 +868,7 @@ final class ExtendUtil
 
         $i1 = 0;
         $i2 = 0;
+        $previousCombinator = null;
 
         while (true) {
             $remaining1 = \count($complex1) - $i1;
@@ -924,6 +925,10 @@ final class ExtendUtil
                 $parents[] = $component2;
             }
 
+            if (!self::compatibleWithPreviousCombinator($previousCombinator, $parents ?? [])) {
+                return false;
+            }
+
             $component2 = $complex2[$endOfSubselector];
             $combinator1 = $component1->getCombinators()[0] ?? null;
             $combinator2 = $component2->getCombinators()[0] ?? null;
@@ -934,6 +939,7 @@ final class ExtendUtil
 
             $i1++;
             $i2 = $endOfSubselector + 1;
+            $previousCombinator = $combinator1;
 
             if (\count($complex1) - $i1 === 1) {
                 if ($combinator1 === Combinator::FOLLOWING_SIBLING) {
@@ -955,6 +961,39 @@ final class ExtendUtil
                 }
             }
         }
+    }
+
+    /**
+     * @phpstan-param Combinator::*|null $previous
+     * @param list<ComplexSelectorComponent> $parents
+     */
+    private static function compatibleWithPreviousCombinator(?string $previous, array $parents): bool
+    {
+        if ($parents === []) {
+            return true;
+        }
+
+        if ($previous === null) {
+            return true;
+        }
+
+        // The child and next sibling combinators require that the *immediate*
+        // following component be a superselector.
+        if ($previous !== Combinator::FOLLOWING_SIBLING) {
+            return false;
+        }
+
+        // The following sibling combinator does allow intermediate components, but
+        // only if they're all siblings.
+        foreach ($parents as $component) {
+            $firstCombinator = $component->getCombinators()[0] ?? null;
+
+            if ($firstCombinator !== Combinator::FOLLOWING_SIBLING && $firstCombinator !== Combinator::NEXT_SIBLING) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
