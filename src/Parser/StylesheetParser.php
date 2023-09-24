@@ -4043,49 +4043,55 @@ WARNING;
         $buffer->write('(');
         $this->whitespace();
 
-        $needsParenDeprecation = $this->scanner->peekChar() === '(';
-        $needsNotDeprecation = $this->matchesIdentifier('not');
-        $expression = $this->expressionUntilComparison();
-
-        if ($needsParenDeprecation || $needsNotDeprecation) {
-            $this->logger->warn(sprintf(
-                "Starting a @media query with \"%s\" is deprecated because it conflicts with official CSS syntax.\n\nTo preserve existing behavior: #{%s}\nTo migrate to new behavior: #{\"%s\"}\n\nFor details, see https://sass-lang.com/d/media-logic",
-                $needsParenDeprecation ? '(' : 'not',
-                $expression,
-                $expression
-            ), true, $expression->getSpan());
-        }
-
-        $buffer->add($expression);
-
-        if ($this->scanner->scanChar(':')) {
+        if ($this->scanner->peekChar() === '(') {
+            $this->mediaInParens($buffer);
             $this->whitespace();
-            $buffer->write(': ');
-            $buffer->add($this->expression());
+
+            if ($this->scanIdentifier('and')) {
+                $buffer->write(' and ');
+                $this->expectWhitespace();
+                $this->mediaLogicSequence($buffer, 'and');
+            } elseif ($this->scanIdentifier('or')) {
+                $buffer->write(' or ');
+                $this->expectWhitespace();
+                $this->mediaLogicSequence($buffer, 'or');
+            }
+        } elseif ($this->scanIdentifier('not')) {
+            $buffer->write('not ');
+            $this->expectWhitespace();
+            $this->mediaOrInterp($buffer);
         } else {
-            $next = $this->scanner->peekChar();
+            $buffer->add($this->expressionUntilComparison());
 
-            if ($next === '<' || $next === '>' || $next === '=') {
-                $buffer->write(' ');
-                $buffer->write($this->scanner->readChar());
-                if (($next === '<' || $next === '>') && $this->scanner->scanChar('=')) {
-                    $buffer->write('=');
-                }
-                $buffer->write(' ');
-
+            if ($this->scanner->scanChar(':')) {
                 $this->whitespace();
-                $buffer->add($this->expressionUntilComparison());
+                $buffer->write(': ');
+                $buffer->add($this->expression());
+            } else {
+                $next = $this->scanner->peekChar();
 
-                if (($next === '<' || $next === '>') && $this->scanner->scanChar($next)) {
+                if ($next === '<' || $next === '>' || $next === '=') {
                     $buffer->write(' ');
-                    $buffer->write($next);
-                    if ($this->scanner->scanChar('=')) {
+                    $buffer->write($this->scanner->readChar());
+                    if (($next === '<' || $next === '>') && $this->scanner->scanChar('=')) {
                         $buffer->write('=');
                     }
                     $buffer->write(' ');
 
                     $this->whitespace();
                     $buffer->add($this->expressionUntilComparison());
+
+                    if (($next === '<' || $next === '>') && $this->scanner->scanChar($next)) {
+                        $buffer->write(' ');
+                        $buffer->write($next);
+                        if ($this->scanner->scanChar('=')) {
+                            $buffer->write('=');
+                        }
+                        $buffer->write(' ');
+
+                        $this->whitespace();
+                        $buffer->add($this->expressionUntilComparison());
+                    }
                 }
             }
         }
