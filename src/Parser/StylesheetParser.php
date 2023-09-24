@@ -2636,7 +2636,7 @@ WARNING;
 
         // Don't emit four- or eight-digit hex colors as hex, since that's not
         // yet well-supported in browsers.
-        return SassColor::rgbInternal($red, $green, $blue, $alpha, $alpha === null ? new SpanColorFormat($this->scanner->spanFrom($start)) : null);
+        return SassColor::rgbInternal($red, $green, $blue, $alpha ?? 1.0, $alpha === null ? new SpanColorFormat($this->scanner->spanFrom($start)) : null);
     }
 
     private function isHexColor(Interpolation $interpolation): bool
