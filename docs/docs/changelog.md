@@ -1,5 +1,15 @@
 # Changelog
 
+## **1.11.1** -- September 24, 2023
+
+**Added**
+
+* Add dedicated error handling when passing invalid UTF-8 (@stof)
+
+**Fixed**
+
+* Fix extending a selector using `:is()` (@ssltg)
+
 ## **1.11.0** -- September 2, 2022
 
 **Deprecated**

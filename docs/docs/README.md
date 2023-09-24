@@ -8,7 +8,7 @@ title: Documentation
 
 ### Including
 
-The project can be loaded through the `composer` generated auto-loader.
+The project can be loaded through the `composer` generated autoloader.
 
 Alternatively, the entire project can be loaded through a utility file.
 Just include it somewhere to start using it:
