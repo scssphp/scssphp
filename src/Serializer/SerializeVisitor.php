@@ -536,7 +536,36 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
     private function writeCalculationValue(object $value): void
     {
-        if ($value instanceof Value) {
+        if ($value instanceof SassNumber && !is_finite($value->getValue())) {
+            if (\count($value->getNumeratorUnits()) > 1 || \count($value->getDenominatorUnits()) > 0) {
+                if (!$this->inspect) {
+                    throw new SassScriptException("$value is not a valid CSS value.");
+                }
+
+                $this->writeNumber($value->getValue());
+                $this->buffer->write($value->getUnitString());
+
+                return;
+            }
+
+            if (is_nan($value->getValue())) {
+                $this->buffer->write('NaN');
+            } elseif ($value->getValue() > 0) {
+                $this->buffer->write('infinity');
+            } else {
+                $this->buffer->write('-infinity');
+            }
+
+            $unit = $value->getNumeratorUnits()[0] ?? null;
+
+            if ($unit !== null) {
+                $this->writeOptionalSpace();
+                $this->buffer->writeChar('*');
+                $this->writeOptionalSpace();
+                $this->buffer->writeChar('1');
+                $this->buffer->write($unit);
+            }
+        } elseif ($value instanceof Value) {
             $value->accept($this);
         } elseif ($value instanceof CalculationInterpolation) {
             $this->buffer->write($value->getValue());
@@ -562,7 +591,9 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             }
 
             $right = $value->getRight();
-            $parenthesizeRight = $right instanceof CalculationInterpolation || ($right instanceof CalculationOperation && $this->parenthesizeCalculationRhs($value->getOperator(), $right->getOperator()));
+            $parenthesizeRight = $right instanceof CalculationInterpolation
+                || ($right instanceof CalculationOperation && $this->parenthesizeCalculationRhs($value->getOperator(), $right->getOperator()))
+                || ($value->getOperator() === CalculationOperator::DIVIDED_BY && $right instanceof SassNumber && !is_finite($right->getValue()) && $right->hasUnits());
 
             if ($parenthesizeRight) {
                 $this->buffer->writeChar('(');
@@ -911,6 +942,11 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             $this->buffer->writeChar('/');
             $this->visitNumber($asSlash[1]);
 
+            return;
+        }
+
+        if (!is_finite($value->getValue())) {
+            $this->visitCalculation(SassCalculation::unsimplified('calc', [$value]));
             return;
         }
 

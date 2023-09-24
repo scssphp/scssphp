@@ -3326,7 +3326,7 @@ WARNING;
     {
         $next = $this->scanner->peekChar();
 
-        if ($next === '+' || $next === '-' || $next === '.' || Character::isDigit($next)) {
+        if ($next === '+' || $next === '.' || Character::isDigit($next)) {
             return $this->number();
         }
 
@@ -3351,33 +3351,39 @@ WARNING;
             return new ParenthesizedExpression($value, $this->scanner->spanFrom($start));
         }
 
-        if (!$this->lookingAtIdentifier()) {
-            $this->scanner->error('Expected number, variable, function, or calculation.');
+        if ($this->lookingAtIdentifier()) {
+            $start = $this->scanner->getPosition();
+            $ident = $this->identifier();
+
+            if ($this->scanner->scanChar('.')) {
+                return $this->namespacedExpression($ident, $start);
+            }
+
+            if ($this->scanner->peekChar() !== '(') {
+                return new StringExpression(new Interpolation([$ident], $this->scanner->spanFrom($start)), false);
+            }
+
+            $lowercase = strtolower($ident);
+            $calculation = $this->tryCalculation($lowercase, $start);
+
+            if ($calculation !== null) {
+                return $calculation;
+            }
+
+            if ($lowercase === 'if') {
+                return new IfExpression($this->argumentInvocation(), $this->scanner->spanFrom($start));
+            }
+
+            return new FunctionExpression($ident, $this->argumentInvocation(), $this->scanner->spanFrom($start));
         }
 
-        $start = $this->scanner->getPosition();
-        $ident = $this->identifier();
-
-        if ($this->scanner->scanChar('.')) {
-            return $this->namespacedExpression($ident, $start);
+        // This has to go after `lookingAtIdentifier` because a hyphen can start
+        // an identifier as well as a number.
+        if ($next === '-') {
+            return $this->number();
         }
 
-        if ($this->scanner->peekChar() !== '(') {
-            $this->scanner->error('Expected "(" or ".".');
-        }
-
-        $lowercase = strtolower($ident);
-        $calculation = $this->tryCalculation($lowercase, $start);
-
-        if ($calculation !== null) {
-            return $calculation;
-        }
-
-        if ($lowercase === 'if') {
-            return new IfExpression($this->argumentInvocation(), $this->scanner->spanFrom($start));
-        }
-
-        return new FunctionExpression($ident, $this->argumentInvocation(), $this->scanner->spanFrom($start));
+        $this->scanner->error('Expected number, variable, function, or calculation.');
     }
 
     /**

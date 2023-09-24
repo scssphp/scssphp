@@ -53,11 +53,11 @@ final class SassCalculation extends Value
      * @param string       $name
      * @param list<object> $arguments
      *
-     * @return Value
+     * @return SassCalculation
      *
      * @internal
      */
-    public static function unsimplified(string $name, array $arguments): Value
+    public static function unsimplified(string $name, array $arguments): SassCalculation
     {
         return new SassCalculation($name, $arguments);
     }
