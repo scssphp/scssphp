@@ -75,7 +75,7 @@ separated by a semi-colon.
 ## SCSSPHP Library Reference
 
 To use the scssphp library either require `scss.inc.php` or use your `composer`
-generated auto-loader, and then invoke the `\ScssPhp\ScssPhp\Compiler` class:
+generated autoloader, and then invoke the `\ScssPhp\ScssPhp\Compiler` class:
 
 ```php
 require_once "scssphp/scss.inc.php";
@@ -102,7 +102,7 @@ For a more detailed guide, [consult the documentation](docs/).
 
 ## Issues
 
-Please submit bug reports and feature requests to the [the issue tracker][3].
+Please submit bug reports and feature requests to [the issue tracker][3].
 Pull requests are also welcome.
 
 Any feature request about implementing new language feature will be rejected.
