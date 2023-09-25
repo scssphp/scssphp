@@ -46,6 +46,11 @@ abstract class ModifiableCssParentNode extends ModifiableCssNode implements CssP
     }
 
     /**
+     * Returns whether $this is equal to $other, ignoring their child nodes.
+     */
+    abstract public function equalsIgnoringChildren(ModifiableCssNode $other): bool;
+
+    /**
      * Returns a copy of $this with an empty {@see children} list.
      *
      * This is *not* a deep copy. If other parts of this node are modifiable,

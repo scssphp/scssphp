@@ -47,6 +47,11 @@ final class ModifiableCssStylesheet extends ModifiableCssParentNode implements C
         return $visitor->visitCssStylesheet($this);
     }
 
+    public function equalsIgnoringChildren(ModifiableCssNode $other): bool
+    {
+        return $other instanceof ModifiableCssStylesheet;
+    }
+
     /**
      * @phpstan-return ModifiableCssStylesheet
      */

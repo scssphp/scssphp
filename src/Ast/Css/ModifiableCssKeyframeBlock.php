@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
 
 /**
  * A modifiable version of {@see CssKeyframeBlock} for use in the evaluation step.
@@ -57,6 +58,11 @@ final class ModifiableCssKeyframeBlock extends ModifiableCssParentNode implement
     public function accept($visitor)
     {
         return $visitor->visitCssKeyframeBlock($this);
+    }
+
+    public function equalsIgnoringChildren(ModifiableCssNode $other): bool
+    {
+        return $other instanceof ModifiableCssKeyframeBlock && EquatableUtil::listEquals($this->selector->getValue(), $other->selector->getValue());
     }
 
     /**

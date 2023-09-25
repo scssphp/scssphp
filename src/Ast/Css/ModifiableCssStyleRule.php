@@ -15,6 +15,7 @@ namespace ScssPhp\ScssPhp\Ast\Css;
 use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\Box;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
 
 /**
  * A modifiable version of {@see CssStyleRule} for use in the evaluation step.
@@ -73,6 +74,11 @@ final class ModifiableCssStyleRule extends ModifiableCssParentNode implements Cs
     public function accept($visitor)
     {
         return $visitor->visitCssStyleRule($this);
+    }
+
+    public function equalsIgnoringChildren(ModifiableCssNode $other): bool
+    {
+        return $other instanceof ModifiableCssStyleRule && EquatableUtil::equals($this->selector, $other->selector);
     }
 
     /**

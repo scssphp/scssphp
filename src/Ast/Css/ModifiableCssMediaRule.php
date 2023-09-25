@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
 
 /**
  * A modifiable version of {@see CssMediaRule} for use in the evaluation step.
@@ -56,6 +57,11 @@ final class ModifiableCssMediaRule extends ModifiableCssParentNode implements Cs
     public function accept($visitor)
     {
         return $visitor->visitCssMediaRule($this);
+    }
+
+    public function equalsIgnoringChildren(ModifiableCssNode $other): bool
+    {
+        return $other instanceof ModifiableCssMediaRule && EquatableUtil::listEquals($this->queries, $other->queries);
     }
 
     public function copyWithoutChildren(): ModifiableCssParentNode
