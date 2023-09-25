@@ -55,6 +55,11 @@ final class ConcreteFileSpan implements FileSpan
         return $this->file;
     }
 
+    public function getSourceUrl(): ?string
+    {
+        return $this->file->getSourceUrl();
+    }
+
     public function getLength(): int
     {
         return $this->end - $this->start;

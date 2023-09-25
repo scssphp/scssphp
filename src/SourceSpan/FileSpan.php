@@ -19,6 +19,8 @@ interface FileSpan
 {
     public function getFile(): SourceFile;
 
+    public function getSourceUrl(): ?string;
+
     public function getLength(): int;
 
     public function getStart(): SourceLocation;
