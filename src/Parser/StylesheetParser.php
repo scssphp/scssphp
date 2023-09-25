@@ -3046,7 +3046,9 @@ WARNING;
             if ($plain === 'not') {
                 $this->whitespace();
 
-                return new UnaryOperationExpression(UnaryOperator::NOT, $this->singleExpression(), $identifier->getSpan());
+                $expression = $this->singleExpression();
+
+                return new UnaryOperationExpression(UnaryOperator::NOT, $expression, $identifier->getSpan()->expand($expression->getSpan()));
             }
 
             $lower = strtolower($plain);
