@@ -43,7 +43,6 @@ use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\NumberUtil;
 use ScssPhp\ScssPhp\Util\SpanUtil;
 use ScssPhp\ScssPhp\Util\StringUtil;
-use ScssPhp\ScssPhp\Value\CalculationInterpolation;
 use ScssPhp\ScssPhp\Value\CalculationOperation;
 use ScssPhp\ScssPhp\Value\CalculationOperator;
 use ScssPhp\ScssPhp\Value\ColorFormat;
@@ -567,11 +566,9 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             }
         } elseif ($value instanceof Value) {
             $value->accept($this);
-        } elseif ($value instanceof CalculationInterpolation) {
-            $this->buffer->write($value->getValue());
         } elseif ($value instanceof CalculationOperation) {
             $left = $value->getLeft();
-            $parenthesizeLeft = $left instanceof CalculationInterpolation || ($left instanceof CalculationOperation && CalculationOperator::getPrecedence($left->getOperator()) < CalculationOperator::getPrecedence($value->getOperator()));
+            $parenthesizeLeft = $left instanceof CalculationOperation && CalculationOperator::getPrecedence($left->getOperator()) < CalculationOperator::getPrecedence($value->getOperator());
 
             if ($parenthesizeLeft) {
                 $this->buffer->writeChar('(');
@@ -591,8 +588,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             }
 
             $right = $value->getRight();
-            $parenthesizeRight = $right instanceof CalculationInterpolation
-                || ($right instanceof CalculationOperation && $this->parenthesizeCalculationRhs($value->getOperator(), $right->getOperator()))
+            $parenthesizeRight = ($right instanceof CalculationOperation && $this->parenthesizeCalculationRhs($value->getOperator(), $right->getOperator()))
                 || ($value->getOperator() === CalculationOperator::DIVIDED_BY && $right instanceof SassNumber && !is_finite($right->getValue()) && $right->hasUnits());
 
             if ($parenthesizeRight) {

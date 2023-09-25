@@ -708,6 +708,9 @@ abstract class SassNumber extends Value
         throw new SassScriptException("Undefined operation \"$this > $other\".");
     }
 
+    /**
+     * @return SassNumber
+     */
     public function modulo(Value $other): Value
     {
         if ($other instanceof SassNumber) {

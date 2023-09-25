@@ -18,6 +18,44 @@ namespace ScssPhp\ScssPhp\Util;
 final class ListUtil
 {
     /**
+     * @template T
+     *
+     * @param T[]               $list
+     * @param callable(T): bool $callback
+     *
+     * @return bool
+     */
+    public static function any(array $list, callable $callback): bool
+    {
+        foreach ($list as $item) {
+            if ($callback($item)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @template T
+     *
+     * @param T[]               $list
+     * @param callable(T): bool $callback
+     *
+     * @return bool
+     */
+    public static function every(array $list, callable $callback): bool
+    {
+        foreach ($list as $item) {
+            if (!$callback($item)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Flattens the first level of nested arrays in $queues.
      *
      * The return value is ordered first by index in the nested iterable, then by

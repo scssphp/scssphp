@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Ast\Sass\Expression;
 
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\SpanUtil;
 use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
 
 /**
@@ -110,6 +111,23 @@ final class BinaryOperationExpression implements Expression
         $rightSpan = $right->getSpan();
 
         return $leftSpan->expand($rightSpan);
+    }
+
+    /**
+     * Returns the span that covers only {@see $operator}.
+     *
+     * @internal
+     */
+    public function getOperatorSpan(): FileSpan
+    {
+        $leftSpan = $this->left->getSpan();
+        $rightSpan = $this->right->getSpan();
+
+        if ($leftSpan->getFile() === $rightSpan->getFile() && $leftSpan->getEnd()->getOffset() < $rightSpan->getStart()->getOffset()) {
+            return SpanUtil::trim($leftSpan->getFile()->span($leftSpan->getEnd()->getOffset(), $rightSpan->getStart()->getOffset()));
+        }
+
+        return $this->getSpan();
     }
 
     public function accept(ExpressionVisitor $visitor)

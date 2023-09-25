@@ -92,6 +92,14 @@ final class Interpolation implements SassNode
     }
 
     /**
+     * Returns whether this contains no interpolated expressions.
+     */
+    public function isPlain(): bool
+    {
+        return $this->getAsPlain() !== null;
+    }
+
+    /**
      * If this contains no interpolated expressions, returns its text contents.
      *
      * Otherwise, returns `null`.
