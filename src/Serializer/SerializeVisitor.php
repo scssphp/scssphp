@@ -713,7 +713,6 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         $opaque = NumberUtil::fuzzyEquals($value->getAlpha(), 1);
         $this->buffer->write($opaque ? 'hsl(' : 'hsla(');
         $this->writeNumber($value->getHue());
-        $this->buffer->write('deg');
         $this->buffer->write($this->getCommaSeparator());
         $this->writeNumber($value->getSaturation());
         $this->buffer->writeChar('%');
