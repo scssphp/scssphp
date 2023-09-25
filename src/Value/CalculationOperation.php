@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
+use ScssPhp\ScssPhp\Serializer\Serializer;
 use ScssPhp\ScssPhp\Util\Equatable;
 
 /**
@@ -29,7 +30,7 @@ final class CalculationOperation implements Equatable
      * The left-hand operand.
      *
      * This is either a {@see SassNumber}, a {@see SassCalculation}, an unquoted
-     * {@see SassString}, a {@see CalculationOperation}, or a {@see CalculationInterpolation}.
+     * {@see SassString}, or a {@see CalculationOperation}.
      *
      * @var object
      * @readonly
@@ -40,7 +41,7 @@ final class CalculationOperation implements Equatable
      * The right-hand operand.
      *
      * This is either a {@see SassNumber}, a {@see SassCalculation}, an unquoted
-     * {@see SassString}, a {@see CalculationOperation}, or a {@see CalculationInterpolation}.
+     * {@see SassString}, or a {@see CalculationOperation}.
      *
      * @var object
      * @readonly
@@ -85,5 +86,12 @@ final class CalculationOperation implements Equatable
         assert($this->right instanceof Equatable);
 
         return $other instanceof CalculationOperation && $this->operator === $other->operator && $this->left->equals($other->left) && $this->right->equals($other->right);
+    }
+
+    public function __toString(): string
+    {
+        $parenthesized = Serializer::serializeValue(SassCalculation::unsimplified('', [$this]), true);
+
+        return substr($parenthesized, 1, \strlen($parenthesized) - 2);
     }
 }

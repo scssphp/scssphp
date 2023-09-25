@@ -14,6 +14,8 @@ namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\Box;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
 
 /**
  * A modifiable version of {@see CssStyleRule} for use in the evaluation step.
@@ -23,7 +25,10 @@ use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 final class ModifiableCssStyleRule extends ModifiableCssParentNode implements CssStyleRule
 {
     /**
-     * @var ModifiableCssValue<SelectorList>
+     * A reference to the modifiable selector list provided by the extension
+     * store, which may update it over time as new extensions are applied.
+     *
+     * @var Box<SelectorList>
      * @readonly
      */
     private $selector;
@@ -41,11 +46,9 @@ final class ModifiableCssStyleRule extends ModifiableCssParentNode implements Cs
     private $span;
 
     /**
-     * @param ModifiableCssValue<SelectorList> $selector
-     * @param FileSpan                         $span
-     * @param SelectorList|null                $originalSelector
+     * @param Box<SelectorList> $selector
      */
-    public function __construct(ModifiableCssValue $selector, FileSpan $span, ?SelectorList $originalSelector = null)
+    public function __construct(Box $selector, FileSpan $span, ?SelectorList $originalSelector = null)
     {
         parent::__construct();
         $this->selector = $selector;
@@ -53,12 +56,9 @@ final class ModifiableCssStyleRule extends ModifiableCssParentNode implements Cs
         $this->span = $span;
     }
 
-    /**
-     * @phpstan-return ModifiableCssValue<SelectorList>
-     */
-    public function getSelector(): CssValue
+    public function getSelector(): SelectorList
     {
-        return $this->selector;
+        return $this->selector->getValue();
     }
 
     public function getOriginalSelector(): SelectorList
@@ -74,6 +74,11 @@ final class ModifiableCssStyleRule extends ModifiableCssParentNode implements Cs
     public function accept($visitor)
     {
         return $visitor->visitCssStyleRule($this);
+    }
+
+    public function equalsIgnoringChildren(ModifiableCssNode $other): bool
+    {
+        return $other instanceof ModifiableCssStyleRule && EquatableUtil::equals($this->selector, $other->selector);
     }
 
     /**

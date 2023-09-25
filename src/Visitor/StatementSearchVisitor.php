@@ -41,6 +41,7 @@ use ScssPhp\ScssPhp\Ast\Sass\Statement\SupportsRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\VariableDeclaration;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\WarnRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\WhileRule;
+use ScssPhp\ScssPhp\Util\ListUtil;
 
 /**
  * A StatementVisitor whose `visit*` methods default to returning `null`, but
@@ -121,14 +122,14 @@ abstract class StatementSearchVisitor implements StatementVisitor
 
     public function visitIfRule(IfRule $node)
     {
-        $value = $this->searchIterable($node->getClauses(), function (IfClause $clause) {
-            return $this->searchIterable($clause->getChildren(), function (Statement $child) {
+        $value = ListUtil::search($node->getClauses(), function (IfClause $clause) {
+            return ListUtil::search($clause->getChildren(), function (Statement $child) {
                 return $child->accept($this);
             });
         });
 
         if ($node->getLastClause() !== null) {
-            $value = $value ?? $this->searchIterable($node->getLastClause()->getChildren(), function (Statement $child) {
+            $value = $value ?? ListUtil::search($node->getLastClause()->getChildren(), function (Statement $child) {
                 return $child->accept($this);
             });
         }
@@ -235,29 +236,6 @@ abstract class StatementSearchVisitor implements StatementVisitor
 
             if ($result !== null) {
                 return $result;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns the first `T` returned by $callback for an element of $iterable,
-     * or `null` if it returns `null` for every element.
-     *
-     * @template E
-     * @param iterable<E> $iterable
-     * @param callable(E): (T|null) $callback
-     *
-     * @return T|null
-     */
-    private function searchIterable(iterable $iterable, callable $callback)
-    {
-        foreach ($iterable as $element) {
-            $value = $callback($element);
-
-            if ($value !== null) {
-                return $value;
             }
         }
 

@@ -21,6 +21,7 @@ use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Serializer\Serializer;
 use ScssPhp\ScssPhp\Util\Equatable;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
+use ScssPhp\ScssPhp\Warn;
 
 /**
  * A SassScript value.
@@ -121,7 +122,22 @@ abstract class Value implements Equatable
      */
     public function sassIndexToListIndex(Value $sassIndex, ?string $name = null): int
     {
-        $index = $sassIndex->assertNumber($name)->assertInt($name);
+        $indexValue = $sassIndex->assertNumber($name);
+
+        if ($indexValue->hasUnits()) {
+            Warn::deprecation(
+                <<<WARNING
+\$$name: Passing a number with unit {$indexValue->getUnitString()} is deprecated.
+
+To preserve current behavior: {$indexValue->unitSuggestion($name ?? 'index')}
+
+More info: https://sass-lang.com/d/function-units
+WARNING
+
+            );
+        }
+
+        $index = $indexValue->assertInt($name);
 
         if ($index === 0) {
             throw SassScriptException::forArgument('List index may not be 0.', $name);
@@ -286,7 +302,7 @@ abstract class Value implements Equatable
         $string = $this->selectorString($name);
 
         try {
-            return SelectorList::parse($string, null, null, $allowParent);
+            return SelectorList::parse($string, null, null, null, $allowParent);
         } catch (SassFormatException $e) {
             throw SassScriptException::forArgument($e->getMessage(), $name, $e);
         }

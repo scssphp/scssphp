@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Ast\Sass\Expression;
 
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\SpanUtil;
 use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
 
 /**
@@ -112,6 +113,23 @@ final class BinaryOperationExpression implements Expression
         return $leftSpan->expand($rightSpan);
     }
 
+    /**
+     * Returns the span that covers only {@see $operator}.
+     *
+     * @internal
+     */
+    public function getOperatorSpan(): FileSpan
+    {
+        $leftSpan = $this->left->getSpan();
+        $rightSpan = $this->right->getSpan();
+
+        if ($leftSpan->getFile() === $rightSpan->getFile() && $leftSpan->getEnd()->getOffset() < $rightSpan->getStart()->getOffset()) {
+            return SpanUtil::trim($leftSpan->getFile()->span($leftSpan->getEnd()->getOffset(), $rightSpan->getStart()->getOffset()));
+        }
+
+        return $this->getSpan();
+    }
+
     public function accept(ExpressionVisitor $visitor)
     {
         return $visitor->visitBinaryOperationExpression($this);
@@ -121,7 +139,7 @@ final class BinaryOperationExpression implements Expression
     {
         $buffer = '';
 
-        $leftNeedsParens = $this->left instanceof BinaryOperationExpression && BinaryOperator::getPrecedence($this->left->getOperator()) < BinaryOperator::getPrecedence($this->operator);
+        $leftNeedsParens = ($this->left instanceof BinaryOperationExpression && BinaryOperator::getPrecedence($this->left->getOperator()) < BinaryOperator::getPrecedence($this->operator)) || ($this->left instanceof ListExpression && !$this->left->hasBrackets() && \count($this->left->getContents()) > 1);
         if ($leftNeedsParens) {
             $buffer .= '(';
         }
@@ -134,7 +152,7 @@ final class BinaryOperationExpression implements Expression
         $buffer .= $this->operator;
         $buffer .= ' ';
 
-        $rightNeedsParens = $this->right instanceof BinaryOperationExpression && BinaryOperator::getPrecedence($this->right->getOperator()) <= BinaryOperator::getPrecedence($this->operator);
+        $rightNeedsParens = ($this->right instanceof BinaryOperationExpression && BinaryOperator::getPrecedence($this->right->getOperator()) <= BinaryOperator::getPrecedence($this->operator) && !($this->right->operator === $this->operator && BinaryOperator::isAssociative($this->operator))) || ($this->right instanceof ListExpression && !$this->right->hasBrackets() && \count($this->right->getContents()) > 1);
         if ($rightNeedsParens) {
             $buffer .= '(';
         }

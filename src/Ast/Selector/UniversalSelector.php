@@ -13,10 +13,13 @@
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
 use ScssPhp\ScssPhp\Extend\ExtendUtil;
+use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 
 /**
  * Matches any element in the given namespace.
+ *
+ * @internal
  */
 final class UniversalSelector extends SimpleSelector
 {
@@ -33,9 +36,10 @@ final class UniversalSelector extends SimpleSelector
      */
     private $namespace;
 
-    public function __construct(?string $namespace = null)
+    public function __construct(FileSpan $span, ?string $namespace = null)
     {
         $this->namespace = $namespace;
+        parent::__construct($span);
     }
 
     public function getNamespace(): ?string

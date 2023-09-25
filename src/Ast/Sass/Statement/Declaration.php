@@ -64,13 +64,7 @@ final class Declaration extends ParentStatement
 
     public static function create(Interpolation $name, Expression $value, FileSpan $span): self
     {
-        $declaration = new self($name, $value, $span);
-
-        if ($declaration->isCustomProperty() && !$value instanceof StringExpression) {
-            throw new \InvalidArgumentException(sprintf('Declarations whose names begin with "--" must have StringExpression values (got %s)', get_class($value)));
-        }
-
-        return $declaration;
+        return new self($name, $value, $span);
     }
 
     /**
@@ -78,13 +72,7 @@ final class Declaration extends ParentStatement
      */
     public static function nested(Interpolation $name, array $children, FileSpan $span, ?Expression $value = null): self
     {
-        $declaration = new self($name, $value, $span, $children);
-
-        if ($declaration->isCustomProperty() && !$value instanceof StringExpression) {
-            throw new \InvalidArgumentException('Declarations whose names begin with "--" may not be nested.');
-        }
-
-        return $declaration;
+        return new self($name, $value, $span, $children);
     }
 
     public function getName(): Interpolation

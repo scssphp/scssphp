@@ -85,13 +85,13 @@ final class SassColor extends Value
      * @param int $red
      * @param int $blue
      * @param int $green
-     * @param float|null $alpha
+     * @param float $alpha
      *
      * @return SassColor
      *
      * @throws \OutOfRangeException if values are outside the expected range.
      */
-    public static function rgb(int $red, int $green, int $blue, ?float $alpha = null): SassColor
+    public static function rgb(int $red, int $green, int $blue, float $alpha = 1.0): SassColor
     {
         return self::rgbInternal($red, $green, $blue, $alpha);
     }
@@ -104,7 +104,7 @@ final class SassColor extends Value
      * @param int $red
      * @param int $blue
      * @param int $green
-     * @param float|null $alpha
+     * @param float $alpha
      * @param SpanColorFormat|string|null $format
      *
      * @return SassColor
@@ -113,13 +113,9 @@ final class SassColor extends Value
      *
      * @throws \OutOfRangeException if values are outside the expected range.
      */
-    public static function rgbInternal(int $red, int $green, int $blue, ?float $alpha = null, $format = null): SassColor
+    public static function rgbInternal(int $red, int $green, int $blue, float $alpha = 1.0, $format = null): SassColor
     {
-        if ($alpha === null) {
-            $alpha = 1.0;
-        } else {
-            $alpha = NumberUtil::fuzzyAssertRange($alpha, 0, 1, 'alpha');
-        }
+        $alpha = NumberUtil::fuzzyAssertRange($alpha, 0, 1, 'alpha');
 
         ErrorUtil::checkIntInInterval($red, 0, 255, 'red');
         ErrorUtil::checkIntInInterval($green, 0, 255, 'green');
@@ -132,13 +128,13 @@ final class SassColor extends Value
      * @param float $hue
      * @param float $saturation
      * @param float $lightness
-     * @param float|null $alpha
+     * @param float $alpha
      *
      * @return SassColor
      *
      * @throws \OutOfRangeException if values are outside the expected range.
      */
-    public static function hsl(float $hue, float $saturation, float $lightness, ?float $alpha = null): SassColor
+    public static function hsl(float $hue, float $saturation, float $lightness, float $alpha = 1.0): SassColor
     {
         return self::hslInternal($hue, $saturation, $lightness, $alpha);
     }
@@ -151,7 +147,7 @@ final class SassColor extends Value
      * @param float $hue
      * @param float $saturation
      * @param float $lightness
-     * @param float|null $alpha
+     * @param float $alpha
      * @param SpanColorFormat|string|null $format
      *
      * @return SassColor
@@ -160,13 +156,9 @@ final class SassColor extends Value
      *
      * @phpstan-param SpanColorFormat|ColorFormat::*|null $format
      */
-    public static function hslInternal(float $hue, float $saturation, float $lightness, ?float $alpha = null, $format = null): SassColor
+    public static function hslInternal(float $hue, float $saturation, float $lightness, float $alpha = 1.0, $format = null): SassColor
     {
-        if ($alpha === null) {
-            $alpha = 1.0;
-        } else {
-            $alpha = NumberUtil::fuzzyAssertRange($alpha, 0, 1, 'alpha');
-        }
+        $alpha = NumberUtil::fuzzyAssertRange($alpha, 0, 1, 'alpha');
 
         $hue = fmod($hue , 360);
         $saturation = NumberUtil::fuzzyAssertRange($saturation, 0, 100, 'saturation');
@@ -176,14 +168,14 @@ final class SassColor extends Value
     }
 
     /**
-     * @param float      $hue
-     * @param float      $whiteness
-     * @param float      $blackness
-     * @param float|null $alpha
+     * @param float $hue
+     * @param float $whiteness
+     * @param float $blackness
+     * @param float $alpha
      *
      * @return SassColor
      */
-    public static function hwb(float $hue, float $whiteness, float $blackness, ?float $alpha = null): SassColor
+    public static function hwb(float $hue, float $whiteness, float $blackness, float $alpha = 1.0): SassColor
     {
         $scaledHue = fmod($hue , 360) / 360;
         $scaledWhiteness = NumberUtil::fuzzyAssertRange($whiteness, 0, 100, 'whiteness') / 100;

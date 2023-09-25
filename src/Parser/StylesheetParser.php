@@ -21,7 +21,6 @@ use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\BinaryOperationExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\BinaryOperator;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\BooleanExpression;
-use ScssPhp\ScssPhp\Ast\Sass\Expression\CalculationExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\ColorExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\FunctionExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\IfExpression;
@@ -330,10 +329,16 @@ abstract class StylesheetParser extends Parser
         while ($this->scanner->scanChar('!')) {
             $flag = $this->identifier();
             if ($flag === 'default') {
+                if ($guarded) {
+                    $this->logger->warn("!default should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", true, $this->scanner->spanFrom($flagStart));
+                }
+
                 $guarded = true;
             } elseif ($flag === 'global') {
                 if ($namespace !== null) {
                     $this->error("!global isn't allowed for variables in other modules.", $this->scanner->spanFrom($flagStart));
+                } elseif ($global) {
+                    $this->logger->warn("!global should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", true, $this->scanner->spanFrom($flagStart));
                 }
 
                 $global = true;
@@ -919,12 +924,6 @@ abstract class StylesheetParser extends Parser
      */
     private function atRootQuery(): Interpolation
     {
-        if ($this->scanner->peekChar() === '#') {
-            $interpolation = $this->singleInterpolation();
-
-            return new Interpolation([$interpolation], $interpolation->getSpan());
-        }
-
         $start = $this->scanner->getPosition();
         $buffer = new InterpolationBuffer();
         $this->scanner->expectChar('(');
@@ -1997,7 +1996,15 @@ WARNING;
              */
             function (string $operator) use (&$allowSlash, &$operators, &$operands, &$singleExpression, $resolveOneOperation): void {
                 /** @var BinaryOperator::* $operator */
-                if ($this->isPlainCss() && $operator !== BinaryOperator::DIVIDED_BY && $operator !== BinaryOperator::SINGLE_EQUALS) {
+                if ($this->isPlainCss()
+                    && $operator !== BinaryOperator::SINGLE_EQUALS
+                    // These are allowed in calculations, so we have to check them at
+                    // evaluation time.
+                    && $operator !== BinaryOperator::PLUS
+                    && $operator !== BinaryOperator::MINUS
+                    && $operator !== BinaryOperator::TIMES
+                    && $operator !== BinaryOperator::DIVIDED_BY
+                ) {
                     $this->scanner->error("Operators aren't allowed in plain CSS.", $this->scanner->getPosition() - \strlen($operator), \strlen($operator));
                 }
 
@@ -2347,7 +2354,7 @@ WARNING;
      */
     private static function isSlashOperand(Expression $expression): bool
     {
-        return $expression instanceof NumberExpression || $expression instanceof CalculationExpression || ($expression instanceof BinaryOperationExpression && $expression->allowsSlash());
+        return $expression instanceof NumberExpression || $expression instanceof FunctionExpression || ($expression instanceof BinaryOperationExpression && $expression->allowsSlash());
     }
 
     /**
@@ -2473,7 +2480,7 @@ WARNING;
     /**
      * Consumes a parenthesized expression.
      */
-    private function parentheses(): Expression
+    protected function parentheses(): Expression
     {
         if ($this->isPlainCss()) {
             $this->scanner->error("Parentheses aren't allowed in plain CSS.");
@@ -2636,7 +2643,7 @@ WARNING;
 
         // Don't emit four- or eight-digit hex colors as hex, since that's not
         // yet well-supported in browsers.
-        return SassColor::rgbInternal($red, $green, $blue, $alpha, $alpha === null ? new SpanColorFormat($this->scanner->spanFrom($start)) : null);
+        return SassColor::rgbInternal($red, $green, $blue, $alpha ?? 1.0, $alpha === null ? new SpanColorFormat($this->scanner->spanFrom($start)) : null);
     }
 
     private function isHexColor(Interpolation $interpolation): bool
@@ -2791,7 +2798,7 @@ WARNING;
         // Don't complain about a dot after a number unless the number starts with a
         // dot. We don't allow a plain ".", but we need to allow "1." so that
         // "1..." will work as a rest argument.
-        $this->tryDecimal($this->scanner->getPosition() !== $start);
+        $this->tryDecimal($this->scanner->getPosition() !== $start && $first !== '+' && $first !== '-');
         $this->tryExponent();
 
         // Use PHP's built-in double parsing so that we don't accumulate
@@ -3039,7 +3046,9 @@ WARNING;
             if ($plain === 'not') {
                 $this->whitespace();
 
-                return new UnaryOperationExpression(UnaryOperator::NOT, $this->singleExpression(), $identifier->getSpan());
+                $expression = $this->singleExpression();
+
+                return new UnaryOperationExpression(UnaryOperator::NOT, $expression, $identifier->getSpan()->expand($expression->getSpan()));
             }
 
             $lower = strtolower($plain);
@@ -3130,16 +3139,15 @@ WARNING;
      */
     protected function trySpecialFunction(string $name, int $start): ?Expression
     {
-        $calculation = $this->scanner->peekChar() === '(' ? $this->tryCalculation($name, $start) : null;
-
-        if ($calculation !== null) {
-            return $calculation;
-        }
-
         $normalized = Util::unvendor($name);
 
         switch ($normalized) {
             case 'calc':
+                if ($normalized === $name) {
+                    return null;
+                }
+
+                // fall through
             case 'element':
             case 'expression':
                 if (!$this->scanner->scanChar('(')) {
@@ -3189,281 +3197,6 @@ WARNING;
         $buffer->write(')');
 
         return new StringExpression($buffer->buildInterpolation($this->scanner->spanFrom($start)));
-    }
-
-    /**
-     * If $name is the name of a calculation expression, parses the
-     * corresponding calculation and returns it.
-     *
-     * Assumes the scanner is positioned immediately before the opening
-     * parenthesis of the argument list.
-     */
-    private function tryCalculation(string $name, int $start): ?CalculationExpression
-    {
-        assert($this->scanner->peekChar() === '(');
-
-        switch ($name) {
-            case 'calc':
-                $arguments = $this->calculationArguments(1);
-
-                return new CalculationExpression($name, $arguments, $this->scanner->spanFrom($start));
-
-            case 'min':
-            case 'max':
-                // min() and max() are parsed as calculations if possible, and otherwise
-                // are parsed as normal Sass functions.
-                $beforeArguments = $this->scanner->getPosition();
-
-                try {
-                    $arguments = $this->calculationArguments();
-                } catch (FormatException $e) {
-                    $this->scanner->setPosition($beforeArguments);
-
-                    return null;
-                }
-
-                return new CalculationExpression($name, $arguments, $this->scanner->spanFrom($start));
-
-            case 'clamp':
-                $arguments = $this->calculationArguments(3);
-
-                return new CalculationExpression($name, $arguments, $this->scanner->spanFrom($start));
-
-            default:
-                return null;
-        }
-    }
-
-    /**
-     * Consumes and returns arguments for a calculation expression, including the
-     * opening and closing parentheses.
-     *
-     * If $maxArgs is passed, at most that many arguments are consumed.
-     * Otherwise, any number greater than zero are consumed.
-     *
-     * @param int|null $maxArgs
-     *
-     * @return list<Expression>
-     *
-     * @throws FormatException
-     */
-    private function calculationArguments(?int $maxArgs = null): array
-    {
-        $this->scanner->expectChar('(');
-        $interpolation = $this->tryCalculationInterpolation();
-
-        if ($interpolation !== null) {
-            $this->scanner->expectChar(')');
-
-            return [$interpolation];
-        }
-
-        $this->whitespace();
-
-        $arguments = [$this->calculationSum()];
-
-        while (($maxArgs === null || \count($arguments) < $maxArgs) && $this->scanner->scanChar(',')) {
-            $this->whitespace();
-            $arguments[] = $this->calculationSum();
-        }
-
-        $this->scanner->expectChar(')', \count($arguments) === $maxArgs ? '"+", "-", "*", "/", or ")"' : '"+", "-", "*", "/", ",", or ")"');
-
-        return $arguments;
-    }
-
-    /**
-     * Parses a calculation operation or value expression.
-     */
-    private function calculationSum(): Expression
-    {
-        $sum = $this->calculationProduct();
-
-        while (true) {
-            $next = $this->scanner->peekChar();
-
-            if ($next === '+' || $next === '-') {
-                if (!Character::isWhitespace($this->scanner->peekChar(-1)) || !Character::isWhitespace($this->scanner->peekChar(1))) {
-                    $this->scanner->error('"+" and "-" must be surrounded by whitespace in calculations.');
-                }
-
-                $this->scanner->readChar();
-                $this->whitespace();
-                $sum = new BinaryOperationExpression(
-                    $next === '+' ? BinaryOperator::PLUS : BinaryOperator::MINUS,
-                    $sum,
-                    $this->calculationProduct()
-                );
-            } else {
-                return $sum;
-            }
-        }
-    }
-
-    /**
-     * Parses a calculation product or value expression.
-     */
-    private function calculationProduct(): Expression
-    {
-        $product = $this->calculationValue();
-
-        while (true) {
-            $this->whitespace();
-            $next = $this->scanner->peekChar();
-
-            if ($next === '*' || $next === '/') {
-                $this->scanner->readChar();
-                $this->whitespace();
-                $product = new BinaryOperationExpression(
-                    $next === '*' ? BinaryOperator::TIMES : BinaryOperator::DIVIDED_BY,
-                    $product,
-                    $this->calculationValue()
-                );
-            } else {
-                return $product;
-            }
-        }
-    }
-
-    /**
-     * Parses a single calculation value.
-     */
-    private function calculationValue(): Expression
-    {
-        $next = $this->scanner->peekChar();
-
-        if ($next === '+' || $next === '-' || $next === '.' || Character::isDigit($next)) {
-            return $this->number();
-        }
-
-        if ($next === '$') {
-            return $this->variable();
-        }
-
-        if ($next === '(') {
-            $start = $this->scanner->getPosition();
-            $this->scanner->readChar();
-
-            $value = $this->tryCalculationInterpolation();
-
-            if ($value === null) {
-                $this->whitespace();
-                $value = $this->calculationSum();
-            }
-
-            $this->whitespace();
-            $this->scanner->expectChar(')');
-
-            return new ParenthesizedExpression($value, $this->scanner->spanFrom($start));
-        }
-
-        if (!$this->lookingAtIdentifier()) {
-            $this->scanner->error('Expected number, variable, function, or calculation.');
-        }
-
-        $start = $this->scanner->getPosition();
-        $ident = $this->identifier();
-
-        if ($this->scanner->scanChar('.')) {
-            return $this->namespacedExpression($ident, $start);
-        }
-
-        if ($this->scanner->peekChar() !== '(') {
-            $this->scanner->error('Expected "(" or ".".');
-        }
-
-        $lowercase = strtolower($ident);
-        $calculation = $this->tryCalculation($lowercase, $start);
-
-        if ($calculation !== null) {
-            return $calculation;
-        }
-
-        if ($lowercase === 'if') {
-            return new IfExpression($this->argumentInvocation(), $this->scanner->spanFrom($start));
-        }
-
-        return new FunctionExpression($ident, $this->argumentInvocation(), $this->scanner->spanFrom($start));
-    }
-
-    /**
-     * If the following text up to the next unbalanced `")"`, `"]"`, or `"}"`
-     * contains interpolation, parses that interpolation as an unquoted
-     * {@see StringExpression} and returns it.
-     */
-    private function tryCalculationInterpolation(): ?StringExpression
-    {
-        return $this->containsCalculationInterpolation() ? new StringExpression($this->interpolatedDeclarationValue()) : null;
-    }
-
-    /**
-     * Returns whether the following text up to the next unbalanced `")"`, `"]"`,
-     * or `"}"` contains interpolation.
-     */
-    private function containsCalculationInterpolation(): bool
-    {
-        $parens = 0;
-        $brackets = [];
-
-        $start = $this->scanner->getPosition();
-        while (!$this->scanner->isDone()) {
-            $next = $this->scanner->peekChar();
-
-            switch ($next) {
-                case '\\':
-                    $this->scanner->readChar();
-                    $this->scanner->readUtf8Char();
-                    break;
-
-                case '/':
-                    if (!$this->scanComment()) {
-                        $this->scanner->readChar();
-                    }
-                    break;
-
-                case "'":
-                case '"':
-                    $this->interpolatedString();
-                    break;
-
-                case '#':
-                    if ($parens === 0 && $this->scanner->peekChar(1) === '{') {
-                        $this->scanner->setPosition($start);
-                        return true;
-                    }
-                    $this->scanner->readChar();
-                    break;
-
-                case '(':
-                    $parens++;
-                    // fallthrough
-                case '{':
-                case '[':
-                    assert($next !== null); // https://github.com/phpstan/phpstan/issues/5678
-                    $brackets[] = Character::opposite($next);
-                    $this->scanner->readChar();
-                    break;
-
-                case ')':
-                    $parens--;
-                    // fallthrough
-                case '}':
-                case ']':
-                    if (empty($brackets) || array_pop($brackets) !== $next) {
-                        $this->scanner->setPosition($start);
-                        return false;
-                    }
-                    $this->scanner->readChar();
-                    break;
-
-                default:
-                    $this->scanner->readUtf8Char();
-            }
-        }
-
-        $this->scanner->setPosition($start);
-
-        return false;
     }
 
     private function tryUrlContents(int $start, ?string $name = null): ?Interpolation
@@ -4043,49 +3776,55 @@ WARNING;
         $buffer->write('(');
         $this->whitespace();
 
-        $needsParenDeprecation = $this->scanner->peekChar() === '(';
-        $needsNotDeprecation = $this->matchesIdentifier('not');
-        $expression = $this->expressionUntilComparison();
-
-        if ($needsParenDeprecation || $needsNotDeprecation) {
-            $this->logger->warn(sprintf(
-                "Starting a @media query with \"%s\" is deprecated because it conflicts with official CSS syntax.\n\nTo preserve existing behavior: #{%s}\nTo migrate to new behavior: #{\"%s\"}\n\nFor details, see https://sass-lang.com/d/media-logic",
-                $needsParenDeprecation ? '(' : 'not',
-                $expression,
-                $expression
-            ), true, $expression->getSpan());
-        }
-
-        $buffer->add($expression);
-
-        if ($this->scanner->scanChar(':')) {
+        if ($this->scanner->peekChar() === '(') {
+            $this->mediaInParens($buffer);
             $this->whitespace();
-            $buffer->write(': ');
-            $buffer->add($this->expression());
+
+            if ($this->scanIdentifier('and')) {
+                $buffer->write(' and ');
+                $this->expectWhitespace();
+                $this->mediaLogicSequence($buffer, 'and');
+            } elseif ($this->scanIdentifier('or')) {
+                $buffer->write(' or ');
+                $this->expectWhitespace();
+                $this->mediaLogicSequence($buffer, 'or');
+            }
+        } elseif ($this->scanIdentifier('not')) {
+            $buffer->write('not ');
+            $this->expectWhitespace();
+            $this->mediaOrInterp($buffer);
         } else {
-            $next = $this->scanner->peekChar();
+            $buffer->add($this->expressionUntilComparison());
 
-            if ($next === '<' || $next === '>' || $next === '=') {
-                $buffer->write(' ');
-                $buffer->write($this->scanner->readChar());
-                if (($next === '<' || $next === '>') && $this->scanner->scanChar('=')) {
-                    $buffer->write('=');
-                }
-                $buffer->write(' ');
-
+            if ($this->scanner->scanChar(':')) {
                 $this->whitespace();
-                $buffer->add($this->expressionUntilComparison());
+                $buffer->write(': ');
+                $buffer->add($this->expression());
+            } else {
+                $next = $this->scanner->peekChar();
 
-                if (($next === '<' || $next === '>') && $this->scanner->scanChar($next)) {
+                if ($next === '<' || $next === '>' || $next === '=') {
                     $buffer->write(' ');
-                    $buffer->write($next);
-                    if ($this->scanner->scanChar('=')) {
+                    $buffer->write($this->scanner->readChar());
+                    if (($next === '<' || $next === '>') && $this->scanner->scanChar('=')) {
                         $buffer->write('=');
                     }
                     $buffer->write(' ');
 
                     $this->whitespace();
                     $buffer->add($this->expressionUntilComparison());
+
+                    if (($next === '<' || $next === '>') && $this->scanner->scanChar($next)) {
+                        $buffer->write(' ');
+                        $buffer->write($next);
+                        if ($this->scanner->scanChar('=')) {
+                            $buffer->write('=');
+                        }
+                        $buffer->write(' ');
+
+                        $this->whitespace();
+                        $buffer->add($this->expressionUntilComparison());
+                    }
                 }
             }
         }

@@ -15,6 +15,8 @@ namespace ScssPhp\ScssPhp\Ast\Selector;
 /**
  * A combinator that defines the relationship between selectors in a
  * {@see ComplexSelector}.
+ *
+ * @internal
  */
 final class Combinator
 {

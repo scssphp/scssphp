@@ -21,6 +21,7 @@ use ScssPhp\ScssPhp\Ast\Css\CssParentNode;
 use ScssPhp\ScssPhp\Ast\Css\CssValue;
 use ScssPhp\ScssPhp\Ast\Selector\AttributeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\ClassSelector;
+use ScssPhp\ScssPhp\Ast\Selector\Combinator;
 use ScssPhp\ScssPhp\Ast\Selector\ComplexSelector;
 use ScssPhp\ScssPhp\Ast\Selector\CompoundSelector;
 use ScssPhp\ScssPhp\Ast\Selector\IDSelector;
@@ -42,7 +43,6 @@ use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\NumberUtil;
 use ScssPhp\ScssPhp\Util\SpanUtil;
 use ScssPhp\ScssPhp\Util\StringUtil;
-use ScssPhp\ScssPhp\Value\CalculationInterpolation;
 use ScssPhp\ScssPhp\Value\CalculationOperation;
 use ScssPhp\ScssPhp\Value\CalculationOperator;
 use ScssPhp\ScssPhp\Value\ColorFormat;
@@ -159,6 +159,11 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         $this->for($node, function () use ($node) {
             // Preserve comments that start with `/*!`.
             if ($this->compressed && !$node->isPreserved()) {
+                return;
+            }
+
+            // Ignore sourceMappingURL and sourceURL comments.
+            if (preg_match('{^/\*# source(Mapping)?URL=}', $node->getText())) {
                 return;
             }
 
@@ -302,7 +307,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         $this->writeIndentation();
 
         $this->for($node->getSelector(), function () use ($node) {
-            $node->getSelector()->getValue()->accept($this);
+            $node->getSelector()->accept($this);
         });
         $this->writeOptionalSpace();
         $this->visitChildren($node);
@@ -535,13 +540,40 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
     private function writeCalculationValue(object $value): void
     {
-        if ($value instanceof Value) {
+        if ($value instanceof SassNumber && !is_finite($value->getValue())) {
+            if (\count($value->getNumeratorUnits()) > 1 || \count($value->getDenominatorUnits()) > 0) {
+                if (!$this->inspect) {
+                    throw new SassScriptException("$value is not a valid CSS value.");
+                }
+
+                $this->writeNumber($value->getValue());
+                $this->buffer->write($value->getUnitString());
+
+                return;
+            }
+
+            if (is_nan($value->getValue())) {
+                $this->buffer->write('NaN');
+            } elseif ($value->getValue() > 0) {
+                $this->buffer->write('infinity');
+            } else {
+                $this->buffer->write('-infinity');
+            }
+
+            $unit = $value->getNumeratorUnits()[0] ?? null;
+
+            if ($unit !== null) {
+                $this->writeOptionalSpace();
+                $this->buffer->writeChar('*');
+                $this->writeOptionalSpace();
+                $this->buffer->writeChar('1');
+                $this->buffer->write($unit);
+            }
+        } elseif ($value instanceof Value) {
             $value->accept($this);
-        } elseif ($value instanceof CalculationInterpolation) {
-            $this->buffer->write($value->getValue());
         } elseif ($value instanceof CalculationOperation) {
             $left = $value->getLeft();
-            $parenthesizeLeft = $left instanceof CalculationInterpolation || ($left instanceof CalculationOperation && CalculationOperator::getPrecedence($left->getOperator()) < CalculationOperator::getPrecedence($value->getOperator()));
+            $parenthesizeLeft = $left instanceof CalculationOperation && CalculationOperator::getPrecedence($left->getOperator()) < CalculationOperator::getPrecedence($value->getOperator());
 
             if ($parenthesizeLeft) {
                 $this->buffer->writeChar('(');
@@ -561,7 +593,8 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             }
 
             $right = $value->getRight();
-            $parenthesizeRight = $right instanceof CalculationInterpolation || ($right instanceof CalculationOperation && $this->parenthesizeCalculationRhs($value->getOperator(), $right->getOperator()));
+            $parenthesizeRight = ($right instanceof CalculationOperation && $this->parenthesizeCalculationRhs($value->getOperator(), $right->getOperator()))
+                || ($value->getOperator() === CalculationOperator::DIVIDED_BY && $right instanceof SassNumber && !is_finite($right->getValue()) && $right->hasUnits());
 
             if ($parenthesizeRight) {
                 $this->buffer->writeChar('(');
@@ -680,7 +713,6 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         $opaque = NumberUtil::fuzzyEquals($value->getAlpha(), 1);
         $this->buffer->write($opaque ? 'hsl(' : 'hsla(');
         $this->writeNumber($value->getHue());
-        $this->buffer->write('deg');
         $this->buffer->write($this->getCommaSeparator());
         $this->writeNumber($value->getSaturation());
         $this->buffer->writeChar('%');
@@ -910,6 +942,11 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             $this->buffer->writeChar('/');
             $this->visitNumber($asSlash[1]);
 
+            return;
+        }
+
+        if (!is_finite($value->getValue())) {
+            $this->visitCalculation(SassCalculation::unsimplified('calc', [$value]));
             return;
         }
 
@@ -1237,9 +1274,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      * Writes $combinators to {@see buffer}, with spaces in between in expanded
      * mode.
      *
-     * @param string[] $combinators
-     *
-     * @return void
+     * @param list<CssValue<Combinator::*>> $combinators
      */
     private function writeCombinators(array $combinators): void
     {
@@ -1286,6 +1321,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
                 if ($complex->getLineBreak()) {
                     $this->writeLineFeed();
+                    $this->writeIndentation();
                 } else {
                     $this->writeOptionalSpace();
                 }
@@ -1409,7 +1445,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
             if ($this->isTrailingComment($child, $previous ?? $parent)) {
                 $this->writeOptionalSpace();
-                $this->withoutIndendation(function () use ($child) {
+                $this->withoutIndentation(function () use ($child) {
                     $child->accept($this);
                 });
             } else {
@@ -1460,6 +1496,10 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
 
         if (!$node instanceof CssComment) {
+            return false;
+        }
+
+        if ($node->getSpan()->getSourceUrl() !== $previous->getSpan()->getSourceUrl()) {
             return false;
         }
 
@@ -1573,7 +1613,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      *
      * @param callable(): void $callback
      */
-    private function withoutIndendation(callable $callback): void
+    private function withoutIndentation(callable $callback): void
     {
         $savedIndentation = $this->indentation;
         $this->indentation = 0;

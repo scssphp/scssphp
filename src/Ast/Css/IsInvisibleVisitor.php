@@ -58,6 +58,6 @@ final class IsInvisibleVisitor extends EveryCssVisitor
 
     public function visitCssStyleRule($node): bool
     {
-        return ($this->includeBogus ? $node->getSelector()->getValue()->isInvisible() : $node->getSelector()->getValue()->isInvisibleOtherThanBogusCombinators()) || parent::visitCssStyleRule($node);
+        return ($this->includeBogus ? $node->getSelector()->isInvisible() : $node->getSelector()->isInvisibleOtherThanBogusCombinators()) || parent::visitCssStyleRule($node);
     }
 }

@@ -69,4 +69,25 @@ final class BinaryOperator
 
         throw new \InvalidArgumentException(sprintf('Unknown operator "%s".', $operator));
     }
+
+    /**
+     * Whether this operation has the [associative property].
+     *
+     * [associative property]: https://en.wikipedia.org/wiki/Associative_property
+     *
+     * @param BinaryOperator::* $operator
+     */
+    public static function isAssociative(string $operator): bool
+    {
+        switch ($operator) {
+            case self::OR:
+            case self::AND:
+            case self::PLUS:
+            case self::TIMES:
+                return true;
+
+            default:
+                return false;
+        }
+    }
 }

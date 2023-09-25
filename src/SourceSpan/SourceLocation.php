@@ -65,4 +65,12 @@ final class SourceLocation
     {
         return $this->file->getSourceUrl();
     }
+
+    /**
+     * Returns a span that covers only a single point: this location.
+     */
+    public function pointSpan(): FileSpan
+    {
+        return new ConcreteFileSpan($this->file, $this->offset, $this->offset);
+    }
 }

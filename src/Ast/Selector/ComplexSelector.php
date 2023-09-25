@@ -12,10 +12,12 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use ScssPhp\ScssPhp\Ast\Css\CssValue;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Extend\ExtendUtil;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\SelectorParser;
+use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Util\ListUtil;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
@@ -25,6 +27,8 @@ use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
  *
  * A complex selector is composed of {@see CompoundSelector}s separated by
  * {@see Combinator}s. It selects elements based on their parent selectors.
+ *
+ * @internal
  */
 final class ComplexSelector extends Selector
 {
@@ -35,8 +39,8 @@ final class ComplexSelector extends Selector
      * it's more than one element, that means it's invalid CSS; however, we still
      * support this for backwards-compatibility purposes.
      *
-     * @var list<string>
-     * @phpstan-var list<Combinator::*>
+     * @var list<CssValue<string>>
+     * @phpstan-var list<CssValue<Combinator::*>>
      * @readonly
      */
     private $leadingCombinators;
@@ -72,13 +76,12 @@ final class ComplexSelector extends Selector
     private $specificity;
 
     /**
-     * @param list<string>                   $leadingCombinators
+     * @param list<CssValue<string>>         $leadingCombinators
      * @param list<ComplexSelectorComponent> $components
-     * @param bool                           $lineBreak
      *
-     * @phpstan-param list<Combinator::*> $leadingCombinators
+     * @phpstan-param list<CssValue<Combinator::*>> $leadingCombinators
      */
-    public function __construct(array $leadingCombinators, array $components, bool $lineBreak = false)
+    public function __construct(array $leadingCombinators, array $components, FileSpan $span, bool $lineBreak = false)
     {
         if ($leadingCombinators === [] && $components === []) {
             throw new \InvalidArgumentException('leadingCombinators and components may not both be empty.');
@@ -87,6 +90,7 @@ final class ComplexSelector extends Selector
         $this->leadingCombinators = $leadingCombinators;
         $this->components = $components;
         $this->lineBreak = $lineBreak;
+        parent::__construct($span);
     }
 
     /**
@@ -104,8 +108,8 @@ final class ComplexSelector extends Selector
     }
 
     /**
-     * @return list<string>
-     * @phpstan-return list<Combinator::*>
+     * @return list<CssValue<string>>
+     * @phpstan-return list<CssValue<Combinator::*>>
      */
     public function getLeadingCombinators(): array
     {
@@ -191,7 +195,7 @@ final class ComplexSelector extends Selector
 
     public function equals(object $other): bool
     {
-        return $other instanceof ComplexSelector && $this->leadingCombinators === $other->leadingCombinators && EquatableUtil::listEquals($this->components, $other->components);
+        return $other instanceof ComplexSelector && EquatableUtil::listEquals($this->leadingCombinators, $other->leadingCombinators) && EquatableUtil::listEquals($this->components, $other->components);
     }
 
     /**
@@ -201,12 +205,9 @@ final class ComplexSelector extends Selector
      * If $forceLineBreak is `true`, this will mark the new complex selector as
      * having a line break.
      *
-     * @param list<string> $combinators
-     * @param bool         $forceLineBreak
+     * @param list<CssValue<string>> $combinators
      *
-     * @return ComplexSelector
-     *
-     * @phpstan-param list<Combinator::*> $combinators
+     * @phpstan-param list<CssValue<Combinator::*>> $combinators
      */
     public function withAdditionalCombinators(array $combinators, bool $forceLineBreak = false): ComplexSelector
     {
@@ -215,7 +216,7 @@ final class ComplexSelector extends Selector
         }
 
         if ($this->components === []) {
-            return new ComplexSelector(array_merge($this->leadingCombinators, $combinators), [], $this->lineBreak || $forceLineBreak);
+            return new ComplexSelector(array_merge($this->leadingCombinators, $combinators), [], $this->getSpan(), $this->lineBreak || $forceLineBreak);
         }
 
         return new ComplexSelector(
@@ -224,6 +225,7 @@ final class ComplexSelector extends Selector
                 ListUtil::exceptLast($this->components),
                 [ListUtil::last($this->components)->withAdditionalCombinators($combinators)]
             ),
+            $this->getSpan(),
             $this->lineBreak || $forceLineBreak
         );
     }
@@ -233,15 +235,10 @@ final class ComplexSelector extends Selector
      *
      * If $forceLineBreak is `true`, this will mark the new complex selector as
      * having a line break.
-     *
-     * @param ComplexSelectorComponent $component
-     * @param bool                     $forceLineBreak
-     *
-     * @return ComplexSelector
      */
-    public function withAdditionalComponent(ComplexSelectorComponent $component, bool $forceLineBreak = false): ComplexSelector
+    public function withAdditionalComponent(ComplexSelectorComponent $component, FileSpan $span, bool $forceLineBreak = false): ComplexSelector
     {
-        return new ComplexSelector($this->leadingCombinators, array_merge($this->components, [$component]), $this->lineBreak || $forceLineBreak);
+        return new ComplexSelector($this->leadingCombinators, array_merge($this->components, [$component]), $span, $this->lineBreak || $forceLineBreak);
     }
 
     /**
@@ -252,18 +249,14 @@ final class ComplexSelector extends Selector
      *
      * If $forceLineBreak is `true`, this will mark the new complex selector as
      * having a line break.
-     *
-     * @param ComplexSelector $child
-     * @param bool            $forceLineBreak
-     *
-     * @return ComplexSelector
      */
-    public function concatenate(ComplexSelector $child, bool $forceLineBreak = false): ComplexSelector
+    public function concatenate(ComplexSelector $child, FileSpan $span, bool $forceLineBreak = false): ComplexSelector
     {
         if (\count($child->leadingCombinators) === 0) {
             return new ComplexSelector(
                 $this->leadingCombinators,
                 array_merge($this->components, $child->components),
+                $span,
                 $this->lineBreak || $child->lineBreak || $forceLineBreak
             );
         }
@@ -272,6 +265,7 @@ final class ComplexSelector extends Selector
             return new ComplexSelector(
                 array_merge($this->leadingCombinators, $child->leadingCombinators),
                 $child->components,
+                $span,
                 $this->lineBreak || $child->lineBreak || $forceLineBreak
             );
         }
@@ -283,6 +277,7 @@ final class ComplexSelector extends Selector
                 [ListUtil::last($this->components)->withAdditionalCombinators($child->leadingCombinators)],
                 $child->components
             ),
+            $span,
             $this->lineBreak || $child->lineBreak || $forceLineBreak
         );
     }

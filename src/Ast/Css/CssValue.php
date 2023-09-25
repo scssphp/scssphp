@@ -14,18 +14,20 @@ namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\Ast\AstNode;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\Equatable;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
 
 /**
  * A value in a plain CSS tree.
  *
  * This is used to associate a span with a value that doesn't otherwise track
- * its span.
+ * its span. It has value equality semantics.
  *
  * @template T
  *
  * @internal
  */
-class CssValue implements AstNode
+class CssValue implements AstNode, Equatable
 {
     /**
      * @phpstan-var T
@@ -58,6 +60,11 @@ class CssValue implements AstNode
     public function getSpan(): FileSpan
     {
         return $this->span;
+    }
+
+    public function equals(object $other): bool
+    {
+        return $other instanceof CssValue && EquatableUtil::equals($this->value, $other->value);
     }
 
     public function __toString(): string

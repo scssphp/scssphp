@@ -98,6 +98,8 @@ final class ListExpression implements Expression
         $buffer = '';
         if ($this->hasBrackets()) {
             $buffer .= '[';
+        } elseif (\count($this->contents) === 0 || (\count($this->contents) === 1 && $this->separator === ListSeparator::COMMA)) {
+            $buffer .= '(';
         }
 
         $buffer .= implode($this->separator === ListSeparator::COMMA ? ', ' : ' ', array_map(function ($element) {
@@ -106,6 +108,10 @@ final class ListExpression implements Expression
 
         if ($this->hasBrackets()) {
             $buffer .= ']';
+        } elseif (\count($this->contents) === 0) {
+            $buffer .= ')';
+        } elseif (\count($this->contents) === 1 && $this->separator === ListSeparator::COMMA) {
+            $buffer .= ',)';
         }
 
         return $buffer;

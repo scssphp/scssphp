@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
 
 /**
  * A modifiable version of {@see CssAtRule} for use in the evaluation step.
@@ -82,6 +83,11 @@ final class ModifiableCssAtRule extends ModifiableCssParentNode implements CssAt
     public function accept($visitor)
     {
         return $visitor->visitCssAtRule($this);
+    }
+
+    public function equalsIgnoringChildren(ModifiableCssNode $other): bool
+    {
+        return $other instanceof ModifiableCssAtRule && EquatableUtil::equals($this->name, $other->name) && EquatableUtil::equals($this->value, $other->value) && $this->childless === $other->childless;
     }
 
     /**

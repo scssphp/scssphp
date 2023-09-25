@@ -80,7 +80,20 @@ final class UnaryOperationExpression implements Expression
         if ($this->operator === UnaryOperator::NOT) {
             $buffer .= ' ';
         }
+
+        $needsParens = $this->operand instanceof BinaryOperationExpression
+            || $this->operand instanceof UnaryOperationExpression
+            || ($this->operand instanceof ListExpression && !$this->operand->hasBrackets() && \count($this->operand->getContents()) > 1);
+
+        if ($needsParens) {
+            $buffer .= '(';
+        }
+
         $buffer .= $this->operand;
+
+        if ($needsParens) {
+            $buffer .= ')';
+        }
 
         return $buffer;
     }

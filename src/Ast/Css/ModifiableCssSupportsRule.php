@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
 
 /**
  * A modifiable version of {@see CssSupportsRule} for use in the evaluation step.
@@ -57,6 +58,11 @@ final class ModifiableCssSupportsRule extends ModifiableCssParentNode implements
     public function accept($visitor)
     {
         return $visitor->visitCssSupportsRule($this);
+    }
+
+    public function equalsIgnoringChildren(ModifiableCssNode $other): bool
+    {
+        return $other instanceof ModifiableCssSupportsRule && EquatableUtil::equals($this->condition, $other->condition);
     }
 
     /**

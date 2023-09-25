@@ -209,7 +209,7 @@ class ScssParser extends StylesheetParser
                 break;
             }
 
-            $this->whitespaceWithoutComments();
+            $this->spaces();
         } while ($this->scanner->scan('//'));
 
         if ($this->isPlainCss()) {

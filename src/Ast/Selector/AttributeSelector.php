@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 
 /**
@@ -19,6 +20,8 @@ use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
  *
  * This selects for elements with the given attribute, and optionally with a
  * value matching certain conditions as well.
+ *
+ * @internal
  */
 final class AttributeSelector extends SimpleSelector
 {
@@ -74,9 +77,9 @@ final class AttributeSelector extends SimpleSelector
      * Creates an attribute selector that matches any element with a property of
      * the given name.
      */
-    public static function create(QualifiedName $name): AttributeSelector
+    public static function create(QualifiedName $name, FileSpan $span): AttributeSelector
     {
-        return new AttributeSelector($name, null, null, null);
+        return new AttributeSelector($name, $span, null, null, null);
     }
 
     /**
@@ -85,20 +88,21 @@ final class AttributeSelector extends SimpleSelector
      *
      * @phpstan-param AttributeOperator::*|null $op
      */
-    public static function withOperator(QualifiedName $name, ?string $op, ?string $value, ?string $modifier = null): AttributeSelector
+    public static function withOperator(QualifiedName $name, ?string $op, ?string $value, FileSpan $span, ?string $modifier = null): AttributeSelector
     {
-        return new AttributeSelector($name, $op, $value, $modifier);
+        return new AttributeSelector($name, $span, $op, $value, $modifier);
     }
 
     /**
      * @phpstan-param AttributeOperator::*|null $op
      */
-    private function __construct(QualifiedName $name, ?string $op, ?string $value, ?string $modifier)
+    private function __construct(QualifiedName $name, FileSpan $span, ?string $op, ?string $value, ?string $modifier)
     {
         $this->name = $name;
         $this->op = $op;
         $this->value = $value;
         $this->modifier = $modifier;
+        parent::__construct($span);
     }
 
     public function getName(): QualifiedName
