@@ -162,6 +162,11 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 return;
             }
 
+            // Ignore sourceMappingURL and sourceURL comments.
+            if (preg_match('{^/\*# source(Mapping)?URL=}', $node->getText())) {
+                return;
+            }
+
             $minimumIndentation = $this->minimumIndentation($node->getText());
             assert($minimumIndentation !== -1);
 
