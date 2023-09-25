@@ -66,4 +66,15 @@ abstract class ModifiableCssParentNode extends ModifiableCssNode implements CssP
     {
         array_splice($this->children, $index, 1);
     }
+
+    /**
+     * Destructively removes all elements from {@see children}.
+     */
+    public function clearChildren(): void
+    {
+        foreach ($this->children as $child) {
+            $child->resetParentReferences();
+        }
+        $this->children = [];
+    }
 }

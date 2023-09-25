@@ -144,6 +144,15 @@ abstract class ModifiableCssNode implements CssNode
         $this->indexInParent = null;
     }
 
+    /**
+     * @@internal
+     */
+    protected function resetParentReferences(): void
+    {
+        $this->parent = null;
+        $this->indexInParent = null;
+    }
+
     public function __toString(): string
     {
         return Serializer::serialize($this, true)->getCss();

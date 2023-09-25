@@ -1494,6 +1494,10 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             return false;
         }
 
+        if ($node->getSpan()->getSourceUrl() !== $previous->getSpan()->getSourceUrl()) {
+            return false;
+        }
+
         if (!SpanUtil::contains($previous->getSpan(), $node->getSpan())) {
             return $node->getSpan()->getStart()->getLine() === $previous->getSpan()->getEnd()->getLine();
         }
