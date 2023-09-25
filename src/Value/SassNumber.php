@@ -1107,4 +1107,26 @@ abstract class SassNumber extends Value
 
         return implode('*', $numerators) . (\count($denominators) ? '/' . implode('*', $denominators) : '');
     }
+
+    /**
+     * Returns a suggested Sass snippet for converting a variable named $name
+     * (without `%`) containing this number into a number with the same value and
+     * the given $unit.
+     *
+     * If $unit is null, this forces the number to be unitless.
+     *
+     * This is used for deprecation warnings when restricting which units are
+     * allowed for a given function.
+     *
+     * @internal
+     */
+    public function unitSuggestion(string $name, ?string $unit = null): string
+    {
+        $result = "\$$name"
+            . implode(array_map(function ($unit) { return " * 1$unit"; }, $this->getDenominatorUnits()))
+            . implode(array_map(function ($unit) { return " / 1$unit"; }, $this->getNumeratorUnits()))
+            . ($unit === null ? '' : " * 1$unit");
+
+        return $this->getNumeratorUnits() === [] ? $result : "calc($result)";
+    }
 }
