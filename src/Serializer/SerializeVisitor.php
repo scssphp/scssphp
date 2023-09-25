@@ -1317,6 +1317,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
                 if ($complex->getLineBreak()) {
                     $this->writeLineFeed();
+                    $this->writeIndentation();
                 } else {
                     $this->writeOptionalSpace();
                 }
@@ -1440,7 +1441,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
             if ($this->isTrailingComment($child, $previous ?? $parent)) {
                 $this->writeOptionalSpace();
-                $this->withoutIndendation(function () use ($child) {
+                $this->withoutIndentation(function () use ($child) {
                     $child->accept($this);
                 });
             } else {
@@ -1608,7 +1609,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      *
      * @param callable(): void $callback
      */
-    private function withoutIndendation(callable $callback): void
+    private function withoutIndentation(callable $callback): void
     {
         $savedIndentation = $this->indentation;
         $this->indentation = 0;
