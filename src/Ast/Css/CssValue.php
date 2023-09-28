@@ -27,23 +27,19 @@ use ScssPhp\ScssPhp\Util\EquatableUtil;
  *
  * @internal
  */
-class CssValue implements AstNode, Equatable
+final class CssValue implements AstNode, Equatable
 {
     /**
      * @phpstan-var T
      */
-    protected $value;
+    private readonly mixed $value;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     /**
      * @param T $value
      */
-    public function __construct($value, FileSpan $span)
+    public function __construct(mixed $value, FileSpan $span)
     {
         $this->value = $value;
         $this->span = $span;
@@ -52,7 +48,7 @@ class CssValue implements AstNode, Equatable
     /**
      * @return T
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }

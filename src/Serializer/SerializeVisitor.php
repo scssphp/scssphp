@@ -13,11 +13,18 @@
 namespace ScssPhp\ScssPhp\Serializer;
 
 use ScssPhp\ScssPhp\Ast\AstNode;
+use ScssPhp\ScssPhp\Ast\Css\CssAtRule;
 use ScssPhp\ScssPhp\Ast\Css\CssComment;
 use ScssPhp\ScssPhp\Ast\Css\CssDeclaration;
+use ScssPhp\ScssPhp\Ast\Css\CssImport;
+use ScssPhp\ScssPhp\Ast\Css\CssKeyframeBlock;
 use ScssPhp\ScssPhp\Ast\Css\CssMediaQuery;
+use ScssPhp\ScssPhp\Ast\Css\CssMediaRule;
 use ScssPhp\ScssPhp\Ast\Css\CssNode;
 use ScssPhp\ScssPhp\Ast\Css\CssParentNode;
+use ScssPhp\ScssPhp\Ast\Css\CssStyleRule;
+use ScssPhp\ScssPhp\Ast\Css\CssStylesheet;
+use ScssPhp\ScssPhp\Ast\Css\CssSupportsRule;
 use ScssPhp\ScssPhp\Ast\Css\CssValue;
 use ScssPhp\ScssPhp\Ast\Selector\AttributeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\ClassSelector;
@@ -120,7 +127,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         return $this->buffer;
     }
 
-    public function visitCssStylesheet($node): void
+    public function visitCssStylesheet(CssStylesheet $node): void
     {
         $previous = null;
 
@@ -154,7 +161,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
     }
 
-    public function visitCssComment($node): void
+    public function visitCssComment(CssComment $node): void
     {
         $this->for($node, function () use ($node) {
             // Preserve comments that start with `/*!`.
@@ -182,7 +189,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         });
     }
 
-    public function visitCssAtRule($node): void
+    public function visitCssAtRule(CssAtRule $node): void
     {
         $this->writeIndentation();
 
@@ -204,7 +211,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         });
     }
 
-    public function visitCssMediaRule($node): void
+    public function visitCssMediaRule(CssMediaRule $node): void
     {
         $this->writeIndentation();
 
@@ -224,7 +231,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         $this->visitChildren($node);
     }
 
-    public function visitCssImport($node): void
+    public function visitCssImport(CssImport $node): void
     {
         $this->writeIndentation();
 
@@ -265,7 +272,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
     }
 
-    public function visitCssKeyframeBlock($node): void
+    public function visitCssKeyframeBlock(CssKeyframeBlock $node): void
     {
         $this->writeIndentation();
 
@@ -302,7 +309,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
     }
 
-    public function visitCssStyleRule($node): void
+    public function visitCssStyleRule(CssStyleRule $node): void
     {
         $this->writeIndentation();
 
@@ -313,7 +320,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         $this->visitChildren($node);
     }
 
-    public function visitCssSupportsRule($node): void
+    public function visitCssSupportsRule(CssSupportsRule $node): void
     {
         $this->writeIndentation();
 
@@ -330,7 +337,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         $this->visitChildren($node);
     }
 
-    public function visitCssDeclaration($node): void
+    public function visitCssDeclaration(CssDeclaration $node): void
     {
         $this->writeIndentation();
         $this->write($node->getName());

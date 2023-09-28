@@ -16,6 +16,7 @@ use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\Box;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
+use ScssPhp\ScssPhp\Visitor\ModifiableCssVisitor;
 
 /**
  * A modifiable version of {@see CssStyleRule} for use in the evaluation step.
@@ -29,21 +30,12 @@ final class ModifiableCssStyleRule extends ModifiableCssParentNode implements Cs
      * store, which may update it over time as new extensions are applied.
      *
      * @var Box<SelectorList>
-     * @readonly
      */
-    private $selector;
+    private readonly Box $selector;
 
-    /**
-     * @var SelectorList
-     * @readonly
-     */
-    private $originalSelector;
+    private readonly SelectorList $originalSelector;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     /**
      * @param Box<SelectorList> $selector
@@ -71,7 +63,7 @@ final class ModifiableCssStyleRule extends ModifiableCssParentNode implements Cs
         return $this->span;
     }
 
-    public function accept($visitor)
+    public function accept(ModifiableCssVisitor $visitor)
     {
         return $visitor->visitCssStyleRule($this);
     }
@@ -81,10 +73,7 @@ final class ModifiableCssStyleRule extends ModifiableCssParentNode implements Cs
         return $other instanceof ModifiableCssStyleRule && EquatableUtil::equals($this->selector, $other->selector);
     }
 
-    /**
-     * @phpstan-return ModifiableCssStyleRule
-     */
-    public function copyWithoutChildren(): ModifiableCssParentNode
+    public function copyWithoutChildren(): ModifiableCssStyleRule
     {
         return new ModifiableCssStyleRule($this->selector, $this->span, $this->originalSelector);
     }

@@ -22,7 +22,7 @@ abstract class ModifiableCssParentNode extends ModifiableCssNode implements CssP
     /**
      * @var list<ModifiableCssNode>
      */
-    private $children;
+    private array $children;
 
     /**
      * @param list<ModifiableCssNode> $children

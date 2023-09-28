@@ -43,3 +43,6 @@ parameters:
         -
             message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:[^(]+\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
             path: src/Parser.php
+
+includes:
+    - vendor-bin/phpstan/vendor/jiripudil/phpstan-sealed-classes/extension.neon

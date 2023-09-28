@@ -10,16 +10,14 @@
  * @link http://scssphp.github.io/scssphp
  */
 
-namespace ScssPhp\ScssPhp\Ast;
+namespace ScssPhp\ScssPhp\Ast\Css;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use JiriPudil\SealedClasses\Sealed;
 
 /**
- * A node in an abstract syntax tree.
- *
  * @internal
  */
-interface AstNode extends \Stringable
+#[Sealed(permits: [CssMediaQuery::class, MediaQuerySingletonMergeResult::class])]
+interface MediaQueryMergeResult
 {
-    public function getSpan(): FileSpan;
 }

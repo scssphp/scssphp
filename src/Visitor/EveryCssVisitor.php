@@ -12,6 +12,16 @@
 
 namespace ScssPhp\ScssPhp\Visitor;
 
+use ScssPhp\ScssPhp\Ast\Css\CssAtRule;
+use ScssPhp\ScssPhp\Ast\Css\CssComment;
+use ScssPhp\ScssPhp\Ast\Css\CssDeclaration;
+use ScssPhp\ScssPhp\Ast\Css\CssImport;
+use ScssPhp\ScssPhp\Ast\Css\CssKeyframeBlock;
+use ScssPhp\ScssPhp\Ast\Css\CssMediaRule;
+use ScssPhp\ScssPhp\Ast\Css\CssStyleRule;
+use ScssPhp\ScssPhp\Ast\Css\CssStylesheet;
+use ScssPhp\ScssPhp\Ast\Css\CssSupportsRule;
+
 /**
  * A visitor that visits each statements in a CSS AST and returns `true` if all
  * of the individual methods return `true`.
@@ -23,7 +33,7 @@ namespace ScssPhp\ScssPhp\Visitor;
  */
 abstract class EveryCssVisitor implements CssVisitor
 {
-    public function visitCssAtRule($node): bool
+    public function visitCssAtRule(CssAtRule $node): bool
     {
         foreach ($node->getChildren() as $child) {
             if (!$child->accept($this)) {
@@ -34,22 +44,22 @@ abstract class EveryCssVisitor implements CssVisitor
         return true;
     }
 
-    public function visitCssComment($node): bool
+    public function visitCssComment(CssComment $node): bool
     {
         return false;
     }
 
-    public function visitCssDeclaration($node): bool
+    public function visitCssDeclaration(CssDeclaration $node): bool
     {
         return false;
     }
 
-    public function visitCssImport($node): bool
+    public function visitCssImport(CssImport $node): bool
     {
         return false;
     }
 
-    public function visitCssKeyframeBlock($node): bool
+    public function visitCssKeyframeBlock(CssKeyframeBlock $node): bool
     {
         foreach ($node->getChildren() as $child) {
             if (!$child->accept($this)) {
@@ -60,7 +70,7 @@ abstract class EveryCssVisitor implements CssVisitor
         return true;
     }
 
-    public function visitCssMediaRule($node): bool
+    public function visitCssMediaRule(CssMediaRule $node): bool
     {
         foreach ($node->getChildren() as $child) {
             if (!$child->accept($this)) {
@@ -71,7 +81,7 @@ abstract class EveryCssVisitor implements CssVisitor
         return true;
     }
 
-    public function visitCssStyleRule($node): bool
+    public function visitCssStyleRule(CssStyleRule $node): bool
     {
         foreach ($node->getChildren() as $child) {
             if (!$child->accept($this)) {
@@ -82,7 +92,7 @@ abstract class EveryCssVisitor implements CssVisitor
         return true;
     }
 
-    public function visitCssStylesheet($node): bool
+    public function visitCssStylesheet(CssStylesheet $node): bool
     {
         foreach ($node->getChildren() as $child) {
             if (!$child->accept($this)) {
@@ -93,7 +103,7 @@ abstract class EveryCssVisitor implements CssVisitor
         return true;
     }
 
-    public function visitCssSupportsRule($node): bool
+    public function visitCssSupportsRule(CssSupportsRule $node): bool
     {
         foreach ($node->getChildren() as $child) {
             if (!$child->accept($this)) {
