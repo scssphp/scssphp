@@ -28,25 +28,15 @@ final class SupportsDeclaration implements SupportsCondition
 {
     /**
      * The name of the declaration being tested.
-     *
-     * @var Expression
-     * @readonly
      */
-    private $name;
+    private readonly Expression $name;
 
     /**
      * The value of the declaration being tested.
-     *
-     * @var Expression
-     * @readonly
      */
-    private $value;
+    private readonly Expression $value;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     public function __construct(Expression $name, Expression $value, FileSpan $span)
     {

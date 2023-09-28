@@ -25,25 +25,15 @@ final class SupportsFunction implements SupportsCondition
 {
     /**
      * The name of the function.
-     *
-     * @var Interpolation
-     * @readonly
      */
-    private $name;
+    private readonly Interpolation $name;
 
     /**
      * The arguments of the function.
-     *
-     * @var Interpolation
-     * @readonly
      */
-    private $arguments;
+    private readonly Interpolation $arguments;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     public function __construct(Interpolation $name, Interpolation $arguments, FileSpan $span)
     {

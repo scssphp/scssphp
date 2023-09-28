@@ -28,35 +28,15 @@ use ScssPhp\ScssPhp\Visitor\StatementVisitor;
  */
 final class ForRule extends ParentStatement
 {
-    /**
-     * @var string
-     * @readonly
-     */
-    private $variable;
+    private readonly string $variable;
 
-    /**
-     * @var Expression
-     * @readonly
-     */
-    private $from;
+    private readonly Expression $from;
 
-    /**
-     * @var Expression
-     * @readonly
-     */
-    private $to;
+    private readonly Expression $to;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $exclusive;
+    private readonly bool $exclusive;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     /**
      * @param Statement[] $children

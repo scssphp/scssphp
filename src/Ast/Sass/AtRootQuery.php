@@ -31,11 +31,8 @@ final class AtRootQuery
 {
     /**
      * Whether the query includes or excludes rules with the specified names.
-     *
-     * @var bool
-     * @readonly
      */
-    private $include;
+    private readonly bool $include;
 
     /**
      * The names of the rules included or excluded by this query.
@@ -44,25 +41,18 @@ final class AtRootQuery
      * or excluded, and "rule" indicates style rules are included or excluded.
      *
      * @var string[]
-     * @readonly
      */
-    private $names;
+    private readonly array $names;
 
     /**
      * Whether this includes or excludes *all* rules.
-     *
-     * @var bool
-     * @readonly
      */
-    private $all;
+    private readonly bool $all;
 
     /**
      * Whether this includes or excludes style rules.
-     *
-     * @var bool
-     * @readonly
      */
-    private $rule;
+    private readonly bool $rule;
 
     /**
      * Parses an at-root query from $contents.
@@ -78,7 +68,6 @@ final class AtRootQuery
 
     /**
      * @param string[] $names
-     * @param bool     $include
      */
     public static function create(array $names, bool $include): AtRootQuery
     {
@@ -95,9 +84,6 @@ final class AtRootQuery
 
     /**
      * @param string[] $names
-     * @param bool     $include
-     * @param bool     $all
-     * @param bool     $rule
      */
     private function __construct(array $names, bool $include, bool $all, bool $rule)
     {

@@ -23,23 +23,11 @@ use ScssPhp\ScssPhp\Util\SpanUtil;
  */
 final class Argument implements SassNode, SassDeclaration
 {
-    /**
-     * @var string
-     * @readonly
-     */
-    private $name;
+    private readonly string $name;
 
-    /**
-     * @var Expression|null
-     * @readonly
-     */
-    private $defaultValue;
+    private readonly ?Expression $defaultValue;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     public function __construct(string $name, FileSpan $span, ?Expression $defaultValue = null)
     {

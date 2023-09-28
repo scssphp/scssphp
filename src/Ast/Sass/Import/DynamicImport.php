@@ -12,6 +12,8 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass\Import;
 
+use League\Uri\Contracts\UriInterface;
+use League\Uri\Uri;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\StringExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Import;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
@@ -27,22 +29,20 @@ final class DynamicImport implements Import
      * The URI of the file to import.
      *
      * If this is relative, it's relative to the containing file.
-     *
-     * @var string
-     * @readonly
      */
-    private $urlString;
+    private readonly string $urlString;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     public function __construct(string $urlString, FileSpan $span)
     {
         $this->urlString = $urlString;
         $this->span = $span;
+    }
+
+    public function getUrl(): UriInterface
+    {
+        return Uri::createFromString($this->urlString);
     }
 
     public function getUrlString(): string

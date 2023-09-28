@@ -26,17 +26,9 @@ use ScssPhp\ScssPhp\Visitor\StatementVisitor;
  */
 final class SupportsRule extends ParentStatement
 {
-    /**
-     * @var SupportsCondition
-     * @readonly
-     */
-    private $condition;
+    private readonly SupportsCondition $condition;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     /**
      * @param Statement[] $children

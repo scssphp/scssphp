@@ -24,15 +24,10 @@ final class Interpolation implements SassNode
 {
     /**
      * @var list<string|Expression>
-     * @readonly
      */
-    private $contents;
+    private readonly array $contents;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     /**
      * Creates a new {@see Interpolation} by concatenating a sequence of strings,
