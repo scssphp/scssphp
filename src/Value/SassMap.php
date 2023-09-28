@@ -59,7 +59,7 @@ final class SassMap extends Value
         return $this->contents;
     }
 
-    public function getSeparator(): string
+    public function getSeparator(): ListSeparator
     {
         return \count($this->contents) === 0 ? ListSeparator::UNDECIDED : ListSeparator::COMMA;
     }

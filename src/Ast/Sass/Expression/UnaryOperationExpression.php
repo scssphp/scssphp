@@ -23,38 +23,20 @@ use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
  */
 final class UnaryOperationExpression implements Expression
 {
-    /**
-     * @var UnaryOperator::*
-     * @readonly
-     */
-    private $operator;
+    private readonly UnaryOperator $operator;
 
-    /**
-     * @var Expression
-     * @readonly
-     */
-    private $operand;
+    private readonly Expression $operand;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
-    /**
-     * @param UnaryOperator::* $operator
-     */
-    public function __construct(string $operator, Expression $operand, FileSpan $span)
+    public function __construct(UnaryOperator $operator, Expression $operand, FileSpan $span)
     {
         $this->operator = $operator;
         $this->operand = $operand;
         $this->span = $span;
     }
 
-    /**
-     * @return UnaryOperator::*
-     */
-    public function getOperator()
+    public function getOperator(): UnaryOperator
     {
         return $this->operator;
     }
@@ -76,7 +58,7 @@ final class UnaryOperationExpression implements Expression
 
     public function __toString(): string
     {
-        $buffer = $this->operator;
+        $buffer = $this->operator->getOperator();
         if ($this->operator === UnaryOperator::NOT) {
             $buffer .= ' ';
         }

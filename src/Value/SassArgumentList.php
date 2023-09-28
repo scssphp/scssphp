@@ -35,13 +35,10 @@ final class SassArgumentList extends SassList
     /**
      * SassArgumentList constructor.
      *
-     * @param list<Value>          $contents
+     * @param list<Value> $contents
      * @param array<string, Value> $keywords
-     * @param string               $separator
-     *
-     * @phpstan-param ListSeparator::* $separator
      */
-    public function __construct(array $contents, array $keywords, string $separator)
+    public function __construct(array $contents, array $keywords, ListSeparator $separator)
     {
         parent::__construct($contents, $separator);
         $this->keywords = $keywords;

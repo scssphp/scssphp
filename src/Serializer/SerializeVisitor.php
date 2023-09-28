@@ -819,7 +819,8 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
 
         if ($singleton) {
-            $this->buffer->write($value->getSeparator());
+            \assert($value->getSeparator()->getSeparator() !== null, 'The list separator is not undecided at that point.');
+            $this->buffer->write($value->getSeparator()->getSeparator());
 
             if (!$value->hasBrackets()) {
                 $this->buffer->writeChar(')');
@@ -831,42 +832,25 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
     }
 
-    /**
-     * @phpstan-param ListSeparator::* $separator
-     */
-    private function separatorString(string $separator): string
+    private function separatorString(ListSeparator $separator): string
     {
-        switch ($separator) {
-            case ListSeparator::COMMA:
-                return $this->getCommaSeparator();
-
-            case ListSeparator::SLASH:
-                return $this->compressed ? '/' : ' / ';
-
-            case ListSeparator::SPACE:
-                return ' ';
-
-            default:
-                /**
-                 * This should never be used, but it may still be returned since
-                 * {@see separatorString} is invoked eagerly by {@see writeList} even for lists
-                 * with only one element.
-                 */
-                return '';
-        }
+        return match ($separator) {
+            ListSeparator::COMMA => $this->getCommaSeparator(),
+            ListSeparator::SLASH => $this->compressed ? '/' : ' / ',
+            ListSeparator::SPACE => ' ',
+            /**
+             * This should never be used, but it may still be returned since
+             * {@see separatorString} is invoked eagerly by {@see writeList} even for lists
+             * with only one element.
+             */
+            default => '',
+        };
     }
 
     /**
      * Returns whether the value needs parentheses as an element in a list with the given separator.
-     *
-     * @param string $separator
-     * @param Value $value
-     *
-     * @return bool
-     *
-     * @phpstan-param ListSeparator::* $separator
      */
-    private static function elementNeedsParens(string $separator, Value $value): bool
+    private static function elementNeedsParens(ListSeparator $separator, Value $value): bool
     {
         if (!$value instanceof SassList) {
             return false;
@@ -880,16 +864,11 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             return false;
         }
 
-        switch ($separator) {
-            case ListSeparator::COMMA:
-                return $value->getSeparator() === ListSeparator::COMMA;
-
-            case ListSeparator::SLASH:
-                return $value->getSeparator() === ListSeparator::COMMA || $value->getSeparator() === ListSeparator::SLASH;
-
-            default:
-                return $value->getSeparator() !== ListSeparator::UNDECIDED;
-        }
+        return match ($separator) {
+            ListSeparator::COMMA => $value->getSeparator() === ListSeparator::COMMA,
+            ListSeparator::SLASH => $value->getSeparator() === ListSeparator::COMMA || $value->getSeparator() === ListSeparator::SLASH,
+            default => $value->getSeparator() !== ListSeparator::UNDECIDED,
+        };
     }
 
     public function visitMap(SassMap $value)

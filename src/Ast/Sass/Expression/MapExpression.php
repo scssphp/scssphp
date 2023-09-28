@@ -25,15 +25,10 @@ final class MapExpression implements Expression
 {
     /**
      * @var list<array{Expression, Expression}>
-     * @readonly
      */
-    private $pairs;
+    private readonly array $pairs;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     /**
      * @param list<array{Expression, Expression}> $pairs

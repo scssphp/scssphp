@@ -27,11 +27,7 @@ use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
  */
 final class SupportsExpression implements Expression
 {
-    /**
-     * @var SupportsCondition
-     * @readonly
-     */
-    private $condition;
+    private readonly SupportsCondition $condition;
 
     public function __construct(SupportsCondition $condition)
     {

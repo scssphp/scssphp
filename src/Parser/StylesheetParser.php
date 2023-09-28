@@ -1863,7 +1863,7 @@ abstract class StylesheetParser extends Parser
          * parsing to finish for all preceding higher-precedence $operators, this is
          * naturally ordered from lowest to highest precedence.
          *
-         * @phpstan-var list<BinaryOperator::*>|null $operators
+         * @phpstan-var list<BinaryOperator>|null $operators
          */
         $operators = null;
         /**
@@ -1919,7 +1919,7 @@ abstract class StylesheetParser extends Parser
             $right = $singleExpression;
 
             if ($right === null) {
-                $this->scanner->error('Expected expression.', $this->scanner->getPosition() - \strlen($operator), \strlen($operator));
+                $this->scanner->error('Expected expression.', $this->scanner->getPosition() - \strlen($operator->getOperator()), \strlen($operator->getOperator()));
             }
 
             if ($allowSlash && !$this->inParentheses && $operator === BinaryOperator::DIVIDED_BY && self::isSlashOperand($left) && self::isSlashOperand($right)) {
@@ -1930,19 +1930,20 @@ abstract class StylesheetParser extends Parser
 
                 if ($operator === BinaryOperator::PLUS || $operator === BinaryOperator::MINUS) {
                     if (
-                        $this->scanner->substring($right->getSpan()->getStart()->getOffset() - 1, $right->getSpan()->getStart()->getOffset()) === $operator
+                        $this->scanner->substring($right->getSpan()->getStart()->getOffset() - 1, $right->getSpan()->getStart()->getOffset()) === $operator->getOperator()
                         && Character::isWhitespace($this->scanner->getString()[$left->getSpan()->getEnd()->getOffset()])
                     ) {
+                        $operatorText = $operator->getOperator();
                         $message = <<<WARNING
 This operation is parsed as:
 
-    $left $operator $right
+    $left $operatorText $right
 
 but you may have intended it to mean:
 
-    $left ($operator$right)
+    $left ($operatorText$right)
 
-Add a space after $operator to clarify that it's meant to be a binary operation, or wrap
+Add a space after $operatorText to clarify that it's meant to be a binary operation, or wrap
 it in parentheses to make it a unary operation. This will be an error in future
 versions of Sass.
 
@@ -1990,46 +1991,41 @@ WARNING;
             $singleExpression = $expression;
         };
 
-        $addOperator =
-            /**
-             * @param BinaryOperator::* $operator
-             */
-            function (string $operator) use (&$allowSlash, &$operators, &$operands, &$singleExpression, $resolveOneOperation): void {
-                /** @var BinaryOperator::* $operator */
-                if ($this->isPlainCss()
-                    && $operator !== BinaryOperator::SINGLE_EQUALS
-                    // These are allowed in calculations, so we have to check them at
-                    // evaluation time.
-                    && $operator !== BinaryOperator::PLUS
-                    && $operator !== BinaryOperator::MINUS
-                    && $operator !== BinaryOperator::TIMES
-                    && $operator !== BinaryOperator::DIVIDED_BY
-                ) {
-                    $this->scanner->error("Operators aren't allowed in plain CSS.", $this->scanner->getPosition() - \strlen($operator), \strlen($operator));
-                }
+        $addOperator = function (BinaryOperator $operator) use (&$allowSlash, &$operators, &$operands, &$singleExpression, $resolveOneOperation): void {
+            if ($this->isPlainCss()
+                && $operator !== BinaryOperator::SINGLE_EQUALS
+                // These are allowed in calculations, so we have to check them at
+                // evaluation time.
+                && $operator !== BinaryOperator::PLUS
+                && $operator !== BinaryOperator::MINUS
+                && $operator !== BinaryOperator::TIMES
+                && $operator !== BinaryOperator::DIVIDED_BY
+            ) {
+                $this->scanner->error("Operators aren't allowed in plain CSS.", $this->scanner->getPosition() - \strlen($operator->getOperator()), \strlen($operator->getOperator()));
+            }
 
-                $allowSlash = $allowSlash && $operator === BinaryOperator::DIVIDED_BY;
+            $allowSlash = $allowSlash && $operator === BinaryOperator::DIVIDED_BY;
 
-                $operators = $operators ?? [];
-                $operands = $operands ?? [];
+            $operators = $operators ?? [];
+            $operands = $operands ?? [];
 
-                $precedence = BinaryOperator::getPrecedence($operator);
+            $precedence = $operator->getPrecedence();
 
-                while ($operators && BinaryOperator::getPrecedence($operators[\count($operators) - 1]) >= $precedence) {
-                    $resolveOneOperation();
-                }
+            while ($operators && $operators[\count($operators) - 1]->getPrecedence() >= $precedence) {
+                $resolveOneOperation();
+            }
 
-                $operators[] = $operator;
+            $operators[] = $operator;
 
-                if ($singleExpression === null) {
-                    $this->scanner->error('Expected expression.', $this->scanner->getPosition() - \strlen($operator), \strlen($operator));
-                }
+            if ($singleExpression === null) {
+                $this->scanner->error('Expected expression.', $this->scanner->getPosition() - \strlen($operator->getOperator()), \strlen($operator->getOperator()));
+            }
 
-                $operands[] = $singleExpression;
+            $operands[] = $singleExpression;
 
-                $this->whitespace();
-                $singleExpression = $this->singleExpression();
-            };
+            $this->whitespace();
+            $singleExpression = $this->singleExpression();
+        };
 
         $resolveSpaceExpressions = function () use (&$spaceExpressions, &$singleExpression, $resolveOperations): void {
             $resolveOperations();
@@ -2759,24 +2755,15 @@ WARNING;
     /**
      * Returns the unary operator corresponding to $character, or `null` if
      * the character is not a unary operator.
-     *
-     * @return UnaryOperator::*|null
      */
-    private function unaryOperatorFor(string $character): ?string
+    private function unaryOperatorFor(string $character): ?UnaryOperator
     {
-        switch ($character) {
-            case '+':
-                return UnaryOperator::PLUS;
-
-            case '-':
-                return UnaryOperator::MINUS;
-
-            case '/':
-                return UnaryOperator::DIVIDE;
-
-            default:
-                return null;
-        }
+        return match ($character) {
+            '+' => UnaryOperator::PLUS,
+            '-' => UnaryOperator::MINUS,
+            '/' => UnaryOperator::DIVIDE,
+            default => null,
+        };
     }
 
     /**

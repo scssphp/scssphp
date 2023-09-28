@@ -100,9 +100,9 @@ final class IsCalculationSafeVisitor implements ExpressionVisitor
         $text = $node->getText()->getInitialPlain();
 
         // !important
-        return 0 !== strpos($text, '!')
+        return !str_starts_with($text, '!')
             // ID-style identifiers
-            && 0 !== strpos($text, '#')
+            && !str_starts_with($text, '#')
             // Unicode ranges
             && ($text[1] ?? null) !== '+'
             // url()

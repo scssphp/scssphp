@@ -48,12 +48,8 @@ abstract class Value implements Equatable
      *
      * All SassScript values can be used as lists. Maps count as lists of pairs,
      * and all other values count as single-value lists.
-     *
-     * @return string
-     *
-     * @phpstan-return ListSeparator::*
      */
-    public function getSeparator(): string
+    public function getSeparator(): ListSeparator
     {
         return ListSeparator::UNDECIDED;
     }
@@ -504,14 +500,8 @@ WARNING
      * separator and brackets.
      *
      * @param list<Value> $contents
-     * @param string|null $separator
-     * @param bool|null   $brackets
-     *
-     * @return SassList
-     *
-     * @phpstan-param ListSeparator::*|null $separator
      */
-    public function withListContents(array $contents, ?string $separator = null, ?bool $brackets = null): SassList
+    public function withListContents(array $contents, ?ListSeparator $separator = null, ?bool $brackets = null): SassList
     {
         return new SassList($contents, $separator ?? $this->getSeparator(), $brackets ?? $this->hasBrackets());
     }

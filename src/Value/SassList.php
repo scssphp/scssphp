@@ -25,12 +25,7 @@ class SassList extends Value
      */
     private $contents;
 
-    /**
-     * @var string
-     * @phpstan-var ListSeparator::*
-     * @readonly
-     */
-    private $separator;
+    private readonly ListSeparator $separator;
 
     /**
      * @var bool
@@ -38,27 +33,15 @@ class SassList extends Value
      */
     private $brackets;
 
-    /**
-     * @param string $separator
-     * @param bool   $brackets
-     *
-     * @return SassList
-     *
-     * @phpstan-param ListSeparator::* $separator
-     */
-    public static function createEmpty(string $separator = ListSeparator::UNDECIDED, bool $brackets = false): SassList
+    public static function createEmpty(ListSeparator $separator = ListSeparator::UNDECIDED, bool $brackets = false): SassList
     {
         return new self(array(), $separator, $brackets);
     }
 
     /**
      * @param list<Value> $contents
-     * @param string      $separator
-     * @param bool        $brackets
-     *
-     * @phpstan-param ListSeparator::* $separator
      */
-    public function __construct(array $contents, string $separator, bool $brackets = false)
+    public function __construct(array $contents, ListSeparator $separator, bool $brackets = false)
     {
         if ($separator === ListSeparator::UNDECIDED && count($contents) > 1) {
             throw new \InvalidArgumentException('A list with more than one element must have an explicit separator.');
@@ -69,7 +52,7 @@ class SassList extends Value
         $this->brackets = $brackets;
     }
 
-    public function getSeparator(): string
+    public function getSeparator(): ListSeparator
     {
         return $this->separator;
     }
