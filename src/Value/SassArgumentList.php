@@ -23,14 +23,10 @@ final class SassArgumentList extends SassList
 {
     /**
      * @var array<string, Value>
-     * @readonly
      */
-    private $keywords;
+    private readonly array $keywords;
 
-    /**
-     * @var bool
-     */
-    private $keywordAccessed = false;
+    private bool $keywordAccessed = false;
 
     /**
      * SassArgumentList constructor.

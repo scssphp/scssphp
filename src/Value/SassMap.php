@@ -22,9 +22,8 @@ final class SassMap extends Value
 {
     /**
      * @var Map<Value>
-     * @readonly
      */
-    private $contents;
+    private readonly Map $contents;
 
     /**
      * @param Map<Value> $contents
@@ -41,8 +40,6 @@ final class SassMap extends Value
 
     /**
      * @param Map<Value> $contents
-     *
-     * @return SassMap
      */
     public static function create(Map $contents): SassMap
     {

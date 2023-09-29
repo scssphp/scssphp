@@ -15,34 +15,35 @@ namespace ScssPhp\ScssPhp\Value;
 /**
  * An enumeration of possible operators for {@see CalculationOperation}.
  */
-final class CalculationOperator
+enum CalculationOperator
 {
-    public const PLUS = '+';
-    public const MINUS = '-';
-    public const TIMES = '*';
-    public const DIVIDED_BY = '/';
+    case PLUS;
+    case MINUS;
+    case TIMES;
+    case DIVIDED_BY;
+
+    public function getOperator(): string
+    {
+        return match ($this) {
+            self::PLUS => '+',
+            self::MINUS => '-',
+            self::TIMES => '*',
+            self::DIVIDED_BY => '/',
+        };
+    }
 
     /**
      * The precedence of the operator
      *
      * An operator with higher precedence binds tighter.
      *
-     * @phpstan-param CalculationOperator::* $operator
-     *
      * @internal
      */
-    public static function getPrecedence(string $operator): int
+    public function getPrecedence(): int
     {
-        switch ($operator) {
-            case self::PLUS:
-            case self::MINUS:
-                return 1;
-
-            case self::TIMES:
-            case self::DIVIDED_BY:
-                return 2;
-        }
-
-        throw new \InvalidArgumentException(sprintf('Unknown operator "%s".', $operator));
+        return match ($this) {
+            self::PLUS, self::MINUS => 1,
+            self::TIMES, self::DIVIDED_BY => 2,
+        };
     }
 }

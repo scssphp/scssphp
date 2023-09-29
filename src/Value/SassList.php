@@ -12,26 +12,23 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
+use JiriPudil\SealedClasses\Sealed;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
 /**
  * A SassScript list.
  */
+#[Sealed(permits: [SassArgumentList::class])]
 class SassList extends Value
 {
     /**
      * @var list<Value>
-     * @readonly
      */
-    private $contents;
+    private readonly array $contents;
 
     private readonly ListSeparator $separator;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $brackets;
+    private readonly bool $brackets;
 
     public static function createEmpty(ListSeparator $separator = ListSeparator::UNDECIDED, bool $brackets = false): SassList
     {

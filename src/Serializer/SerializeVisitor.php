@@ -52,7 +52,7 @@ use ScssPhp\ScssPhp\Util\SpanUtil;
 use ScssPhp\ScssPhp\Util\StringUtil;
 use ScssPhp\ScssPhp\Value\CalculationOperation;
 use ScssPhp\ScssPhp\Value\CalculationOperator;
-use ScssPhp\ScssPhp\Value\ColorFormat;
+use ScssPhp\ScssPhp\Value\ColorFormatEnum;
 use ScssPhp\ScssPhp\Value\ListSeparator;
 use ScssPhp\ScssPhp\Value\SassBoolean;
 use ScssPhp\ScssPhp\Value\SassCalculation;
@@ -62,6 +62,7 @@ use ScssPhp\ScssPhp\Value\SassList;
 use ScssPhp\ScssPhp\Value\SassMap;
 use ScssPhp\ScssPhp\Value\SassNumber;
 use ScssPhp\ScssPhp\Value\SassString;
+use ScssPhp\ScssPhp\Value\SpanColorFormat;
 use ScssPhp\ScssPhp\Value\Value;
 use ScssPhp\ScssPhp\Visitor\CssVisitor;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
@@ -580,7 +581,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             $value->accept($this);
         } elseif ($value instanceof CalculationOperation) {
             $left = $value->getLeft();
-            $parenthesizeLeft = $left instanceof CalculationOperation && CalculationOperator::getPrecedence($left->getOperator()) < CalculationOperator::getPrecedence($value->getOperator());
+            $parenthesizeLeft = $left instanceof CalculationOperation && $left->getOperator()->getPrecedence() < $value->getOperator()->getPrecedence();
 
             if ($parenthesizeLeft) {
                 $this->buffer->writeChar('(');
@@ -590,11 +591,11 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 $this->buffer->writeChar(')');
             }
 
-            $operatorWhitespace = !$this->compressed || CalculationOperator::getPrecedence($value->getOperator()) === 1;
+            $operatorWhitespace = !$this->compressed || $value->getOperator()->getPrecedence() === 1;
             if ($operatorWhitespace) {
                 $this->buffer->writeChar(' ');
             }
-            $this->buffer->write($value->getOperator());
+            $this->buffer->write($value->getOperator()->getOperator());
             if ($operatorWhitespace) {
                 $this->buffer->writeChar(' ');
             }
@@ -618,11 +619,8 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      * parenthesized.
      *
      * In `a ? (b # c)`, `outer` is `?` and `right` is `#`.
-     *
-     * @phpstan-param CalculationOperator::* $outer
-     * @phpstan-param CalculationOperator::* $right
      */
-    private function parenthesizeCalculationRhs(string $outer, string $right): bool
+    private function parenthesizeCalculationRhs(CalculationOperator $outer, CalculationOperator $right): bool
     {
         if ($outer === CalculationOperator::DIVIDED_BY) {
             return true;
@@ -668,12 +666,15 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         $format = $value->getFormat();
 
         if ($format !== null) {
-            if ($format === ColorFormat::RGB_FUNCTION) {
+            if ($format === ColorFormatEnum::rgbFunction) {
                 $this->writeRgb($value);
-            } elseif ($format === ColorFormat::HSL_FUNCTION) {
+            } elseif ($format === ColorFormatEnum::hslFunction) {
                 $this->writeHsl($value);
-            } else {
+            } elseif ($format instanceof SpanColorFormat) {
                 $this->buffer->write($format->getOriginal());
+            } else {
+                // should not happen as our interface is sealed.
+                \assert(false, 'unknown format');
             }
         } elseif ($name !== null &&
             // Always emit generated transparent colors in rgba format. This works

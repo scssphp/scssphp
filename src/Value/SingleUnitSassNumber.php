@@ -91,15 +91,9 @@ final class SingleUnitSassNumber extends SassNumber
         'dppx' => ['dpi', 'dpcm', 'dppx'],
     ];
 
-    /**
-     * @var string
-     * @readonly
-     */
-    private $unit;
+    private readonly string $unit;
 
     /**
-     * @param float                              $value
-     * @param string                             $unit
      * @param array{SassNumber, SassNumber}|null $asSlash
      */
     public function __construct(float $value, string $unit, array $asSlash = null)

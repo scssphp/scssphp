@@ -1691,6 +1691,11 @@ parameters:
 			path: src/Parser.php
 
 		-
+			message: "#^Call to function assert\\(\\) with false and 'unknown format' will always evaluate to false\\.$#"
+			count: 1
+			path: src/Serializer/SerializeVisitor.php
+
+		-
 			message: "#^Negated boolean expression is always true\\.$#"
 			count: 1
 			path: src/Serializer/SerializeVisitor.php
