@@ -68,16 +68,12 @@ abstract class SelectorSearchVisitor implements SelectorVisitor
 
     public function visitComplexSelector(ComplexSelector $complex)
     {
-        return ListUtil::search($complex->getComponents(), function (ComplexSelectorComponent $component) {
-            return $this->visitCompoundSelector($component->getSelector());
-        });
+        return ListUtil::search($complex->getComponents(), fn(ComplexSelectorComponent $component) => $this->visitCompoundSelector($component->getSelector()));
     }
 
     public function visitCompoundSelector(CompoundSelector $compound)
     {
-        return ListUtil::search($compound->getComponents(), function (SimpleSelector $simple) {
-            return $simple->accept($this);
-        });
+        return ListUtil::search($compound->getComponents(), fn(SimpleSelector $simple) => $simple->accept($this));
     }
 
     public function visitPseudoSelector(PseudoSelector $pseudo)
@@ -91,8 +87,6 @@ abstract class SelectorSearchVisitor implements SelectorVisitor
 
     public function visitSelectorList(SelectorList $list)
     {
-        return ListUtil::search($list->getComponents(), function (ComplexSelector $component) {
-            return $this->visitComplexSelector($component);
-        });
+        return ListUtil::search($list->getComponents(), $this->visitComplexSelector(...));
     }
 }

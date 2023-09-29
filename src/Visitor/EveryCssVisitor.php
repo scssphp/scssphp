@@ -18,12 +18,14 @@ use ScssPhp\ScssPhp\Ast\Css\CssDeclaration;
 use ScssPhp\ScssPhp\Ast\Css\CssImport;
 use ScssPhp\ScssPhp\Ast\Css\CssKeyframeBlock;
 use ScssPhp\ScssPhp\Ast\Css\CssMediaRule;
+use ScssPhp\ScssPhp\Ast\Css\CssNode;
 use ScssPhp\ScssPhp\Ast\Css\CssStyleRule;
 use ScssPhp\ScssPhp\Ast\Css\CssStylesheet;
 use ScssPhp\ScssPhp\Ast\Css\CssSupportsRule;
+use ScssPhp\ScssPhp\Util\ListUtil;
 
 /**
- * A visitor that visits each statements in a CSS AST and returns `true` if all
+ * A visitor that visits each statement in a CSS AST and returns `true` if all
  * of the individual methods return `true`.
  *
  * Each method returns `false` by default.
@@ -35,13 +37,7 @@ abstract class EveryCssVisitor implements CssVisitor
 {
     public function visitCssAtRule(CssAtRule $node): bool
     {
-        foreach ($node->getChildren() as $child) {
-            if (!$child->accept($this)) {
-                return false;
-            }
-        }
-
-        return true;
+        return ListUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
     }
 
     public function visitCssComment(CssComment $node): bool
@@ -61,56 +57,26 @@ abstract class EveryCssVisitor implements CssVisitor
 
     public function visitCssKeyframeBlock(CssKeyframeBlock $node): bool
     {
-        foreach ($node->getChildren() as $child) {
-            if (!$child->accept($this)) {
-                return false;
-            }
-        }
-
-        return true;
+        return ListUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
     }
 
     public function visitCssMediaRule(CssMediaRule $node): bool
     {
-        foreach ($node->getChildren() as $child) {
-            if (!$child->accept($this)) {
-                return false;
-            }
-        }
-
-        return true;
+        return ListUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
     }
 
     public function visitCssStyleRule(CssStyleRule $node): bool
     {
-        foreach ($node->getChildren() as $child) {
-            if (!$child->accept($this)) {
-                return false;
-            }
-        }
-
-        return true;
+        return ListUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
     }
 
     public function visitCssStylesheet(CssStylesheet $node): bool
     {
-        foreach ($node->getChildren() as $child) {
-            if (!$child->accept($this)) {
-                return false;
-            }
-        }
-
-        return true;
+        return ListUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
     }
 
     public function visitCssSupportsRule(CssSupportsRule $node): bool
     {
-        foreach ($node->getChildren() as $child) {
-            if (!$child->accept($this)) {
-                return false;
-            }
-        }
-
-        return true;
+        return ListUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
     }
 }
