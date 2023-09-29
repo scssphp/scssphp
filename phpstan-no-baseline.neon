@@ -39,4 +39,5 @@ parameters:
             path: src/Parser.php
 
 includes:
+    - vendor-bin/phpstan/vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor-bin/phpstan/vendor/jiripudil/phpstan-sealed-classes/extension.neon

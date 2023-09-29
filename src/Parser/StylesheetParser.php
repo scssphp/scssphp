@@ -1195,10 +1195,10 @@ abstract class StylesheetParser extends Parser
         // Backwards-compatibility for implementations that allow absolute Windows
         // paths in imports.
         if (Path::isWindowsAbsolute($url) && !self::isRootRelativeUrl($url)) {
-            return (string) Uri::createFromWindowsPath($url);
+            return (string) Uri::fromWindowsPath($url);
         }
 
-        Uri::createFromString($url);
+        Uri::new($url);
         return $url;
     }
 

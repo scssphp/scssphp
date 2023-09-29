@@ -42,7 +42,7 @@ final class DynamicImport implements Import
 
     public function getUrl(): UriInterface
     {
-        return Uri::createFromString($this->urlString);
+        return Uri::new($this->urlString);
     }
 
     public function getUrlString(): string
