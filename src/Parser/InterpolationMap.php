@@ -59,7 +59,13 @@ final class InterpolationMap
         }
     }
 
-    // TODO implement mapException
+    public function mapException(FormatException $exception): FormatException
+    {
+        $source = $this->mapSpan($exception->getSpan());
+
+        // TODO implement the Multi-span support here
+        return new FormatException($exception->getMessage(), $source, $exception);
+    }
 
     public function mapSpan(FileSpan $target): FileSpan
     {

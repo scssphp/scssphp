@@ -29,33 +29,18 @@ use ScssPhp\ScssPhp\Util\ParserUtil;
  */
 class Parser
 {
-    /**
-     * @var StringScanner
-     * @readonly
-     */
-    protected $scanner;
+    protected readonly StringScanner $scanner;
 
-    /**
-     * @var LocationAwareLoggerInterface
-     * @readonly
-     */
-    protected $logger;
+    protected readonly LocationAwareLoggerInterface $logger;
 
     /**
      * A map used to map source spans in the text being parsed back to their
      * original locations in the source file, if this isn't being parsed directly
      * from source.
-     *
-     * @var InterpolationMap|null
-     * @readonly
      */
-    private $interpolationMap;
+    private readonly ?InterpolationMap $interpolationMap;
 
-    /**
-     * @var string|null
-     * @readonly
-     */
-    protected $sourceUrl;
+    protected readonly ?string $sourceUrl;
 
     /**
      * Parses $text as a CSS identifier and returns the result.
@@ -76,7 +61,7 @@ class Parser
             self::parseIdentifier($text, $logger);
 
             return true;
-        } catch (SassFormatException $e) {
+        } catch (SassFormatException) {
             return false;
         }
     }
@@ -94,14 +79,12 @@ class Parser
      */
     private function doParseIdentifier(): string
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $result = $this->identifier();
             $this->scanner->expectDone();
 
             return $result;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     /**
@@ -933,17 +916,38 @@ class Parser
         throw new FormatException($message, $span, $previous);
     }
 
-    protected function wrapException(FormatException $error): SassFormatException
+    /**
+     * Runs $callback and wraps any {@see FormatException} it throws in a
+     * {@see SassFormatException}
+     *
+     * @template T
+     * @param callable(): T $callback
+     * @return T
+     *
+     * @throws SassFormatException
+     */
+    protected function wrapSpanFormatException(callable $callback)
     {
-        $span = $error->getSpan();
+        try {
+            try {
+                return $callback();
+            } catch (FormatException $e) {
+                if ($this->interpolationMap === null) {
+                    throw $e;
+                }
 
-        // TODO map exceptions
+                throw $this->interpolationMap->mapException($e);
+            }
+        } catch (FormatException $error) {
+            $span = $error->getSpan();
 
-        if (0 === stripos($error->getMessage(), 'expected')) {
-            $span = $this->adjustExceptionSpan($span);
+            if (0 === stripos($error->getMessage(), 'expected')) {
+                $span = $this->adjustExceptionSpan($span);
+            }
+
+            throw new SassFormatException($error->getMessage(), $span, $error);
         }
-
-        return new SassFormatException($error->getMessage(), $span, $error);
+        // TODO handle multi-span exceptions
     }
 
     /**

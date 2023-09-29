@@ -195,7 +195,7 @@ abstract class StylesheetParser extends Parser
      */
     public function parse(): Stylesheet
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $start = $this->scanner->getPosition();
 
             // Allow a byte-order mark at the beginning of the document.
@@ -222,14 +222,12 @@ abstract class StylesheetParser extends Parser
             }
 
             return new Stylesheet($statements, $this->scanner->spanFrom($start), $this->isPlainCss());
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     public function parseArgumentDeclaration(): ArgumentDeclaration
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $this->scanner->expectChar('@', '@-rule');
             $this->identifier();
             $this->whitespace();
@@ -241,9 +239,7 @@ abstract class StylesheetParser extends Parser
             $this->scanner->expectDone();
 
             return $arguments;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     /**
@@ -845,7 +841,7 @@ abstract class StylesheetParser extends Parser
                 // function. If so, throw a more helpful error message.
                 try {
                     $statement = $this->declarationOrStyleRule();
-                } catch (FormatException $e) {
+                } catch (FormatException) {
                     throw $variableDeclarationError;
                 }
 

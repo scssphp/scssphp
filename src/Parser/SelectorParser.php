@@ -71,7 +71,7 @@ final class SelectorParser extends Parser
 
     public function parse(): SelectorList
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $selector = $this->selectorList();
 
             if (!$this->scanner->isDone()) {
@@ -79,14 +79,12 @@ final class SelectorParser extends Parser
             }
 
             return $selector;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     public function parseComplexSelector(): ComplexSelector
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $complex = $this->complexSelector();
 
             if (!$this->scanner->isDone()) {
@@ -94,14 +92,12 @@ final class SelectorParser extends Parser
             }
 
             return $complex;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     public function parseCompoundSelector(): CompoundSelector
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $compound = $this->compoundSelector();
 
             if (!$this->scanner->isDone()) {
@@ -109,14 +105,12 @@ final class SelectorParser extends Parser
             }
 
             return $compound;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     public function parseSimpleSelector(): SimpleSelector
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $simple = $this->simpleSelector();
 
             if (!$this->scanner->isDone()) {
@@ -124,9 +118,7 @@ final class SelectorParser extends Parser
             }
 
             return $simple;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     /**
