@@ -208,7 +208,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
             $firstQuery = $node->getQueries()[0];
 
-            if (!$this->compressed || $firstQuery->getModifier() !== null || $firstQuery->getType() !== null || (\count($firstQuery->getConditions()) === 1) && StringUtil::startsWith($firstQuery->getConditions()[0], '(not ')) {
+            if (!$this->compressed || $firstQuery->getModifier() !== null || $firstQuery->getType() !== null || (\count($firstQuery->getConditions()) === 1) && str_starts_with($firstQuery->getConditions()[0], '(not ')) {
                 $this->buffer->writeChar(' ');
             }
 
@@ -286,7 +286,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             }
         }
 
-        if (\count($query->getConditions()) === 1 && StringUtil::startsWith($query->getConditions()[0], '(not ')) {
+        if (\count($query->getConditions()) === 1 && str_starts_with($query->getConditions()[0], '(not ')) {
             $this->buffer->write('not ');
             $condition = $query->getConditions()[0];
             $this->buffer->write(substr($condition, \strlen('(not '), \strlen($condition) - (\strlen('(not ') + 1)));

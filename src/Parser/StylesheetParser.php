@@ -1498,7 +1498,7 @@ abstract class StylesheetParser extends Parser
                         // A url-prefix with no argument, or with an empty string as an
                         // argument, is not (yet) deprecated.
                         $trailing = $buffer->getTrailingString();
-                        if (!StringUtil::endsWith($trailing, 'url-prefix()') && !StringUtil::endsWith($trailing, "url-prefix('')") && !StringUtil::endsWith($trailing, 'url-prefix("")')) {
+                        if (!str_ends_with($trailing, 'url-prefix()') && !str_ends_with($trailing, "url-prefix('')") && !str_ends_with($trailing, 'url-prefix("")')) {
                             $needsDeprecationWarning = true;
                         }
                         break;
@@ -3913,7 +3913,7 @@ WARNING;
 
     private function supportsDeclarationValue(Expression $name, int $start): SupportsDeclaration
     {
-        if ($name instanceof StringExpression && !$name->hasQuotes() && StringUtil::startsWith($name->getText()->getInitialPlain(), '--')) {
+        if ($name instanceof StringExpression && !$name->hasQuotes() && str_starts_with($name->getText()->getInitialPlain(), '--')) {
             $value = new StringExpression($this->interpolatedDeclarationValue());
         } else {
             $this->whitespace();

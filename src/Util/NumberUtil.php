@@ -110,13 +110,6 @@ final class NumberUtil
     }
 
     /**
-     * @param float       $number
-     * @param float       $min
-     * @param float       $max
-     * @param string|null $name
-     *
-     * @return float
-     *
      * @throws \OutOfRangeException
      */
     public static function fuzzyAssertRange(float $number, float $min, float $max, ?string $name = null): float
@@ -136,11 +129,6 @@ final class NumberUtil
      * Returns $num1 / $num2, using Sass's division semantic.
      *
      * Sass allows dividing by 0.
-     *
-     * @param float $num1
-     * @param float $num2
-     *
-     * @return float
      */
     public static function divideLikeSass(float $num1, float $num2): float
     {
@@ -252,7 +240,7 @@ final class NumberUtil
         $base->assertNoUnits('base');
         $exponent->assertNoUnits('exponent');
 
-        return SassNumber::create(pow($base->getValue(), $exponent->getValue()));
+        return SassNumber::create($base->getValue() ** $exponent->getValue());
     }
 
     public static function atan2(SassNumber $x, SassNumber $y): SassNumber

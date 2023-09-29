@@ -76,10 +76,6 @@ final class Util
 
     /**
      * Encode URI component
-     *
-     * @param string $string
-     *
-     * @return string
      */
     public static function encodeURIComponent(string $string): string
     {
@@ -108,10 +104,6 @@ final class Util
      * Returns $name without a vendor prefix.
      *
      * If $name has no vendor prefix, it's returned as-is.
-     *
-     * @param string $name
-     *
-     * @return string
      */
     public static function unvendor(string $name): string
     {
@@ -140,10 +132,6 @@ final class Util
 
     /**
      * mb_chr() wrapper
-     *
-     * @param int $code
-     *
-     * @return string
      */
     public static function mbChr(int $code): string
     {
@@ -168,10 +156,6 @@ final class Util
 
     /**
      * mb_ord() wrapper
-     *
-     * @param string $string
-     *
-     * @return int
      */
     public static function mbOrd(string $string): int
     {
@@ -205,9 +189,6 @@ final class Util
 
     /**
      * mb_strlen() wrapper
-     *
-     * @param string $string
-     * @return int
      */
     public static function mbStrlen(string $string): int
     {
@@ -225,10 +206,6 @@ final class Util
 
     /**
      * mb_substr() wrapper
-     * @param string $string
-     * @param int $start
-     * @param null|int $length
-     * @return string
      */
     public static function mbSubstr(string $string, int $start, ?int $length = null): string
     {
@@ -262,13 +239,8 @@ final class Util
 
     /**
      * mb_strpos wrapper
-     * @param string $haystack
-     * @param string $needle
-     * @param int $offset
-     *
-     * @return int|false
      */
-    public static function mbStrpos(string $haystack, string $needle, int $offset = 0)
+    public static function mbStrpos(string $haystack, string $needle, int $offset = 0): int|false
     {
         if (\function_exists('mb_strpos')) {
             return mb_strpos($haystack, $needle, $offset, 'UTF-8');

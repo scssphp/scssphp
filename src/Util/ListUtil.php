@@ -22,8 +22,6 @@ final class ListUtil
      *
      * @param T[]               $list
      * @param callable(T): bool $callback
-     *
-     * @return bool
      */
     public static function any(array $list, callable $callback): bool
     {
@@ -41,8 +39,6 @@ final class ListUtil
      *
      * @param T[]               $list
      * @param callable(T): bool $callback
-     *
-     * @return bool
      */
     public static function every(array $list, callable $callback): bool
     {

@@ -16,7 +16,6 @@ use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\StringExpression;
 use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
-use ScssPhp\ScssPhp\Util\StringUtil;
 
 /**
  * A condition that selects for browsers where a given declaration is
@@ -71,7 +70,7 @@ final class SupportsDeclaration implements SupportsCondition
      */
     public function isCustomProperty(): bool
     {
-        return $this->name instanceof StringExpression && !$this->name->hasQuotes() && StringUtil::startsWith($this->name->getText()->getInitialPlain(), '--');
+        return $this->name instanceof StringExpression && !$this->name->hasQuotes() && str_starts_with($this->name->getText()->getInitialPlain(), '--');
     }
 
     public function __toString(): string
