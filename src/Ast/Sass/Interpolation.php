@@ -47,7 +47,7 @@ final class Interpolation implements SassNode
             } elseif ($element instanceof Interpolation) {
                 $buffer->addInterpolation($element);
             } else {
-                throw new \InvalidArgumentException(sprintf('The elements in $contents may only contains strings, Expressions, or Interpolations, "%s" given.', \is_object($element) ? get_class($element) : gettype($element)));
+                throw new \InvalidArgumentException(sprintf('The elements in $contents may only contains strings, Expressions, or Interpolations, "%s" given.', get_debug_type($element)));
             }
         }
 

@@ -57,7 +57,7 @@ final class ModifiableCssDeclaration extends ModifiableCssNode implements CssDec
             }
 
             if (!$value->getValue() instanceof SassString) {
-                throw new \InvalidArgumentException(sprintf('If parsedAsCustomProperty is true, value must contain a SassString (was %s).', get_class($value->getValue())));
+                throw new \InvalidArgumentException(sprintf('If parsedAsCustomProperty is true, value must contain a SassString (was %s).', get_debug_type($value->getValue())));
             }
         }
     }

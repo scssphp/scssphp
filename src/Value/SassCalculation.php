@@ -994,7 +994,7 @@ WARNING
             throw new SassScriptException("Value $arg can't be used in a calculation.");
         }
 
-        throw new \InvalidArgumentException(sprintf('Unexpected calculation argument %s.', get_class($arg)));
+        throw new \InvalidArgumentException(sprintf('Unexpected calculation argument %s.', get_debug_type($arg)));
     }
 
     /**
