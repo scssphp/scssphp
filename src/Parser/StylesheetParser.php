@@ -93,60 +93,44 @@ abstract class StylesheetParser extends Parser
 {
     /**
      * The silent comment this parser encountered previously.
-     *
-     * @var SilentComment|null
      */
-    protected $lastSilentComment;
+    protected ?SilentComment $lastSilentComment = null;
 
     /**
      * Whether we've consumed a rule other than `@charset`, `@forward`, or `@use`.
-     *
-     * @var bool
      */
-    private $isUseAllowed = true;
+    private bool $isUseAllowed = true;
 
     /**
      * Whether the parser is currently parsing the contents of a mixin declaration.
-     *
-     * @var bool
      */
-    private $inMixin = false;
+    private bool $inMixin = false;
 
     /**
      * Whether the parser is currently parsing a content block passed to a mixin.
-     *
-     * @var bool
      */
-    private $inContentBlock = false;
+    private bool $inContentBlock = false;
 
     /**
      * Whether the parser is currently parsing a control directive such as `@if`
      * or `@each`.
-     *
-     * @var bool
      */
-    private $inControlDirective = false;
+    private bool $inControlDirective = false;
 
     /**
      * Whether the parser is currently parsing an unknown rule.
-     *
-     * @var bool
      */
-    private $inUnknownAtRule = false;
+    private bool $inUnknownAtRule = false;
 
     /**
      * Whether the parser is currently parsing a style rule.
-     *
-     * @var bool
      */
-    private $inStyleRule = false;
+    private bool $inStyleRule = false;
 
     /**
      * Whether the parser is currently within a parenthesized expression.
-     *
-     * @var bool
      */
-    private $inParentheses = false;
+    private bool $inParentheses = false;
 
     /**
      * A map from all variable names that are assigned with `!global` in the
@@ -159,35 +143,11 @@ abstract class StylesheetParser extends Parser
      *
      * @var array<string, VariableDeclaration>
      */
-    private $globalVariables = [];
-
-    /**
-     * @var \Closure
-     * @readonly
-     */
-    private $statementCallable;
-
-    /**
-     * @var \Closure
-     * @readonly
-     */
-    private $declarationChildCallable;
-
-    /**
-     * @var \Closure
-     * @readonly
-     */
-    private $functionChildCallable;
+    private array $globalVariables = [];
 
     public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null)
     {
         parent::__construct($contents, $logger, $sourceUrl);
-
-        // Store callables for some private methods, to ensure they pass callable typehints when passed
-        // to parent methods expecting a callable, due to the semantic of PHP array callables.
-        $this->statementCallable = \Closure::fromCallable([$this, 'statement']);
-        $this->declarationChildCallable = \Closure::fromCallable([$this, 'declarationChild']);
-        $this->functionChildCallable = \Closure::fromCallable([$this, 'functionChild']);
     }
 
     /**
@@ -253,7 +213,7 @@ abstract class StylesheetParser extends Parser
     {
         switch ($this->scanner->peekChar()) {
             case '@':
-                return $this->atRule($this->statementCallable, $root);
+                return $this->atRule($this->statement(...), $root);
 
             case '+':
                 if (!$this->isIndented()) {
@@ -415,10 +375,8 @@ abstract class StylesheetParser extends Parser
      * couldn't consume a declaration and that selector parsing should be
      * attempted; or it can return a {@see Declaration} or a {@see VariableDeclaration},
      * indicating that it successfully consumed a declaration.
-     *
-     * @return Statement|InterpolationBuffer
      */
-    private function declarationOrBuffer()
+    private function declarationOrBuffer(): Statement|InterpolationBuffer
     {
         $start = $this->scanner->getPosition();
         $nameBuffer = new InterpolationBuffer();
@@ -430,7 +388,7 @@ abstract class StylesheetParser extends Parser
         if ($first === ':' || $first === '*' || $first === '.' || ($first === '#' && $this->scanner->peekChar(1) !== '{')) {
             $startsWithPunctuation = true;
             $nameBuffer->write($this->scanner->readChar());
-            $nameBuffer->write($this->rawText([$this, 'whitespace']));
+            $nameBuffer->write($this->rawText($this->whitespace(...)));
         }
 
         if (!$this->lookingAtInterpolatedIdentifier()) {
@@ -448,10 +406,10 @@ abstract class StylesheetParser extends Parser
         $this->isUseAllowed = false;
 
         if ($this->scanner->matches('/*')) {
-            $nameBuffer->write($this->rawText([$this, 'loudComment']));
+            $nameBuffer->write($this->rawText($this->loudComment(...)));
         }
 
-        $midBuffer = $this->rawText([$this, 'whitespace']);
+        $midBuffer = $this->rawText($this->whitespace(...));
         $beforeColon = $this->scanner->getPosition();
 
         if (!$this->scanner->scanChar(':')) {
@@ -467,7 +425,7 @@ abstract class StylesheetParser extends Parser
         // Parse custom properties as declarations no matter what.
         $name = $nameBuffer->buildInterpolation($this->scanner->spanFrom($start, $beforeColon));
 
-        if (0 === strpos($name->getInitialPlain(), '--')) {
+        if (str_starts_with($name->getInitialPlain(), '--')) {
             $value = new StringExpression($this->interpolatedDeclarationValue());
             $this->expectStatementSeparator('custom property');
 
@@ -487,10 +445,10 @@ abstract class StylesheetParser extends Parser
             return $nameBuffer;
         }
 
-        $postColonWhitespace = $this->rawText([$this, 'whitespace']);
+        $postColonWhitespace = $this->rawText($this->whitespace(...));
 
         if ($this->lookingAtChildren()) {
-            return $this->withChildren($this->declarationChildCallable, $start, function (array $children, FileSpan $span) use ($name) {
+            return $this->withChildren($this->declarationChild(...), $start, function (array $children, FileSpan $span) use ($name) {
                 return Declaration::nested($name, $children, $span);
             });
         }
@@ -539,7 +497,7 @@ abstract class StylesheetParser extends Parser
         }
 
         if ($this->lookingAtChildren()) {
-            return $this->withChildren($this->declarationChildCallable, $start, function (array $children, FileSpan $span) use ($name, $value) {
+            return $this->withChildren($this->declarationChild(...), $start, function (array $children, FileSpan $span) use ($name, $value) {
                 return Declaration::nested($name, $children, $span, $value);
             });
         }
@@ -557,10 +515,8 @@ abstract class StylesheetParser extends Parser
      * consume a variable declaration and that property declaration or selector
      * parsing should be attempted; or it can return a {@see VariableDeclaration},
      * indicating that it successfully consumed a variable declaration.
-     *
-     * @return Interpolation|VariableDeclaration
      */
-    private function variableDeclarationOrInterpolation()
+    private function variableDeclarationOrInterpolation(): Interpolation|VariableDeclaration
     {
         if (!$this->lookingAtIdentifier()) {
             return $this->interpolatedIdentifier();
@@ -607,7 +563,7 @@ abstract class StylesheetParser extends Parser
         $wasInStyleRule = $this->inStyleRule;
         $this->inStyleRule = true;
 
-        return $this->withChildren($this->statementCallable, $start, function (array $children) use ($wasInStyleRule, $start, $interpolation) {
+        return $this->withChildren($this->statement(...), $start, function (array $children) use ($wasInStyleRule, $start, $interpolation) {
             $this->inStyleRule = $wasInStyleRule;
 
             return new StyleRule($interpolation, $children, $this->scanner->spanFrom($start));
@@ -634,7 +590,7 @@ abstract class StylesheetParser extends Parser
         if ($first === ':' || $first === '*' || $first === '.' || ($first === '#' && $this->scanner->peekChar(1) !== '{')) {
             $nameBuffer = new InterpolationBuffer();
             $nameBuffer->write($this->scanner->readChar());
-            $nameBuffer->write($this->rawText([$this, 'whitespace']));
+            $nameBuffer->write($this->rawText($this->whitespace(...)));
             $nameBuffer->addInterpolation($this->interpolatedIdentifier());
             $name = $nameBuffer->buildInterpolation($this->scanner->spanFrom($start));
         } elseif (!$this->isPlainCss()) {
@@ -652,7 +608,7 @@ abstract class StylesheetParser extends Parser
         $this->whitespace();
         $this->scanner->expectChar(':');
 
-        if ($parseCustomProperties && 0 === strpos($name->getInitialPlain(), '--')) {
+        if ($parseCustomProperties && str_starts_with($name->getInitialPlain(), '--')) {
             $value = new StringExpression($this->interpolatedDeclarationValue());
             $this->expectStatementSeparator('custom property');
 
@@ -666,7 +622,7 @@ abstract class StylesheetParser extends Parser
                 $this->scanner->error("Nested declarations aren't allowed in plain CSS.");
             }
 
-            return $this->withChildren($this->declarationChildCallable, $start, function (array $children, FileSpan $span) use ($name) {
+            return $this->withChildren($this->declarationChild(...), $start, function (array $children, FileSpan $span) use ($name) {
                 return Declaration::nested($name, $children, $span);
             });
         }
@@ -678,7 +634,7 @@ abstract class StylesheetParser extends Parser
                 $this->scanner->error("Nested declarations aren't allowed in plain CSS.");
             }
 
-            return $this->withChildren($this->declarationChildCallable, $start, function (array $children, FileSpan $span) use ($name, $value) {
+            return $this->withChildren($this->declarationChild(...), $start, function (array $children, FileSpan $span) use ($name, $value) {
                 return Declaration::nested($name, $children, $span, $value);
             });
         }
@@ -798,21 +754,21 @@ abstract class StylesheetParser extends Parser
             case 'debug':
                 return $this->debugRule($start);
             case 'each':
-                return $this->eachRule($start, $this->declarationChildCallable);
+                return $this->eachRule($start, $this->declarationChild(...));
             case 'else':
                 $this->disallowedAtRule($start);
             case 'error':
                 return $this->errorRule($start);
             case 'for':
-                return $this->forRule($start, $this->declarationChildCallable);
+                return $this->forRule($start, $this->declarationChild(...));
             case 'if':
-                return $this->ifRule($start, $this->declarationChildCallable);
+                return $this->ifRule($start, $this->declarationChild(...));
             case 'include':
                 return $this->includeRule($start);
             case 'warn':
                 return $this->warnRule($start);
             case 'while':
-                return $this->whileRule($start, $this->declarationChildCallable);
+                return $this->whileRule($start, $this->declarationChild(...));
             default:
                 $this->disallowedAtRule($start);
         }
@@ -855,21 +811,21 @@ abstract class StylesheetParser extends Parser
             case 'debug':
                 return $this->debugRule($start);
             case 'each':
-                return $this->eachRule($start, $this->functionChildCallable);
+                return $this->eachRule($start, $this->functionChild(...));
             case 'else':
                 $this->disallowedAtRule($start);
             case 'error':
                 return $this->errorRule($start);
             case 'for':
-                return $this->forRule($start, $this->functionChildCallable);
+                return $this->forRule($start, $this->functionChild(...));
             case 'if':
-                return $this->ifRule($start, $this->functionChildCallable);
+                return $this->ifRule($start, $this->functionChild(...));
             case 'return':
                 return $this->returnRule($start);
             case 'warn':
                 return $this->warnRule($start);
             case 'while':
-                return $this->whileRule($start, $this->functionChildCallable);
+                return $this->whileRule($start, $this->functionChild(...));
             default:
                 $this->disallowedAtRule($start);
         }
@@ -899,13 +855,13 @@ abstract class StylesheetParser extends Parser
             $query = $this->atRootQuery();
             $this->whitespace();
 
-            return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($query) {
+            return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($query) {
                 return new AtRootRule($children, $span, $query);
             });
         }
 
         if ($this->lookingAtChildren()) {
-            return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) {
+            return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) {
                 return new AtRootRule($children, $span);
             });
         }
@@ -1080,7 +1036,7 @@ abstract class StylesheetParser extends Parser
 
         $this->whitespace();
 
-        return $this->withChildren($this->functionChildCallable, $start, function (array $children, FileSpan $span) use ($name, $precedingComment, $arguments) {
+        return $this->withChildren($this->functionChild(...), $start, function (array $children, FileSpan $span) use ($name, $precedingComment, $arguments) {
             return new FunctionRule($name, $arguments, $span, $children, $precedingComment);
         });
     }
@@ -1268,7 +1224,7 @@ abstract class StylesheetParser extends Parser
             return false;
         }
 
-        if (substr($url, -4) === '.css') {
+        if (str_ends_with($url, '.css')) {
             return true;
         }
 
@@ -1280,7 +1236,7 @@ abstract class StylesheetParser extends Parser
             return false;
         }
 
-        return 0 === strpos($url, 'http://') || 0 === strpos($url, 'https://');
+        return str_starts_with($url, 'http://') || str_starts_with($url, 'https://');
     }
 
     /**
@@ -1442,7 +1398,7 @@ abstract class StylesheetParser extends Parser
             $wasInContentBlock = $this->inContentBlock;
             $this->inContentBlock = true;
 
-            $content = $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($contentArguments) {
+            $content = $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($contentArguments) {
                 return new ContentBlock($contentArguments, $children, $span);
             });
 
@@ -1470,7 +1426,7 @@ abstract class StylesheetParser extends Parser
     {
         $query = $this->mediaQueryList();
 
-        return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($query) {
+        return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($query) {
             return new MediaRule($query, $children, $span);
         });
     }
@@ -1501,7 +1457,7 @@ abstract class StylesheetParser extends Parser
         $this->whitespace();
         $this->inMixin = true;
 
-        return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($name, $arguments, $precedingComment) {
+        return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($name, $arguments, $precedingComment) {
             $this->inMixin = false;
 
             return new MixinRule($name, $arguments, $span, $children, $precedingComment);
@@ -1580,12 +1536,12 @@ abstract class StylesheetParser extends Parser
             }
 
             $buffer->write(',');
-            $buffer->write($this->rawText([$this, 'whitespace']));
+            $buffer->write($this->rawText($this->whitespace(...)));
         }
 
         $value = $buffer->buildInterpolation($this->scanner->spanFrom($valueStart));
 
-        return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($name, $value, $needsDeprecationWarning) {
+        return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($name, $value, $needsDeprecationWarning) {
             if ($needsDeprecationWarning) {
                 $this->logger->warn("@-moz-document is deprecated and support will be removed in Dart Sass 2.0.0.\n\nFor details, see https://sass-lang.com/d/moz-document.", true, $span);
             }
@@ -1617,7 +1573,7 @@ abstract class StylesheetParser extends Parser
         $condition = $this->supportsCondition();
         $this->whitespace();
 
-        return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($condition) {
+        return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($condition) {
             return new SupportsRule($condition, $children, $span);
         });
     }
@@ -1674,7 +1630,7 @@ abstract class StylesheetParser extends Parser
         }
 
         if ($this->lookingAtChildren()) {
-            $rule = $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($name, $value) {
+            $rule = $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($name, $value) {
                 return new AtRule($name, $span, $value, $children);
             });
         } else {
@@ -1822,7 +1778,6 @@ abstract class StylesheetParser extends Parser
      * Consumes an expression.
      *
      * @param (callable(): bool)|null $until
-     *
      * @phpstan-impure
      */
     private function expression(?callable $until = null, bool $singleEquals = false, bool $bracketList = false): Expression
@@ -3400,7 +3355,7 @@ WARNING;
 
                 case '/':
                     if ($this->scanner->peekChar(1) === '*') {
-                        $buffer->write($this->rawText([$this, 'loudComment']));
+                        $buffer->write($this->rawText($this->loudComment(...)));
                     } else {
                         $buffer->write($this->scanner->readChar());
                     }

@@ -50,17 +50,9 @@ final class SelectorParser extends Parser
      */
     private const SELECTOR_PSEUDO_ELEMENTS = ['slotted'];
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $allowParent;
+    private readonly bool $allowParent;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $allowPlaceholder;
+    private readonly bool $allowPlaceholder;
 
     public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true, ?InterpolationMap $interpolationMap = null, bool $allowPlaceholder = true)
     {
@@ -254,7 +246,7 @@ final class SelectorParser extends Parser
     private function simpleSelector(?bool $allowParent = null): SimpleSelector
     {
         $start = $this->scanner->getPosition();
-        $allowParent = $allowParent ?? $this->allowParent;
+        $allowParent ??= $this->allowParent;
 
         switch ($this->scanner->peekChar()) {
             case '[':

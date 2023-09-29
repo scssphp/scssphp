@@ -26,11 +26,7 @@ use ScssPhp\ScssPhp\Util\Character;
  */
 final class InterpolationMap
 {
-    /**
-     * @var Interpolation
-     * @readonly
-     */
-    private $interpolation;
+    private readonly Interpolation $interpolation;
 
     /**
      * Locations in the generated string.
@@ -42,7 +38,7 @@ final class InterpolationMap
      *
      * @var list<SourceLocation>
      */
-    private $targetLocations;
+    private readonly array $targetLocations;
 
     /**
      * @param list<SourceLocation> $targetLocations

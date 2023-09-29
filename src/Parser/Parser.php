@@ -846,7 +846,7 @@ class Parser
      */
     protected function expectIdentifier(string $text, ?string $name = null, bool $caseSensitive = false): void
     {
-        $name = $name ?? "\"$text\"";
+        $name ??= "\"$text\"";
 
         $start = $this->scanner->getPosition();
 
@@ -908,10 +908,8 @@ class Parser
      * Throws an error associated with $position.
      *
      * @throws FormatException
-     *
-     * @return never-returns
      */
-    protected function error(string $message, FileSpan $span, ?\Throwable $previous = null): void
+    protected function error(string $message, FileSpan $span, ?\Throwable $previous = null): never
     {
         throw new FormatException($message, $span, $previous);
     }
