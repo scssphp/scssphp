@@ -26,11 +26,11 @@
         "psr-4": { "ScssPhp\\ScssPhp\\Tests\\": "tests/" }
     },
     "require": {
-        "php": ">=7.2",
+        "php": ">=8.1",
         "ext-ctype": "*",
         "ext-json": "*",
-        "league/uri": "^6.4.0",
-        "league/uri-interfaces": "^2.3"
+        "league/uri": "^7.3",
+        "league/uri-interfaces": "^7.3"
     },
     "suggest": {
         "ext-mbstring": "For best performance, mbstring should be installed as it is faster than ext-iconv",
@@ -38,7 +38,7 @@
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4",
-        "phpunit/phpunit": "^8.5 || ^9.5",
+        "phpunit/phpunit": "^9.5.6",
         "sass/sass-spec": "*",
         "squizlabs/php_codesniffer": "~3.5",
         "symfony/phpunit-bridge": "^5.1",

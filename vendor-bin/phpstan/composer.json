@@ -3,6 +3,8 @@
         "sort-packages": true
     },
     "require": {
-        "phpstan/phpstan": "1.10.35"
+        "jiripudil/phpstan-sealed-classes": "^1.1",
+        "phpstan/phpstan": "1.10.35",
+        "phpstan/phpstan-deprecation-rules": "^1.1"
     }
 }

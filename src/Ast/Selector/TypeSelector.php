@@ -27,11 +27,8 @@ final class TypeSelector extends SimpleSelector
 {
     /**
      * The element name being selected.
-     *
-     * @var QualifiedName
-     * @readonly
      */
-    private $name;
+    private readonly QualifiedName $name;
 
     public function __construct(QualifiedName $name, FileSpan $span)
     {

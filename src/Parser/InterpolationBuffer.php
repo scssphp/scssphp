@@ -23,15 +23,12 @@ use ScssPhp\ScssPhp\SourceSpan\FileSpan;
  */
 final class InterpolationBuffer
 {
-    /**
-     * @var string
-     */
-    private $text = '';
+    private string $text = '';
 
     /**
      * @var list<string|Expression>
      */
-    private $contents = [];
+    private array $contents = [];
 
     /**
      * Returns the substring of the buffer string after the last interpolation.

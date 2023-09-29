@@ -50,17 +50,9 @@ final class SelectorParser extends Parser
      */
     private const SELECTOR_PSEUDO_ELEMENTS = ['slotted'];
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $allowParent;
+    private readonly bool $allowParent;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $allowPlaceholder;
+    private readonly bool $allowPlaceholder;
 
     public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true, ?InterpolationMap $interpolationMap = null, bool $allowPlaceholder = true)
     {
@@ -71,7 +63,7 @@ final class SelectorParser extends Parser
 
     public function parse(): SelectorList
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $selector = $this->selectorList();
 
             if (!$this->scanner->isDone()) {
@@ -79,14 +71,12 @@ final class SelectorParser extends Parser
             }
 
             return $selector;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     public function parseComplexSelector(): ComplexSelector
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $complex = $this->complexSelector();
 
             if (!$this->scanner->isDone()) {
@@ -94,14 +84,12 @@ final class SelectorParser extends Parser
             }
 
             return $complex;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     public function parseCompoundSelector(): CompoundSelector
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $compound = $this->compoundSelector();
 
             if (!$this->scanner->isDone()) {
@@ -109,14 +97,12 @@ final class SelectorParser extends Parser
             }
 
             return $compound;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     public function parseSimpleSelector(): SimpleSelector
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $simple = $this->simpleSelector();
 
             if (!$this->scanner->isDone()) {
@@ -124,9 +110,7 @@ final class SelectorParser extends Parser
             }
 
             return $simple;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     /**
@@ -175,7 +159,7 @@ final class SelectorParser extends Parser
 
         $componentStart = $this->scanner->getPosition();
         $lastCompound = null;
-        /** @var list<CssValue<Combinator::*>> $combinators */
+        /** @var list<CssValue<Combinator>> $combinators */
         $combinators = [];
 
         $initialCombinators = null;
@@ -262,7 +246,7 @@ final class SelectorParser extends Parser
     private function simpleSelector(?bool $allowParent = null): SimpleSelector
     {
         $start = $this->scanner->getPosition();
-        $allowParent = $allowParent ?? $this->allowParent;
+        $allowParent ??= $this->allowParent;
 
         switch ($this->scanner->peekChar()) {
             case '[':
@@ -351,10 +335,8 @@ final class SelectorParser extends Parser
 
     /**
      * Consumes an attribute selector's operator.
-     *
-     * @phpstan-return AttributeOperator::*
      */
-    private function attributeOperator(): string
+    private function attributeOperator(): AttributeOperator
     {
         $start = $this->scanner->getPosition();
 

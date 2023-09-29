@@ -17,44 +17,6 @@ namespace ScssPhp\ScssPhp\Util;
  */
 final class StringUtil
 {
-    /**
-     * Checks whether $haystack starts with $needle.
-     *
-     * This is a userland implementation of `str_starts_with` of PHP 8+.
-     *
-     * @param string $haystack
-     * @param string $needle
-     *
-     * @return bool
-     */
-    public static function startsWith(string $haystack, string $needle): bool
-    {
-        if (\PHP_VERSION_ID >= 80000) {
-            return str_starts_with($haystack, $needle);
-        }
-
-        return '' === $needle || ('' !== $haystack && 0 === substr_compare($haystack, $needle, 0, \strlen($needle)));
-    }
-
-    /**
-     * Checks whether $haystack ends with $needle.
-     *
-     * This is a userland implementation of `str_ends_with` of PHP 8+.
-     *
-     * @param string $haystack
-     * @param string $needle
-     *
-     * @return bool
-     */
-    public static function endsWith(string $haystack, string $needle): bool
-    {
-        if (\PHP_VERSION_ID >= 80000) {
-            return str_ends_with($haystack, $needle);
-        }
-
-        return '' === $needle || ('' !== $haystack && 0 === substr_compare($haystack, $needle, -\strlen($needle)));
-    }
-
     public static function trimAsciiRight(string $string, bool $excludeEscape = false): string
     {
         $end = self::lastNonWhitespace($string, $excludeEscape);
@@ -92,11 +54,6 @@ final class StringUtil
 
     /**
      * Returns whether $string1 and $string2 are equal, ignoring ASCII case.
-     *
-     * @param string|null $string1
-     * @param string      $string2
-     *
-     * @return bool
      */
     public static function equalsIgnoreCase(?string $string1, string $string2): bool
     {
@@ -118,10 +75,6 @@ final class StringUtil
      * rather than operating on ASCII.
      * Passing an input string in an encoding that it is not ASCII compatible is
      * unsupported, and will probably generate garbage.
-     *
-     * @param string $string
-     *
-     * @return string
      */
     public static function toAsciiLowerCase(string $string): string
     {

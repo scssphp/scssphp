@@ -29,47 +29,19 @@ use ScssPhp\ScssPhp\Visitor\StatementVisitor;
  */
 final class VariableDeclaration implements Statement, SassDeclaration
 {
-    /**
-     * @var string|null
-     * @readonly
-     */
-    private $namespace;
+    private readonly ?string $namespace;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    private $name;
+    private readonly string $name;
 
-    /**
-     * @var SilentComment|null
-     * @readonly
-     */
-    private $comment;
+    private readonly ?SilentComment $comment;
 
-    /**
-     * @var Expression
-     * @readonly
-     */
-    private $expression;
+    private readonly Expression $expression;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $guarded;
+    private readonly bool $guarded;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $global;
+    private readonly bool $global;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     public function __construct(string $name, Expression $expression, FileSpan $span, ?string $namespace = null, bool $guarded = false, bool $global = false, ?SilentComment $comment = null)
     {

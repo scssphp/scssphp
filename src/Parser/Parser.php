@@ -29,33 +29,18 @@ use ScssPhp\ScssPhp\Util\ParserUtil;
  */
 class Parser
 {
-    /**
-     * @var StringScanner
-     * @readonly
-     */
-    protected $scanner;
+    protected readonly StringScanner $scanner;
 
-    /**
-     * @var LocationAwareLoggerInterface
-     * @readonly
-     */
-    protected $logger;
+    protected readonly LocationAwareLoggerInterface $logger;
 
     /**
      * A map used to map source spans in the text being parsed back to their
      * original locations in the source file, if this isn't being parsed directly
      * from source.
-     *
-     * @var InterpolationMap|null
-     * @readonly
      */
-    private $interpolationMap;
+    private readonly ?InterpolationMap $interpolationMap;
 
-    /**
-     * @var string|null
-     * @readonly
-     */
-    protected $sourceUrl;
+    protected readonly ?string $sourceUrl;
 
     /**
      * Parses $text as a CSS identifier and returns the result.
@@ -76,7 +61,7 @@ class Parser
             self::parseIdentifier($text, $logger);
 
             return true;
-        } catch (SassFormatException $e) {
+        } catch (SassFormatException) {
             return false;
         }
     }
@@ -94,14 +79,12 @@ class Parser
      */
     private function doParseIdentifier(): string
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $result = $this->identifier();
             $this->scanner->expectDone();
 
             return $result;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     /**
@@ -399,13 +382,13 @@ class Parser
 
                 case '"':
                 case "'":
-                    $buffer .= $this->rawText([$this, 'string']);
+                    $buffer .= $this->rawText($this->string(...));
                     $wroteNewline = false;
                     break;
 
                 case '/':
                     if ($this->scanner->peekChar(1) === '*') {
-                        $buffer .= $this->rawText([$this, 'loudComment']);
+                        $buffer .= $this->rawText($this->loudComment(...));
                     } else {
                         $buffer .= $this->scanner->readChar();
                     }
@@ -595,7 +578,7 @@ class Parser
                 assert(\is_int($value));
             }
 
-            $this->scanCharIf([Character::class, 'isWhitespace']);
+            $this->scanCharIf(Character::isWhitespace(...));
             $valueText = Util::mbChr($value);
         } else {
             $valueText = $this->scanner->readUtf8Char();
@@ -863,7 +846,7 @@ class Parser
      */
     protected function expectIdentifier(string $text, ?string $name = null, bool $caseSensitive = false): void
     {
-        $name = $name ?? "\"$text\"";
+        $name ??= "\"$text\"";
 
         $start = $this->scanner->getPosition();
 
@@ -885,7 +868,7 @@ class Parser
     /**
      * Runs $consumer and returns the source text that it consumes.
      *
-     * @param callable(): void $consumer
+     * @param callable(): (mixed|void) $consumer
      */
     protected function rawText(callable $consumer): string
     {
@@ -908,9 +891,7 @@ class Parser
 
         $interpolationMap = $this->interpolationMap;
 
-        return new LazyFileSpan(static function () use ($interpolationMap, $span) {
-            return $interpolationMap->mapSpan($span);
-        });
+        return new LazyFileSpan(static fn() => $interpolationMap->mapSpan($span));
     }
 
     /**
@@ -925,25 +906,44 @@ class Parser
      * Throws an error associated with $position.
      *
      * @throws FormatException
-     *
-     * @return never-returns
      */
-    protected function error(string $message, FileSpan $span, ?\Throwable $previous = null): void
+    protected function error(string $message, FileSpan $span, ?\Throwable $previous = null): never
     {
         throw new FormatException($message, $span, $previous);
     }
 
-    protected function wrapException(FormatException $error): SassFormatException
+    /**
+     * Runs $callback and wraps any {@see FormatException} it throws in a
+     * {@see SassFormatException}
+     *
+     * @template T
+     * @param callable(): T $callback
+     * @return T
+     *
+     * @throws SassFormatException
+     */
+    protected function wrapSpanFormatException(callable $callback)
     {
-        $span = $error->getSpan();
+        try {
+            try {
+                return $callback();
+            } catch (FormatException $e) {
+                if ($this->interpolationMap === null) {
+                    throw $e;
+                }
 
-        // TODO map exceptions
+                throw $this->interpolationMap->mapException($e);
+            }
+        } catch (FormatException $error) {
+            $span = $error->getSpan();
 
-        if (0 === stripos($error->getMessage(), 'expected')) {
-            $span = $this->adjustExceptionSpan($span);
+            if (0 === stripos($error->getMessage(), 'expected')) {
+                $span = $this->adjustExceptionSpan($span);
+            }
+
+            throw new SassFormatException($error->getMessage(), $span, $error);
         }
-
-        return new SassFormatException($error->getMessage(), $span, $error);
+        // TODO handle multi-span exceptions
     }
 
     /**

@@ -17,23 +17,15 @@ namespace ScssPhp\ScssPhp\SourceSpan;
  */
 final class SourceFile
 {
-    /**
-     * @var string
-     * @readonly
-     */
-    private $string;
+    private readonly string $string;
 
-    /**
-     * @var string|null
-     * @readonly
-     */
-    private $sourceUrl;
+    private readonly ?string $sourceUrl;
 
     /**
      * @var int[]
      * @readonly
      */
-    private $lineStarts;
+    private array $lineStarts;
 
     /**
      * The 0-based last line that was returned by {@see getLine}
@@ -45,7 +37,7 @@ final class SourceFile
      *
      * @var int|null
      */
-    private $cachedLine;
+    private ?int $cachedLine = null;
 
     public function __construct(string $content, ?string $sourceUrl = null)
     {
@@ -68,7 +60,7 @@ final class SourceFile
 
         $this->lineStarts[] = \strlen($content);
 
-        if (substr($content, -1) !== "\n") {
+        if (!str_ends_with($content, "\n")) {
             $this->lineStarts[] = \strlen($content) + 1;
         }
     }
@@ -109,10 +101,6 @@ final class SourceFile
 
     /**
      * The 0-based line
-     *
-     * @param int $position
-     *
-     * @return int
      */
     public function getLine(int $position): int
     {
@@ -161,10 +149,6 @@ final class SourceFile
      *
      * Checks on {@see $cachedLine} and the next line. If it's on the next line, it
      * updates {@see $cachedLine} to point to that.
-     *
-     * @param int $position
-     *
-     * @return bool
      */
     private function isNearCacheLine(int $position): bool
     {
@@ -195,10 +179,6 @@ final class SourceFile
 
     /**
      * The 0-based column of that position
-     *
-     * @param int $position
-     *
-     * @return int
      */
     public function getColumn(int $position): int
     {

@@ -23,11 +23,8 @@ final class IsBogusVisitor extends AnySelectorVisitor
 {
     /**
      * Whether to consider selectors with leading combinators as bogus.
-     *
-     * @var bool
-     * @readonly
      */
-    private $includeLeadingCombinator;
+    private readonly bool $includeLeadingCombinator;
 
     public function __construct(bool $includeLeadingCombinator)
     {

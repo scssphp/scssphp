@@ -27,26 +27,16 @@ final class VariableExpression implements Expression, SassReference
 {
     /**
      * The name of this variable, with underscores converted to hyphens.
-     *
-     * @var string
-     * @readonly
      */
-    private $name;
+    private readonly string $name;
 
     /**
      * The namespace of the variable being referenced, or `null` if it's
      * referenced without a namespace.
-     *
-     * @var string|null
-     * @readonly
      */
-    private $namespace;
+    private ?string $namespace;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     public function __construct(string $name, FileSpan $span, ?string $namespace = null)
     {

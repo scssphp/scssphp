@@ -31,11 +31,8 @@ final class SassCalculation extends Value
 {
     /**
      * The calculation's name, such as `"calc"`.
-     *
-     * @var string
-     * @readonly
      */
-    private $name;
+    private readonly string $name;
 
     /**
      * The calculation's arguments.
@@ -44,18 +41,14 @@ final class SassCalculation extends Value
      * {@see SassString}, or a {@see CalculationOperation}.
      *
      * @var list<object>
-     * @readonly
      */
-    private $arguments;
+    private readonly array $arguments;
 
     /**
      * Creates a new calculation with the given $name and $arguments
      * that will not be simplified.
      *
-     * @param string       $name
      * @param list<object> $arguments
-     *
-     * @return SassCalculation
      *
      * @internal
      */
@@ -73,10 +66,6 @@ final class SassCalculation extends Value
      * This automatically simplifies the calculation, so it may return a
      * {@see SassNumber} rather than a {@see SassCalculation}. It throws an exception if it
      * can determine that the calculation will definitely produce invalid CSS.
-     *
-     * @param object $argument
-     *
-     * @return Value
      *
      * @throws SassScriptException
      */
@@ -107,8 +96,6 @@ final class SassCalculation extends Value
      * can determine that the calculation will definitely produce invalid CSS.
      *
      * @param list<object> $arguments
-     *
-     * @return Value
      *
      * @throws SassScriptException
      */
@@ -156,8 +143,6 @@ final class SassCalculation extends Value
      *
      * @param list<object> $arguments
      *
-     * @return Value
-     *
      * @throws SassScriptException
      */
     public static function max(array $arguments): Value
@@ -203,7 +188,6 @@ final class SassCalculation extends Value
      * can determine that the calculation will definitely produce invalid CSS.
      *
      * @param list<object> $arguments
-     * @return Value
      */
     public static function hypot(array $arguments): Value
     {
@@ -439,15 +423,9 @@ WARNING
      * This may be passed fewer than three arguments, but only if one of the
      * arguments is an unquoted `var()` string.
      *
-     * @param object      $min
-     * @param object|null $value
-     * @param object|null $max
-     *
-     * @return Value
-     *
      * @throws SassScriptException
      */
-    public static function clamp(object $min, object $value = null, object $max = null): Value
+    public static function clamp(object $min, ?object $value = null, ?object $max = null): Value
     {
         if ($value === null && $max !== null) {
             throw new \InvalidArgumentException('If value is null, max must also be null.');
@@ -751,17 +729,9 @@ WARNING
      * Each of $left and $right must be either a {@see SassNumber}, a
      * {@see SassCalculation}, an unquoted {@see SassString}, or a {@see CalculationOperation}.
      *
-     * @param string $operator
-     * @param object $left
-     * @param object $right
-     *
-     * @return object
-     *
-     * @phpstan-param CalculationOperator::* $operator
-     *
      * @throws SassScriptException
      */
-    public static function operate(string $operator, object $left, object $right): object
+    public static function operate(CalculationOperator $operator, object $left, object $right): object
     {
         return self::operateInternal($operator, $left, $right, false, true);
     }
@@ -775,21 +745,11 @@ WARNING
      *
      * If $simplify is `false`, no simplification will be done.
      *
-     * @param string $operator
-     * @param object $left
-     * @param object $right
-     * @param bool   $inLegacySassFunction
-     * @param bool   $simplify
-     *
-     * @return object
-     *
      * @throws SassScriptException
-     *
-     * @phpstan-param CalculationOperator::* $operator
      *
      * @internal
      */
-    public static function operateInternal(string $operator, object $left, object $right, bool $inLegacySassFunction, bool $simplify): object
+    public static function operateInternal(CalculationOperator $operator, object $left, object $right, bool $inLegacySassFunction, bool $simplify): object
     {
         if (!$simplify) {
             return new CalculationOperation($operator, $left, $right);
@@ -824,7 +784,6 @@ WARNING
      * An internal constructor that doesn't perform any validation or
      * simplification.
      *
-     * @param string       $name
      * @param list<object> $arguments
      */
     private function __construct(string $name, array $arguments)
@@ -1035,7 +994,7 @@ WARNING
             throw new SassScriptException("Value $arg can't be used in a calculation.");
         }
 
-        throw new \InvalidArgumentException(sprintf('Unexpected calculation argument %s.', get_class($arg)));
+        throw new \InvalidArgumentException(sprintf('Unexpected calculation argument %s.', get_debug_type($arg)));
     }
 
     /**
@@ -1148,7 +1107,6 @@ WARNING
      * doesn't contain either a {@see SassString}.
      *
      * @param list<object> $args
-     * @param int          $expectedLength
      *
      * @throws SassScriptException
      */

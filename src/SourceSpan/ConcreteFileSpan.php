@@ -20,28 +20,15 @@ use ScssPhp\ScssPhp\Util\Path;
  */
 final class ConcreteFileSpan implements FileSpan
 {
-    /**
-     * @var SourceFile
-     * @readonly
-     */
-    private $file;
+    private readonly SourceFile $file;
+
+    private readonly int $start;
+
+    private readonly int $end;
 
     /**
-     * @var int
-     * @readonly
-     */
-    private $start;
-
-    /**
-     * @var int
-     * @readonly
-     */
-    private $end;
-
-    /**
-     * @param SourceFile $file
-     * @param int        $start The offset of the beginning of the span.
-     * @param int        $end   The offset of the end of the span.
+     * @param int $start The offset of the beginning of the span.
+     * @param int $end   The offset of the end of the span.
      */
     public function __construct(SourceFile $file, int $start, int $end)
     {

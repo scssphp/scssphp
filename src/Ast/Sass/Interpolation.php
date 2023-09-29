@@ -24,15 +24,10 @@ final class Interpolation implements SassNode
 {
     /**
      * @var list<string|Expression>
-     * @readonly
      */
-    private $contents;
+    private readonly array $contents;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     /**
      * Creates a new {@see Interpolation} by concatenating a sequence of strings,
@@ -52,7 +47,7 @@ final class Interpolation implements SassNode
             } elseif ($element instanceof Interpolation) {
                 $buffer->addInterpolation($element);
             } else {
-                throw new \InvalidArgumentException(sprintf('The elements in $contents may only contains strings, Expressions, or Interpolations, "%s" given.', \is_object($element) ? get_class($element) : gettype($element)));
+                throw new \InvalidArgumentException(sprintf('The elements in $contents may only contains strings, Expressions, or Interpolations, "%s" given.', get_debug_type($element)));
             }
         }
 
@@ -139,8 +134,6 @@ final class Interpolation implements SassNode
 
     public function __toString(): string
     {
-        return implode('', array_map(function ($value) {
-            return \is_string($value) ? $value : '#{' . $value .'}';
-        }, $this->contents));
+        return implode('', array_map(fn($value) => \is_string($value) ? $value : '#{' . $value .'}', $this->contents));
     }
 }

@@ -31,58 +31,35 @@ final class PseudoSelector extends SimpleSelector
 {
     /**
      * The name of this selector.
-     *
-     * @var string
-     * @readonly
      */
-    private $name;
+    private readonly string $name;
 
     /**
      * Like {@see name}, but without any vendor prefixes.
-     *
-     * @var string
-     * @readonly
      */
-    private $normalizedName;
+    private readonly string $normalizedName;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $isClass;
+    private readonly bool $isClass;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $isSyntacticClass;
+    private readonly bool $isSyntacticClass;
 
     /**
      * The non-selector argument passed to this selector.
      *
      * This is `null` if there's no argument. If {@see argument} and {@see selector} are
      * both non-`null`, the selector follows the argument.
-     *
-     * @var string|null
-     * @readonly
      */
-    private $argument;
+    private readonly ?string $argument;
 
     /**
      * The selector argument passed to this selector.
      *
      * This is `null` if there's no selector. If {@see argument} and {@see selector} are
      * both non-`null`, the selector follows the argument.
-     *
-     * @var SelectorList|null
-     * @readonly
      */
-    private $selector;
+    private readonly ?SelectorList $selector;
 
-    /**
-     * @var int|null
-     */
-    private $specificity;
+    private ?int $specificity = null;
 
     public function __construct(string $name, FileSpan $span, bool $element = false, ?string $argument = null, ?SelectorList $selector = null)
     {

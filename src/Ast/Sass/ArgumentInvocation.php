@@ -25,39 +25,23 @@ final class ArgumentInvocation implements SassNode
 {
     /**
      * @var list<Expression>
-     * @readonly
      */
-    private $positional;
+    private readonly array $positional;
 
     /**
      * @var array<string, Expression>
-     * @readonly
      */
-    private $named;
+    private readonly array $named;
 
-    /**
-     * @var Expression|null
-     * @readonly
-     */
-    private $rest;
+    private readonly ?Expression $rest;
 
-    /**
-     * @var Expression|null
-     */
-    private $keywordRest;
+    private readonly ?Expression $keywordRest;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     /**
      * @param list<Expression>          $positional
      * @param array<string, Expression> $named
-     * @param FileSpan                  $span
-     * @param Expression|null           $rest
-     * @param Expression|null           $keywordRest
      */
     public function __construct(array $positional, array $named, FileSpan $span, ?Expression $rest = null, ?Expression $keywordRest = null)
     {

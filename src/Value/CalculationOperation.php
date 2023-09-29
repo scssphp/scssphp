@@ -18,54 +18,34 @@ use ScssPhp\ScssPhp\Util\Equatable;
 /**
  * A binary operation that can appear in a {@see SassCalculation}.
  */
-final class CalculationOperation implements Equatable
+final class CalculationOperation implements Equatable, \Stringable
 {
-    /**
-     * @phpstan-var CalculationOperator::*
-     * @readonly
-     */
-    private $operator;
+    private readonly CalculationOperator $operator;
 
     /**
      * The left-hand operand.
      *
      * This is either a {@see SassNumber}, a {@see SassCalculation}, an unquoted
      * {@see SassString}, or a {@see CalculationOperation}.
-     *
-     * @var object
-     * @readonly
      */
-    private $left;
+    private readonly object $left;
 
     /**
      * The right-hand operand.
      *
      * This is either a {@see SassNumber}, a {@see SassCalculation}, an unquoted
      * {@see SassString}, or a {@see CalculationOperation}.
-     *
-     * @var object
-     * @readonly
      */
-    private $right;
+    private readonly object $right;
 
-    /**
-     * @param string $operator
-     * @param object $left
-     * @param object $right
-     *
-     * @phpstan-param CalculationOperator::* $operator
-     */
-    public function __construct(string $operator, object $left, object $right)
+    public function __construct(CalculationOperator $operator, object $left, object $right)
     {
         $this->operator = $operator;
         $this->left = $left;
         $this->right = $right;
     }
 
-    /**
-     * @phpstan-return CalculationOperator::*
-     */
-    public function getOperator(): string
+    public function getOperator(): CalculationOperator
     {
         return $this->operator;
     }

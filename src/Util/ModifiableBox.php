@@ -26,14 +26,13 @@ final class ModifiableBox
 {
     /**
      * @var T
-     * @readonly
      */
-    private $value;
+    private mixed $value;
 
     /**
      * @param T $value
      */
-    public function __construct($value)
+    public function __construct(mixed $value)
     {
         $this->value = $value;
     }
@@ -49,7 +48,7 @@ final class ModifiableBox
     /**
      * @param T $value
      */
-    public function setValue($value): void
+    public function setValue(mixed $value): void
     {
         $this->value = $value;
     }

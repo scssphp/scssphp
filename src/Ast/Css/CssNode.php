@@ -37,7 +37,7 @@ interface CssNode extends AstNode
      *
      * @return T
      */
-    public function accept($visitor);
+    public function accept(CssVisitor $visitor);
 
     /**
      * Whether this is invisible and won't be emitted to the compiled stylesheet.

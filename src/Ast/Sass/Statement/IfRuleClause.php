@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Ast\Sass\Statement;
 
 use ScssPhp\ScssPhp\Ast\Sass\Import\DynamicImport;
 use ScssPhp\ScssPhp\Ast\Sass\Statement;
+use ScssPhp\ScssPhp\Util\ListUtil;
 
 /**
  * The superclass of `@if` and `@else` clauses.
@@ -24,15 +25,10 @@ abstract class IfRuleClause
 {
     /**
      * @var Statement[]
-     * @readonly
      */
-    private $children;
+    private readonly array $children;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $declarations = false;
+    private readonly bool $declarations;
 
     /**
      * @param Statement[] $children
@@ -40,22 +36,17 @@ abstract class IfRuleClause
     public function __construct(array $children)
     {
         $this->children = $children;
-
-        foreach ($children as $child) {
+        $this->declarations = ListUtil::any($children, function (Statement $child) {
             if ($child instanceof VariableDeclaration || $child instanceof FunctionRule || $child instanceof MixinRule) {
-                $this->declarations = true;
-                break;
+                return true;
             }
 
             if ($child instanceof ImportRule) {
-                foreach ($child->getImports() as $import) {
-                    if ($import instanceof DynamicImport) {
-                        $this->declarations = true;
-                        break 2;
-                    }
-                }
+                return ListUtil::any($child->getImports(), fn ($import) => $import instanceof DynamicImport);
             }
-        }
+
+            return false;
+        });
     }
 
     /**

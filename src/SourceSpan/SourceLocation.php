@@ -17,17 +17,9 @@ namespace ScssPhp\ScssPhp\SourceSpan;
  */
 final class SourceLocation
 {
-    /**
-     * @var SourceFile
-     * @readonly
-     */
-    private $file;
+    private readonly SourceFile $file;
 
-    /**
-     * @var int
-     * @readonly
-     */
-    private $offset;
+    private readonly int $offset;
 
     public function __construct(SourceFile $file, int $offset)
     {

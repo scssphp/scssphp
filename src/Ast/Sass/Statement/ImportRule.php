@@ -25,19 +25,14 @@ use ScssPhp\ScssPhp\Visitor\StatementVisitor;
 final class ImportRule implements Statement
 {
     /**
-     * @var Import[]
-     * @readonly
+     * @var list<Import>
      */
-    private $imports;
+    private readonly array $imports;
+
+    private readonly FileSpan $span;
 
     /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
-
-    /**
-     * @param Import[] $imports
+     * @param list<Import> $imports
      */
     public function __construct(array $imports, FileSpan $span)
     {
@@ -46,7 +41,7 @@ final class ImportRule implements Statement
     }
 
     /**
-     * @return Import[]
+     * @return list<Import>
      */
     public function getImports(): array
     {

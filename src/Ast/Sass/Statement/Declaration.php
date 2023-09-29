@@ -28,28 +28,17 @@ use ScssPhp\ScssPhp\Visitor\StatementVisitor;
  */
 final class Declaration extends ParentStatement
 {
-    /**
-     * @var Interpolation
-     * @readonly
-     */
-    private $name;
+    private readonly Interpolation $name;
 
     /**
      * The value of this declaration.
      *
      * If {@see getChildren} is `null`, this is never `null`. Otherwise, it may or may
      * not be `null`.
-     *
-     * @var Expression|null
-     * @readonly
      */
-    private $value;
+    private readonly ?Expression $value;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     /**
      * @param Statement[]|null $children
@@ -96,7 +85,7 @@ final class Declaration extends ParentStatement
      */
     public function isCustomProperty(): bool
     {
-        return 0 === strpos($this->name->getInitialPlain(), '--');
+        return str_starts_with($this->name->getInitialPlain(), '--');
     }
 
     public function getSpan(): FileSpan

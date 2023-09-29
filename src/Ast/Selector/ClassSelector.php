@@ -27,11 +27,8 @@ final class ClassSelector extends SimpleSelector
 {
     /**
      * The class name this selects for.
-     *
-     * @var string
-     * @readonly
      */
-    private $name;
+    private readonly string $name;
 
     public function __construct(string $name, FileSpan $span)
     {

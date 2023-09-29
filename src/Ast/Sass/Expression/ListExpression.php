@@ -25,36 +25,22 @@ use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
 final class ListExpression implements Expression
 {
     /**
-     * @var Expression[]
-     * @readonly
+     * @var list<Expression>
      */
-    private $contents;
+    private readonly array $contents;
 
-    /**
-     * @var ListSeparator::*
-     * @readonly
-     */
-    private $separator;
+    private readonly ListSeparator $separator;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $brackets;
+    private readonly bool $brackets;
 
     /**
      * ListExpression constructor.
      *
-     * @param Expression[] $contents
-     * @param ListSeparator::* $separator
+     * @param list<Expression> $contents
      */
-    public function __construct(array $contents, string $separator, FileSpan $span, bool $brackets = false)
+    public function __construct(array $contents, ListSeparator $separator, FileSpan $span, bool $brackets = false)
     {
         $this->contents = $contents;
         $this->separator = $separator;
@@ -63,17 +49,14 @@ final class ListExpression implements Expression
     }
 
     /**
-     * @return Expression[]
+     * @return list<Expression>
      */
     public function getContents(): array
     {
         return $this->contents;
     }
 
-    /**
-     * @return ListSeparator::*
-     */
-    public function getSeparator(): string
+    public function getSeparator(): ListSeparator
     {
         return $this->separator;
     }
@@ -102,9 +85,10 @@ final class ListExpression implements Expression
             $buffer .= '(';
         }
 
-        $buffer .= implode($this->separator === ListSeparator::COMMA ? ', ' : ' ', array_map(function ($element) {
-            return $this->elementNeedsParens($element) ? "($element)" : (string) $element;
-        }, $this->contents));
+        $buffer .= implode(
+            $this->separator === ListSeparator::COMMA ? ', ' : ' ',
+            array_map(fn($element) => $this->elementNeedsParens($element) ? "($element)" : (string) $element, $this->contents)
+        );
 
         if ($this->hasBrackets()) {
             $buffer .= ']';

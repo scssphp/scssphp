@@ -15,7 +15,7 @@ namespace ScssPhp\ScssPhp\Serializer;
 /**
  * @internal
  */
-interface StringBuffer
+interface StringBuffer extends \Stringable
 {
     /**
      * Returns the length of the content that has been accumulated so far.
@@ -28,6 +28,4 @@ interface StringBuffer
      * Writes a single char to the buffer.
      */
     public function writeChar(string $char): void;
-
-    public function __toString(): string;
 }

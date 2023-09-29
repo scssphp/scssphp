@@ -27,7 +27,7 @@ final class AtRootQueryParser extends Parser
      */
     public function parse(): AtRootQuery
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $this->scanner->expectChar('(');
             $this->whitespace();
             $include = $this->scanIdentifier('with');
@@ -49,8 +49,6 @@ final class AtRootQueryParser extends Parser
             $this->scanner->expectDone();
 
             return AtRootQuery::create($atRules, $include);
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 }

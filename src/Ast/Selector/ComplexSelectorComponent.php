@@ -28,11 +28,8 @@ final class ComplexSelectorComponent implements Equatable
 {
     /**
      * This component's compound selector.
-     *
-     * @var CompoundSelector
-     * @readonly
      */
-    private $selector;
+    private readonly CompoundSelector $selector;
 
     /**
      * This selector's combinators.
@@ -41,22 +38,14 @@ final class ComplexSelectorComponent implements Equatable
      * combinator. If it's more than one element, that means it's invalid CSS;
      * however, we still support this for backwards-compatibility purposes.
      *
-     * @var list<CssValue<string>>
-     * @phpstan-var list<CssValue<Combinator::*>>
-     * @readonly
+     * @var list<CssValue<Combinator>>
      */
-    private $combinators;
+    private readonly array $combinators;
+
+    private readonly FileSpan $span;
 
     /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
-
-    /**
-     * @param list<CssValue<string>> $combinators
-     *
-     * @phpstan-param list<CssValue<Combinator::*>> $combinators
+     * @param list<CssValue<Combinator>> $combinators
      */
     public function __construct(CompoundSelector $selector, array $combinators, FileSpan $span)
     {
@@ -76,8 +65,7 @@ final class ComplexSelectorComponent implements Equatable
     }
 
     /**
-     * @return list<CssValue<string>>
-     * @phpstan-return list<CssValue<Combinator::*>>
+     * @return list<CssValue<Combinator>>
      */
     public function getCombinators(): array
     {
@@ -93,9 +81,7 @@ final class ComplexSelectorComponent implements Equatable
      * Returns a copy of $this with $combinators added to the end of
      * `$this->combinators`.
      *
-     * @param list<CssValue<string>> $combinators
-     *
-     * @phpstan-param list<CssValue<Combinator::*>> $combinators
+     * @param list<CssValue<Combinator>> $combinators
      */
     public function withAdditionalCombinators(array $combinators): ComplexSelectorComponent
     {

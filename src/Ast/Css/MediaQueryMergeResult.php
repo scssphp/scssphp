@@ -10,14 +10,14 @@
  * @link http://scssphp.github.io/scssphp
  */
 
-namespace ScssPhp\ScssPhp\Value;
+namespace ScssPhp\ScssPhp\Ast\Css;
 
 use JiriPudil\SealedClasses\Sealed;
 
 /**
  * @internal
  */
-#[Sealed(permits: [ColorFormatEnum::class, SpanColorFormat::class])]
-interface ColorFormat
+#[Sealed(permits: [CssMediaQuery::class, MediaQuerySingletonMergeResult::class])]
+interface MediaQueryMergeResult
 {
 }

@@ -122,16 +122,10 @@ abstract class StatementSearchVisitor implements StatementVisitor
 
     public function visitIfRule(IfRule $node)
     {
-        $value = ListUtil::search($node->getClauses(), function (IfClause $clause) {
-            return ListUtil::search($clause->getChildren(), function (Statement $child) {
-                return $child->accept($this);
-            });
-        });
+        $value = ListUtil::search($node->getClauses(), fn(IfClause $clause) => ListUtil::search($clause->getChildren(), fn(Statement $child) => $child->accept($this)));
 
         if ($node->getLastClause() !== null) {
-            $value = $value ?? ListUtil::search($node->getLastClause()->getChildren(), function (Statement $child) {
-                return $child->accept($this);
-            });
+            $value ??= ListUtil::search($node->getLastClause()->getChildren(), fn(Statement $child) => $child->accept($this));
         }
 
         return $value;
@@ -231,14 +225,6 @@ abstract class StatementSearchVisitor implements StatementVisitor
      */
     protected function visitChildren(array $children)
     {
-        foreach ($children as $child) {
-            $result = $child->accept($this);
-
-            if ($result !== null) {
-                return $result;
-            }
-        }
-
-        return null;
+        return ListUtil::search($children, fn (Statement $child) => $child->accept($this));
     }
 }

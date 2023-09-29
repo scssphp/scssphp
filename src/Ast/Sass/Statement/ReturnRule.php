@@ -26,17 +26,9 @@ use ScssPhp\ScssPhp\Visitor\StatementVisitor;
  */
 final class ReturnRule implements Statement
 {
-    /**
-     * @var Expression
-     * @readonly
-     */
-    private $expression;
+    private readonly Expression $expression;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     public function __construct(Expression $expression, FileSpan $span)
     {

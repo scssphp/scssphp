@@ -19,11 +19,7 @@ use ScssPhp\ScssPhp\SourceSpan\FileSpan;
  */
 final class FormatException extends \Exception
 {
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     public function __construct(string $message, FileSpan $span, ?\Throwable $previous = null)
     {

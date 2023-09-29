@@ -7,11 +7,6 @@ namespace ScssPhp\ScssPhp\Util;
  */
 final class Path
 {
-    /**
-     * @param string $path
-     *
-     * @return bool
-     */
     public static function isAbsolute(string $path): bool
     {
         if ($path === '') {
@@ -29,11 +24,6 @@ final class Path
         return false;
     }
 
-    /**
-     * @param string $path
-     *
-     * @return bool
-     */
     public static function isWindowsAbsolute(string $path): bool
     {
         if ($path === '') {
@@ -67,12 +57,6 @@ final class Path
         return true;
     }
 
-    /**
-     * @param string $part1
-     * @param string $part2
-     *
-     * @return string
-     */
     public static function join(string $part1, string $part2): string
     {
         if ($part1 === '' || self::isAbsolute($part2)) {
@@ -95,10 +79,6 @@ final class Path
 
     /**
      * Returns a pretty URI for a path
-     *
-     * @param string $path
-     *
-     * @return string
      */
     public static function prettyUri(string $path): string
     {
@@ -112,7 +92,7 @@ final class Path
 
         // TODO add support for returning a relative path using ../ in some cases, like Dart's path.prettyUri method
 
-        if (0 === strpos($normalizedPath, $normalizedRootDirectory)) {
+        if (str_starts_with($normalizedPath, $normalizedRootDirectory)) {
             return substr($path, \strlen($normalizedRootDirectory));
         }
 

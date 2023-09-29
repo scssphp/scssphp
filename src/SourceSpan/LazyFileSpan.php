@@ -23,20 +23,20 @@ use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 class LazyFileSpan implements FileSpan
 {
     /**
-     * @var callable(): FileSpan
+     * @var \Closure(): FileSpan
      * @readonly
      */
-    private $builder;
+    private readonly \Closure $builder;
 
     /**
      * @var FileSpan|null
      */
-    private $span;
+    private ?FileSpan $span = null;
 
     /**
-     * @param callable(): FileSpan $builder
+     * @param \Closure(): FileSpan $builder
      */
-    public function __construct(callable $builder)
+    public function __construct(\Closure $builder)
     {
         $this->builder = $builder;
     }

@@ -32,65 +32,47 @@ use ScssPhp\ScssPhp\Ast\Css\ModifiableCssSupportsRule;
 interface ModifiableCssVisitor
 {
     /**
-     * @param ModifiableCssAtRule $node
-     *
      * @return T
      */
-    public function visitCssAtRule($node);
+    public function visitCssAtRule(ModifiableCssAtRule $node);
 
     /**
-     * @param ModifiableCssComment $node
-     *
      * @return T
      */
-    public function visitCssComment($node);
+    public function visitCssComment(ModifiableCssComment $node);
 
     /**
-     * @param ModifiableCssDeclaration $node
-     *
      * @return T
      */
-    public function visitCssDeclaration($node);
+    public function visitCssDeclaration(ModifiableCssDeclaration $node);
 
     /**
-     * @param ModifiableCssImport $node
-     *
      * @return T
      */
-    public function visitCssImport($node);
+    public function visitCssImport(ModifiableCssImport $node);
 
     /**
-     * @param ModifiableCssKeyframeBlock $node
-     *
      * @return T
      */
-    public function visitCssKeyframeBlock($node);
+    public function visitCssKeyframeBlock(ModifiableCssKeyframeBlock $node);
 
     /**
-     * @param ModifiableCssMediaRule $node
-     *
      * @return T
      */
-    public function visitCssMediaRule($node);
+    public function visitCssMediaRule(ModifiableCssMediaRule $node);
 
     /**
-     * @param ModifiableCssStyleRule $node
-     *
      * @return T
      */
-    public function visitCssStyleRule($node);
+    public function visitCssStyleRule(ModifiableCssStyleRule $node);
 
     /**
-     * @param ModifiableCssStylesheet $node
-     *
      * @return T
      */
-    public function visitCssStylesheet($node);
+    public function visitCssStylesheet(ModifiableCssStylesheet $node);
 
     /**
-     * @param ModifiableCssSupportsRule $node
-     *
      * @return T
      */
-    public function visitCssSupportsRule($node);
+    public function visitCssSupportsRule(ModifiableCssSupportsRule $node);
 }

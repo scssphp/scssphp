@@ -37,12 +37,9 @@ final class CompoundSelector extends Selector
      *
      * @var list<SimpleSelector>
      */
-    private $components;
+    private readonly array $components;
 
-    /**
-     * @var int|null
-     */
-    private $specificity;
+    private ?int $specificity = null;
 
     /**
      * Parses a compound selector from $contents.

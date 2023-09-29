@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
+use ScssPhp\ScssPhp\Visitor\ModifiableCssVisitor;
 
 /**
  * A modifiable version of {@see CssAtRule} for use in the evaluation step.
@@ -25,30 +26,20 @@ final class ModifiableCssAtRule extends ModifiableCssParentNode implements CssAt
     /**
      * @var CssValue<string>
      */
-    private $name;
+    private readonly CssValue $name;
 
     /**
      * @var CssValue<string>|null
      */
-    private $value;
+    private readonly ?CssValue $value;
+
+    private readonly bool $childless;
+
+    private readonly FileSpan $span;
 
     /**
-     * @var bool
-     * @readonly
-     */
-    private $childless;
-
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
-
-    /**
-     * @param CssValue<string>      $name
+     * @param CssValue<string> $name
      * @param CssValue<string>|null $value
-     * @param bool                  $childless
-     * @param FileSpan              $span
      */
     public function __construct(CssValue $name, FileSpan $span, bool $childless = false, ?CssValue $value = null)
     {
@@ -80,7 +71,7 @@ final class ModifiableCssAtRule extends ModifiableCssParentNode implements CssAt
         return $this->span;
     }
 
-    public function accept($visitor)
+    public function accept(ModifiableCssVisitor $visitor)
     {
         return $visitor->visitCssAtRule($this);
     }
@@ -90,10 +81,7 @@ final class ModifiableCssAtRule extends ModifiableCssParentNode implements CssAt
         return $other instanceof ModifiableCssAtRule && EquatableUtil::equals($this->name, $other->name) && EquatableUtil::equals($this->value, $other->value) && $this->childless === $other->childless;
     }
 
-    /**
-     * @phpstan-return ModifiableCssAtRule
-     */
-    public function copyWithoutChildren(): ModifiableCssParentNode
+    public function copyWithoutChildren(): ModifiableCssAtRule
     {
         return new ModifiableCssAtRule($this->name, $this->span, $this->childless, $this->value);
     }

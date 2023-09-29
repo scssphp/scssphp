@@ -26,11 +26,7 @@ use ScssPhp\ScssPhp\Util\Character;
  */
 final class InterpolationMap
 {
-    /**
-     * @var Interpolation
-     * @readonly
-     */
-    private $interpolation;
+    private readonly Interpolation $interpolation;
 
     /**
      * Locations in the generated string.
@@ -42,7 +38,7 @@ final class InterpolationMap
      *
      * @var list<SourceLocation>
      */
-    private $targetLocations;
+    private readonly array $targetLocations;
 
     /**
      * @param list<SourceLocation> $targetLocations
@@ -59,7 +55,13 @@ final class InterpolationMap
         }
     }
 
-    // TODO implement mapException
+    public function mapException(FormatException $exception): FormatException
+    {
+        $source = $this->mapSpan($exception->getSpan());
+
+        // TODO implement the Multi-span support here
+        return new FormatException($exception->getMessage(), $source, $exception);
+    }
 
     public function mapSpan(FileSpan $target): FileSpan
     {

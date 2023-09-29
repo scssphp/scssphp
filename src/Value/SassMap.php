@@ -22,9 +22,8 @@ final class SassMap extends Value
 {
     /**
      * @var Map<Value>
-     * @readonly
      */
-    private $contents;
+    private readonly Map $contents;
 
     /**
      * @param Map<Value> $contents
@@ -41,8 +40,6 @@ final class SassMap extends Value
 
     /**
      * @param Map<Value> $contents
-     *
-     * @return SassMap
      */
     public static function create(Map $contents): SassMap
     {
@@ -59,7 +56,7 @@ final class SassMap extends Value
         return $this->contents;
     }
 
-    public function getSeparator(): string
+    public function getSeparator(): ListSeparator
     {
         return \count($this->contents) === 0 ? ListSeparator::UNDECIDED : ListSeparator::COMMA;
     }

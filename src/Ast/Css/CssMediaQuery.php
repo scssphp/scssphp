@@ -22,30 +22,21 @@ use ScssPhp\ScssPhp\Parser\MediaQueryParser;
  *
  * @internal
  */
-final class CssMediaQuery
+final class CssMediaQuery implements MediaQueryMergeResult
 {
-    public const MERGE_RESULT_EMPTY = 'empty';
-    public const MERGE_RESULT_UNREPRESENTABLE = 'unrepresentable';
-
     /**
      * The modifier, probably either "not" or "only".
      *
      * This may be `null` if no modifier is in use.
-     *
-     * @var string|null
-     * @readonly
      */
-    private $modifier;
+    private readonly ?string $modifier;
 
     /**
      * The media type, for example "screen" or "print".
      *
      * This may be `null`. If so, {@see $conditions} will not be empty.
-     *
-     * @var string|null
-     * @readonly
      */
-    private $type;
+    private readonly ?string $type;
 
     /**
      * Whether {@see $conditions} is a conjunction or a disjunction.
@@ -55,11 +46,8 @@ final class CssMediaQuery
      * condition in {@see $conditions} is met.
      *
      * If this is `false`, {@see $modifier} and {@see $type} will both be `null`.
-     *
-     * @var bool
-     * @readonly
      */
-    private $conjunction;
+    private readonly bool $conjunction;
 
     /**
      * Media conditions, including parentheses.
@@ -69,9 +57,8 @@ final class CssMediaQuery
      * [`<media-in-parens>`]: https://drafts.csswg.org/mediaqueries-4/#typedef-media-in-parens
      *
      * @var list<string>
-     * @readonly
      */
-    private $conditions;
+    private readonly array $conditions;
 
     /**
      * Parses a media query from $contents.
@@ -162,14 +149,11 @@ final class CssMediaQuery
     /**
      * Merges this with $other to return a query that matches the intersection
      * of both inputs.
-     *
-     * @return CssMediaQuery|string
-     * @phpstan-return CssMediaQuery|CssMediaQuery::*
      */
-    public function merge(CssMediaQuery $other)
+    public function merge(CssMediaQuery $other): MediaQueryMergeResult
     {
         if (!$this->conjunction || !$other->conjunction) {
-            return self::MERGE_RESULT_UNREPRESENTABLE;
+            return MediaQuerySingletonMergeResult::unrepresentable;
         }
 
         $ourModifier = $this->modifier !== null ? strtolower($this->modifier) : null;
@@ -194,14 +178,14 @@ final class CssMediaQuery
                 // (grid)`, because it means `not (screen and (color))` and so it allows
                 // a screen with no color but with a grid.
                 if (empty(array_diff($negativeConditions, $positiveConditions))) {
-                    return self::MERGE_RESULT_EMPTY;
+                    return MediaQuerySingletonMergeResult::empty;
                 }
 
-                return self::MERGE_RESULT_UNREPRESENTABLE;
+                return MediaQuerySingletonMergeResult::unrepresentable;
             }
 
             if ($this->matchesAllTypes() || $other->matchesAllTypes()) {
-                return self::MERGE_RESULT_UNREPRESENTABLE;
+                return MediaQuerySingletonMergeResult::unrepresentable;
             }
 
             if ($ourModifier === 'not') {
@@ -216,7 +200,7 @@ final class CssMediaQuery
         } elseif ($ourModifier === 'not') {
             // CSS has no way of representing "neither screen nor print".
             if ($ourType !== $theirType) {
-                return self::MERGE_RESULT_UNREPRESENTABLE;
+                return MediaQuerySingletonMergeResult::unrepresentable;
             }
 
             $moreConditions = \count($this->conditions) > \count($other->conditions) ? $this->conditions : $other->conditions;
@@ -230,7 +214,7 @@ final class CssMediaQuery
                 $conditions = $moreConditions;
             } else {
                 // Otherwise, there's no way to represent the intersection.
-                return self::MERGE_RESULT_UNREPRESENTABLE;
+                return MediaQuerySingletonMergeResult::unrepresentable;
             }
         } elseif ($this->matchesAllTypes()) {
             $modifier = $theirModifier;
@@ -243,7 +227,7 @@ final class CssMediaQuery
             $type = $ourType;
             $conditions = array_merge($this->conditions, $other->conditions);
         } elseif ($ourType !== $theirType) {
-            return self::MERGE_RESULT_EMPTY;
+            return MediaQuerySingletonMergeResult::empty;
         } else {
             $modifier = $ourModifier ?? $theirModifier;
             $type = $ourType;

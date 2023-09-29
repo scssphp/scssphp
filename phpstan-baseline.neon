@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Cannot cast T of array\\<string\\|Stringable\\>\\|string\\|Stringable\\|null to string\\.$#"
+			count: 1
+			path: src/Ast/Css/CssValue.php
+
+		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$children type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Block.php
@@ -1686,22 +1691,12 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Parameter \\#1 \\$leadingCombinators of class ScssPhp\\\\ScssPhp\\\\Ast\\\\Selector\\\\ComplexSelector constructor expects array\\<int, ScssPhp\\\\ScssPhp\\\\Ast\\\\Css\\\\CssValue\\<'\\+'\\|'\\>'\\|'~'\\>\\>, array\\<int, ScssPhp\\\\ScssPhp\\\\Ast\\\\Css\\\\CssValue\\<'\\+'\\|'\\>'\\|'~'\\>\\|ScssPhp\\\\ScssPhp\\\\Ast\\\\Css\\\\CssValue\\<string\\>\\> given\\.$#"
-			count: 1
-			path: src/Parser/SelectorParser.php
-
-		-
-			message: "#^Parameter \\#2 \\$combinators of class ScssPhp\\\\ScssPhp\\\\Ast\\\\Selector\\\\ComplexSelectorComponent constructor expects array\\<int, ScssPhp\\\\ScssPhp\\\\Ast\\\\Css\\\\CssValue\\<'\\+'\\|'\\>'\\|'~'\\>\\>, array\\<int, ScssPhp\\\\ScssPhp\\\\Ast\\\\Css\\\\CssValue\\<'\\+'\\|'\\>'\\|'~'\\>\\|ScssPhp\\\\ScssPhp\\\\Ast\\\\Css\\\\CssValue\\<string\\>\\> given\\.$#"
-			count: 2
-			path: src/Parser/SelectorParser.php
-
-		-
-			message: "#^Negated boolean expression is always true\\.$#"
+			message: "#^Call to function assert\\(\\) with false and 'unknown format' will always evaluate to false\\.$#"
 			count: 1
 			path: src/Serializer/SerializeVisitor.php
 
 		-
-			message: "#^Parameter \\#1 \\$iterable of method ScssPhp\\\\ScssPhp\\\\Serializer\\\\SerializeVisitor\\:\\:writeBetween\\(\\) expects iterable\\<ScssPhp\\\\ScssPhp\\\\Ast\\\\Css\\\\CssValue\\<string\\>\\>, array\\<int, ScssPhp\\\\ScssPhp\\\\Ast\\\\Css\\\\CssValue\\<'\\+'\\|'\\>'\\|'~'\\>\\> given\\.$#"
+			message: "#^Negated boolean expression is always true\\.$#"
 			count: 1
 			path: src/Serializer/SerializeVisitor.php
 

@@ -24,9 +24,8 @@ final class Box implements Equatable
 {
     /**
      * @var ModifiableBox<T>
-     * @readonly
      */
-    private $inner;
+    private readonly ModifiableBox $inner;
 
     /**
      * @param ModifiableBox<T> $inner

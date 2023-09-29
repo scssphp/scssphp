@@ -24,35 +24,18 @@ use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
  */
 final class BinaryOperationExpression implements Expression
 {
-    /**
-     * @var BinaryOperator::*
-     * @readonly
-     */
-    private $operator;
+    private readonly BinaryOperator $operator;
 
-    /**
-     * @var Expression
-     * @readonly
-     */
-    private $left;
+    private readonly Expression $left;
 
-    /**
-     * @var Expression
-     * @readonly
-     */
-    private $right;
+    private readonly Expression $right;
 
     /**
      * Whether this is a dividedBy operation that may be interpreted as slash-separated numbers.
-     *
-     * @var bool
      */
-    private $allowsSlash = false;
+    private bool $allowsSlash = false;
 
-    /**
-     * @param BinaryOperator::* $operator
-     */
-    public function __construct(string $operator, Expression $left, Expression $right)
+    public function __construct(BinaryOperator $operator, Expression $left, Expression $right)
     {
         $this->operator = $operator;
         $this->left = $left;
@@ -70,10 +53,7 @@ final class BinaryOperationExpression implements Expression
         return $operation;
     }
 
-    /**
-     * @return BinaryOperator::*
-     */
-    public function getOperator(): string
+    public function getOperator(): BinaryOperator
     {
         return $this->operator;
     }
@@ -139,7 +119,7 @@ final class BinaryOperationExpression implements Expression
     {
         $buffer = '';
 
-        $leftNeedsParens = ($this->left instanceof BinaryOperationExpression && BinaryOperator::getPrecedence($this->left->getOperator()) < BinaryOperator::getPrecedence($this->operator)) || ($this->left instanceof ListExpression && !$this->left->hasBrackets() && \count($this->left->getContents()) > 1);
+        $leftNeedsParens = ($this->left instanceof BinaryOperationExpression && $this->left->getOperator()->getPrecedence() < $this->operator->getPrecedence()) || ($this->left instanceof ListExpression && !$this->left->hasBrackets() && \count($this->left->getContents()) > 1);
         if ($leftNeedsParens) {
             $buffer .= '(';
         }
@@ -149,10 +129,10 @@ final class BinaryOperationExpression implements Expression
         }
 
         $buffer .= ' ';
-        $buffer .= $this->operator;
+        $buffer .= $this->operator->getOperator();
         $buffer .= ' ';
 
-        $rightNeedsParens = ($this->right instanceof BinaryOperationExpression && BinaryOperator::getPrecedence($this->right->getOperator()) <= BinaryOperator::getPrecedence($this->operator) && !($this->right->operator === $this->operator && BinaryOperator::isAssociative($this->operator))) || ($this->right instanceof ListExpression && !$this->right->hasBrackets() && \count($this->right->getContents()) > 1);
+        $rightNeedsParens = ($this->right instanceof BinaryOperationExpression && $this->right->getOperator()->getPrecedence() <= $this->operator->getPrecedence() && !($this->right->operator === $this->operator && $this->operator->isAssociative())) || ($this->right instanceof ListExpression && !$this->right->hasBrackets() && \count($this->right->getContents()) > 1);
         if ($rightNeedsParens) {
             $buffer .= '(';
         }

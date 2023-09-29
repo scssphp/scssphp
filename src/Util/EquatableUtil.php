@@ -47,13 +47,8 @@ final class EquatableUtil
      * Values implementing {@see Equatable} are still compared with `===` first to
      * optimize comparisons to the same object, as an object is always expected to
      * be equal to itself.
-     *
-     * @param mixed $item1
-     * @param mixed $item2
-     *
-     * @return bool
      */
-    public static function equals($item1, $item2): bool
+    public static function equals(mixed $item1, mixed $item2): bool
     {
         if ($item1 === $item2) {
             return true;

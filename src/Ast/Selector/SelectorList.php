@@ -44,9 +44,8 @@ final class SelectorList extends Selector
      * This is never empty.
      *
      * @var list<ComplexSelector>
-     * @readonly
      */
-    private $components;
+    private readonly array $components;
 
     /**
      * Parses a selector list from $contents.
@@ -166,9 +165,7 @@ final class SelectorList extends Selector
                     return [$complex];
                 }
 
-                return array_map(function (ComplexSelector $parentComplex) use ($complex) {
-                    return $parentComplex->concatenate($complex, $complex->getSpan());
-                }, $parent->getComponents());
+                return array_map(fn(ComplexSelector $parentComplex) => $parentComplex->concatenate($complex, $complex->getSpan()), $parent->getComponents());
             }
 
             /** @var list<ComplexSelector> $newComplexes */
@@ -318,9 +315,7 @@ final class SelectorList extends Selector
      * Returns a copy of `this` with $combinators added to the end of each
      * complex selector in {@see components}].
      *
-     * @param list<CssValue<string>> $combinators
-     *
-     * @phpstan-param list<CssValue<Combinator::*>> $combinators
+     * @param list<CssValue<Combinator>> $combinators
      */
     public function withAdditionalCombinators(array $combinators): SelectorList
     {
@@ -328,9 +323,7 @@ final class SelectorList extends Selector
             return $this;
         }
 
-        return new SelectorList(array_map(function (ComplexSelector $complex) use ($combinators) {
-            return $complex->withAdditionalCombinators($combinators);
-        }, $this->components), $this->getSpan());
+        return new SelectorList(array_map(fn(ComplexSelector $complex) => $complex->withAdditionalCombinators($combinators), $this->components), $this->getSpan());
     }
 
     /**

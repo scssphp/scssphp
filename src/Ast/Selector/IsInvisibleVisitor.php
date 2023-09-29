@@ -23,11 +23,8 @@ final class IsInvisibleVisitor extends AnySelectorVisitor
 {
     /**
      * Whether to consider selectors with bogus combinators invisible.
-     *
-     * @var bool
-     * @readonly
      */
-    private $includeBogus;
+    private readonly bool $includeBogus;
 
     public function __construct(bool $includeBogus)
     {
