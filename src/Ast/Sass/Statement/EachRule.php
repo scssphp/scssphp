@@ -74,6 +74,6 @@ final class EachRule extends ParentStatement
 
     public function __toString(): string
     {
-        return '@each ' . implode(', ', array_map(function ($variable) { return '$' . $variable; }, $this->variables)) . ' in ' . $this->list . ' {' . implode(' ', $this->getChildren()) . '}';
+        return '@each ' . implode(', ', array_map(fn($variable) => '$' . $variable, $this->variables)) . ' in ' . $this->list . ' {' . implode(' ', $this->getChildren()) . '}';
     }
 }

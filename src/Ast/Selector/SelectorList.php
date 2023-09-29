@@ -165,9 +165,7 @@ final class SelectorList extends Selector
                     return [$complex];
                 }
 
-                return array_map(function (ComplexSelector $parentComplex) use ($complex) {
-                    return $parentComplex->concatenate($complex, $complex->getSpan());
-                }, $parent->getComponents());
+                return array_map(fn(ComplexSelector $parentComplex) => $parentComplex->concatenate($complex, $complex->getSpan()), $parent->getComponents());
             }
 
             /** @var list<ComplexSelector> $newComplexes */
@@ -325,9 +323,7 @@ final class SelectorList extends Selector
             return $this;
         }
 
-        return new SelectorList(array_map(function (ComplexSelector $complex) use ($combinators) {
-            return $complex->withAdditionalCombinators($combinators);
-        }, $this->components), $this->getSpan());
+        return new SelectorList(array_map(fn(ComplexSelector $complex) => $complex->withAdditionalCombinators($combinators), $this->components), $this->getSpan());
     }
 
     /**

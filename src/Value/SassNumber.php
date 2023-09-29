@@ -643,9 +643,7 @@ abstract class SassNumber extends Value
     public function plus(Value $other): Value
     {
         if ($other instanceof SassNumber) {
-            return $this->withValue($this->coerceUnits($other, function ($num1, $num2) {
-                return $num1 + $num2;
-            }));
+            return $this->withValue($this->coerceUnits($other, fn($num1, $num2) => $num1 + $num2));
         }
 
         if (!$other instanceof SassColor) {
@@ -658,9 +656,7 @@ abstract class SassNumber extends Value
     public function minus(Value $other): Value
     {
         if ($other instanceof SassNumber) {
-            return $this->withValue($this->coerceUnits($other, function ($num1, $num2) {
-                return $num1 - $num2;
-            }));
+            return $this->withValue($this->coerceUnits($other, fn($num1, $num2) => $num1 - $num2));
         }
 
         if (!$other instanceof SassColor) {
@@ -739,9 +735,7 @@ abstract class SassNumber extends Value
      */
     private static function getCanonicalMultiplier(array $units): float
     {
-        return array_reduce($units, function ($multiplier, $unit) {
-            return $multiplier * self::getCanonicalMultiplierForUnit($unit);
-        }, 1.0);
+        return array_reduce($units, fn($multiplier, $unit) => $multiplier * self::getCanonicalMultiplierForUnit($unit), 1.0);
     }
 
     private static function getCanonicalMultiplierForUnit(string $unit): float
@@ -1022,8 +1016,8 @@ abstract class SassNumber extends Value
     public function unitSuggestion(string $name, ?string $unit = null): string
     {
         $result = "\$$name"
-            . implode(array_map(function ($unit) { return " * 1$unit"; }, $this->getDenominatorUnits()))
-            . implode(array_map(function ($unit) { return " / 1$unit"; }, $this->getNumeratorUnits()))
+            . implode(array_map(fn($unit) => " * 1$unit", $this->getDenominatorUnits()))
+            . implode(array_map(fn($unit) => " / 1$unit", $this->getNumeratorUnits()))
             . ($unit === null ? '' : " * 1$unit");
 
         return $this->getNumeratorUnits() === [] ? $result : "calc($result)";

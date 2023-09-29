@@ -891,9 +891,7 @@ class Parser
 
         $interpolationMap = $this->interpolationMap;
 
-        return new LazyFileSpan(static function () use ($interpolationMap, $span) {
-            return $interpolationMap->mapSpan($span);
-        });
+        return new LazyFileSpan(static fn() => $interpolationMap->mapSpan($span));
     }
 
     /**

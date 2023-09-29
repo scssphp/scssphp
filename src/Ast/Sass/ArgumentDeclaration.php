@@ -125,9 +125,7 @@ final class ArgumentDeclaration implements SassNode
         }
 
         if ($nameUsed < \count($names)) {
-            $unknownNames = array_values(array_diff(array_keys($names), array_map(function ($argument) {
-                return $argument->getName();
-            }, $this->arguments)));
+            $unknownNames = array_values(array_diff(array_keys($names), array_map(fn($argument) => $argument->getName(), $this->arguments)));
             $lastName = array_pop($unknownNames);
             $message = sprintf(
                 'No argument%s named $%s%s.',

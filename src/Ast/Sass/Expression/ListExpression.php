@@ -85,9 +85,10 @@ final class ListExpression implements Expression
             $buffer .= '(';
         }
 
-        $buffer .= implode($this->separator === ListSeparator::COMMA ? ', ' : ' ', array_map(function ($element) {
-            return $this->elementNeedsParens($element) ? "($element)" : (string) $element;
-        }, $this->contents));
+        $buffer .= implode(
+            $this->separator === ListSeparator::COMMA ? ', ' : ' ',
+            array_map(fn($element) => $this->elementNeedsParens($element) ? "($element)" : (string) $element, $this->contents)
+        );
 
         if ($this->hasBrackets()) {
             $buffer .= ']';

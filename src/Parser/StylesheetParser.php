@@ -267,9 +267,7 @@ abstract class StylesheetParser extends Parser
         $name = $this->variableName();
 
         if ($namespace !== null) {
-            $this->assertPublic($name, function () use ($start) {
-                return $this->scanner->spanFrom($start);
-            });
+            $this->assertPublic($name, fn() => $this->scanner->spanFrom($start));
         }
 
         $this->whitespace();
@@ -448,9 +446,7 @@ abstract class StylesheetParser extends Parser
         $postColonWhitespace = $this->rawText($this->whitespace(...));
 
         if ($this->lookingAtChildren()) {
-            return $this->withChildren($this->declarationChild(...), $start, function (array $children, FileSpan $span) use ($name) {
-                return Declaration::nested($name, $children, $span);
-            });
+            return $this->withChildren($this->declarationChild(...), $start, fn(array $children, FileSpan $span) => Declaration::nested($name, $children, $span));
         }
 
         $midBuffer .= $postColonWhitespace;
@@ -497,9 +493,7 @@ abstract class StylesheetParser extends Parser
         }
 
         if ($this->lookingAtChildren()) {
-            return $this->withChildren($this->declarationChild(...), $start, function (array $children, FileSpan $span) use ($name, $value) {
-                return Declaration::nested($name, $children, $span, $value);
-            });
+            return $this->withChildren($this->declarationChild(...), $start, fn(array $children, FileSpan $span) => Declaration::nested($name, $children, $span, $value));
         }
 
         $this->expectStatementSeparator();
@@ -622,9 +616,7 @@ abstract class StylesheetParser extends Parser
                 $this->scanner->error("Nested declarations aren't allowed in plain CSS.");
             }
 
-            return $this->withChildren($this->declarationChild(...), $start, function (array $children, FileSpan $span) use ($name) {
-                return Declaration::nested($name, $children, $span);
-            });
+            return $this->withChildren($this->declarationChild(...), $start, fn(array $children, FileSpan $span) => Declaration::nested($name, $children, $span));
         }
 
         $value = $this->expression();
@@ -634,9 +626,11 @@ abstract class StylesheetParser extends Parser
                 $this->scanner->error("Nested declarations aren't allowed in plain CSS.");
             }
 
-            return $this->withChildren($this->declarationChild(...), $start, function (array $children, FileSpan $span) use ($name, $value) {
-                return Declaration::nested($name, $children, $span, $value);
-            });
+            return $this->withChildren(
+                $this->declarationChild(...),
+                $start,
+                fn(array $children, FileSpan $span) => Declaration::nested($name, $children, $span, $value)
+            );
         }
 
         $this->expectStatementSeparator();
@@ -855,15 +849,11 @@ abstract class StylesheetParser extends Parser
             $query = $this->atRootQuery();
             $this->whitespace();
 
-            return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($query) {
-                return new AtRootRule($children, $span, $query);
-            });
+            return $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new AtRootRule($children, $span, $query));
         }
 
         if ($this->lookingAtChildren()) {
-            return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) {
-                return new AtRootRule($children, $span);
-            });
+            return $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new AtRootRule($children, $span));
         }
 
         $child = $this->styleRule();
@@ -1036,9 +1026,11 @@ abstract class StylesheetParser extends Parser
 
         $this->whitespace();
 
-        return $this->withChildren($this->functionChild(...), $start, function (array $children, FileSpan $span) use ($name, $precedingComment, $arguments) {
-            return new FunctionRule($name, $arguments, $span, $children, $precedingComment);
-        });
+        return $this->withChildren(
+            $this->functionChild(...),
+            $start,
+            fn(array $children, FileSpan $span) => new FunctionRule($name, $arguments, $span, $children, $precedingComment)
+        );
     }
 
     /**
@@ -1398,9 +1390,7 @@ abstract class StylesheetParser extends Parser
             $wasInContentBlock = $this->inContentBlock;
             $this->inContentBlock = true;
 
-            $content = $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($contentArguments) {
-                return new ContentBlock($contentArguments, $children, $span);
-            });
+            $content = $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new ContentBlock($contentArguments, $children, $span));
 
             $this->inContentBlock = $wasInContentBlock;
         } else {
@@ -1426,9 +1416,7 @@ abstract class StylesheetParser extends Parser
     {
         $query = $this->mediaQueryList();
 
-        return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($query) {
-            return new MediaRule($query, $children, $span);
-        });
+        return $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new MediaRule($query, $children, $span));
     }
 
     /**
@@ -1573,9 +1561,7 @@ abstract class StylesheetParser extends Parser
         $condition = $this->supportsCondition();
         $this->whitespace();
 
-        return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($condition) {
-            return new SupportsRule($condition, $children, $span);
-        });
+        return $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new SupportsRule($condition, $children, $span));
     }
 
     /**
@@ -1630,9 +1616,7 @@ abstract class StylesheetParser extends Parser
         }
 
         if ($this->lookingAtChildren()) {
-            $rule = $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($name, $value) {
-                return new AtRule($name, $span, $value, $children);
-            });
+            $rule = $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new AtRule($name, $span, $value, $children));
         } else {
             $this->expectStatementSeparator();
             $rule = new AtRule($name, $this->scanner->spanFrom($start), $value);
@@ -2290,9 +2274,7 @@ WARNING;
      */
     protected function expressionUntilComma(bool $singleEquals = false): Expression
     {
-        return $this->expression(function () {
-            return $this->scanner->peekChar() === ',';
-        }, $singleEquals);
+        return $this->expression(fn() => $this->scanner->peekChar() === ',', $singleEquals);
     }
 
     /**
@@ -3054,9 +3036,7 @@ WARNING;
     {
         if ($this->scanner->peekChar() === '$') {
             $name = $this->variableName();
-            $this->assertPublic($name, function () use ($start) {
-                return $this->scanner->spanFrom($start);
-            });
+            $this->assertPublic($name, fn() => $this->scanner->spanFrom($start));
 
             // TODO remove this when implementing modules
             $this->error('Sass modules are not implemented yet.', $this->scanner->spanFrom($start));
@@ -4113,9 +4093,7 @@ WARNING;
     {
         $start = $this->scanner->getPosition();
         $result = $this->identifier(true);
-        $this->assertPublic($result, function () use ($start) {
-            return $this->scanner->spanFrom($start);
-        });
+        $this->assertPublic($result, fn() => $this->scanner->spanFrom($start));
 
         return $result;
     }

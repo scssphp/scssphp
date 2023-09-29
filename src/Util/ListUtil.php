@@ -114,9 +114,7 @@ final class ListUtil
     public static function longestCommonSubsequence(array $list1, array $list2, ?callable $select = null): array
     {
         if ($select === null) {
-            $select = function ($element1, $element2) {
-                return EquatableUtil::equals($element1, $element2) ? $element1 : null;
-            };
+            $select = fn($element1, $element2) => EquatableUtil::equals($element1, $element2) ? $element1 : null;
         }
 
         $lengths = array_fill(0, \count($list1) + 1, array_fill(0, \count($list2) + 1, 0));

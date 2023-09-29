@@ -364,9 +364,7 @@ final class ExtendUtil
         foreach ($lcs as $group) {
             $newChoice = [];
             /** @var list<list<list<ComplexSelectorComponent>>> $chunks */
-            $chunks = self::chunks($groups1, $groups2, function ($sequence) use ($group) {
-                return self::complexIsParentSuperselector($sequence[0], $group);
-            });
+            $chunks = self::chunks($groups1, $groups2, fn($sequence) => self::complexIsParentSuperselector($sequence[0], $group));
             foreach ($chunks as $chunk) {
                 $flattened = [];
                 foreach ($chunk as $chunkGroup) {
@@ -385,9 +383,7 @@ final class ExtendUtil
 
         $newChoice = [];
         /** @var list<list<list<ComplexSelectorComponent>>> $chunks */
-        $chunks = self::chunks($groups1, $groups2, function ($sequence) {
-            return count($sequence) === 0;
-        });
+        $chunks = self::chunks($groups1, $groups2, fn($sequence) => count($sequence) === 0);
         foreach ($chunks as $chunk) {
             $flattened = [];
             foreach ($chunk as $chunkGroup) {
@@ -402,9 +398,7 @@ final class ExtendUtil
             $choices[] = $finalCombinator;
         }
 
-        $choices = array_filter($choices, function ($choice) {
-            return $choice !== [];
-        });
+        $choices = array_filter($choices, fn($choice) => $choice !== []);
 
         $paths = self::paths($choices);
 
