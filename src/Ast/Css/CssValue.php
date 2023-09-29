@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\Ast\AstNode;
+use ScssPhp\ScssPhp\Ast\Selector\Combinator;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\Equatable;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
@@ -23,7 +24,7 @@ use ScssPhp\ScssPhp\Util\EquatableUtil;
  * This is used to associate a span with a value that doesn't otherwise track
  * its span. It has value equality semantics.
  *
- * @template T
+ * @template T of string|\Stringable|array<string|\Stringable>|Combinator|null
  *
  * @internal
  */
@@ -65,6 +66,10 @@ final class CssValue implements AstNode, Equatable
 
     public function __toString(): string
     {
+        if ($this->value instanceof Combinator) {
+            return $this->value->getText();
+        }
+
         if (\is_array($this->value)) {
             return implode($this->value);
         }

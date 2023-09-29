@@ -18,23 +18,32 @@ namespace ScssPhp\ScssPhp\Ast\Selector;
  *
  * @internal
  */
-final class Combinator
+enum Combinator
 {
     /**
      * Matches the right-hand selector if it's immediately adjacent to the
      * left-hand selector in the DOM tree.
      */
-    public const NEXT_SIBLING = '+';
+    case NEXT_SIBLING;
 
     /**
      * Matches the right-hand selector if it's a direct child of the left-hand
      * selector in the DOM tree.
      */
-    public const CHILD = '>';
+    case CHILD;
 
     /**
      * Matches the right-hand selector if it comes after the left-hand selector
      * in the DOM tree.
      */
-    public const FOLLOWING_SIBLING = '~';
+    case FOLLOWING_SIBLING;
+
+    public function getText(): string
+    {
+        return match ($this) {
+            self::NEXT_SIBLING => '+',
+            self::CHILD => '>',
+            self::FOLLOWING_SIBLING => '~',
+        };
+    }
 }

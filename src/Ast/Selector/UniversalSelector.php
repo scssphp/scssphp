@@ -30,11 +30,8 @@ final class UniversalSelector extends SimpleSelector
      * it's the empty string, this matches all elements that aren't in any
      * namespace. If it's `*`, this matches all elements in any namespace.
      * Otherwise, it matches all elements in the given namespace.
-     *
-     * @var string|null
-     * @readonly
      */
-    private $namespace;
+    private readonly ?string $namespace;
 
     public function __construct(FileSpan $span, ?string $namespace = null)
     {

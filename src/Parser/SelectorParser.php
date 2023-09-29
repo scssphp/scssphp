@@ -175,7 +175,7 @@ final class SelectorParser extends Parser
 
         $componentStart = $this->scanner->getPosition();
         $lastCompound = null;
-        /** @var list<CssValue<Combinator::*>> $combinators */
+        /** @var list<CssValue<Combinator>> $combinators */
         $combinators = [];
 
         $initialCombinators = null;
@@ -351,10 +351,8 @@ final class SelectorParser extends Parser
 
     /**
      * Consumes an attribute selector's operator.
-     *
-     * @phpstan-return AttributeOperator::*
      */
-    private function attributeOperator(): string
+    private function attributeOperator(): AttributeOperator
     {
         $start = $this->scanner->getPosition();
 

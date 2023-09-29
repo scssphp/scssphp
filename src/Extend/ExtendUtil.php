@@ -452,15 +452,10 @@ final class ExtendUtil
      *
      * Returns `null` if the combinator lists can't be unified.
      *
-     * @param list<CssValue<string>>|null $combinators1
-     * @param list<CssValue<string>>|null $combinators2
+     * @param list<CssValue<Combinator>>|null $combinators1
+     * @param list<CssValue<Combinator>>|null $combinators2
      *
-     * @return list<CssValue<string>>|null
-     *
-     * @phpstan-param list<CssValue<Combinator::*>> $combinators1
-     * @phpstan-param list<CssValue<Combinator::*>> $combinators2
-     *
-     * @phpstan-return list<CssValue<Combinator::*>>|null
+     * @return list<CssValue<Combinator>>|null
      */
     private static function mergeLeadingCombinators(?array $combinators1, ?array $combinators2): ?array
     {
@@ -970,7 +965,7 @@ final class ExtendUtil
     }
 
     /**
-     * @phpstan-param CssValue<Combinator::*>|null $previous
+     * @param CssValue<Combinator>|null $previous
      * @param list<ComplexSelectorComponent> $parents
      */
     private static function compatibleWithPreviousCombinator(?CssValue $previous, array $parents): bool
@@ -993,7 +988,7 @@ final class ExtendUtil
         // only if they're all siblings.
         foreach ($parents as $component) {
             $firstCombinator = $component->getCombinators()[0] ?? null;
-            $firstCombinatorValue = $firstCombinator === null ? null : $firstCombinator->getValue();
+            $firstCombinatorValue = $firstCombinator?->getValue();
 
             if ($firstCombinatorValue !== Combinator::FOLLOWING_SIBLING && $firstCombinatorValue !== Combinator::NEXT_SIBLING) {
                 return false;
@@ -1008,8 +1003,8 @@ final class ExtendUtil
      *
      * That is, whether `X $combinator1 Y` is a superselector of `X $combinator2 Y`.
      *
-     * @phpstan-param CssValue<Combinator::*>|null $combinator1
-     * @phpstan-param CssValue<Combinator::*>|null $combinator2
+     * @param CssValue<Combinator>|null $combinator1
+     * @param CssValue<Combinator>|null $combinator2
      */
     private static function isSupercombinator(?CssValue $combinator1, ?CssValue $combinator2): bool
     {

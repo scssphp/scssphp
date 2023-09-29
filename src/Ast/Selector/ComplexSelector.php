@@ -39,11 +39,9 @@ final class ComplexSelector extends Selector
      * it's more than one element, that means it's invalid CSS; however, we still
      * support this for backwards-compatibility purposes.
      *
-     * @var list<CssValue<string>>
-     * @phpstan-var list<CssValue<Combinator::*>>
-     * @readonly
+     * @var list<CssValue<Combinator>>
      */
-    private $leadingCombinators;
+    private readonly array $leadingCombinators;
 
     /**
      * The components of this selector.
@@ -58,28 +56,19 @@ final class ComplexSelector extends Selector
      * This isn't valid CSS, but Sass supports it for CSS hack purposes.
      *
      * @var list<ComplexSelectorComponent>
-     * @readonly
      */
-    private $components;
+    private readonly array $components;
 
     /**
      * Whether a line break should be emitted *before* this selector.
-     *
-     * @var bool
-     * @readonly
      */
-    private $lineBreak;
+    private readonly bool $lineBreak;
+
+    private ?int $specificity = null;
 
     /**
-     * @var int|null
-     */
-    private $specificity;
-
-    /**
-     * @param list<CssValue<string>>         $leadingCombinators
+     * @param list<CssValue<Combinator>>     $leadingCombinators
      * @param list<ComplexSelectorComponent> $components
-     *
-     * @phpstan-param list<CssValue<Combinator::*>> $leadingCombinators
      */
     public function __construct(array $leadingCombinators, array $components, FileSpan $span, bool $lineBreak = false)
     {
@@ -108,8 +97,7 @@ final class ComplexSelector extends Selector
     }
 
     /**
-     * @return list<CssValue<string>>
-     * @phpstan-return list<CssValue<Combinator::*>>
+     * @return list<CssValue<Combinator>>
      */
     public function getLeadingCombinators(): array
     {
@@ -205,9 +193,7 @@ final class ComplexSelector extends Selector
      * If $forceLineBreak is `true`, this will mark the new complex selector as
      * having a line break.
      *
-     * @param list<CssValue<string>> $combinators
-     *
-     * @phpstan-param list<CssValue<Combinator::*>> $combinators
+     * @param list<CssValue<Combinator>> $combinators
      */
     public function withAdditionalCombinators(array $combinators, bool $forceLineBreak = false): ComplexSelector
     {

@@ -32,11 +32,7 @@ use ScssPhp\ScssPhp\Warn;
  */
 abstract class Selector implements AstNode, Equatable
 {
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     public function __construct(FileSpan $span)
     {

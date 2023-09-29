@@ -29,11 +29,8 @@ final class PlaceholderSelector extends SimpleSelector
 {
     /**
      * The name of the placeholder.
-     *
-     * @var string
-     * @readonly
      */
-    private $name;
+    private readonly string $name;
 
     public function __construct(string $name, FileSpan $span)
     {

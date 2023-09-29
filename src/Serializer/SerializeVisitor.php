@@ -1201,7 +1201,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
         if ($value !== null) {
             assert($attribute->getOp() !== null);
-            $this->buffer->write($attribute->getOp());
+            $this->buffer->write($attribute->getOp()->getText());
 
             // Emit identifiers that start with `--` with quotes, because IE11
             // doesn't consider them to be valid identifiers.
@@ -1260,7 +1260,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      * Writes $combinators to {@see buffer}, with spaces in between in expanded
      * mode.
      *
-     * @param list<CssValue<Combinator::*>> $combinators
+     * @param list<CssValue<Combinator>> $combinators
      */
     private function writeCombinators(array $combinators): void
     {

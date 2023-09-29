@@ -44,9 +44,8 @@ final class SelectorList extends Selector
      * This is never empty.
      *
      * @var list<ComplexSelector>
-     * @readonly
      */
-    private $components;
+    private readonly array $components;
 
     /**
      * Parses a selector list from $contents.
@@ -318,9 +317,7 @@ final class SelectorList extends Selector
      * Returns a copy of `this` with $combinators added to the end of each
      * complex selector in {@see components}].
      *
-     * @param list<CssValue<string>> $combinators
-     *
-     * @phpstan-param list<CssValue<Combinator::*>> $combinators
+     * @param list<CssValue<Combinator>> $combinators
      */
     public function withAdditionalCombinators(array $combinators): SelectorList
     {
