@@ -2,11 +2,39 @@
 
 namespace ScssPhp\ScssPhp\Util;
 
+use League\Uri\BaseUri;
+use League\Uri\Contracts\UriInterface;
+use League\Uri\Uri;
+use Symfony\Component\Filesystem\Path as SymfonyPath;
+
 /**
  * @internal
  */
 final class Path
 {
+    /**
+     * @var array<string, string>
+     */
+    private static array $realCaseCache = [];
+    public static function toUri(string $path): UriInterface
+    {
+        if (\DIRECTORY_SEPARATOR === '\\') {
+            return Uri::fromWindowsPath($path);
+        }
+
+        return Uri::fromUnixPath($path);
+
+    }
+
+    public static function fromUri(UriInterface $uri): string
+    {
+        if (\DIRECTORY_SEPARATOR === '\\') {
+            return BaseUri::from($uri)->windowsPath() ?? throw new \InvalidArgumentException("Uri $uri must have scheme 'file:'.");
+        }
+
+        return BaseUri::from($uri)->unixPath() ?? throw new \InvalidArgumentException("Uri $uri must have scheme 'file:'.");
+    }
+
     public static function isAbsolute(string $path): bool
     {
         if ($path === '') {
@@ -22,6 +50,77 @@ final class Path
         }
 
         return false;
+    }
+
+    public static function canonicalize(string $path): string
+    {
+        return self::realCasePath(self::normalize(self::absolute($path)));
+    }
+
+    private static function normalize(string $path): string
+    {
+        $normalized = SymfonyPath::canonicalize($path);
+
+        // The Symfony Path class always uses / as separator, while we want to use the platform one to get a real path
+        if (\DIRECTORY_SEPARATOR === '\\') {
+            $normalized = str_replace('/', '\\', $normalized);
+        }
+
+        return $normalized;
+    }
+
+    private static function realCasePath(string $path): string
+    {
+        if (!(\PHP_OS_FAMILY === 'Windows' || \PHP_OS_FAMILY === 'Darwin')) {
+            return $path;
+        }
+
+        if (\PHP_OS_FAMILY === 'Windows') {
+            // Drive names are *always* case-insensitive, so convert them to uppercase.
+            if (self::isAbsolute($path) && Character::isAlphabetic($path[0])) {
+                $path = strtoupper(substr($path, 0, 3)) . substr($path, 3);
+            }
+        }
+
+        return self::realCasePathHelper($path);
+    }
+
+    private static function realCasePathHelper(string $path): string
+    {
+        $dirname = dirname($path);
+
+        if ($dirname === $path || $dirname === '.') {
+            return $path;
+        }
+
+        return self::$realCaseCache[$path] ??= self::computeRealCasePath($path);
+    }
+
+    private static function computeRealCasePath(string $path): string
+    {
+        $realDirname = self::realCasePathHelper(dirname($path));
+        $basename = basename($path);
+
+        $files = @scandir($realDirname);
+
+        if ($files === false) {
+            // If there's an error listing a directory, it's likely because we're
+            // trying to reach too far out of the current directory into something
+            // we don't have permissions for. In that case, just assume we have the
+            // real path.
+            return $path;
+        }
+
+        $matches = array_values(array_filter($files, fn ($realPath) => StringUtil::equalsIgnoreCase(basename($realPath), $basename)));
+
+        if (\count($matches) === 1) {
+            return $matches[0];
+        }
+
+        // If the file doesn't exist, or if there are multiple options
+        // (meaning the filesystem isn't actually case-insensitive), use
+        // `basename` as-is.
+        return self::join($realDirname, $basename);
     }
 
     public static function isWindowsAbsolute(string $path): bool
@@ -75,6 +174,48 @@ final class Path
         }
 
         return $part1 . $separator . $part2;
+    }
+
+    public static function absolute(string $path): string
+    {
+        $cwd = getcwd();
+
+        if ($cwd === false) {
+            return $path;
+        }
+
+        return self::join($cwd, $path);
+    }
+
+    /**
+     * Gets the file extension of $path: the portion of basename from the last
+     * `.` to the end (including the `.` itself).
+     *
+     * If the file name starts with a `.`, then that is not considered the
+     * extension
+     */
+    public static function extension(string $path): string
+    {
+        $basename = basename($path);
+
+        $lastDot = strrpos($basename, '.');
+
+        if ($lastDot === false || $lastDot === 0) {
+            return '';
+        }
+
+        return substr($basename, $lastDot);
+    }
+
+    public static function withoutExtension(string $path): string
+    {
+        $extension = self::extension($path);
+
+        if ($extension === '') {
+            return $path;
+        }
+
+        return substr($path, 0, -\strlen($extension));
     }
 
     /**
