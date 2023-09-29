@@ -212,7 +212,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 $this->buffer->writeChar(' ');
             }
 
-            $this->writeBetween($node->getQueries(), $this->getCommaSeparator(), [$this, 'visitMediaQuery']);
+            $this->writeBetween($node->getQueries(), $this->getCommaSeparator(), $this->visitMediaQuery(...));
         });
 
         $this->writeOptionalSpace();
@@ -265,7 +265,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         $this->writeIndentation();
 
         $this->for($node->getSelector(), function () use ($node) {
-            $this->writeBetween($node->getSelector()->getValue(), $this->getCommaSeparator(), [$this->buffer, 'write']);
+            $this->writeBetween($node->getSelector()->getValue(), $this->getCommaSeparator(), $this->buffer->write(...));
         });
         $this->writeOptionalSpace();
         $this->visitChildren($node);
@@ -293,7 +293,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         } else {
             $operator = $query->isConjunction() ? 'and' : 'or';
 
-            $this->writeBetween($query->getConditions(), $this->compressed ? "$operator " : " $operator ", [$this->buffer, 'write']);
+            $this->writeBetween($query->getConditions(), $this->compressed ? "$operator " : " $operator ", $this->buffer->write(...));
         }
     }
 

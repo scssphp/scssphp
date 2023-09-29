@@ -382,13 +382,13 @@ class Parser
 
                 case '"':
                 case "'":
-                    $buffer .= $this->rawText([$this, 'string']);
+                    $buffer .= $this->rawText($this->string(...));
                     $wroteNewline = false;
                     break;
 
                 case '/':
                     if ($this->scanner->peekChar(1) === '*') {
-                        $buffer .= $this->rawText([$this, 'loudComment']);
+                        $buffer .= $this->rawText($this->loudComment(...));
                     } else {
                         $buffer .= $this->scanner->readChar();
                     }
@@ -578,7 +578,7 @@ class Parser
                 assert(\is_int($value));
             }
 
-            $this->scanCharIf([Character::class, 'isWhitespace']);
+            $this->scanCharIf(Character::isWhitespace(...));
             $valueText = Util::mbChr($value);
         } else {
             $valueText = $this->scanner->readUtf8Char();
@@ -868,7 +868,7 @@ class Parser
     /**
      * Runs $consumer and returns the source text that it consumes.
      *
-     * @param callable(): void $consumer
+     * @param callable(): (mixed|void) $consumer
      */
     protected function rawText(callable $consumer): string
     {

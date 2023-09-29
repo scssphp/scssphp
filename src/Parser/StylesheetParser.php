@@ -2819,7 +2819,7 @@ WARNING;
         $this->scanner->expectChar('+');
 
         $firstRangeLength = 0;
-        while ($this->scanCharIf([Character::class, 'isHex'])) {
+        while ($this->scanCharIf(Character::isHex(...))) {
             $firstRangeLength++;
         }
 
@@ -2841,7 +2841,7 @@ WARNING;
         if ($this->scanner->scanChar('-')) {
             $secondRangeStart = $this->scanner->getPosition();
             $secondRangeLength = 0;
-            while ($this->scanCharIf([Character::class, 'isHex'])) {
+            while ($this->scanCharIf(Character::isHex(...))) {
                 $secondRangeLength++;
             }
 

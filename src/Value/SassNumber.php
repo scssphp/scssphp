@@ -598,7 +598,7 @@ abstract class SassNumber extends Value
     public function greaterThan(Value $other): SassBoolean
     {
         if ($other instanceof SassNumber) {
-            return SassBoolean::create($this->coerceUnits($other, [NumberUtil::class, 'fuzzyGreaterThan']));
+            return SassBoolean::create($this->coerceUnits($other, NumberUtil::fuzzyGreaterThan(...)));
         }
 
         throw new SassScriptException("Undefined operation \"$this > $other\".");
@@ -607,7 +607,7 @@ abstract class SassNumber extends Value
     public function greaterThanOrEquals(Value $other): SassBoolean
     {
         if ($other instanceof SassNumber) {
-            return SassBoolean::create($this->coerceUnits($other, [NumberUtil::class, 'fuzzyGreaterThanOrEquals']));
+            return SassBoolean::create($this->coerceUnits($other, NumberUtil::fuzzyGreaterThanOrEquals(...)));
         }
 
         throw new SassScriptException("Undefined operation \"$this >= $other\".");
@@ -616,7 +616,7 @@ abstract class SassNumber extends Value
     public function lessThan(Value $other): SassBoolean
     {
         if ($other instanceof SassNumber) {
-            return SassBoolean::create($this->coerceUnits($other, [NumberUtil::class, 'fuzzyLessThan']));
+            return SassBoolean::create($this->coerceUnits($other, NumberUtil::fuzzyLessThan(...)));
         }
 
         throw new SassScriptException("Undefined operation \"$this < $other\".");
@@ -625,7 +625,7 @@ abstract class SassNumber extends Value
     public function lessThanOrEquals(Value $other): SassBoolean
     {
         if ($other instanceof SassNumber) {
-            return SassBoolean::create($this->coerceUnits($other, [NumberUtil::class, 'fuzzyLessThanOrEquals']));
+            return SassBoolean::create($this->coerceUnits($other, NumberUtil::fuzzyLessThanOrEquals(...)));
         }
 
         throw new SassScriptException("Undefined operation \"$this > $other\".");
@@ -634,7 +634,7 @@ abstract class SassNumber extends Value
     public function modulo(Value $other): SassNumber
     {
         if ($other instanceof SassNumber) {
-            return $this->withValue($this->coerceUnits($other, [NumberUtil::class, 'moduloLikeSass']));
+            return $this->withValue($this->coerceUnits($other, NumberUtil::moduloLikeSass(...)));
         }
 
         throw new SassScriptException("Undefined operation \"$this % $other\".");
