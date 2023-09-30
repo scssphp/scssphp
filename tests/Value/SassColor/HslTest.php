@@ -63,8 +63,9 @@ class HslTest extends ValueTestCase
         $hwbValue = SassColor::hwb(120, 24.313725490196077, 40.3921568627451);
 
         $this->assertSassEquals($this->value, $rgbValue);
-        $this->assertSassEquals($this->value, $hslValue);;
-        $this->assertSassEquals($this->value, $hwbValue);;
+        $this->assertSassEquals($this->value, $hslValue);
+        ;
+        $this->assertSassEquals($this->value, $hwbValue);
+        ;
     }
-
 }

@@ -53,7 +53,7 @@ enum AttributeOperator
 
     public function getText(): string
     {
-        return match($this) {
+        return match ($this) {
             self::EQUAL => '=',
             self::INCLUDE => '~=',
             self::DASH => '|=',

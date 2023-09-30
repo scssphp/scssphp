@@ -127,7 +127,6 @@ To preserve current behavior: {$indexValue->unitSuggestion($name ?? 'index')}
 
 More info: https://sass-lang.com/d/function-units
 WARNING
-
             );
         }
 

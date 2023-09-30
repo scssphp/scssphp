@@ -470,7 +470,6 @@ abstract class StylesheetParser extends Parser
                 // reparsed.
                 $this->expectStatementSeparator();
             }
-
         } catch (FormatException $e) {
             if (!$couldBeSelector) {
                 throw $e;
@@ -1927,7 +1926,8 @@ WARNING;
         };
 
         $addOperator = function (BinaryOperator $operator) use (&$allowSlash, &$operators, &$operands, &$singleExpression, $resolveOneOperation): void {
-            if ($this->isPlainCss()
+            if (
+                $this->isPlainCss()
                 && $operator !== BinaryOperator::SINGLE_EQUALS
                 // These are allowed in calculations, so we have to check them at
                 // evaluation time.
@@ -3047,7 +3047,6 @@ WARNING;
         $this->publicIdentifier();
         $this->error('Sass modules are not implemented yet.', $this->scanner->spanFrom($start));
         // return new FunctionExpression($this->publicIdentifier(), $this->argumentInvocation(), $this->scanner->spanFrom($start), $plain);
-
     }
 
     /**
@@ -3423,7 +3422,6 @@ WARNING;
                         $buffer->write($this->scanner->readChar());
                         $wroteNewline = false;
                         break;
-
                     }
 
                     $contents = $this->tryUrlContents($beforeUrl);

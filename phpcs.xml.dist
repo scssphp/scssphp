@@ -4,9 +4,10 @@
         <!-- Ignore this PHP 7.1+ sniff as long as we support PHP 5.6+ -->
         <exclude name="PSR12.Properties.ConstantVisibility.NotFound"/>
 
-        <!-- This sniff doesn't ignore comment blocks -->
-<!--
+        <!-- This sniff does not properly support functions returning never and so terminating the branch. -->
+        <exclude name="PSR2.ControlStructures.SwitchDeclaration.TerminatingComment"/>
+
+        <!-- PSR12 does not actually has a hard line length -->
         <exclude name="Generic.Files.LineLength"/>
--->
     </rule>
 </ruleset>

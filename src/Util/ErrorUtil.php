@@ -50,7 +50,6 @@ final class ErrorUtil
         }
 
         if ($end !== null) {
-
             if ($end < $start || $end > $length) {
                 $endName ??= 'end';
                 $endNameDisplay = $endName ? " $endName" : '';

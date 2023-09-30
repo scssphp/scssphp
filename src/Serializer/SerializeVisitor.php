@@ -511,7 +511,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
     public function visitBoolean(SassBoolean $value): void
     {
-        $this->buffer->write($value->getValue() ? 'true': 'false');
+        $this->buffer->write($value->getValue() ? 'true' : 'false');
     }
 
     public function visitCalculation(SassCalculation $value): void
@@ -663,7 +663,8 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 // should not happen as our interface is sealed.
                 \assert(false, 'unknown format');
             }
-        } elseif ($name !== null &&
+        } elseif (
+            $name !== null &&
             // Always emit generated transparent colors in rgba format. This works
             // around an IE bug. See https://github.com/sass/sass/issues/1782.
             !NumberUtil::fuzzyEquals($value->getAlpha(), 0)
@@ -1141,7 +1142,8 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             $charCode = $firstByteCode;
         }
 
-        if ($charCode >= 0xE000 && $charCode <= 0xF8FF || // PUA of the BMP
+        if (
+            $charCode >= 0xE000 && $charCode <= 0xF8FF || // PUA of the BMP
             $charCode >= 0xF0000 && $charCode <= 0x10FFFF // Supplementary PUAs of the planes 15 and 16
         ) {
             $this->writeEscape($buffer, $fullChar, $string, $i + $extraBytes);
@@ -1563,7 +1565,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      */
     private function getCommaSeparator(): string
     {
-        return $this->compressed ? ',': ', ';
+        return $this->compressed ? ',' : ', ';
     }
 
     /**

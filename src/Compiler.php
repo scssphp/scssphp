@@ -5474,15 +5474,15 @@ EOL;
     private function tryImportPathWithExtensions(string $path): array
     {
         $result = array_merge(
-            $this->tryImportPath($path.'.sass'),
-            $this->tryImportPath($path.'.scss')
+            $this->tryImportPath($path . '.sass'),
+            $this->tryImportPath($path . '.scss')
         );
 
         if ($result) {
             return $result;
         }
 
-        return $this->tryImportPath($path.'.css');
+        return $this->tryImportPath($path . '.css');
     }
 
     /**
@@ -5492,7 +5492,7 @@ EOL;
      */
     private function tryImportPath(string $path): array
     {
-        $partial = dirname($path).'/_'.basename($path);
+        $partial = dirname($path) . '/_' . basename($path);
 
         $candidates = [];
 
@@ -5518,7 +5518,7 @@ EOL;
             return null;
         }
 
-        return $this->checkImportPathConflicts($this->tryImportPathWithExtensions($path.'/index'));
+        return $this->checkImportPathConflicts($this->tryImportPathWithExtensions($path . '/index'));
     }
 
     /**
@@ -5533,7 +5533,7 @@ EOL;
         }
 
         $normalizedPath = $path;
-        $normalizedRootDirectory = $this->rootDirectory.'/';
+        $normalizedRootDirectory = $this->rootDirectory . '/';
 
         if (\DIRECTORY_SEPARATOR === '\\') {
             $normalizedRootDirectory = str_replace('\\', '/', $normalizedRootDirectory);
@@ -7056,9 +7056,9 @@ EOL;
         $b = min(1.0 - $w, $b);
 
         $rgb = $this->toRGB($hue, 100, 50);
-        for($i = 1; $i < 4; $i++) {
-          $rgb[$i] *= (1.0 - $w - $b);
-          $rgb[$i] = round($rgb[$i] + 255 * $w + 0.0001);
+        for ($i = 1; $i < 4; $i++) {
+            $rgb[$i] *= (1.0 - $w - $b);
+            $rgb[$i] = round($rgb[$i] + 255 * $w + 0.0001);
         }
 
         return $rgb;
@@ -7083,7 +7083,6 @@ EOL;
         if ((int) $d === 0) {
             $h = 0;
         } else {
-
             if ($red == $max) {
                 $h = 60 * ($green - $blue) / $d;
             } elseif ($green == $max) {
@@ -7093,7 +7092,7 @@ EOL;
             }
         }
 
-        return [Type::T_HWB, fmod($h, 360), $min / 255 * 100, 100 - $max / 255 *100];
+        return [Type::T_HWB, fmod($h, 360), $min / 255 * 100, 100 - $max / 255 * 100];
     }
 
 
@@ -7444,7 +7443,7 @@ EOL;
     private static $libChangeColor = ['color', 'kwargs...'];
     private function libChangeColor($args)
     {
-        return $this->alterColor($args,'change', function ($base, $alter, $max) {
+        return $this->alterColor($args, 'change', function ($base, $alter, $max) {
             if ($alter === null) {
                 return $base;
             }

@@ -106,7 +106,7 @@ final class SassColor extends Value
     {
         $alpha = NumberUtil::fuzzyAssertRange($alpha, 0, 1, 'alpha');
 
-        $hue = fmod($hue , 360);
+        $hue = fmod($hue, 360);
         $saturation = NumberUtil::fuzzyAssertRange($saturation, 0, 100, 'saturation');
         $lightness = NumberUtil::fuzzyAssertRange($lightness, 0, 100, 'lightness');
 
@@ -115,7 +115,7 @@ final class SassColor extends Value
 
     public static function hwb(float $hue, float $whiteness, float $blackness, float $alpha = 1.0): SassColor
     {
-        $scaledHue = fmod($hue , 360) / 360;
+        $scaledHue = fmod($hue, 360) / 360;
         $scaledWhiteness = NumberUtil::fuzzyAssertRange($whiteness, 0, 100, 'whiteness') / 100;
         $scaledBlackness = NumberUtil::fuzzyAssertRange($blackness, 0, 100, 'blackness') / 100;
 
@@ -134,7 +134,7 @@ final class SassColor extends Value
             return NumberUtil::fuzzyRound($channel * 255);
         };
 
-        return self::rgb($toRgb($scaledHue + 1/3), $toRgb($scaledHue), $toRgb($scaledHue - 1/3), $alpha);
+        return self::rgb($toRgb($scaledHue + 1 / 3), $toRgb($scaledHue), $toRgb($scaledHue - 1 / 3), $alpha);
     }
 
     /**

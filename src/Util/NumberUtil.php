@@ -160,7 +160,7 @@ final class NumberUtil
         }
 
         if (is_infinite($num2)) {
-            return self::signIncludingZero($num1) === self::sign($num2) ? $num1: NAN;
+            return self::signIncludingZero($num1) === self::sign($num2) ? $num1 : NAN;
         }
 
         if ($num2 == 0) {

@@ -261,7 +261,7 @@ abstract class SassNumber extends Value
      */
     public function getUnitString(): string
     {
-        return $this->hasUnits() ? self::buildUnitString($this->getNumeratorUnits(), $this->getDenominatorUnits()): '';
+        return $this->hasUnits() ? self::buildUnitString($this->getNumeratorUnits(), $this->getDenominatorUnits()) : '';
     }
 
     /**
@@ -718,7 +718,8 @@ abstract class SassNumber extends Value
             return NumberUtil::fuzzyEquals($this->value, $other->value);
         }
 
-        if (self::canonicalizeUnitList($this->getNumeratorUnits()) !== self::canonicalizeUnitList($other->getNumeratorUnits()) ||
+        if (
+            self::canonicalizeUnitList($this->getNumeratorUnits()) !== self::canonicalizeUnitList($other->getNumeratorUnits()) ||
             self::canonicalizeUnitList($this->getDenominatorUnits()) !== self::canonicalizeUnitList($other->getDenominatorUnits())
         ) {
             return false;

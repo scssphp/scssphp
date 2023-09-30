@@ -162,7 +162,7 @@ final class StringExpression implements Expression
             }
         }
 
-        return $containsDoubleQuote ? "'": '"';
+        return $containsDoubleQuote ? "'" : '"';
     }
 
     public function __toString(): string

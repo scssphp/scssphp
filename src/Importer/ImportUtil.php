@@ -88,7 +88,7 @@ final class ImportUtil
      *
      * Otherwise, returns `null`.
      */
-    private static function tryPathAsDirectory(String $path): ?string
+    private static function tryPathAsDirectory(string $path): ?string
     {
         if (!is_dir($path)) {
             return null;

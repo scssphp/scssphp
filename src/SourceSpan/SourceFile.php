@@ -160,13 +160,15 @@ final class SourceFile
             return false;
         }
 
-        if ($this->cachedLine >= \count($this->lineStarts) - 1 ||
+        if (
+            $this->cachedLine >= \count($this->lineStarts) - 1 ||
             $position < $this->lineStarts[$this->cachedLine + 1]
         ) {
             return true;
         }
 
-        if ($this->cachedLine >= \count($this->lineStarts) - 2 ||
+        if (
+            $this->cachedLine >= \count($this->lineStarts) - 2 ||
             $position < $this->lineStarts[$this->cachedLine + 2]
         ) {
             ++$this->cachedLine;

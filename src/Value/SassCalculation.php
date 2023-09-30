@@ -231,7 +231,7 @@ final class SassCalculation extends Value
      */
     public static function sqrt(object $argument): Value
     {
-        return self::singleArgument('sqrt', $argument, NumberUtil::class.'::sqrt', true);
+        return self::singleArgument('sqrt', $argument, NumberUtil::class . '::sqrt', true);
     }
 
     /**
@@ -246,7 +246,7 @@ final class SassCalculation extends Value
      */
     public static function sin(object $argument): Value
     {
-        return self::singleArgument('sin', $argument, NumberUtil::class.'::sin');
+        return self::singleArgument('sin', $argument, NumberUtil::class . '::sin');
     }
 
     /**
@@ -261,7 +261,7 @@ final class SassCalculation extends Value
      */
     public static function cos(object $argument): Value
     {
-        return self::singleArgument('cos', $argument, NumberUtil::class.'::cos');
+        return self::singleArgument('cos', $argument, NumberUtil::class . '::cos');
     }
 
     /**
@@ -276,7 +276,7 @@ final class SassCalculation extends Value
      */
     public static function tan(object $argument): Value
     {
-        return self::singleArgument('tan', $argument, NumberUtil::class.'::tan');
+        return self::singleArgument('tan', $argument, NumberUtil::class . '::tan');
     }
 
     /**
@@ -291,7 +291,7 @@ final class SassCalculation extends Value
      */
     public static function atan(object $argument): Value
     {
-        return self::singleArgument('atan', $argument, NumberUtil::class.'::atan', true);
+        return self::singleArgument('atan', $argument, NumberUtil::class . '::atan', true);
     }
 
     /**
@@ -306,7 +306,7 @@ final class SassCalculation extends Value
      */
     public static function asin(object $argument): Value
     {
-        return self::singleArgument('asin', $argument, NumberUtil::class.'::asin', true);
+        return self::singleArgument('asin', $argument, NumberUtil::class . '::asin', true);
     }
 
     /**
@@ -321,7 +321,7 @@ final class SassCalculation extends Value
      */
     public static function acos(object $argument): Value
     {
-        return self::singleArgument('acos', $argument, NumberUtil::class.'::acos', true);
+        return self::singleArgument('acos', $argument, NumberUtil::class . '::acos', true);
     }
 
     /**
@@ -881,7 +881,7 @@ WARNING
     private static function roundWithStep(string $strategy, SassNumber $number, SassNumber $step): SassNumber
     {
         if (!\in_array($strategy, ['nearest', 'up', 'down', 'to-zero'], true)) {
-            throw new \InvalidArgumentException( '$strategy must be either nearest, up, down or to-zero.');
+            throw new \InvalidArgumentException('$strategy must be either nearest, up, down or to-zero.');
         }
 
         if (is_infinite($number->getValue()) && is_infinite($step->getValue()) || $step->getValue() === 0.0 || is_nan($number->getValue()) || is_nan($step->getValue())) {

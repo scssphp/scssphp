@@ -62,8 +62,8 @@ class RgbTest extends ValueTestCase
         $rgbValue = SassColor::rgb(0x12, 0x34, 0x56);
         $hslValue = SassColor::hsl(210, 65.3846153846154, 20.392156862745097);
 
-        $this->assertSassEquals($this->value, $rgbValue);;
-        $this->assertSassEquals($this->value, $hslValue);;
+        $this->assertSassEquals($this->value, $rgbValue);
+        $this->assertSassEquals($this->value, $hslValue);
     }
 
     public function testChangeRgbChangesRGBValues()
@@ -146,7 +146,7 @@ class RgbTest extends ValueTestCase
 
     public function testChangeHslAllowsValidValues()
     {
-        $this->assertEquals(0, $this->value->changeHsl(null,0)->getSaturation());
+        $this->assertEquals(0, $this->value->changeHsl(null, 0)->getSaturation());
         $this->assertEquals(100, $this->value->changeHsl(null, 100)->getSaturation());
         $this->assertEquals(0, $this->value->changeHsl(null, null, 0)->getLightness());
         $this->assertEquals(100, $this->value->changeHsl(null, null, 100)->getLightness());
@@ -199,7 +199,7 @@ class RgbTest extends ValueTestCase
 
     public function testChangeHwbAllowsValidValues()
     {
-        $this->assertEquals(0, $this->value->changeHwb(null,0)->getWhiteness());
+        $this->assertEquals(0, $this->value->changeHwb(null, 0)->getWhiteness());
         $this->assertEquals(60.0, $this->value->changeHwb(null, 100)->getWhiteness());
         $this->assertEquals(0, $this->value->changeHwb(null, null, 0)->getBlackness());
         $this->assertEquals(93.33333333333333, $this->value->changeHwb(null, null, 100)->getBlackness());
