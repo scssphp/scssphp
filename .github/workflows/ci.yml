@@ -82,3 +82,24 @@ jobs:
 
             -   name: Run phpstan
                 run: vendor-bin/phpstan/vendor/bin/phpstan analyse --ansi --no-progress
+
+    coding_styles:
+        name: Coding styles
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    coverage: "none"
+                    php-version: "8.2"
+                    ini-file: development
+
+            -   name: Install dependencies
+                run: composer update --ansi --no-progress
+
+            -   name: Run phpcs
+                run: vendor/bin/phpcs --extensions=php bin src tests *.php
