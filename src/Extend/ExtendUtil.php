@@ -1002,7 +1002,7 @@ final class ExtendUtil
      */
     private static function isSupercombinator(?CssValue $combinator1, ?CssValue $combinator2): bool
     {
-        return EquatableUtil::equals($combinator1, $combinator2) || ($combinator1 === null && $combinator2 !== null && $combinator2->getValue() === Combinator::CHILD) || ($combinator1!== null && $combinator1->getValue() === Combinator::FOLLOWING_SIBLING && $combinator2 !== null && $combinator2->getValue() === Combinator::NEXT_SIBLING);
+        return EquatableUtil::equals($combinator1, $combinator2) || ($combinator1 === null && $combinator2 !== null && $combinator2->getValue() === Combinator::CHILD) || ($combinator1 !== null && $combinator1->getValue() === Combinator::FOLLOWING_SIBLING && $combinator2 !== null && $combinator2->getValue() === Combinator::NEXT_SIBLING);
     }
 
     /**

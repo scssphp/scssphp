@@ -91,7 +91,6 @@ final class CssParser extends ScssParser
 
             default:
                 return $this->unknownAtRule($start, $name);
-
         }
     }
 

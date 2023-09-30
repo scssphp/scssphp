@@ -27,7 +27,7 @@ enum UnaryOperator
      */
     public function getOperator(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PLUS => '+',
             self::MINUS => '-',
             self::DIVIDE => '/',

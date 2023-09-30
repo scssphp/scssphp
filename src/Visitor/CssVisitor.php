@@ -76,5 +76,4 @@ interface CssVisitor extends ModifiableCssVisitor
      * @return T
      */
     public function visitCssSupportsRule(CssSupportsRule $node);
-
 }

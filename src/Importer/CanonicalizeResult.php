@@ -23,7 +23,6 @@ final class CanonicalizeResult
         public readonly Importer $importer,
         public readonly UriInterface $canonicalUrl,
         public readonly UriInterface $originalUrl,
-    )
-    {
+    ) {
     }
 }

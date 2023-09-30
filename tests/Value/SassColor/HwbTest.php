@@ -58,9 +58,12 @@ class HwbTest extends ValueTestCase
 
     public function testEqualsTheSameColor()
     {
-        $this->assertSassEquals($this->value, SassColor::rgb(0x6B, 0x94, 0x6B));;
-        $this->assertSassEquals($this->value, SassColor::hsl(120, 16, 50));;
-        $this->assertSassEquals($this->value, SassColor::hwb(120, 42, 42));;
+        $this->assertSassEquals($this->value, SassColor::rgb(0x6B, 0x94, 0x6B));
+        ;
+        $this->assertSassEquals($this->value, SassColor::hsl(120, 16, 50));
+        ;
+        $this->assertSassEquals($this->value, SassColor::hwb(120, 42, 42));
+        ;
     }
 
     public function testAllowsValidValues()

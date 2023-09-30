@@ -23,7 +23,6 @@ final class Path
         }
 
         return Uri::fromUnixPath($path);
-
     }
 
     public static function fromUri(UriInterface $uri): string
@@ -224,7 +223,7 @@ final class Path
     public static function prettyUri(string $path): string
     {
         $normalizedPath = $path;
-        $normalizedRootDirectory = getcwd().'/';
+        $normalizedRootDirectory = getcwd() . '/';
 
         if (\DIRECTORY_SEPARATOR === '\\') {
             $normalizedRootDirectory = str_replace('\\', '/', $normalizedRootDirectory);

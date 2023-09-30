@@ -85,7 +85,7 @@ final class ImportCache
 
             $this->relativeCanonicalizeCache[$urlCacheKey][$forImportCacheKey][$baseUrlCacheKey] ??= self::createStorage();
 
-            $relativeResult = $this->relativeCanonicalizeCache[$urlCacheKey][$forImportCacheKey][$baseUrlCacheKey][$baseImporter] ??= $this->doCanonicalize($baseImporter, self::resolveUri($baseUrl, $url,), $baseUrl, $forImport) ?? SpecialCacheValue::null;
+            $relativeResult = $this->relativeCanonicalizeCache[$urlCacheKey][$forImportCacheKey][$baseUrlCacheKey][$baseImporter] ??= $this->doCanonicalize($baseImporter, self::resolveUri($baseUrl, $url), $baseUrl, $forImport) ?? SpecialCacheValue::null;
 
             if ($relativeResult !== SpecialCacheValue::null) {
                 return $relativeResult;
@@ -156,7 +156,6 @@ final class ImportCache
 
         if ($importer->isNonCanonicalScheme($result->getScheme())) {
             throw new \UnexpectedValueException("Importer $importer canonicalized $url to $result, which uses a scheme declared as non-canonical.");
-
         }
 
         return new CanonicalizeResult($importer, $result, $url);

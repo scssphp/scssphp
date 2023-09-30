@@ -26,7 +26,7 @@ final class ModifiableCssSupportsRule extends ModifiableCssParentNode implements
     /**
      * @var CssValue<string>
      */
-    private readonly CssValue$condition;
+    private readonly CssValue $condition;
 
     private readonly FileSpan $span;
 

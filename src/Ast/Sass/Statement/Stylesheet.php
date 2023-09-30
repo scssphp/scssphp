@@ -67,7 +67,7 @@ final class Stylesheet extends ParentStatement
      */
     public static function parse(string $contents, Syntax $syntax, ?LoggerInterface $logger = null, ?string $sourceUrl = null): self
     {
-        return match($syntax) {
+        return match ($syntax) {
             Syntax::SASS => self::parseSass($contents, $logger, $sourceUrl),
             Syntax::SCSS => self::parseScss($contents, $logger, $sourceUrl),
             Syntax::CSS => self::parseCss($contents, $logger, $sourceUrl),

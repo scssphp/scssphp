@@ -548,7 +548,7 @@ final class Number extends Node implements \ArrayAccess
 
         try {
             return $this->coerceUnits($other, function ($num1, $num2) {
-                return round($num1,self::PRECISION) == round($num2, self::PRECISION);
+                return round($num1, self::PRECISION) == round($num2, self::PRECISION);
             });
         } catch (SassScriptException $e) {
             return false;

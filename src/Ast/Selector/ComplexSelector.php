@@ -178,7 +178,7 @@ final class ComplexSelector extends Selector
      */
     public function isSuperselector(ComplexSelector $other): bool
     {
-        return \count($this->leadingCombinators) === 0 && \count($other->leadingCombinators) ===0 && ExtendUtil::complexIsSuperselector($this->components, $other->components);
+        return \count($this->leadingCombinators) === 0 && \count($other->leadingCombinators) === 0 && ExtendUtil::complexIsSuperselector($this->components, $other->components);
     }
 
     public function equals(object $other): bool

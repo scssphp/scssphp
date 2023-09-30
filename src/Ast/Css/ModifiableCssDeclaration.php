@@ -44,7 +44,8 @@ final class ModifiableCssDeclaration extends ModifiableCssNode implements CssDec
      * @param CssValue<string> $name
      * @param CssValue<Value> $value
      */
-    public function __construct(CssValue $name, CssValue $value, FileSpan $span, bool $parsedAsCustomProperty, ?FileSpan $valueSpanForMap = null) {
+    public function __construct(CssValue $name, CssValue $value, FileSpan $span, bool $parsedAsCustomProperty, ?FileSpan $valueSpanForMap = null)
+    {
         $this->name = $name;
         $this->value = $value;
         $this->parsedAsCustomProperty = $parsedAsCustomProperty;

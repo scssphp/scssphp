@@ -21,7 +21,7 @@ final class Trace
      * @var list<Frame>
      * @readonly
      */
-    private readonly array$frames;
+    private readonly array $frames;
 
     /**
      * @param list<Frame> $frames
