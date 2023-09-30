@@ -2,6 +2,7 @@
 
 namespace ScssPhp\ScssPhp\Tests\Util;
 
+use League\Uri\Uri;
 use ScssPhp\ScssPhp\Util\Path;
 use PHPUnit\Framework\TestCase;
 
@@ -22,6 +23,7 @@ class PathTest extends TestCase
     {
         $this->assertFalse(Path::isAbsolute($path));
     }
+
     /**
      * @dataProvider provideWindowsOnlyAbsolutePath
      */
@@ -100,5 +102,41 @@ class PathTest extends TestCase
         yield ['/foo/', 'bar', '/foo/bar'];
         yield ['/foo/', '/bar', '/bar'];
         yield ['foo', '/bar', '/bar'];
+    }
+
+    /**
+     * @dataProvider provideExtensionCases
+     */
+    public function testExtension(string $path, string $expected): void
+    {
+        self::assertEquals($expected, Path::extension($path));
+    }
+
+    public static function provideExtensionCases(): iterable
+    {
+        yield ['path/to/foo.dart', '.dart'];
+        yield ['path/to/foo', ''];
+        yield ['path.to/foo', ''];
+        yield ['path/to/foo.dart.js', '.js'];
+        yield ['~/.bashrc', ''];
+        yield ['~/.notes.txt', '.txt'];
+    }
+
+    /**
+     * @dataProvider provideWithoutExtensionCases
+     */
+    public function testWithoutExtension(string $path, string $expected): void
+    {
+        self::assertEquals($expected, Path::withoutExtension($path));
+    }
+
+    public static function provideWithoutExtensionCases(): iterable
+    {
+        yield ['path/to/foo.dart', 'path/to/foo'];
+        yield ['path/to/foo', 'path/to/foo'];
+        yield ['path.to/foo', 'path.to/foo'];
+        yield ['path/to/foo.dart.js', 'path/to/foo.dart'];
+        yield ['~/.bashrc', '~/.bashrc'];
+        yield ['~/.notes.txt', '~/.notes'];
     }
 }
