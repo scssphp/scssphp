@@ -45,5 +45,5 @@ interface LocationAwareLoggerInterface extends LoggerInterface
      *
      * @return void
      */
-    public function debug(string $message, FileSpan $span = null);
+    public function debug(string $message, ?FileSpan $span = null);
 }

@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
+use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\Equatable;
@@ -343,16 +344,16 @@ final class SassCalculation extends Value
         }
 
         if ($argument->hasUnit('%')) {
-            Warn::deprecation(
-                <<<WARNING
+            $message = <<<WARNING
 Passing percentage units to the global abs() function is deprecated.
 In the future, this will emit a CSS abs() function to be resolved by the browser.
 To preserve current behavior: math.abs($argument)
 
 To emit a CSS abs() now: abs(#\{$argument})
 More info: https://sass-lang.com/d/abs-percent
-WARNING
-            );
+WARNING;
+
+            Warn::forDeprecation($message, Deprecation::absPercent);
         }
 
         return NumberUtil::abs($argument);

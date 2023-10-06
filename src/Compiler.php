@@ -386,7 +386,7 @@ final class Compiler
             $this->rootEnv   = $this->pushEnv($tree);
 
             $warnCallback = function ($message, $deprecation) {
-                $this->logger->warn($message, $deprecation);
+                $this->logger->warn($message, $deprecation !== null);
             };
             $previousWarnCallback = Warn::setCallback($warnCallback);
 

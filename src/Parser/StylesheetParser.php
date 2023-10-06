@@ -75,6 +75,7 @@ use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition\SupportsInterpolation;
 use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition\SupportsNegation;
 use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition\SupportsOperation;
 use ScssPhp\ScssPhp\Colors;
+use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
@@ -1530,7 +1531,7 @@ abstract class StylesheetParser extends Parser
 
         return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($name, $value, $needsDeprecationWarning) {
             if ($needsDeprecationWarning) {
-                $this->logger->warn("@-moz-document is deprecated and support will be removed in Dart Sass 2.0.0.\n\nFor details, see https://sass-lang.com/d/moz-document.", true, $span);
+                $this->logger->warnForDeprecation(Deprecation::mozDocument, "@-moz-document is deprecated and support will be removed in Dart Sass 2.0.0.\n\nFor details, see https://sass-lang.com/d/moz-document.", $span);
             }
 
             return new AtRule($name, $span, $value, $children);
@@ -1884,7 +1885,7 @@ versions of Sass.
 More info and automated migrator: https://sass-lang.com/d/strict-unary
 WARNING;
 
-                        $this->logger->warn($message, true, $singleExpression->getSpan());
+                        $this->logger->warnForDeprecation(Deprecation::strictUnary, $message, $singleExpression->getSpan());
                     }
                 }
             }

@@ -13,8 +13,8 @@
 namespace ScssPhp\ScssPhp\Parser;
 
 use ScssPhp\ScssPhp\Exception\SassFormatException;
-use ScssPhp\ScssPhp\Logger\AdaptingLogger;
-use ScssPhp\ScssPhp\Logger\LocationAwareLoggerInterface;
+use ScssPhp\ScssPhp\Logger\AdaptingDeprecationAwareLogger;
+use ScssPhp\ScssPhp\Logger\DeprecationAwareLoggerInterface;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
@@ -31,7 +31,7 @@ class Parser
 {
     protected readonly StringScanner $scanner;
 
-    protected readonly LocationAwareLoggerInterface $logger;
+    protected readonly DeprecationAwareLoggerInterface $logger;
 
     /**
      * A map used to map source spans in the text being parsed back to their
@@ -69,7 +69,7 @@ class Parser
     public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null, ?InterpolationMap $interpolationMap = null)
     {
         $this->scanner = new StringScanner($contents);
-        $this->logger = AdaptingLogger::adaptLogger($logger ?? new QuietLogger());
+        $this->logger = AdaptingDeprecationAwareLogger::adaptLogger($logger ?? new QuietLogger());
         $this->sourceUrl = $sourceUrl;
         $this->interpolationMap = $interpolationMap;
     }

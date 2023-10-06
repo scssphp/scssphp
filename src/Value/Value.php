@@ -17,6 +17,7 @@ use ScssPhp\ScssPhp\Ast\Selector\ComplexSelector;
 use ScssPhp\ScssPhp\Ast\Selector\CompoundSelector;
 use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\Ast\Selector\SimpleSelector;
+use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Serializer\Serializer;
@@ -119,15 +120,15 @@ abstract class Value implements Equatable, \Stringable
         $indexValue = $sassIndex->assertNumber($name);
 
         if ($indexValue->hasUnits()) {
-            Warn::deprecation(
-                <<<WARNING
+            $message = <<<WARNING
 \$$name: Passing a number with unit {$indexValue->getUnitString()} is deprecated.
 
 To preserve current behavior: {$indexValue->unitSuggestion($name ?? 'index')}
 
 More info: https://sass-lang.com/d/function-units
-WARNING
-            );
+WARNING;
+
+            Warn::forDeprecation($message, Deprecation::functionUnits);
         }
 
         $index = $indexValue->assertInt($name);
