@@ -15,6 +15,7 @@ namespace ScssPhp\ScssPhp\Parser;
 use ScssPhp\ScssPhp\Ast\Sass\Interpolation;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\LoudComment;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\SilentComment;
+use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Util\Character;
 
 /**
@@ -80,7 +81,7 @@ class ScssParser extends StylesheetParser
             }
 
             if ($this->scanIdentifier('elseif', true)) {
-                $this->logger->warn("@elseif is deprecated and will not be supported in future Sass versions.\n\nRecommendation: @else if", true, $this->scanner->spanFrom($beforeAt));
+                $this->logger->warnForDeprecation(Deprecation::elseif, "@elseif is deprecated and will not be supported in future Sass versions.\n\nRecommendation: @else if", $this->scanner->spanFrom($beforeAt));
 
                 $this->scanner->setPosition($this->scanner->getPosition() - 2);
 

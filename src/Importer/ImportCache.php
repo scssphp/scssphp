@@ -12,10 +12,9 @@
 
 namespace ScssPhp\ScssPhp\Importer;
 
-use League\Uri\BaseUri;
 use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\Stylesheet;
-use ScssPhp\ScssPhp\Logger\LocationAwareLoggerInterface;
+use ScssPhp\ScssPhp\Logger\DeprecationAwareLoggerInterface;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
 use ScssPhp\ScssPhp\Util\UriUtil;
 
@@ -31,7 +30,7 @@ final class ImportCache
      */
     private readonly array $importers;
 
-    private readonly LocationAwareLoggerInterface $logger;
+    private readonly DeprecationAwareLoggerInterface $logger;
 
     /**
      * The canonicalized URLs for each non-canonical URL.
@@ -69,7 +68,7 @@ final class ImportCache
     /**
      * @param list<Importer> $importers
      */
-    public function __construct(array $importers, LocationAwareLoggerInterface $logger)
+    public function __construct(array $importers, DeprecationAwareLoggerInterface $logger)
     {
         $this->importers = $importers;
         $this->logger = $logger;

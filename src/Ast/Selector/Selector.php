@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
 use ScssPhp\ScssPhp\Ast\AstNode;
+use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Serializer\Serializer;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
@@ -103,7 +104,7 @@ abstract class Selector implements AstNode, Equatable
             return;
         }
 
-        Warn::deprecation(($name === null ? '' : "\$$name: ") . "$this is not valid CSS.\nThis will be an error in Dart Sass 2.0.0.\n\nMore info: https://sass-lang.com/d/bogus-combinators");
+        Warn::forDeprecation(($name === null ? '' : "\$$name: ") . "$this is not valid CSS.\nThis will be an error in Dart Sass 2.0.0.\n\nMore info: https://sass-lang.com/d/bogus-combinators", Deprecation::bogusCombinators);
     }
 
     /**
