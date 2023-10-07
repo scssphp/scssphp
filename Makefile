@@ -11,7 +11,10 @@ rebuild-outputs: vendor
 	BUILD=1 vendor/bin/phpunit tests/InputTest.php
 
 standard: vendor
-	vendor/bin/phpcs -s --standard=PSR12 --exclude=PSR12.Properties.ConstantVisibility --extensions=php bin src tests *.php
+	vendor/bin/phpcs -s --extensions=php bin src tests *.php
+
+fix-cs: vendor
+	vendor/bin/phpcbf -s --extensions=php bin src tests *.php
 
 vendor: composer.json
 	composer update
@@ -27,4 +30,4 @@ vendor-bin/phpstan/vendor: vendor vendor-bin/phpstan/composer.json
 	composer bin phpstan update
 	touch $@
 
-.PHONY: test sass-spec rebuild-sass-spec rebuild-outputs standard phpstan phpstan-baseline
+.PHONY: test sass-spec rebuild-sass-spec rebuild-outputs standard fix-cs phpstan phpstan-baseline
