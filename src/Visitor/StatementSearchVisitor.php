@@ -41,7 +41,7 @@ use ScssPhp\ScssPhp\Ast\Sass\Statement\SupportsRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\VariableDeclaration;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\WarnRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\WhileRule;
-use ScssPhp\ScssPhp\Util\ListUtil;
+use ScssPhp\ScssPhp\Util\IterableUtil;
 
 /**
  * A StatementVisitor whose `visit*` methods default to returning `null`, but
@@ -122,10 +122,10 @@ abstract class StatementSearchVisitor implements StatementVisitor
 
     public function visitIfRule(IfRule $node)
     {
-        $value = ListUtil::search($node->getClauses(), fn(IfClause $clause) => ListUtil::search($clause->getChildren(), fn(Statement $child) => $child->accept($this)));
+        $value = IterableUtil::search($node->getClauses(), fn(IfClause $clause) => IterableUtil::search($clause->getChildren(), fn(Statement $child) => $child->accept($this)));
 
         if ($node->getLastClause() !== null) {
-            $value ??= ListUtil::search($node->getLastClause()->getChildren(), fn(Statement $child) => $child->accept($this));
+            $value ??= IterableUtil::search($node->getLastClause()->getChildren(), fn(Statement $child) => $child->accept($this));
         }
 
         return $value;
@@ -225,6 +225,6 @@ abstract class StatementSearchVisitor implements StatementVisitor
      */
     protected function visitChildren(array $children)
     {
-        return ListUtil::search($children, fn (Statement $child) => $child->accept($this));
+        return IterableUtil::search($children, fn (Statement $child) => $child->accept($this));
     }
 }

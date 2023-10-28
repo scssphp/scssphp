@@ -22,7 +22,7 @@ use ScssPhp\ScssPhp\Ast\Css\CssNode;
 use ScssPhp\ScssPhp\Ast\Css\CssStyleRule;
 use ScssPhp\ScssPhp\Ast\Css\CssStylesheet;
 use ScssPhp\ScssPhp\Ast\Css\CssSupportsRule;
-use ScssPhp\ScssPhp\Util\ListUtil;
+use ScssPhp\ScssPhp\Util\IterableUtil;
 
 /**
  * A visitor that visits each statement in a CSS AST and returns `true` if all
@@ -37,7 +37,7 @@ abstract class EveryCssVisitor implements CssVisitor
 {
     public function visitCssAtRule(CssAtRule $node): bool
     {
-        return ListUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
+        return IterableUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
     }
 
     public function visitCssComment(CssComment $node): bool
@@ -57,26 +57,26 @@ abstract class EveryCssVisitor implements CssVisitor
 
     public function visitCssKeyframeBlock(CssKeyframeBlock $node): bool
     {
-        return ListUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
+        return IterableUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
     }
 
     public function visitCssMediaRule(CssMediaRule $node): bool
     {
-        return ListUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
+        return IterableUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
     }
 
     public function visitCssStyleRule(CssStyleRule $node): bool
     {
-        return ListUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
+        return IterableUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
     }
 
     public function visitCssStylesheet(CssStylesheet $node): bool
     {
-        return ListUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
+        return IterableUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
     }
 
     public function visitCssSupportsRule(CssSupportsRule $node): bool
     {
-        return ListUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
+        return IterableUtil::every($node->getChildren(), fn (CssNode $child) => $child->accept($this));
     }
 }
