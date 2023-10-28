@@ -1785,11 +1785,11 @@ abstract class StylesheetParser extends Parser
         $start = $this->scanner->getPosition();
         $wasInParentheses = $this->inParentheses;
         /**
-         * @var Expression[]|null $commaExpressions
+         * @var list<Expression>|null $commaExpressions
          */
         $commaExpressions = null;
         /**
-         * @var Expression[]|null $spaceExpressions
+         * @var list<Expression>|null $spaceExpressions
          */
         $spaceExpressions = null;
         /**
@@ -1798,7 +1798,7 @@ abstract class StylesheetParser extends Parser
          * parsing to finish for all preceding higher-precedence $operators, this is
          * naturally ordered from lowest to highest precedence.
          *
-         * @phpstan-var list<BinaryOperator>|null $operators
+         * @var list<BinaryOperator>|null $operators
          */
         $operators = null;
         /**

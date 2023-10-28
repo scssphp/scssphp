@@ -92,7 +92,12 @@ final class ListUtil
             }
         }
 
-        $backtrack = function (int $i, int $j) use ($selections, $lengths, &$backtrack): array {
+        /**
+         * @param int $i
+         * @param int $j
+         * @return list<T>
+         */
+        $backtrack = function (int $i, int $j) use ($selections, $lengths, &$backtrack) {
             if ($i === -1 || $j === -1) {
                 return [];
             }

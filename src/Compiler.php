@@ -5945,7 +5945,7 @@ EOL;
      *
      * @return array
      *
-     * @phpstan-param non-empty-list<array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null}> $prototypes
+     * @phpstan-param non-empty-array<array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null}> $prototypes
      * @phpstan-return array{arguments: list<array{0: string, 1: string, 2: array|Number|null}>, rest_argument: string|null}
      */
     private function selectFunctionPrototype(array $prototypes, int $positional, array $names): array
@@ -7301,7 +7301,13 @@ EOL;
         $scale = $operation === 'scale';
         $change = $operation === 'change';
 
-        /** @phpstan-var callable(string, float|int, bool=, bool=): (float|int|null) $getParam */
+        /**
+         * @param string $name
+         * @param float|int $max
+         * @param bool $checkPercent
+         * @param bool $assertPercent
+         * @return float|int|null
+         */
         $getParam = function ($name, $max, $checkPercent = false, $assertPercent = false) use (&$kwargs, $scale, $change) {
             if (!isset($kwargs[$name])) {
                 return null;
