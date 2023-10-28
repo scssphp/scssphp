@@ -25,7 +25,7 @@ use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\Ast\Selector\SimpleSelector;
 use ScssPhp\ScssPhp\Ast\Selector\TypeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\UniversalSelector;
-use ScssPhp\ScssPhp\Util\ListUtil;
+use ScssPhp\ScssPhp\Util\IterableUtil;
 
 /**
  * A visitor that visits each selector in a Sass selector AST and returns
@@ -40,12 +40,12 @@ abstract class AnySelectorVisitor implements SelectorVisitor
 {
     public function visitComplexSelector(ComplexSelector $complex): bool
     {
-        return ListUtil::any($complex->getComponents(), fn (ComplexSelectorComponent $component) => $this->visitCompoundSelector($component->getSelector()));
+        return IterableUtil::any($complex->getComponents(), fn (ComplexSelectorComponent $component) => $this->visitCompoundSelector($component->getSelector()));
     }
 
     public function visitCompoundSelector(CompoundSelector $compound): bool
     {
-        return ListUtil::any($compound->getComponents(), fn (SimpleSelector $simple) => $simple->accept($this));
+        return IterableUtil::any($compound->getComponents(), fn (SimpleSelector $simple) => $simple->accept($this));
     }
 
     public function visitPseudoSelector(PseudoSelector $pseudo): bool
@@ -57,7 +57,7 @@ abstract class AnySelectorVisitor implements SelectorVisitor
 
     public function visitSelectorList(SelectorList $list): bool
     {
-        return ListUtil::any($list->getComponents(), $this->visitComplexSelector(...));
+        return IterableUtil::any($list->getComponents(), $this->visitComplexSelector(...));
     }
 
     public function visitAttributeSelector(AttributeSelector $attribute): bool

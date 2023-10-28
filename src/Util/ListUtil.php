@@ -18,40 +18,6 @@ namespace ScssPhp\ScssPhp\Util;
 final class ListUtil
 {
     /**
-     * @template T
-     *
-     * @param T[]               $list
-     * @param callable(T): bool $callback
-     */
-    public static function any(array $list, callable $callback): bool
-    {
-        foreach ($list as $item) {
-            if ($callback($item)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @template T
-     *
-     * @param T[]               $list
-     * @param callable(T): bool $callback
-     */
-    public static function every(array $list, callable $callback): bool
-    {
-        foreach ($list as $item) {
-            if (!$callback($item)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Flattens the first level of nested arrays in $queues.
      *
      * The return value is ordered first by index in the nested iterable, then by
@@ -182,29 +148,5 @@ final class ListUtil
         }
 
         return array_slice($list, 0, $count - 1);
-    }
-
-    /**
-     * Returns the first `T` returned by $callback for an element of $iterable,
-     * or `null` if it returns `null` for every element.
-     *
-     * @template T
-     * @template E
-     * @param iterable<E> $iterable
-     * @param callable(E): (T|null) $callback
-     *
-     * @return T|null
-     */
-    public static function search(iterable $iterable, callable $callback)
-    {
-        foreach ($iterable as $element) {
-            $value = $callback($element);
-
-            if ($value !== null) {
-                return $value;
-            }
-        }
-
-        return null;
     }
 }

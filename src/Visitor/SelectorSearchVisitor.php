@@ -15,7 +15,7 @@ use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\Ast\Selector\SimpleSelector;
 use ScssPhp\ScssPhp\Ast\Selector\TypeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\UniversalSelector;
-use ScssPhp\ScssPhp\Util\ListUtil;
+use ScssPhp\ScssPhp\Util\IterableUtil;
 
 /**
  * A {@see SelectorVisitor} whose `visit*` methods default to returning `null`, but
@@ -68,12 +68,12 @@ abstract class SelectorSearchVisitor implements SelectorVisitor
 
     public function visitComplexSelector(ComplexSelector $complex)
     {
-        return ListUtil::search($complex->getComponents(), fn(ComplexSelectorComponent $component) => $this->visitCompoundSelector($component->getSelector()));
+        return IterableUtil::search($complex->getComponents(), fn(ComplexSelectorComponent $component) => $this->visitCompoundSelector($component->getSelector()));
     }
 
     public function visitCompoundSelector(CompoundSelector $compound)
     {
-        return ListUtil::search($compound->getComponents(), fn(SimpleSelector $simple) => $simple->accept($this));
+        return IterableUtil::search($compound->getComponents(), fn(SimpleSelector $simple) => $simple->accept($this));
     }
 
     public function visitPseudoSelector(PseudoSelector $pseudo)
@@ -87,6 +87,6 @@ abstract class SelectorSearchVisitor implements SelectorVisitor
 
     public function visitSelectorList(SelectorList $list)
     {
-        return ListUtil::search($list->getComponents(), $this->visitComplexSelector(...));
+        return IterableUtil::search($list->getComponents(), $this->visitComplexSelector(...));
     }
 }
