@@ -23,9 +23,8 @@ final class SourceFile
 
     /**
      * @var int[]
-     * @readonly
      */
-    private array $lineStarts;
+    private readonly array $lineStarts;
 
     /**
      * The 0-based last line that was returned by {@see getLine}
@@ -45,24 +44,27 @@ final class SourceFile
         $this->sourceUrl = $sourceUrl;
 
         // Extract line starts
-        $this->lineStarts = [0];
+        $lineStarts = [0];
 
         if ($content === '') {
+            $this->lineStarts = $lineStarts;
             return;
         }
 
         $prev = 0;
 
         while (($pos = strpos($content, "\n", $prev)) !== false) {
-            $this->lineStarts[] = $pos;
+            $lineStarts[] = $pos;
             $prev = $pos + 1;
         }
 
-        $this->lineStarts[] = \strlen($content);
+        $lineStarts[] = \strlen($content);
 
         if (!str_ends_with($content, "\n")) {
-            $this->lineStarts[] = \strlen($content) + 1;
+            $lineStarts[] = \strlen($content) + 1;
         }
+
+        $this->lineStarts = $lineStarts;
     }
 
     public function span(int $start, ?int $end = null): FileSpan

@@ -296,13 +296,11 @@ final class SingleUnitSassNumber extends SassNumber
             break;
         }
 
-        if ($removed) {
-            $otherDenominators = array_values($otherDenominators);
-        } else {
+        if (!$removed) {
             array_unshift($newNumerators, $this->unit);
         }
 
-        return SassNumber::withUnits($value, $newNumerators, $otherDenominators);
+        return SassNumber::withUnits($value, $newNumerators, array_values($otherDenominators));
     }
 
     private function tryCoerceToUnit(string $unit): ?SassNumber

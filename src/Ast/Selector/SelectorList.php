@@ -177,9 +177,7 @@ final class SelectorList extends Selector
                     if (\count($newComplexes) === 0) {
                         $newComplexes[] = new ComplexSelector($complex->getLeadingCombinators(), [$component], $complex->getSpan(), false);
                     } else {
-                        foreach ($newComplexes as $i => $newComplex) {
-                            $newComplexes[$i] = $newComplex->withAdditionalComponent($component, $complex->getSpan());
-                        }
+                        $newComplexes = array_map(fn ($newComplex) => $newComplex->withAdditionalComponent($component, $complex->getSpan()), $newComplexes);
                     }
                 } elseif (\count($newComplexes) === 0) {
                     $newComplexes = $resolved;

@@ -454,7 +454,7 @@ WARNING;
             return $value;
         }
 
-        $args = array_filter([$min, $value, $max]);
+        $args = array_values(array_filter([$min, $value, $max]));
         self::verifyCompatibleNumbers($args);
         self::verifyLength($args, 3);
 
@@ -708,13 +708,12 @@ WARNING;
             case $step === null:
                 return new SassCalculation('round', [$strategyOrNumber, $numberOrStep]);
 
-            case $strategyOrNumber instanceof SassString && (\in_array($strategyOrNumber->getText(), ['nearest', 'up', 'down', 'to-zero'], true) || $strategyOrNumber->isVar()) && $numberOrStep !== null && $step !== null:
+            case $strategyOrNumber instanceof SassString && (\in_array($strategyOrNumber->getText(), ['nearest', 'up', 'down', 'to-zero'], true) || $strategyOrNumber->isVar()) && $numberOrStep !== null:
                 return new SassCalculation('round', [$strategyOrNumber, $numberOrStep, $step]);
 
-            case $numberOrStep !== null && $step !== null:
+            case $numberOrStep !== null:
                 throw new SassScriptException("$strategyOrNumber must be either nearest, up, down or to-zero.");
 
-            case $numberOrStep === null:
             default:
                 throw new SassScriptException('Invalid parameters.');
         }
