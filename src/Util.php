@@ -252,4 +252,32 @@ final class Util
 
         throw new \LogicException('Either mbstring (recommended) or iconv is necessary to use Scssphp.');
     }
+
+    /**
+     * Like {@see \SplObjectStorage::addAll()}, but for two-layer maps.
+     *
+     * This avoids copying inner maps from $source if possible.
+     *
+     * @template K1 of object
+     * @template K2 of object
+     * @template V
+     * @template Inner of \SplObjectStorage<K2, V>
+     *
+     * @param \SplObjectStorage<K1, Inner> $destination
+     * @param \SplObjectStorage<K1, Inner> $source
+     */
+    public static function mapAddAll2(\SplObjectStorage $destination, \SplObjectStorage $source): void
+    {
+        foreach ($source as $key) {
+            $inner = $source->getInfo();
+
+            $innerDestination = $destination[$key] ?? null;
+
+            if ($innerDestination !== null) {
+                $innerDestination->addAll($inner);
+            } else {
+                $destination[$key] = $inner;
+            }
+        }
+    }
 }
