@@ -91,4 +91,9 @@ final class ComplexSelectorComponent implements Equatable
 
         return new ComplexSelectorComponent($this->selector, array_merge($this->combinators, $combinators), $this->span);
     }
+
+    public function __toString(): string
+    {
+        return $this->selector . implode('', array_map(fn ($combinator) => ' ' . $combinator, $this->combinators));
+    }
 }
