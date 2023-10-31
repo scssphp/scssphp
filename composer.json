@@ -43,6 +43,7 @@
         "sass/sass-spec": "*",
         "squizlabs/php_codesniffer": "~3.5",
         "symfony/phpunit-bridge": "^5.1",
+        "symfony/var-dumper": "^6.3",
         "thoughtbot/bourbon": "^7.0",
         "twbs/bootstrap": "~5.0",
         "twbs/bootstrap4": "4.6.1",
