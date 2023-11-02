@@ -458,10 +458,33 @@ class Compiler
     }
 
     /**
-     * Compile scss
+     * Compiles the provided scss file into CSS.
+     *
+     * @param string $path
+     *
+     * @return CompilationResult
+     *
+     * @throws SassException when the source fails to compile
+     */
+    public function compileFile($path)
+    {
+        $source = file_get_contents($path);
+
+        if ($source === false) {
+            throw new \RuntimeException('Could not read the file content');
+        }
+
+        return $this->compileString($source, $path);
+    }
+
+    /**
+     * Compiles the provided scss source code into CSS.
+     *
+     * If provided, the path is considered to be the path from which the source code comes
+     * from, which will be used to resolve relative imports.
      *
      * @param string      $source
-     * @param string|null $path
+     * @param string|null $path   The path for the source, used to resolve relative imports
      *
      * @return CompilationResult
      *

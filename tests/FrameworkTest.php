@@ -29,7 +29,7 @@ class FrameworkTest extends TestCase
 
         $entrypoint = dirname(__DIR__) . '/vendor/twbs/bootstrap/scss/bootstrap.scss';
 
-        $result = $compiler->compileString(file_get_contents($entrypoint), $entrypoint);
+        $result = $compiler->compileFile($entrypoint);
 
         $this->assertNotEmpty($result->getCss());
     }
@@ -42,7 +42,7 @@ class FrameworkTest extends TestCase
 
         $entrypoint = dirname(__DIR__) . '/vendor/twbs/bootstrap4/scss/bootstrap.scss';
 
-        $result = $compiler->compileString(file_get_contents($entrypoint), $entrypoint);
+        $result = $compiler->compileFile($entrypoint);
 
         $this->assertNotEmpty($result->getCss());
     }
@@ -74,7 +74,7 @@ SCSS;
 
         $entrypoint = dirname(__DIR__) . '/vendor/zurb/foundation/assets/foundation.scss';
 
-        $result = $compiler->compileString(file_get_contents($entrypoint), $entrypoint);
+        $result = $compiler->compileFile($entrypoint);
 
         $this->assertNotEmpty($result->getCss());
     }
@@ -90,7 +90,7 @@ SCSS;
         $compiler->addImportPath(dirname(__DIR__) . '/vendor/thoughtbot/bourbon');
         $compiler->addImportPath(dirname(__DIR__) . '/vendor/thoughtbot/bourbon/spec/fixtures');
 
-        $result = $compiler->compileString(file_get_contents($entrypoint), $entrypoint);
+        $result = $compiler->compileFile($entrypoint);
 
         $this->assertNotEmpty($result->getCss());
     }
