@@ -94,7 +94,6 @@ class ApiTest extends TestCase
         $this->scss->registerFunction('get-null', function () {
             return Compiler::$null;
         });
-
     }
 
     /**
@@ -331,6 +330,54 @@ class ApiTest extends TestCase
                 ]
             ],
         ];
+    }
+
+    public function testConvertVariableWithTrailingComment()
+    {
+        $value = 'd, /* comment */ e /* trailing comment */';
+
+        $convertedValue = ValueConverter::parseValue($value);
+
+        $this->scss = new Compiler();
+
+        $this->scss->replaceVariables(['c' => $convertedValue]);
+
+        $this->assertEquals("a {\n  b: d, e;\n}", $this->compile('a { b: $c; }'));
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testConvertVariableWithTrailingContent()
+    {
+        $value = 'd, /* comment */ e; trailing';
+
+        $this->expectDeprecation('Passing trailing content after the expression when parsing a value is deprecated since Scssphp 1.12.0 and will be an error in 2.0. Expected end of value: failed at `; trailing`%A');
+
+        $convertedValue = ValueConverter::parseValue($value);
+
+        $this->scss = new Compiler();
+
+        $this->scss->replaceVariables(['c' => $convertedValue]);
+
+        $this->assertEquals("a {\n  b: d, e;\n}", $this->compile('a { b: $c; }'));
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testSetVariableWithTrailingContent()
+    {
+        $value = 'd, /* comment */ e; trailing';
+
+        $this->expectDeprecation('Passing raw values to as custom variables to the Compiler is deprecated. Use "\ScssPhp\ScssPhp\ValueConverter::parseValue" or "\ScssPhp\ScssPhp\ValueConverter::fromPhp" to convert them instead.');
+        $this->expectDeprecation('Passing trailing content after the expression when parsing a value is deprecated since Scssphp 1.12.0 and will be an error in 2.0. Expected end of value: failed at `; trailing`%A');
+
+        $this->scss = new Compiler();
+
+        $this->scss->replaceVariables(['c' => $value]);
+
+        $this->assertEquals("a {\n  b: d, e;\n}", $this->compile('a { b: $c; }'));
     }
 
     public function testCompileWithoutCharset()
