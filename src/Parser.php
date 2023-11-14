@@ -1683,9 +1683,9 @@ class Parser
      */
     protected function appendComment($comment)
     {
-        assert($this->env !== null);
-
         if (! $this->discardComments) {
+            assert($this->env !== null);
+
             $this->env->comments[] = $comment;
         }
     }

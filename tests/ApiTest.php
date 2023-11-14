@@ -322,6 +322,14 @@ class ApiTest extends TestCase
                     'color' => 'blue',
                 ],
             ],
+            // Comment in value
+            [
+                "a {\n  b: d, e;\n}",
+                'a { b: $c; }',
+                [
+                    'c' => 'd, /* comment */ e'
+                ]
+            ],
         ];
     }
 
