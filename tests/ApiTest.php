@@ -17,6 +17,7 @@ use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Logger\StreamLogger;
 use ScssPhp\ScssPhp\Node\Number;
 use ScssPhp\ScssPhp\ValueConverter;
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 
 /**
  * API test
@@ -25,6 +26,8 @@ use ScssPhp\ScssPhp\ValueConverter;
  */
 class ApiTest extends TestCase
 {
+    use ExpectDeprecationTrait;
+
     /**
      * @var Compiler
      */
@@ -231,7 +234,46 @@ class ApiTest extends TestCase
                     'color' => 'blue',
                 ],
             ],
+            // Comment in value
+            [
+                "a {\n  b: d, e;\n}",
+                'a { b: $c; }',
+                [
+                    'c' => 'd, /* comment */ e'
+                ]
+            ],
         ];
+    }
+
+    public function testConvertVariableWithTrailingComment()
+    {
+        $value = 'd, /* comment */ e /* trailing comment */';
+
+        $convertedValue = ValueConverter::parseValue($value);
+
+        $this->scss = new Compiler();
+
+        $this->scss->replaceVariables(['c' => $convertedValue]);
+
+        $this->assertEquals("a {\n  b: d, e;\n}", $this->compile('a { b: $c; }'));
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testConvertVariableWithTrailingContent()
+    {
+        $value = 'd, /* comment */ e; trailing';
+
+        $this->expectDeprecation('Passing trailing content after the expression when parsing a value is deprecated since Scssphp 1.12.0 and will be an error in 2.0. Expected end of value: failed at `; trailing`%A');
+
+        $convertedValue = ValueConverter::parseValue($value);
+
+        $this->scss = new Compiler();
+
+        $this->scss->replaceVariables(['c' => $convertedValue]);
+
+        $this->assertEquals("a {\n  b: d, e;\n}", $this->compile('a { b: $c; }'));
     }
 
     public function testCompileWithoutCharset()

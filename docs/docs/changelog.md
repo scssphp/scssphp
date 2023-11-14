@@ -1,5 +1,20 @@
 # Changelog
 
+## **1.12.0** -- November 14, 2023
+
+**Deprecated**
+
+* Deprecate passing string with extra content after the expression in `ValueConverter::parseValue` (@stof)
+
+**Added**
+
+* Add the `Compiler::compileFile` method (@stof)
+* Add the `OutputStyle::fromString` and `OutputStyle::toString` methods to allow writing code supporting both Scssphp 1.12+ and 2.0 (@stof)
+
+**Fixed**
+
+* Fix the parsing of values in `ValueConverter::parseValue` when using comments inside the value source (@stof)
+
 ## **1.11.1** -- September 24, 2023
 
 **Added**

@@ -8,3 +8,4 @@ highlight-css: vendor/bundle
 
 vendor/bundle: Gemfile
 	bundle install
+	touch $@
