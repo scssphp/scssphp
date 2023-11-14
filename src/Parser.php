@@ -328,6 +328,13 @@ class Parser
 
         $list = $this->valueList($out);
 
+        if ($this->count !== \strlen($this->buffer)) {
+            $error = $this->parseError('Expected end of value');
+            $message = 'Passing trailing content after the expression when parsing a value is deprecated since Scssphp 1.12.0 and will be an error in 2.0. ' . $error->getMessage();
+
+            @trigger_error($message, E_USER_DEPRECATED);
+        }
+
         $this->restoreEncoding();
 
         return $list;
