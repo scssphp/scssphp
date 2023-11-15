@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Tests;
 
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Logger\StreamLogger;
 use ScssPhp\ScssPhp\Node\Number;
 use ScssPhp\ScssPhp\ValueConverter;
@@ -258,22 +259,14 @@ class ApiTest extends TestCase
         $this->assertEquals("a {\n  b: d, e;\n}", $this->compile('a { b: $c; }'));
     }
 
-    /**
-     * @group legacy
-     */
     public function testConvertVariableWithTrailingContent()
     {
         $value = 'd, /* comment */ e; trailing';
 
-        $this->expectDeprecation('Passing trailing content after the expression when parsing a value is deprecated since Scssphp 1.12.0 and will be an error in 2.0. Expected end of value: failed at `; trailing`%A');
+        $this->expectException(SassException::class);
+        $this->expectExceptionMessage('Expected end of value: failed at `; trailing`');
 
-        $convertedValue = ValueConverter::parseValue($value);
-
-        $this->scss = new Compiler();
-
-        $this->scss->replaceVariables(['c' => $convertedValue]);
-
-        $this->assertEquals("a {\n  b: d, e;\n}", $this->compile('a { b: $c; }'));
+        ValueConverter::parseValue($value);
     }
 
     public function testCompileWithoutCharset()
