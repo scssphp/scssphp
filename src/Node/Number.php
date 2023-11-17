@@ -131,7 +131,7 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function getNumeratorUnits()
     {
@@ -139,7 +139,7 @@ class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function getDenominatorUnits()
     {
