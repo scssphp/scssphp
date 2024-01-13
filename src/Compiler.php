@@ -6406,8 +6406,6 @@ EOL;
      */
     protected function sortNativeFunctionArgs($functionName, $prototypes, $args)
     {
-        static $parser = null;
-
         if (! isset($prototypes)) {
             $keyArgs = [];
             $posArgs = [];

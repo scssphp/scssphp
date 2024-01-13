@@ -1286,6 +1286,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:sortNativeFunctionArgs\\(\\) never returns null so it can be removed from the return type\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:sortNativeFunctionArgs\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
