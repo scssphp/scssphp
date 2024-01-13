@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Cannot cast T of array\\<string\\|Stringable\\>\\|string\\|Stringable\\|null to string\\.$#"
-			count: 1
-			path: src/Ast/Css/CssValue.php
-
-		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\:\\:\\$children type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Block.php
@@ -29,6 +24,11 @@ parameters:
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\AtRootBlock\\:\\:\\$with type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Block/AtRootBlock.php
+
+		-
+			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\CallableBlock\\:\\:\\$args type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Block/CallableBlock.php
 
 		-
 			message: "#^Property ScssPhp\\\\ScssPhp\\\\Block\\\\ContentBlock\\:\\:\\$child type has no value type specified in iterable type array\\.$#"
@@ -151,6 +151,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:applyArguments\\(\\) has parameter \\$argDef with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:applyArguments\\(\\) has parameter \\$argValues with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -167,6 +172,11 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:applyArgumentsToDeclaration\\(\\) has parameter \\$positionalArgs with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:applyArgumentsToDeclaration\\(\\) has parameter \\$prototype with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -257,6 +267,11 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:checkCompatibleTags\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:checkPrototypeMatches\\(\\) has parameter \\$prototype with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -497,7 +512,7 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:evaluateArguments\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
+			count: 2
 			path: src/Compiler.php
 
 		-
@@ -1146,6 +1161,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:parseFunctionPrototype\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:prependSelectors\\(\\) has parameter \\$parts with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1201,6 +1221,11 @@ parameters:
 			path: src/Compiler.php
 
 		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:selectFunctionPrototype\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:selectorAppend\\(\\) has parameter \\$selectors with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1222,11 +1247,6 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:sortNativeFunctionArgs\\(\\) has parameter \\$prototypes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:sortNativeFunctionArgs\\(\\) never returns null so it can be removed from the return type\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1292,6 +1312,11 @@ parameters:
 
 		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:unifyCompoundSelectors\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Compiler.php
+
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:verifyPrototype\\(\\) has parameter \\$prototype with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1496,6 +1521,11 @@ parameters:
 			path: src/Formatter/OutputBlock.php
 
 		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Importer\\\\FilesystemImporter\\:\\:load\\(\\) never returns null so it can be removed from the return type\\.$#"
+			count: 1
+			path: src/Importer/FilesystemImporter.php
+
+		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 1
 			path: src/Parser.php
@@ -1689,3 +1719,8 @@ parameters:
 			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Base\\\\Range\\:\\:includes\\(\\) expects float\\|int, float\\|int\\|string given\\.$#"
 			count: 1
 			path: src/Util.php
+
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Value\\\\SassMap\\:\\:tryMap\\(\\) never returns null so it can be removed from the return type\\.$#"
+			count: 1
+			path: src/Value/SassMap.php
