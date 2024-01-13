@@ -33,7 +33,7 @@ use ScssPhp\ScssPhp\Util;
  *
  * @template-implements \ArrayAccess<int, mixed>
  */
-final class Number extends Node implements \ArrayAccess
+final class Number extends Node implements \ArrayAccess, \JsonSerializable
 {
     const PRECISION = 10;
 
@@ -138,6 +138,16 @@ final class Number extends Node implements \ArrayAccess
     public function getDenominatorUnits()
     {
         return $this->denominatorUnits;
+    }
+
+    /**
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
+    {
+        // Passing a compiler instance makes the method output a Sass representation instead of a CSS one, supporting full units.
+        return $this->output(new Compiler());
     }
 
     /**
