@@ -4,7 +4,7 @@ This file contains documentation targeted at the scssphp maintainers.
 
 ### Prepare the release
 
-1. Ensure that the documentation (in `docs/docs/index.md`) is up-to-date
+1. Ensure that the documentation (in `docs/docs/README.md`) is up-to-date
 2. Update the changelog in `docs/docs/changelog.md`
 3. Update the version in `src/Version.php`
 4. Update the version in `docs/_config.yml` (this should be the tag name that will be created)
