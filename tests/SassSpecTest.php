@@ -294,7 +294,7 @@ class SassSpecTest extends TestCase
             mkdir($basedir, 0777, true);
         }
 
-        $inputPath = $basedir.'/input.scss';
+        $inputPath = $basedir . '/input.scss';
         file_put_contents($inputPath, $scss);
 
         // SassSpec use @import "core_functions/.../..."

@@ -11,7 +11,7 @@ rebuild-outputs: vendor
 	BUILD=1 vendor/bin/phpunit tests/InputTest.php
 
 standard: vendor
-	vendor/bin/phpcs -s --standard=PSR12 --exclude=PSR12.Properties.ConstantVisibility --extensions=php bin src tests *.php
+	vendor/bin/phpcs -s --extensions=php bin src tests *.php
 
 vendor: composer.json
 	composer update
