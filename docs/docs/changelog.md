@@ -1,5 +1,12 @@
 # Changelog
 
+## **1.12.1** -- January 13, 2024
+
+**Fixed**
+
+* Fix the handling of leading spaces in interpolated media queries (@stof)
+* Fix the compilation cache key when using numbers in variables (@stof)
+
 ## **1.12.0** -- November 14, 2023
 
 **Deprecated**
