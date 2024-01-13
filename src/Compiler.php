@@ -444,7 +444,7 @@ final class Compiler
 
             $sourceMap = null;
 
-            if (! empty($out) && $this->sourceMap !== self::SOURCE_MAP_NONE) {
+            if (! empty($out) && $this->sourceMap !== self::SOURCE_MAP_NONE && $this->sourceMap) {
                 assert($sourceMapGenerator !== null);
                 $sourceMap = $sourceMapGenerator->generateJson($prefix);
                 $sourceMapUrl = null;

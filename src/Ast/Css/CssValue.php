@@ -24,7 +24,7 @@ use ScssPhp\ScssPhp\Util\EquatableUtil;
  * This is used to associate a span with a value that doesn't otherwise track
  * its span. It has value equality semantics.
  *
- * @template T of string|\Stringable|array<string|\Stringable>|Combinator|null
+ * @template-covariant T of string|\Stringable|array<string|\Stringable>|Combinator|null
  *
  * @internal
  */

@@ -348,9 +348,12 @@ final class Parser
         $this->inParens        = false;
         $this->eatWhiteDefault = true;
         $this->buffer          = $buffer;
+        $this->discardComments = true;
 
         $this->saveEncoding();
         $this->extractLineNumbers($this->buffer);
+
+        $this->whitespace();
 
         $isMediaQuery = $this->mediaQueryList($out);
 
