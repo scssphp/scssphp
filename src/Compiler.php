@@ -5448,6 +5448,18 @@ EOL;
      */
     private function resolveImportPath(string $url, string $baseDir): ?string
     {
+        if( is_string( $url ) && strpos( $url,"~" ) == 0 && !empty( $this->registeredVars['path_for_tilde'] ) ){
+            $pathForTilde = $this->registeredVars['path_for_tilde'];
+            if( is_array( $this->registeredVars['path_for_tilde'] ) ){
+                if( $this->registeredVars['path_for_tilde'][0] == 'string' && isset( $this->registeredVars['path_for_tilde'][2] ) ){
+                    $pathForTilde = $this->registeredVars['path_for_tilde'][2][0];
+                }else{
+                    $pathForTilde = $this->registeredVars['path_for_tilde'][0];
+
+                }
+            }
+            $url = substr_replace( $url, $pathForTilde, 0, 1);
+        }
         $path = Path::join($baseDir, $url);
 
         $hasExtension = preg_match('/.s[ac]ss$/', $url);
