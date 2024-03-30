@@ -23,27 +23,34 @@ final class FilesystemImporter extends Importer
 {
     /**
      * The path relative to which this importer looks for files.
+     *
+     * If this is `null`, this importer will _only_ load absolute `file:` URLs
+     * and URLs relative to the current file.
      */
-    private readonly string $loadPath;
+    private readonly ?string $loadPath;
 
-    public function __construct(string $loadPath)
+    public function __construct(?string $loadPath)
     {
-        $this->loadPath = Path::absolute($loadPath);
+        $this->loadPath = $loadPath !== null ? Path::absolute($loadPath) : null;
     }
 
     public function canonicalize(UriInterface $url): ?UriInterface
     {
-        if ($url->getScheme() !== 'file' && $url->getScheme() !== null) {
+        if ($url->getScheme() === 'file') {
+            $resolved = ImportUtil::resolveImportPath(Path::fromUri($url));
+        } elseif ($url->getScheme() !== null) {
+            return null;
+        } elseif ($this->loadPath !== null) {
+            $resolved = ImportUtil::resolveImportPath(Path::join($this->loadPath, Path::fromUri($url)));
+        } else {
             return null;
         }
 
-        $path = ImportUtil::resolveImportPath(Path::join($this->loadPath, Path::fromUri($url)));
-
-        if ($path === null) {
+        if ($resolved === null) {
             return null;
         }
 
-        return Path::toUri(Path::canonicalize($path));
+        return Path::toUri(Path::canonicalize($resolved));
     }
 
     public function load(UriInterface $url): ?ImporterResult
@@ -80,6 +87,6 @@ final class FilesystemImporter extends Importer
 
     public function __toString(): string
     {
-        return $this->loadPath;
+        return $this->loadPath ?? '<absolute file importer>';
     }
 }
