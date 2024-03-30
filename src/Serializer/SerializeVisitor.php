@@ -1071,6 +1071,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 case "\x1D":
                 case "\x1E":
                 case "\x1F":
+                case "\x7F":
                     $this->writeEscape($this->buffer, $char, $string, $i);
                     break;
 
