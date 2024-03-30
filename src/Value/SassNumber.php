@@ -358,6 +358,14 @@ abstract class SassNumber extends Value
     abstract public function hasUnits(): bool;
 
     /**
+     * Whether $this has more than one numerator unit, or any denominator units.
+     *
+     * This is `true` for numbers whose units make them unrepresentable as CSS
+     * lengths.
+     */
+    abstract public function hasComplexUnits(): bool;
+
+    /**
      * Returns whether $this has $unit as its only unit (and as a numerator).
      */
     abstract public function hasUnit(string $unit): bool;

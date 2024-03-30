@@ -536,18 +536,10 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
     private function writeCalculationValue(object $value): void
     {
+        if ($value instanceof SassNumber && $value->hasComplexUnits() && !$this->inspect) {
+            throw new SassScriptException("$value is not a valid CSS value.");
+        }
         if ($value instanceof SassNumber && !is_finite($value->getValue())) {
-            if (\count($value->getNumeratorUnits()) > 1 || \count($value->getDenominatorUnits()) > 0) {
-                if (!$this->inspect) {
-                    throw new SassScriptException("$value is not a valid CSS value.");
-                }
-
-                $this->writeNumber($value->getValue());
-                $this->buffer->write($value->getUnitString());
-
-                return;
-            }
-
             if (is_nan($value->getValue())) {
                 $this->buffer->write('NaN');
             } elseif ($value->getValue() > 0) {
@@ -556,14 +548,17 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 $this->buffer->write('-infinity');
             }
 
-            $unit = $value->getNumeratorUnits()[0] ?? null;
+            $this->writeCalculationUnits($value->getNumeratorUnits(), $value->getDenominatorUnits());
+        } elseif ($value instanceof SassNumber && $value->hasComplexUnits()) {
+            $this->writeNumber($value->getValue());
 
-            if ($unit !== null) {
-                $this->writeOptionalSpace();
-                $this->buffer->writeChar('*');
-                $this->writeOptionalSpace();
-                $this->buffer->writeChar('1');
-                $this->buffer->write($unit);
+            $firstUnit = $value->getNumeratorUnits()[0] ?? null;
+
+            if ($firstUnit !== null) {
+                $this->buffer->write($firstUnit);
+                $this->writeCalculationUnits(array_slice($value->getDenominatorUnits(), 1), $value->getDenominatorUnits());
+            } else {
+                $this->writeCalculationUnits([], $value->getDenominatorUnits());
             }
         } elseif ($value instanceof Value) {
             $value->accept($this);
@@ -590,7 +585,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
             $right = $value->getRight();
             $parenthesizeRight = ($right instanceof CalculationOperation && $this->parenthesizeCalculationRhs($value->getOperator(), $right->getOperator()))
-                || ($value->getOperator() === CalculationOperator::DIVIDED_BY && $right instanceof SassNumber && !is_finite($right->getValue()) && $right->hasUnits());
+                || ($value->getOperator() === CalculationOperator::DIVIDED_BY && $right instanceof SassNumber && (is_finite($right->getValue()) ? $right->hasComplexUnits() : $right->hasUnits()));
 
             if ($parenthesizeRight) {
                 $this->buffer->writeChar('(');
@@ -599,6 +594,32 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             if ($parenthesizeRight) {
                 $this->buffer->writeChar(')');
             }
+        }
+    }
+
+    /**
+     * Writes the complex numerator and denominator units beyond the first
+     * numerator unit for a number as they appear in a calculation.
+     *
+     * @param list<string> $numeratorUnits
+     * @param list<string> $denominatorUnits
+     */
+    private function writeCalculationUnits(array $numeratorUnits, array $denominatorUnits): void
+    {
+        foreach ($numeratorUnits as $unit) {
+            $this->writeOptionalSpace();
+            $this->buffer->writeChar('*');
+            $this->writeOptionalSpace();
+            $this->buffer->writeChar('1');
+            $this->buffer->write($unit);
+        }
+
+        foreach ($denominatorUnits as $unit) {
+            $this->writeOptionalSpace();
+            $this->buffer->writeChar('/');
+            $this->writeOptionalSpace();
+            $this->buffer->writeChar('1');
+            $this->buffer->write($unit);
         }
     }
 
@@ -937,18 +958,18 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             return;
         }
 
-        $this->writeNumber($value->getValue());
-
-        if (!$this->inspect) {
-            if (\count($value->getNumeratorUnits()) > 1 || \count($value->getDenominatorUnits()) > 0) {
+        if ($value->hasComplexUnits()) {
+            if (!$this->inspect) {
                 throw new SassScriptException("$value is not a valid CSS value.");
             }
+
+            $this->visitCalculation(SassCalculation::unsimplified('calc', [$value]));
+        } else {
+            $this->writeNumber($value->getValue());
 
             if (\count($value->getNumeratorUnits()) > 0) {
                 $this->buffer->write($value->getNumeratorUnits()[0]);
             }
-        } else {
-            $this->buffer->write($value->getUnitString());
         }
     }
 

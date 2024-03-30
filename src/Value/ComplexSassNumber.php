@@ -58,6 +58,11 @@ final class ComplexSassNumber extends SassNumber
         return true;
     }
 
+    public function hasComplexUnits(): bool
+    {
+        return true;
+    }
+
     public function hasUnit(string $unit): bool
     {
         return false;

@@ -117,6 +117,11 @@ final class SingleUnitSassNumber extends SassNumber
         return true;
     }
 
+    public function hasComplexUnits(): bool
+    {
+        return false;
+    }
+
     protected function withValue(float $value): SassNumber
     {
         return new self($value, $this->unit);
