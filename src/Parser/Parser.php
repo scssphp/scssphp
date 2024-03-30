@@ -131,9 +131,7 @@ class Parser
         $next = $this->scanner->peekChar(1);
 
         if ($next === '/') {
-            $this->silentComment();
-
-            return true;
+            return $this->silentComment();
         }
 
         if ($next === '*') {
@@ -158,14 +156,18 @@ class Parser
 
     /**
      * Consumes and ignores a silent (Sass-style) comment.
+     *
+     * Returns whether the comment was consumed.
      */
-    protected function silentComment(): void
+    protected function silentComment(): bool
     {
         $this->scanner->expect('//');
 
         while (!$this->scanner->isDone() && !Character::isNewline($this->scanner->peekChar())) {
             $this->scanner->readChar();
         }
+
+        return true;
     }
 
     /**

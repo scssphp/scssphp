@@ -44,8 +44,12 @@ final class CssParser extends ScssParser
         return true;
     }
 
-    protected function silentComment(): void
+    protected function silentComment(): bool
     {
+        if ($this->inExpression()) {
+            return false;
+        }
+
         $start = $this->scanner->getPosition();
         parent::silentComment();
         $this->error("Silent comments aren't allowed in plain CSS.", $this->scanner->spanFrom($start));

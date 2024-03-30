@@ -134,6 +134,11 @@ abstract class StylesheetParser extends Parser
     private bool $inParentheses = false;
 
     /**
+     * Whether the parser is currently within an expression.
+     */
+    private bool $inExpression = false;
+
+    /**
      * A map from all variable names that are assigned with `!global` in the
      * current stylesheet to the nodes where they're defined.
      *
@@ -149,6 +154,11 @@ abstract class StylesheetParser extends Parser
     public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null)
     {
         parent::__construct($contents, $logger, $sourceUrl);
+    }
+
+    protected function inExpression(): bool
+    {
+        return $this->inExpression;
     }
 
     /**
@@ -1783,7 +1793,10 @@ abstract class StylesheetParser extends Parser
         }
 
         $start = $this->scanner->getPosition();
+        $wasInExpression = $this->inExpression;
         $wasInParentheses = $this->inParentheses;
+        $this->inExpression = true;
+
         /**
          * @var list<Expression>|null $commaExpressions
          */
@@ -2243,11 +2256,14 @@ WARNING;
                 $commaExpressions[] = $singleExpression;
             }
 
+            $this->inExpression = $wasInExpression;
+
             return new ListExpression($commaExpressions, ListSeparator::COMMA, $this->scanner->spanFrom($beforeBracket ?? $start), $bracketList);
         }
 
         if ($bracketList && $spaceExpressions !== null) {
             $resolveOperations();
+            $this->inExpression = $wasInExpression;
             assert($singleExpression !== null);
             $spaceExpressions[] = $singleExpression;
 
@@ -2261,6 +2277,7 @@ WARNING;
             assert($beforeBracket !== null);
             $singleExpression = new ListExpression([$singleExpression], ListSeparator::UNDECIDED, $this->scanner->spanFrom($beforeBracket), true);
         }
+        $this->inExpression = $wasInExpression;
 
         return $singleExpression;
     }
