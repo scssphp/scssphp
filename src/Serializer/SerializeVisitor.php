@@ -60,6 +60,7 @@ use ScssPhp\ScssPhp\Value\SassColor;
 use ScssPhp\ScssPhp\Value\SassFunction;
 use ScssPhp\ScssPhp\Value\SassList;
 use ScssPhp\ScssPhp\Value\SassMap;
+use ScssPhp\ScssPhp\Value\SassMixin;
 use ScssPhp\ScssPhp\Value\SassNumber;
 use ScssPhp\ScssPhp\Value\SassString;
 use ScssPhp\ScssPhp\Value\SpanColorFormat;
@@ -756,6 +757,17 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
 
         $this->buffer->write('get-function(');
+        $this->visitQuotedString($value->getName());
+        $this->buffer->writeChar(')');
+    }
+
+    public function visitMixin(SassMixin $value): void
+    {
+        if (!$this->inspect) {
+            throw new SassScriptException("$value is not a valid CSS value.");
+        }
+
+        $this->buffer->write('get-mixin(');
         $this->visitQuotedString($value->getName());
         $this->buffer->writeChar(')');
     }
