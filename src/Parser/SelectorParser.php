@@ -29,6 +29,7 @@ use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\Ast\Selector\SimpleSelector;
 use ScssPhp\ScssPhp\Ast\Selector\TypeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\UniversalSelector;
+use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
@@ -52,15 +53,30 @@ final class SelectorParser extends Parser
 
     private readonly bool $allowParent;
 
-    private readonly bool $allowPlaceholder;
+    /**
+     * Whether to parse the selector as plain CSS.
+     */
+    private readonly bool $plainCss;
 
-    public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true, ?InterpolationMap $interpolationMap = null, bool $allowPlaceholder = true)
+    /**
+     * Creates a parser that parses CSS selectors.
+     *
+     * If $allowParent is `false`, this will throw a @see SassFormatException} if
+     * the selector includes the parent selector `&`.
+     *
+     * If $plainCss is `true`, this will parse the selector as a plain CSS
+     * selector rather than a Sass selector.
+     */
+    public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true, ?InterpolationMap $interpolationMap = null, bool $plainCss = false)
     {
         $this->allowParent = $allowParent;
-        $this->allowPlaceholder = $allowPlaceholder;
+        $this->plainCss = $plainCss;
         parent::__construct($contents, $logger, $url, $interpolationMap);
     }
 
+    /**
+     * @throws SassFormatException
+     */
     public function parse(): SelectorList
     {
         return $this->wrapSpanFormatException(function () {
@@ -211,6 +227,9 @@ final class SelectorParser extends Parser
             }
         }
 
+        if (\count($combinators) > 0 && $this->plainCss) {
+            $this->scanner->error('expected selector.');
+        }
         if ($lastCompound !== null) {
             $components[] = new ComplexSelectorComponent($lastCompound, $combinators, $this->spanFrom($componentStart));
         } elseif (\count($combinators) !== 0) {
@@ -230,7 +249,7 @@ final class SelectorParser extends Parser
         $start = $this->scanner->getPosition();
         $components = [$this->simpleSelector()];
 
-        while (Character::isSimpleSelectorStart($this->scanner->peekChar())) {
+        while ($this->isSimpleSelectorStart($this->scanner->peekChar())) {
             $components[] = $this->simpleSelector(false);
         }
 
@@ -260,8 +279,8 @@ final class SelectorParser extends Parser
 
             case '%':
                 $selector = $this->placeholderSelector();
-                if (!$this->allowPlaceholder) {
-                    $this->error("Placeholder selectors aren't allowed here.", $this->scanner->spanFrom($start));
+                if ($this->plainCss) {
+                    $this->error("Placeholder selectors aren't allowed in plain CSS.", $this->scanner->spanFrom($start));
                 }
                 return $selector;
 
@@ -413,6 +432,10 @@ final class SelectorParser extends Parser
         $start = $this->scanner->getPosition();
         $this->scanner->expectChar('&');
         $suffix = $this->lookingAtIdentifierBody() ? $this->identifierBody() : null;
+
+        if ($this->plainCss && $suffix !== null) {
+            $this->scanner->error("Parent selectors can't have suffixes in plain CSS.", $start, $this->scanner->getPosition() - $start);
+        }
 
         return new ParentSelector($this->spanFrom($start), $suffix);
     }
@@ -570,5 +593,17 @@ final class SelectorParser extends Parser
         }
 
         return new TypeSelector(new QualifiedName($this->identifier(), $nameOrNamespace), $this->spanFrom($start));
+    }
+
+    /**
+     *  Returns whether $character can start a simple selector in the middle of a compound selector.
+     */
+    private function isSimpleSelectorStart(?string $character): bool
+    {
+        return match ($character) {
+            '*', '[', '.', '#', '%', ':' => true,
+            '&' => $this->plainCss,
+            default => false,
+        };
     }
 }

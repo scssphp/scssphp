@@ -50,15 +50,19 @@ final class SelectorList extends Selector
     /**
      * Parses a selector list from $contents.
      *
-     * If passed, $url is the name of the file from which $contents comes.
-     * $allowParent and $allowPlaceholder control whether {@see ParentSelector}s or
-     * {@see PlaceholderSelector}s are allowed in this selector, respectively.
+     * If passed, $url is the name of the file from which $contents comes. If
+     * $allowParent is false, this doesn't allow {@see ParentSelector}s. If
+     * $plainCss is true, this parses the selector as plain CSS rather than
+     * unresolved Sass.
+     *
+     * If passed, $interpolationMap maps the text of $contents back to the
+     * original location of the selector in the source file.
      *
      * @throws SassFormatException if parsing fails.
      */
-    public static function parse(string $contents, ?LoggerInterface $logger = null, ?InterpolationMap $interpolationMap = null, ?string $url = null, bool $allowParent = true, bool $allowPlaceholder = true): SelectorList
+    public static function parse(string $contents, ?LoggerInterface $logger = null, ?InterpolationMap $interpolationMap = null, ?string $url = null, bool $allowParent = true, bool $plainCss = false): SelectorList
     {
-        return (new SelectorParser($contents, $logger, $url, $allowParent, $interpolationMap, $allowPlaceholder))->parse();
+        return (new SelectorParser($contents, $logger, $url, $allowParent, $interpolationMap, $plainCss))->parse();
     }
 
     /**
@@ -139,18 +143,28 @@ final class SelectorList extends Selector
     }
 
     /**
-     * Returns a new list with all {@see ParentSelector}s replaced with $parent.
+     * Returns a new selector list that represents $this nested within $parent.
      *
-     * If $implicitParent is true, this treats [ComplexSelector]s that don't
-     * contain an explicit {@see ParentSelector} as though they began with one.
+     * By default, this replaces {@see ParentSelector}s in $this with $parent. If
+     * $preserveParentSelectors is true, this instead preserves those selectors
+     * as parent selectors.
+     *
+     * If $implicitParent is true, this prepends $parent to any
+     * {@see ComplexSelector}s in this that don't contain explicit {@see ParentSelector}s,
+     * or to _all_ {@see ComplexSelector}s if $preserveParentSelectors is true.
      *
      * The given $parent may be `null`, indicating that this has no parents. If
      * so, this list is returned as-is if it doesn't contain any explicit
-     * {@see ParentSelector}s. If it does, this throws a {@see SassScriptException}.
+     * {@see ParentSelector}s or if $preserveParentSelectors is true. Otherwise, this
+     * throws a {@see SassScriptException}.
      */
-    public function resolveParentSelectors(?SelectorList $parent, bool $implicitParent = true): SelectorList
+    public function nestWithin(?SelectorList $parent, bool $implicitParent = true, bool $preserveParentSelectors = false): SelectorList
     {
         if ($parent === null) {
+            if ($preserveParentSelectors) {
+                return $this;
+            }
+
             $parentSelector = $this->accept(new ParentSelectorVisitor());
             if ($parentSelector === null) {
                 return $this;
@@ -159,8 +173,8 @@ final class SelectorList extends Selector
             throw new SassRuntimeException('Top-level selectors may not contain the parent selector "&".', $parentSelector->getSpan());
         }
 
-        return new SelectorList(ListUtil::flattenVertically(array_map(function (ComplexSelector $complex) use ($parent, $implicitParent) {
-            if (!self::containsParentSelector($complex)) {
+        return new SelectorList(ListUtil::flattenVertically(array_map(function (ComplexSelector $complex) use ($parent, $implicitParent, $preserveParentSelectors) {
+            if ($preserveParentSelectors || !self::containsParentSelector($complex)) {
                 if (!$implicitParent) {
                     return [$complex];
                 }
@@ -172,7 +186,7 @@ final class SelectorList extends Selector
             $newComplexes = [];
 
             foreach ($complex->getComponents() as $component) {
-                $resolved = self::resolveParentSelectorsCompound($component, $parent);
+                $resolved = self::nestWithinCompound($component, $parent);
                 if ($resolved === null) {
                     if (\count($newComplexes) === 0) {
                         $newComplexes[] = new ComplexSelector($complex->getLeadingCombinators(), [$component], $complex->getSpan(), false);
@@ -221,7 +235,7 @@ final class SelectorList extends Selector
      *
      * @return list<ComplexSelector>|null
      */
-    private static function resolveParentSelectorsCompound(ComplexSelectorComponent $component, SelectorList $parent): ?array
+    private static function nestWithinCompound(ComplexSelectorComponent $component, SelectorList $parent): ?array
     {
         $simples = $component->getSelector()->getComponents();
         $containsSelectorPseudo = false;
@@ -255,7 +269,7 @@ final class SelectorList extends Selector
                     return $simple;
                 }
 
-                return $simple->withSelector($selector->resolveParentSelectors($parent, false));
+                return $simple->withSelector($selector->nestWithin($parent, false));
             }, $simples);
         } else {
             $resolvedSimples = $simples;

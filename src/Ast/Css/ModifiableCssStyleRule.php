@@ -37,15 +37,18 @@ final class ModifiableCssStyleRule extends ModifiableCssParentNode implements Cs
 
     private readonly FileSpan $span;
 
+    private readonly bool $fromPlainCss;
+
     /**
      * @param Box<SelectorList> $selector
      */
-    public function __construct(Box $selector, FileSpan $span, ?SelectorList $originalSelector = null)
+    public function __construct(Box $selector, FileSpan $span, ?SelectorList $originalSelector = null, bool $fromPlainCss = false)
     {
         parent::__construct();
         $this->selector = $selector;
         $this->originalSelector = $originalSelector ?? $selector->getValue();
         $this->span = $span;
+        $this->fromPlainCss = $fromPlainCss;
     }
 
     public function getSelector(): SelectorList
@@ -56,6 +59,11 @@ final class ModifiableCssStyleRule extends ModifiableCssParentNode implements Cs
     public function getOriginalSelector(): SelectorList
     {
         return $this->originalSelector;
+    }
+
+    public function isFromPlainCss(): bool
+    {
+        return $this->fromPlainCss;
     }
 
     public function getSpan(): FileSpan
