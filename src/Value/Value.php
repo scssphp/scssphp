@@ -33,7 +33,7 @@ use ScssPhp\ScssPhp\Warn;
  * particular types using `assert*()` functions like {@see assertString}, which
  * throw user-friendly error messages if they fail.
  */
-#[Sealed(permits: [SassBoolean::class, SassCalculation::class, SassColor::class, SassFunction::class, SassList::class, SassMap::class, SassNull::class, SassNumber::class, SassString::class])]
+#[Sealed(permits: [SassBoolean::class, SassCalculation::class, SassColor::class, SassFunction::class, SassList::class, SassMap::class, SassMixin::class, SassNull::class, SassNumber::class, SassString::class])]
 abstract class Value implements Equatable, \Stringable
 {
     /**
@@ -189,7 +189,7 @@ WARNING;
     }
 
     /**
-     * Throws a {@see SassScriptException} if $this isn't a string.
+     * Throws a {@see SassScriptException} if $this isn't a function reference.
      *
      * If this came from a function argument, $name is the argument name
      * (without the `$`). It's used for error reporting.
@@ -198,7 +198,20 @@ WARNING;
      */
     public function assertFunction(?string $name = null): SassFunction
     {
-        throw SassScriptException::forArgument("$this is not a function.", $name);
+        throw SassScriptException::forArgument("$this is not a function reference.", $name);
+    }
+
+    /**
+     * Throws a {@see SassScriptException} if $this isn't a mixin reference.
+     *
+     * If this came from a function argument, $name is the argument name
+     * (without the `$`). It's used for error reporting.
+     *
+     * @throws SassScriptException
+     */
+    public function assertMixin(?string $name = null): SassMixin
+    {
+        throw SassScriptException::forArgument("$this is not a mixin reference.", $name);
     }
 
     /**

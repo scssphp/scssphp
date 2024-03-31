@@ -34,4 +34,11 @@ interface CssStyleRule extends CssParentNode
      * The selector for this rule, before any extensions were applied.
      */
     public function getOriginalSelector(): SelectorList;
+
+    /**
+     * Whether this style rule was originally defined in a plain CSS stylesheet.
+     *
+     * @internal
+     */
+    public function isFromPlainCss(): bool;
 }

@@ -116,15 +116,6 @@ final class Character
     }
 
     /**
-     *  Returns whether $character can start a simple selector other than a type
-     * selector.
-     */
-    public static function isSimpleSelectorStart(?string $character): bool
-    {
-        return $character === '*' || $character === '[' || $character === '.' || $character === '#' || $character === '%' || $character === ':';
-    }
-
-    /**
      * Returns whether $identifier is module-private.
      *
      * Assumes $identifier is a valid Sass identifier.

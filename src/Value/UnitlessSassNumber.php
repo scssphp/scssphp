@@ -44,6 +44,11 @@ final class UnitlessSassNumber extends SassNumber
         return false;
     }
 
+    public function hasComplexUnits(): bool
+    {
+        return false;
+    }
+
     protected function withValue(float $value): SassNumber
     {
         return new self($value);

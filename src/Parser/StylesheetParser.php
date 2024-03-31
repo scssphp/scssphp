@@ -134,6 +134,11 @@ abstract class StylesheetParser extends Parser
     private bool $inParentheses = false;
 
     /**
+     * Whether the parser is currently within an expression.
+     */
+    private bool $inExpression = false;
+
+    /**
      * A map from all variable names that are assigned with `!global` in the
      * current stylesheet to the nodes where they're defined.
      *
@@ -149,6 +154,11 @@ abstract class StylesheetParser extends Parser
     public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null)
     {
         parent::__construct($contents, $logger, $sourceUrl);
+    }
+
+    protected function inExpression(): bool
+    {
+        return $this->inExpression;
     }
 
     /**
@@ -351,10 +361,6 @@ abstract class StylesheetParser extends Parser
      */
     private function declarationOrStyleRule(): Statement
     {
-        if ($this->isPlainCss() && $this->inStyleRule && !$this->inUnknownAtRule) {
-            return $this->propertyOrVariableDeclaration();
-        }
-
         $start = $this->scanner->getPosition();
 
         $declarationBuffer = $this->declarationOrBuffer();
@@ -446,8 +452,9 @@ abstract class StylesheetParser extends Parser
 
         $postColonWhitespace = $this->rawText($this->whitespace(...));
 
-        if ($this->lookingAtChildren()) {
-            return $this->withChildren($this->declarationChild(...), $start, fn(array $children, FileSpan $span) => Declaration::nested($name, $children, $span));
+        $nested = $this->tryDeclarationChildren($name, $start);
+        if ($nested !== null) {
+            return $nested;
         }
 
         $midBuffer .= $postColonWhitespace;
@@ -492,8 +499,9 @@ abstract class StylesheetParser extends Parser
             return $nameBuffer;
         }
 
-        if ($this->lookingAtChildren()) {
-            return $this->withChildren($this->declarationChild(...), $start, fn(array $children, FileSpan $span) => Declaration::nested($name, $children, $span, $value));
+        $nested = $this->tryDeclarationChildren($name, $start, $value);
+        if ($nested !== null) {
+            return $nested;
         }
 
         $this->expectStatementSeparator();
@@ -611,31 +619,41 @@ abstract class StylesheetParser extends Parser
 
         $this->whitespace();
 
-        if ($this->lookingAtChildren()) {
-            if ($this->isPlainCss()) {
-                $this->scanner->error("Nested declarations aren't allowed in plain CSS.");
-            }
-
-            return $this->withChildren($this->declarationChild(...), $start, fn(array $children, FileSpan $span) => Declaration::nested($name, $children, $span));
+        $nested = $this->tryDeclarationChildren($name, $start);
+        if ($nested !== null) {
+            return $nested;
         }
 
         $value = $this->expression();
 
-        if ($this->lookingAtChildren()) {
-            if ($this->isPlainCss()) {
-                $this->scanner->error("Nested declarations aren't allowed in plain CSS.");
-            }
-
-            return $this->withChildren(
-                $this->declarationChild(...),
-                $start,
-                fn(array $children, FileSpan $span) => Declaration::nested($name, $children, $span, $value)
-            );
+        $nested = $this->tryDeclarationChildren($name, $start);
+        if ($nested !== null) {
+            return $nested;
         }
 
         $this->expectStatementSeparator();
 
         return Declaration::create($name, $value, $this->scanner->spanFrom($start));
+    }
+
+    /**
+     * Tries parsing nested children of a declaration whose $name has already
+     * been parsed, and returns `null` if it doesn't have any.
+     *
+     * If $value is passed, it's used as the value of the property without
+     * nesting.
+     */
+    private function tryDeclarationChildren(Interpolation $name, int $start, ?Expression $value = null): ?Declaration
+    {
+        if (!$this->lookingAtChildren()) {
+            return null;
+        }
+
+        if ($this->isPlainCss()) {
+            $this->scanner->error("Nested declarations aren't allowed in plain CSS.");
+        }
+
+        return $this->withChildren($this->declarationChild(...), $start, fn(array $children, FileSpan $span) => Declaration::nested($name, $children, $span, $value));
     }
 
     /**
@@ -1783,7 +1801,10 @@ abstract class StylesheetParser extends Parser
         }
 
         $start = $this->scanner->getPosition();
+        $wasInExpression = $this->inExpression;
         $wasInParentheses = $this->inParentheses;
+        $this->inExpression = true;
+
         /**
          * @var list<Expression>|null $commaExpressions
          */
@@ -2243,11 +2264,14 @@ WARNING;
                 $commaExpressions[] = $singleExpression;
             }
 
+            $this->inExpression = $wasInExpression;
+
             return new ListExpression($commaExpressions, ListSeparator::COMMA, $this->scanner->spanFrom($beforeBracket ?? $start), $bracketList);
         }
 
         if ($bracketList && $spaceExpressions !== null) {
             $resolveOperations();
+            $this->inExpression = $wasInExpression;
             assert($singleExpression !== null);
             $spaceExpressions[] = $singleExpression;
 
@@ -2261,6 +2285,7 @@ WARNING;
             assert($beforeBracket !== null);
             $singleExpression = new ListExpression([$singleExpression], ListSeparator::UNDECIDED, $this->scanner->spanFrom($beforeBracket), true);
         }
+        $this->inExpression = $wasInExpression;
 
         return $singleExpression;
     }

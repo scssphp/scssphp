@@ -85,10 +85,6 @@ final class VariableExpression implements Expression, SassReference
 
     public function __toString(): string
     {
-        if ($this->namespace === null) {
-            return '$' . $this->name;
-        }
-
-        return $this->namespace . '$' . $this->name;
+        return $this->span->getText();
     }
 }

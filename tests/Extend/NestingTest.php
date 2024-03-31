@@ -29,7 +29,7 @@ class NestingTest extends TestCase
         $parentSelector = SelectorList::parse($parent);
         $childSelector = SelectorList::parse($child);
 
-        $this->assertSame($expected, (string) $childSelector->resolveParentSelectors($parentSelector));
+        $this->assertSame($expected, (string) $childSelector->nestWithin($parentSelector));
     }
 
     /**
