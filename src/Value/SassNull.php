@@ -40,6 +40,11 @@ final class SassNull extends Value
         return true;
     }
 
+    public function realNull(): ?Value
+    {
+        return null;
+    }
+
     public function accept(ValueVisitor $visitor)
     {
         return $visitor->visitNull();
