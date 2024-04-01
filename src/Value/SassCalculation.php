@@ -745,6 +745,8 @@ WARNING;
      *
      * If $simplify is `false`, no simplification will be done.
      *
+     * @return SassNumber|CalculationOperation|SassString|SassCalculation|Value
+     *
      * @throws SassScriptException
      *
      * @internal
