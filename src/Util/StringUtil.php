@@ -17,6 +17,39 @@ namespace ScssPhp\ScssPhp\Util;
  */
 final class StringUtil
 {
+    /**
+     * @phpstan-param non-empty-array<string> $iter
+     */
+    public static function toSentence(array $iter, string $conjunction = 'and'): string
+    {
+        if (\count($iter) === 1) {
+            return $iter[array_key_first($iter)];
+        }
+
+        $last = array_pop($iter);
+
+        return implode(', ', $iter) . ' ' . $conjunction . ' ' . $last;
+    }
+
+    /**
+     * Returns $name if $number is 1, or the plural of $name otherwise.
+     *
+     * By default, this just adds "s" to the end of $name to get the plural. If
+     * $plural is passed, that's used instead.
+     */
+    public static function pluralize(string $name, int $number, ?string $plural = null): string
+    {
+        if ($number === 1) {
+            return $name;
+        }
+
+        if ($plural !== null) {
+            return $plural;
+        }
+
+        return $name . 's';
+    }
+
     public static function trimAsciiRight(string $string, bool $excludeEscape = false): string
     {
         $end = self::lastNonWhitespace($string, $excludeEscape);

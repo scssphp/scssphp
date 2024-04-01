@@ -17,6 +17,7 @@ use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\Equatable;
 use ScssPhp\ScssPhp\Util\NumberUtil;
+use ScssPhp\ScssPhp\Util\StringUtil;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 use ScssPhp\ScssPhp\Warn;
 
@@ -1125,7 +1126,7 @@ WARNING;
         }
 
         $length = \count($args);
-        $verb = $length === 1 ? 'was' : 'were';
+        $verb = StringUtil::pluralize('was', $length, 'were');
 
         throw new SassScriptException("$expectedLength arguments required, but only $length $verb passed.");
     }

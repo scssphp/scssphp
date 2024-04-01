@@ -17,6 +17,7 @@ use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\ScssParser;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\StringUtil;
 
 /**
  * An argument declaration, as for a function or mixin definition.
@@ -114,24 +115,23 @@ final class ArgumentDeclaration implements SassNode
 
         if ($positional > \count($this->arguments)) {
             $message = sprintf(
-                'Only %d %sargument%s allowed, but %d %s passed.',
+                'Only %d %s%s allowed, but %d %s passed.',
                 \count($this->arguments),
                 empty($names) ? '' : 'positional ',
-                \count($this->arguments) === 1 ? '' : 's',
+                StringUtil::pluralize('argument', \count($this->arguments)),
                 $positional,
-                $positional === 1 ? 'was' : 'were'
+                StringUtil::pluralize('was', $positional, 'were')
             );
             throw new SassScriptException($message);
         }
 
         if ($nameUsed < \count($names)) {
             $unknownNames = array_values(array_diff(array_keys($names), array_map(fn($argument) => $argument->getName(), $this->arguments)));
-            $lastName = array_pop($unknownNames);
+            \assert(\count($unknownNames) > 0);
             $message = sprintf(
-                'No argument%s named $%s%s.',
-                $unknownNames ? 's' : '',
-                $unknownNames ? implode(', $', $unknownNames) . ' or $' : '',
-                $lastName
+                'No %s named %s.',
+                StringUtil::pluralize('argument', \count($unknownNames)),
+                StringUtil::toSentence(array_map(fn ($name) => '$' . $name, $unknownNames), 'or')
             );
             throw new SassScriptException($message);
         }
