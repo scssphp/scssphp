@@ -16,6 +16,7 @@ use ScssPhp\ScssPhp\Base\Range;
 use ScssPhp\ScssPhp\Exception\RangeException;
 use ScssPhp\ScssPhp\Node\Number;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\StackTrace\Frame;
 use ScssPhp\ScssPhp\Util\StringUtil;
 
 /**
@@ -82,6 +83,16 @@ final class Util
         $revert = ['%21' => '!', '%2A' => '*', '%27' => "'", '%28' => '(', '%29' => ')'];
 
         return strtr(rawurlencode($string), $revert);
+    }
+
+    public static function frameForSpan(FileSpan $span, string $member, ?string $url = null): Frame
+    {
+        return new Frame(
+            $url ?? $span->getSourceUrl() ?? '-',
+            $span->getStart()->getLine() + 1,
+            $span->getStart()->getColumn() + 1,
+            $member
+        );
     }
 
     /**
