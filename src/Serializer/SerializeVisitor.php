@@ -778,7 +778,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
 
         $this->buffer->write('get-function(');
-        $this->visitQuotedString($value->getName());
+        $this->visitQuotedString($value->getCallable()->getName());
         $this->buffer->writeChar(')');
     }
 
@@ -789,7 +789,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
 
         $this->buffer->write('get-mixin(');
-        $this->visitQuotedString($value->getName());
+        $this->visitQuotedString($value->getCallable()->getName());
         $this->buffer->writeChar(')');
     }
 

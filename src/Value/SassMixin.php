@@ -12,6 +12,8 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
+use ScssPhp\ScssPhp\SassCallable\SassCallable;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
 /**
@@ -22,23 +24,22 @@ use ScssPhp\ScssPhp\Visitor\ValueVisitor;
  */
 final class SassMixin extends Value
 {
-    // TODO find a better representation of mixins, as names won't be unique anymore once modules enter in the equation.
-    private $name;
+    private readonly SassCallable $callable;
 
     /**
      * @internal
      */
-    public function __construct(string $name)
+    public function __construct(SassCallable $callable)
     {
-        $this->name = $name;
+        $this->callable = $callable;
     }
 
     /**
      * @internal
      */
-    public function getName(): string
+    public function getCallable(): SassCallable
     {
-        return $this->name;
+        return $this->callable;
     }
 
     /**
@@ -56,6 +57,6 @@ final class SassMixin extends Value
 
     public function equals(object $other): bool
     {
-        return $other instanceof SassMixin && $this->name === $other->name;
+        return $other instanceof SassMixin && EquatableUtil::equals($this->callable, $other->callable);
     }
 }

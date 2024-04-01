@@ -12,6 +12,8 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
+use ScssPhp\ScssPhp\SassCallable\SassCallable;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
 /**
@@ -22,23 +24,22 @@ use ScssPhp\ScssPhp\Visitor\ValueVisitor;
  */
 final class SassFunction extends Value
 {
-    // TODO find a better representation of functions, as names won't be unique anymore once modules enter in the equation.
-    private $name;
+    private readonly SassCallable $callable;
 
     /**
      * @internal
      */
-    public function __construct(string $name)
+    public function __construct(SassCallable $callable)
     {
-        $this->name = $name;
+        $this->callable = $callable;
     }
 
     /**
      * @internal
      */
-    public function getName(): string
+    public function getCallable(): SassCallable
     {
-        return $this->name;
+        return $this->callable;
     }
 
     public function accept(ValueVisitor $visitor)
@@ -53,6 +54,6 @@ final class SassFunction extends Value
 
     public function equals(object $other): bool
     {
-        return $other instanceof SassFunction && $this->name === $other->name;
+        return $other instanceof SassFunction && EquatableUtil::equals($this->callable, $other->callable);
     }
 }
