@@ -104,7 +104,7 @@ final class StringUtil
     /**
      * Converts all ASCII chars to lowercase in the input string.
      *
-     * This does not uses `strtolower` because `strtolower` is locale-dependant
+     * This does not use `strtolower` because `strtolower` is locale-dependant
      * rather than operating on ASCII.
      * Passing an input string in an encoding that it is not ASCII compatible is
      * unsupported, and will probably generate garbage.
@@ -112,5 +112,18 @@ final class StringUtil
     public static function toAsciiLowerCase(string $string): string
     {
         return strtr($string, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
+    }
+
+    /**
+     * Converts all ASCII chars to uppercase in the input string.
+     *
+     * This does not use `strtoupper` because `strtoupper` is locale-dependant
+     * rather than operating on ASCII.
+     * Passing an input string in an encoding that it is not ASCII compatible is
+     * unsupported, and will probably generate garbage.
+     */
+    public static function toAsciiUpperCase(string $string): string
+    {
+        return strtr($string, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
     }
 }
