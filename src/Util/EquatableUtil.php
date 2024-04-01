@@ -18,9 +18,9 @@ namespace ScssPhp\ScssPhp\Util;
 final class EquatableUtil
 {
     /**
-     * @param list<mixed> $list
+     * @param iterable<mixed> $list
      */
-    public static function listContains(array $list, Equatable $item): bool
+    public static function iterableContains(iterable $list, Equatable $item): bool
     {
         foreach ($list as $listItem) {
             if (!\is_object($listItem)) {

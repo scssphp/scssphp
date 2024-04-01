@@ -267,7 +267,7 @@ final class PseudoSelector extends SimpleSelector
             }
         }
 
-        if (EquatableUtil::listContains($compound, $this)) {
+        if (EquatableUtil::iterableContains($compound, $this)) {
             return $compound;
         }
 

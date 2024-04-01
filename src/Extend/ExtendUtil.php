@@ -639,7 +639,7 @@ final class ExtendUtil
 
         foreach ($complex2 as $component) {
             foreach ($component->getSelector()->getComponents() as $simple) {
-                if (self::isUnique($simple) && EquatableUtil::listContains($uniqueSelectors, $simple)) {
+                if (self::isUnique($simple) && EquatableUtil::iterableContains($uniqueSelectors, $simple)) {
                     return true;
                 }
             }
