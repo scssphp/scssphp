@@ -17,9 +17,9 @@ use ScssPhp\ScssPhp\Logger\AdaptingDeprecationAwareLogger;
 use ScssPhp\ScssPhp\Logger\DeprecationAwareLoggerInterface;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
+use ScssPhp\ScssPhp\SourceSpan\FileLocation;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\SourceSpan\LazyFileSpan;
-use ScssPhp\ScssPhp\SourceSpan\SourceLocation;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\ParserUtil;
@@ -976,7 +976,7 @@ class Parser
      * This helps avoid missing token errors pointing at the next closing bracket
      * rather than the line where the problem actually occurred.
      */
-    private function firstNewlineBefore(SourceLocation $location): SourceLocation
+    private function firstNewlineBefore(FileLocation $location): FileLocation
     {
         $text = $location->getFile()->getText(0, $location->getOffset());
         $index = $location->getOffset() - 1;

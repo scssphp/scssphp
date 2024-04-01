@@ -65,12 +65,12 @@ class LazyFileSpan implements FileSpan
         return $this->getSpan()->getLength();
     }
 
-    public function getStart(): SourceLocation
+    public function getStart(): FileLocation
     {
         return $this->getSpan()->getStart();
     }
 
-    public function getEnd(): SourceLocation
+    public function getEnd(): FileLocation
     {
         return $this->getSpan()->getEnd();
     }
