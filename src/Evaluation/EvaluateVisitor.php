@@ -416,6 +416,99 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
 
                 return SassBoolean::create($this->environment->getContent() !== null);
             }, 'sass:meta'),
+            //*
+            BuiltInCallable::function('get-function', '$name, $css: false, $module: null', function ($arguments) {
+                $name = $arguments[0]->assertString('name');
+                $css = $arguments[1]->isTruthy();
+                $module = $arguments[2]->realNull()?->assertString('module');
+
+                if ($css) {
+                    if ($module !== null) {
+                        throw new SassScriptException('$css and $module may not both be passed at once.');
+                    }
+
+                    return new SassFunction(new PlainCssCallable($name->getText()));
+                }
+
+                \assert($this->callableNode !== null);
+                $callable = $this->addExceptionSpan($this->callableNode, function () use ($name, $module) {
+                    $normalizedName = str_replace('_', '-', $name->getText());
+                    $namespace = $module?->getText();
+
+                    if ($namespace !== null) {
+                        // TODO remove this when implementing modules
+                        throw new SassScriptException('Sass modules are not implemented yet.');
+                    }
+
+                    $local = $this->environment->getFunction($normalizedName);
+
+                    if ($local !== null) {
+                        return $local;
+                    }
+
+                    return $this->getBuiltinFunction($normalizedName);
+                });
+
+                if ($callable === null) {
+                    throw new SassScriptException("Function not found: $name");
+                }
+
+                return new SassFunction($callable);
+            }, 'sass:meta'),//*/
+            //*
+            BuiltInCallable::function('get-mixin', '$name, $module: null', function ($arguments) {
+                $name = $arguments[0]->assertString('name');
+                $module = $arguments[1]->realNull()?->assertString('module');
+
+                \assert($this->callableNode !== null);
+                $callable = $this->addExceptionSpan($this->callableNode, function () use ($name, $module) {
+                    if ($module !== null) {
+                        // TODO remove this when implementing modules
+                        throw new SassScriptException('Sass modules are not implemented yet.');
+                    }
+
+                    return $this->environment->getMixin(str_replace('_', '-', $name->getText()));
+                });
+
+                if ($callable === null) {
+                    throw new SassScriptException("Mixin not found: $name");
+                }
+
+                return new SassMixin($callable);
+            }, 'sass:meta'),//*/
+            //*
+            BuiltInCallable::function('call', '$function, $args...', function ($arguments) {
+                $function = $arguments[0];
+                $args = $arguments[1];
+                \assert($args instanceof SassArgumentList);
+
+                $callableNode = $this->callableNode;
+                \assert($callableNode !== null);
+
+                if (\count($args->getKeywords()) === 0) {
+                    $keywordRest = null;
+                } else {
+                    $keywordArgs = new Map();
+                    foreach ($args->getKeywords() as $name => $value) {
+                        $keywordArgs->put(new SassString($name, false), $value);
+                    }
+
+                    $keywordRest = new ValueExpression(SassMap::create($keywordArgs), $callableNode->getSpan());
+                }
+
+                $invocation = new ArgumentInvocation([], [], $callableNode->getSpan(), new ValueExpression($args, $callableNode->getSpan()), $keywordRest);
+
+                if ($function instanceof SassString) {
+                    Warn::forDeprecation("Passing a string to call() is deprecated and will be illegal in Dart Sass 2.0.0.\n\nRecommendation: call(get-function($function))", Deprecation::callString);
+                    $expression = new FunctionExpression($function->getText(), $invocation, $callableNode->getSpan());
+
+                    return $expression->accept($this);
+                }
+
+                $callable = $function->assertFunction('function')->getCallable();
+
+                return $this->runFunctionCallable($invocation, $callable, $callableNode);
+            }, 'sass:meta'),//*/
         ];
 
         foreach ($functions as $function) {
