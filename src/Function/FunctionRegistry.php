@@ -24,6 +24,18 @@ class FunctionRegistry
      * @var array<string, array{overloads: array<string, callable(list<Value>): Value>, url: string}>
      */
     private const BUILTIN_FUNCTIONS = [
+        // sass:math
+        'abs' => ['overloads' => ['$number' => [MathFunctions::class, 'abs']], 'url' => 'sass:math'],
+        'ceil' => ['overloads' => ['$number' => [MathFunctions::class, 'ceil']], 'url' => 'sass:math'],
+        'floor' => ['overloads' => ['$number' => [MathFunctions::class, 'floor']], 'url' => 'sass:math'],
+        'max' => ['overloads' => ['$numbers...' => [MathFunctions::class, 'max']], 'url' => 'sass:math'],
+        'min' => ['overloads' => ['$numbers...' => [MathFunctions::class, 'min']], 'url' => 'sass:math'],
+        'random' => ['overloads' => ['$limit: null' => [MathFunctions::class, 'random']], 'url' => 'sass:math'],
+        'percentage' => ['overloads' => ['$number' => [MathFunctions::class, 'percentage']], 'url' => 'sass:math'],
+        'round' => ['overloads' => ['$number' => [MathFunctions::class, 'round']], 'url' => 'sass:math'],
+        'unit' => ['overloads' => ['$number' => [MathFunctions::class, 'unit']], 'url' => 'sass:math'],
+        'comparable' => ['overloads' => ['$number1, $number2' => [MathFunctions::class, 'compatible']], 'url' => 'sass:math'],
+        'unitless' => ['overloads' => ['$number' => [MathFunctions::class, 'isUnitless']], 'url' => 'sass:math'],
         // sass:meta
         'feature-exists' => ['overloads' => ['$feature' => [MetaFunctions::class, 'featureExists']], 'url' => 'sass:meta'],
         'inspect' => ['overloads' => ['$value' => [MetaFunctions::class, 'inspect']], 'url' => 'sass:meta'],
