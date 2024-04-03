@@ -24,6 +24,16 @@ class FunctionRegistry
      * @var array<string, array{overloads: array<string, callable(list<Value>): Value>, url: string}>
      */
     private const BUILTIN_FUNCTIONS = [
+        // sass:list
+        'length' => ['overloads' => ['$list' => [ListFunctions::class, 'length']], 'url' => 'sass:list'],
+        'nth' => ['overloads' => ['$list, $n' => [ListFunctions::class, 'nth']], 'url' => 'sass:list'],
+        'set-nth' => ['overloads' => ['$list, $n, $value' => [ListFunctions::class, 'setNth']], 'url' => 'sass:list'],
+        'join' => ['overloads' => ['$list1, $list2, $separator: auto, $bracketed: auto' => [ListFunctions::class, 'join']], 'url' => 'sass:list'],
+        'append' => ['overloads' => ['$list, $val, $separator: auto' => [ListFunctions::class, 'append']], 'url' => 'sass:list'],
+        'zip' => ['overloads' => ['$lists...' => [ListFunctions::class, 'zip']], 'url' => 'sass:list'],
+        'index' => ['overloads' => ['$list, $value' => [ListFunctions::class, 'index']], 'url' => 'sass:list'],
+        'is-bracketed' => ['overloads' => ['$list' => [ListFunctions::class, 'isBracketed']], 'url' => 'sass:list'],
+        'list-separator' => ['overloads' => ['$list' => [ListFunctions::class, 'separator']], 'url' => 'sass:list'],
         // sass:map
         'map-get' => ['overloads' => ['$map, $key, $keys...' => [MapFunctions::class, 'get']], 'url' => 'sass:map'],
         'map-merge' => ['overloads' => [
