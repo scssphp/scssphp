@@ -52,14 +52,14 @@ final class ConcreteFileSpan implements FileSpan
         return $this->end - $this->start;
     }
 
-    public function getStart(): SourceLocation
+    public function getStart(): FileLocation
     {
-        return new SourceLocation($this->file, $this->start);
+        return new FileLocation($this->file, $this->start);
     }
 
-    public function getEnd(): SourceLocation
+    public function getEnd(): FileLocation
     {
-        return new SourceLocation($this->file, $this->end);
+        return new FileLocation($this->file, $this->end);
     }
 
     public function getText(): string

@@ -471,6 +471,14 @@ WARNING;
     }
 
     /**
+     * Returns PHP's `null` value if this is Sass null, and returns `$this` otherwise
+     */
+    public function realNull(): ?Value
+    {
+        return $this;
+    }
+
+    /**
      * Returns a new list containing $contents that defaults to this value's
      * separator and brackets.
      *

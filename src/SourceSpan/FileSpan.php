@@ -23,9 +23,9 @@ interface FileSpan
 
     public function getLength(): int;
 
-    public function getStart(): SourceLocation;
+    public function getStart(): FileLocation;
 
-    public function getEnd(): SourceLocation;
+    public function getEnd(): FileLocation;
 
     public function getText(): string;
 

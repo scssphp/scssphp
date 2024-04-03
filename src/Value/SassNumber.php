@@ -15,6 +15,7 @@ namespace ScssPhp\ScssPhp\Value;
 use JiriPudil\SealedClasses\Sealed;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Util\NumberUtil;
+use ScssPhp\ScssPhp\Util\StringUtil;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
 /**
@@ -917,7 +918,7 @@ abstract class SassNumber extends Value
             return SassScriptException::forArgument("Expected $this to have $article $type unit ($supportedUnits).", $name);
         }
 
-        return SassScriptException::forArgument(sprintf('Expected %s to have unit%s %s.', $this, \count($newNumeratorUnits) + \count($newDenominatorUnits) !== 1 ? 's' : '', self::buildUnitString($newNumeratorUnits, $newDenominatorUnits)), $name);
+        return SassScriptException::forArgument(sprintf('Expected %s to have %s %s.', $this, StringUtil::pluralize('unit', \count($newNumeratorUnits) + \count($newDenominatorUnits)), self::buildUnitString($newNumeratorUnits, $newDenominatorUnits)), $name);
     }
 
     /**

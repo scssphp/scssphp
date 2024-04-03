@@ -107,7 +107,7 @@ abstract class SimpleSelector extends Selector
             }
         }
 
-        if (EquatableUtil::listContains($compound, $this)) {
+        if (EquatableUtil::iterableContains($compound, $this)) {
             return $compound;
         }
 

@@ -350,7 +350,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 // TODO implement source map tracking
                 $node->getValue()->getValue()->accept($this);
             } catch (SassScriptException $error) {
-                throw new SassRuntimeException($error->getMessage(), $node->getValue()->getSpan(), $error);
+                throw new SassRuntimeException($error->getMessage(), $node->getValue()->getSpan(), null, $error);
             }
         }
     }
@@ -778,7 +778,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
 
         $this->buffer->write('get-function(');
-        $this->visitQuotedString($value->getName());
+        $this->visitQuotedString($value->getCallable()->getName());
         $this->buffer->writeChar(')');
     }
 
@@ -789,7 +789,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
         }
 
         $this->buffer->write('get-mixin(');
-        $this->visitQuotedString($value->getName());
+        $this->visitQuotedString($value->getCallable()->getName());
         $this->buffer->writeChar(')');
     }
 

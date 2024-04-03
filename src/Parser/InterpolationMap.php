@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Parser;
 
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\Ast\Sass\Interpolation;
+use ScssPhp\ScssPhp\SourceSpan\FileLocation;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\SourceSpan\SourceLocation;
 use ScssPhp\ScssPhp\Util\Character;
@@ -84,7 +85,7 @@ final class InterpolationMap
     }
 
     /**
-     * @return FileSpan|SourceLocation
+     * @return FileSpan|FileLocation
      */
     private function mapLocation(SourceLocation $target): object
     {
@@ -127,11 +128,8 @@ final class InterpolationMap
      * Note that this can be tricked by a `#{` that appears within a single-line
      * comment before the expression, but since it's only used for error
      * reporting that's probably fine.
-     *
-     * @param SourceLocation $start
-     * @return int
      */
-    private function expandInterpolationSpanLeft(SourceLocation $start): int
+    private function expandInterpolationSpanLeft(FileLocation $start): int
     {
         $source = $start->getFile()->getString();
         $i = $start->getOffset() - 1;
@@ -173,7 +171,7 @@ final class InterpolationMap
      * Given the end of a {@see FileSpan} covering an interpolated expression, returns
      * the offset of the interpolation's closing `}`.
      */
-    private function expandInterpolationSpanRight(SourceLocation $end): int
+    private function expandInterpolationSpanRight(FileLocation $end): int
     {
         $source = $end->getFile()->getString();
         $i = $end->getOffset();

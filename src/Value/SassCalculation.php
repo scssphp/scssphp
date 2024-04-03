@@ -17,6 +17,7 @@ use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\Equatable;
 use ScssPhp\ScssPhp\Util\NumberUtil;
+use ScssPhp\ScssPhp\Util\StringUtil;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 use ScssPhp\ScssPhp\Warn;
 
@@ -745,6 +746,8 @@ WARNING;
      *
      * If $simplify is `false`, no simplification will be done.
      *
+     * @return SassNumber|CalculationOperation|SassString|SassCalculation|Value
+     *
      * @throws SassScriptException
      *
      * @internal
@@ -1123,7 +1126,7 @@ WARNING;
         }
 
         $length = \count($args);
-        $verb = $length === 1 ? 'was' : 'were';
+        $verb = StringUtil::pluralize('was', $length, 'were');
 
         throw new SassScriptException("$expectedLength arguments required, but only $length $verb passed.");
     }

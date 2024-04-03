@@ -76,7 +76,7 @@ final class SourceFile
         return new ConcreteFileSpan($this, $start, $end);
     }
 
-    public function location(int $offset): SourceLocation
+    public function location(int $offset): FileLocation
     {
         if ($offset < 0) {
             throw new \RangeException("Offset may not be negative, was $offset.");
@@ -88,7 +88,7 @@ final class SourceFile
             throw new \RangeException("Offset $offset must not be greater than the number of characters in the file, $fileLength.");
         }
 
-        return new SourceLocation($this, $offset);
+        return new FileLocation($this, $offset);
     }
 
     public function getSourceUrl(): ?string

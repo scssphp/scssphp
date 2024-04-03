@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Tests\Value;
 
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Collection\Map;
+use ScssPhp\ScssPhp\SassCallable\PlainCssCallable;
 use ScssPhp\ScssPhp\Value\ListSeparator;
 use ScssPhp\ScssPhp\Value\SassBoolean;
 use ScssPhp\ScssPhp\Value\SassColor;
@@ -60,7 +61,7 @@ abstract class ValueTestCase extends TestCase
             case 'grey':
                 return SassColor::rgb(0x80, 0x80, 0x80);
             case "get-function('red')":
-                return new SassFunction('red');
+                return new SassFunction(new PlainCssCallable('red'));
             case 'foobar':
                 return new SassString('foobar', false);
             case 'a👭b👬c':
