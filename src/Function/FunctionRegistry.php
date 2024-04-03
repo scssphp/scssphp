@@ -24,6 +24,24 @@ class FunctionRegistry
      * @var array<string, array{overloads: array<string, callable(list<Value>): Value>, url: string}>
      */
     private const BUILTIN_FUNCTIONS = [
+        // sass:map
+        'map-get' => ['overloads' => ['$map, $key, $keys...' => [MapFunctions::class, 'get']], 'url' => 'sass:map'],
+        'map-merge' => ['overloads' => [
+            '$map1, $map2' => [MapFunctions::class, 'mergeTwoArgs'],
+            '$map1, $args...' => [MapFunctions::class, 'mergeVariadic'],
+        ], 'url' => 'sass:map'],
+        'map-remove' => ['overloads' => [
+            // Because the signature below has an explicit `$key` argument, it doesn't
+            // allow zero keys to be passed. We want to allow that case, so we add an
+            // explicit overload for it.
+            '$map' => [MapFunctions::class, 'removeNoKeys'],
+            // The first argument has special handling so that the $key parameter can be
+            // passed by name.
+            '$map, $key, $keys...' => [MapFunctions::class, 'remove'],
+        ], 'url' => 'sass:map'],
+        'map-keys' => ['overloads' => ['$map' => [MapFunctions::class, 'keys']], 'url' => 'sass:map'],
+        'map-values' => ['overloads' => ['$map' => [MapFunctions::class, 'values']], 'url' => 'sass:map'],
+        'map-has-key' => ['overloads' => ['map, $key, $keys...' => [MapFunctions::class, 'hasKey']], 'url' => 'sass:map'],
         // sass:math
         'abs' => ['overloads' => ['$number' => [MathFunctions::class, 'abs']], 'url' => 'sass:math'],
         'ceil' => ['overloads' => ['$number' => [MathFunctions::class, 'ceil']], 'url' => 'sass:math'],
