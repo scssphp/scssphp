@@ -24,6 +24,62 @@ class FunctionRegistry
      * @var array<string, array{overloads: array<string, callable(list<Value>): Value>, url: string}>
      */
     private const BUILTIN_FUNCTIONS = [
+        // sass:color
+        'red' => ['overloads' => ['$color' => [ColorFunctions::class, 'red']], 'url' => 'sass:color'],
+        'green' => ['overloads' => ['$color' => [ColorFunctions::class, 'green']], 'url' => 'sass:color'],
+        'blue' => ['overloads' => ['$color' => [ColorFunctions::class, 'blue']], 'url' => 'sass:color'],
+        'mix' => ['overloads' => ['$color1, $color2, $weight: 50%' => [ColorFunctions::class, 'mix']], 'url' => 'sass:color'],
+        'rgb' => ['overloads' => [
+            '$red, $green, $blue, $alpha' => [ColorFunctions::class, 'rgb'],
+            '$red, $green, $blue' => [ColorFunctions::class, 'rgb'],
+            '$color, $alpha' => [ColorFunctions::class, 'rgbTwoArgs'],
+            '$channels' => [ColorFunctions::class, 'rgbOneArgs'],
+        ], 'url' => 'sass:color'],
+        'rgba' => ['overloads' => [
+            '$red, $green, $blue, $alpha' => [ColorFunctions::class, 'rgba'],
+            '$red, $green, $blue' => [ColorFunctions::class, 'rgba'],
+            '$color, $alpha' => [ColorFunctions::class, 'rgbaTwoArgs'],
+            '$channels' => [ColorFunctions::class, 'rgbaOneArgs'],
+        ], 'url' => 'sass:color'],
+        'invert' => ['overloads' => ['$color, $weight: 100%' => [ColorFunctions::class, 'invert']], 'url' => 'sass:color'],
+        'hue' => ['overloads' => ['$color' => [ColorFunctions::class, 'hue']], 'url' => 'sass:color'],
+        'saturation' => ['overloads' => ['$color' => [ColorFunctions::class, 'saturation']], 'url' => 'sass:color'],
+        'lightness' => ['overloads' => ['$color' => [ColorFunctions::class, 'lightness']], 'url' => 'sass:color'],
+        'complement' => ['overloads' => ['$color' => [ColorFunctions::class, 'complement']], 'url' => 'sass:color'],
+        'hsl' => ['overloads' => [
+            '$hue, $saturation, $lightness, $alpha' => [ColorFunctions::class, 'hsl'],
+            '$hue, $saturation, $lightness' => [ColorFunctions::class, 'hsl'],
+            '$hue, $saturation' => [ColorFunctions::class, 'hslTwoArgs'],
+            '$channels' => [ColorFunctions::class, 'hslOneArgs'],
+        ], 'url' => 'sass:color'],
+        'hsla' => ['overloads' => [
+            '$hue, $saturation, $lightness, $alpha' => [ColorFunctions::class, 'hsla'],
+            '$hue, $saturation, $lightness' => [ColorFunctions::class, 'hsla'],
+            '$hue, $saturation' => [ColorFunctions::class, 'hslaTwoArgs'],
+            '$channels' => [ColorFunctions::class, 'hslaOneArgs'],
+        ], 'url' => 'sass:color'],
+        'grayscale' => ['overloads' => ['$color' => [ColorFunctions::class, 'grayscale']], 'url' => 'sass:color'],
+        'adjust-hue' => ['overloads' => ['$color, $degrees' => [ColorFunctions::class, 'adjustHue']], 'url' => 'sass:color'],
+        'lighten' => ['overloads' => ['$color, $amount' => [ColorFunctions::class, 'lighten']], 'url' => 'sass:color'],
+        'darken' => ['overloads' => ['$color, $amount' => [ColorFunctions::class, 'darken']], 'url' => 'sass:color'],
+        'saturate' => ['overloads' => [
+            '$amount' => [ColorFunctions::class, 'saturateCss'],
+            '$color, $amount' => [ColorFunctions::class, 'saturate'],
+        ], 'url' => 'sass:color'],
+        'desaturate' => ['overloads' => ['$color, $amount' => [ColorFunctions::class, 'desaturate']], 'url' => 'sass:color'],
+        'opacify' => ['overloads' => ['$color, $amount' => [ColorFunctions::class, 'opacify']], 'url' => 'sass:color'],
+        'fade-in' => ['overloads' => ['$color, $amount' => [ColorFunctions::class, 'opacify']], 'url' => 'sass:color'],
+        'transparentize' => ['overloads' => ['$color, $amount' => [ColorFunctions::class, 'transparentize']], 'url' => 'sass:color'],
+        'fade-out' => ['overloads' => ['$color, $amount' => [ColorFunctions::class, 'transparentize']], 'url' => 'sass:color'],
+        'alpha' => ['overloads' => [
+            '$color' => [ColorFunctions::class, 'alpha'],
+            '$args...' => [ColorFunctions::class, 'alphaMicrosoft'],
+        ], 'url' => 'sass:color'],
+        'opacity' => ['overloads' => ['$color' => [ColorFunctions::class, 'opacity']], 'url' => 'sass:color'],
+        'ie-hex-str' => ['overloads' => ['$color' => [ColorFunctions::class, 'ieHexStr']], 'url' => 'sass:color'],
+        'adjust-color' => ['overloads' => ['$color, $kwargs...' => [ColorFunctions::class, 'adjust']], 'url' => 'sass:color'],
+        'scale-color' => ['overloads' => ['$color, $kwargs...' => [ColorFunctions::class, 'scale']], 'url' => 'sass:color'],
+        'change-color' => ['overloads' => ['$color, $kwargs...' => [ColorFunctions::class, 'change']], 'url' => 'sass:color'],
         // sass:list
         'length' => ['overloads' => ['$list' => [ListFunctions::class, 'length']], 'url' => 'sass:list'],
         'nth' => ['overloads' => ['$list, $n' => [ListFunctions::class, 'nth']], 'url' => 'sass:list'],

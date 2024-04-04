@@ -102,6 +102,24 @@ final class StringUtil
     }
 
     /**
+     * Returns whether $string starts with $prefix, ignoring ASCII case.
+     */
+    public static function startsWithIgnoreCase(string $string, string $prefix): bool
+    {
+        if (\strlen($string) < \strlen($prefix)) {
+            return false;
+        }
+
+        for ($i = 0; $i < \strlen($prefix); $i++) {
+            if (!Character::equalsIgnoreCase($string[$i], $prefix[$i])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Converts all ASCII chars to lowercase in the input string.
      *
      * This does not use `strtolower` because `strtolower` is locale-dependant
