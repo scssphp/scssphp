@@ -35,6 +35,19 @@ final class NumberUtil
     private const EPSILON = 10 ** (-SassNumber::PRECISION - 1);
     private const INVERSE_EPSILON = 10 ** (SassNumber::PRECISION + 1);
 
+    public static function clamp(float $value, float $lowerLimit, float $upperLimit): float
+    {
+        if ($value < $lowerLimit) {
+            return $lowerLimit;
+        }
+
+        if ($value > $upperLimit) {
+            return $upperLimit;
+        }
+
+        return $value;
+    }
+
     public static function fuzzyEquals(float $number1, float $number2): bool
     {
         if ($number1 == $number2) {

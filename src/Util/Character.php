@@ -18,6 +18,14 @@ namespace ScssPhp\ScssPhp\Util;
 final class Character
 {
     /**
+     * The difference between upper- and lowercase ASCII letters.
+     *
+     * `0b100000` can be bitwise-ORed with uppercase ASCII letters to get their
+     * lowercase equivalents.
+     */
+    private const ASCII_CASE_BIT = 0x20;
+
+    /**
      * Returns whether $character is an ASCII whitespace character.
      */
     public static function isWhitespace(?string $character): bool
@@ -139,5 +147,23 @@ final class Character
             '[' => ']',
             default => throw new \InvalidArgumentException(sprintf('Expected a brace character. Got "%s"', $character)),
         };
+    }
+
+    public static function equalsIgnoreCase(string $character1, string $character2): bool
+    {
+        if ($character1 === $character2) {
+            return true;
+        }
+
+        // If this check fails, the characters are definitely different. If it
+        // succeeds *and* either character is an ASCII letter, they're equivalent.
+        if ((\ord($character1) ^ \ord($character2)) !== self::ASCII_CASE_BIT) {
+            return false;
+        }
+
+        // Now we just need to verify that one of the characters is an ASCII letter.
+        $upperCase1 = \ord($character1) & ~self::ASCII_CASE_BIT;
+
+        return $upperCase1 >= \ord('A') && $upperCase1 <= \ord('Z');
     }
 }

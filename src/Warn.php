@@ -74,6 +74,7 @@ final class Warn
 
     private static function reportWarning(string $message, ?Deprecation $deprecation): void
     {
+        // TODO replace this with \ScssPhp\ScssPhp\Evaluation\EvaluationContext::warn when migrating to the new evaluation system
         if (self::$callback === null) {
             throw new \BadMethodCallException('The warning Reporter may only be called within a custom function or importer callback.');
         }

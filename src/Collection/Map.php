@@ -102,6 +102,11 @@ final class Map implements \Countable, \IteratorAggregate
         return null;
     }
 
+    public function containsKey(Value $key): bool
+    {
+        return $this->get($key) !== null;
+    }
+
     /**
      * Associates the key with the given value.
      *
@@ -149,6 +154,34 @@ final class Map implements \Countable, \IteratorAggregate
         }
 
         return null;
+    }
+
+    /**
+     * @return list<Value>
+     */
+    public function keys(): array
+    {
+        $keys = [];
+
+        foreach ($this->pairs as $pair) {
+            $keys[] = $pair[0];
+        }
+
+        return $keys;
+    }
+
+    /**
+     * @return list<T>
+     */
+    public function values(): array
+    {
+        $values = [];
+
+        foreach ($this->pairs as $pair) {
+            $values[] = $pair[1];
+        }
+
+        return $values;
     }
 
     private function assertModifiable(): void
