@@ -19,37 +19,19 @@ use ScssPhp\ScssPhp\Visitor\ValueVisitor;
  */
 final class SassBoolean extends Value
 {
-    /**
-     * @var SassBoolean|null
-     */
-    private static $trueInstance;
+    private static SassBoolean $trueInstance;
 
-    /**
-     * @var SassBoolean|null
-     */
-    private static $falseInstance;
+    private static SassBoolean $falseInstance;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $value;
+    private readonly bool $value;
 
     public static function create(bool $value): SassBoolean
     {
         if ($value) {
-            if (self::$trueInstance === null) {
-                self::$trueInstance = new self(true);
-            }
-
-            return self::$trueInstance;
+            return self::$trueInstance ??= new self(true);
         }
 
-        if (self::$falseInstance === null) {
-            self::$falseInstance = new self(false);
-        }
-
-        return self::$falseInstance;
+        return self::$falseInstance ??= new self(false);
     }
 
     private function __construct(bool $value)

@@ -14,38 +14,52 @@ namespace ScssPhp\ScssPhp\Ast\Selector;
 
 /**
  * An operator that defines the semantics of an {@see AttributeSelector}.
+ *
+ * @internal
  */
-final class AttributeOperator
+enum AttributeOperator
 {
     /**
      * The attribute value exactly equals the given value.
      */
-    public const EQUAL = '=';
+    case EQUAL;
 
     /**
      * The attribute value is a whitespace-separated list of words, one of which
      * is the given value.
      */
-    public const INCLUDE = '~=';
+    case INCLUDE;
 
     /**
      * The attribute value is either exactly the given value, or starts with the
      * given value followed by a dash.
      */
-    public const DASH = '|=';
+    case DASH;
 
     /**
      * The attribute value begins with the given value.
      */
-    public const PREFIX = '^=';
+    case PREFIX;
 
     /**
      * The attribute value ends with the given value.
      */
-    public const SUFFIX = '$=';
+    case SUFFIX;
 
     /**
      * The attribute value contains the given value.
      */
-    public const SUBSTRING = '*=';
+    case SUBSTRING;
+
+    public function getText(): string
+    {
+        return match ($this) {
+            self::EQUAL => '=',
+            self::INCLUDE => '~=',
+            self::DASH => '|=',
+            self::PREFIX => '^=',
+            self::SUFFIX => '$=',
+            self::SUBSTRING => '*=',
+        };
+    }
 }

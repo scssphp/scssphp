@@ -21,7 +21,6 @@ use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\BinaryOperationExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\BinaryOperator;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\BooleanExpression;
-use ScssPhp\ScssPhp\Ast\Sass\Expression\CalculationExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\ColorExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\FunctionExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\IfExpression;
@@ -76,6 +75,7 @@ use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition\SupportsInterpolation;
 use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition\SupportsNegation;
 use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition\SupportsOperation;
 use ScssPhp\ScssPhp\Colors;
+use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
@@ -94,60 +94,49 @@ abstract class StylesheetParser extends Parser
 {
     /**
      * The silent comment this parser encountered previously.
-     *
-     * @var SilentComment|null
      */
-    protected $lastSilentComment;
+    protected ?SilentComment $lastSilentComment = null;
 
     /**
      * Whether we've consumed a rule other than `@charset`, `@forward`, or `@use`.
-     *
-     * @var bool
      */
-    private $isUseAllowed = true;
+    private bool $isUseAllowed = true;
 
     /**
      * Whether the parser is currently parsing the contents of a mixin declaration.
-     *
-     * @var bool
      */
-    private $inMixin = false;
+    private bool $inMixin = false;
 
     /**
      * Whether the parser is currently parsing a content block passed to a mixin.
-     *
-     * @var bool
      */
-    private $inContentBlock = false;
+    private bool $inContentBlock = false;
 
     /**
      * Whether the parser is currently parsing a control directive such as `@if`
      * or `@each`.
-     *
-     * @var bool
      */
-    private $inControlDirective = false;
+    private bool $inControlDirective = false;
 
     /**
      * Whether the parser is currently parsing an unknown rule.
-     *
-     * @var bool
      */
-    private $inUnknownAtRule = false;
+    private bool $inUnknownAtRule = false;
 
     /**
      * Whether the parser is currently parsing a style rule.
-     *
-     * @var bool
      */
-    private $inStyleRule = false;
+    private bool $inStyleRule = false;
 
     /**
      * Whether the parser is currently within a parenthesized expression.
-     *
-     * @var bool
      */
-    private $inParentheses = false;
+    private bool $inParentheses = false;
+
+    /**
+     * Whether the parser is currently within an expression.
+     */
+    private bool $inExpression = false;
 
     /**
      * A map from all variable names that are assigned with `!global` in the
@@ -160,35 +149,16 @@ abstract class StylesheetParser extends Parser
      *
      * @var array<string, VariableDeclaration>
      */
-    private $globalVariables = [];
-
-    /**
-     * @var \Closure
-     * @readonly
-     */
-    private $statementCallable;
-
-    /**
-     * @var \Closure
-     * @readonly
-     */
-    private $declarationChildCallable;
-
-    /**
-     * @var \Closure
-     * @readonly
-     */
-    private $functionChildCallable;
+    private array $globalVariables = [];
 
     public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null)
     {
         parent::__construct($contents, $logger, $sourceUrl);
+    }
 
-        // Store callables for some private methods, to ensure they pass callable typehints when passed
-        // to parent methods expecting a callable, due to the semantic of PHP array callables.
-        $this->statementCallable = \Closure::fromCallable([$this, 'statement']);
-        $this->declarationChildCallable = \Closure::fromCallable([$this, 'declarationChild']);
-        $this->functionChildCallable = \Closure::fromCallable([$this, 'functionChild']);
+    protected function inExpression(): bool
+    {
+        return $this->inExpression;
     }
 
     /**
@@ -196,7 +166,7 @@ abstract class StylesheetParser extends Parser
      */
     public function parse(): Stylesheet
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $start = $this->scanner->getPosition();
 
             // Allow a byte-order mark at the beginning of the document.
@@ -223,14 +193,12 @@ abstract class StylesheetParser extends Parser
             }
 
             return new Stylesheet($statements, $this->scanner->spanFrom($start), $this->isPlainCss());
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     public function parseArgumentDeclaration(): ArgumentDeclaration
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $this->scanner->expectChar('@', '@-rule');
             $this->identifier();
             $this->whitespace();
@@ -242,9 +210,7 @@ abstract class StylesheetParser extends Parser
             $this->scanner->expectDone();
 
             return $arguments;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     /**
@@ -258,7 +224,7 @@ abstract class StylesheetParser extends Parser
     {
         switch ($this->scanner->peekChar()) {
             case '@':
-                return $this->atRule($this->statementCallable, $root);
+                return $this->atRule($this->statement(...), $root);
 
             case '+':
                 if (!$this->isIndented()) {
@@ -312,9 +278,7 @@ abstract class StylesheetParser extends Parser
         $name = $this->variableName();
 
         if ($namespace !== null) {
-            $this->assertPublic($name, function () use ($start) {
-                return $this->scanner->spanFrom($start);
-            });
+            $this->assertPublic($name, fn() => $this->scanner->spanFrom($start));
         }
 
         $this->whitespace();
@@ -330,10 +294,16 @@ abstract class StylesheetParser extends Parser
         while ($this->scanner->scanChar('!')) {
             $flag = $this->identifier();
             if ($flag === 'default') {
+                if ($guarded) {
+                    $this->logger->warn("!default should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", true, $this->scanner->spanFrom($flagStart));
+                }
+
                 $guarded = true;
             } elseif ($flag === 'global') {
                 if ($namespace !== null) {
                     $this->error("!global isn't allowed for variables in other modules.", $this->scanner->spanFrom($flagStart));
+                } elseif ($global) {
+                    $this->logger->warn("!global should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", true, $this->scanner->spanFrom($flagStart));
                 }
 
                 $global = true;
@@ -391,10 +361,6 @@ abstract class StylesheetParser extends Parser
      */
     private function declarationOrStyleRule(): Statement
     {
-        if ($this->isPlainCss() && $this->inStyleRule && !$this->inUnknownAtRule) {
-            return $this->propertyOrVariableDeclaration();
-        }
-
         $start = $this->scanner->getPosition();
 
         $declarationBuffer = $this->declarationOrBuffer();
@@ -414,10 +380,8 @@ abstract class StylesheetParser extends Parser
      * couldn't consume a declaration and that selector parsing should be
      * attempted; or it can return a {@see Declaration} or a {@see VariableDeclaration},
      * indicating that it successfully consumed a declaration.
-     *
-     * @return Statement|InterpolationBuffer
      */
-    private function declarationOrBuffer()
+    private function declarationOrBuffer(): Statement|InterpolationBuffer
     {
         $start = $this->scanner->getPosition();
         $nameBuffer = new InterpolationBuffer();
@@ -429,7 +393,7 @@ abstract class StylesheetParser extends Parser
         if ($first === ':' || $first === '*' || $first === '.' || ($first === '#' && $this->scanner->peekChar(1) !== '{')) {
             $startsWithPunctuation = true;
             $nameBuffer->write($this->scanner->readChar());
-            $nameBuffer->write($this->rawText([$this, 'whitespace']));
+            $nameBuffer->write($this->rawText($this->whitespace(...)));
         }
 
         if (!$this->lookingAtInterpolatedIdentifier()) {
@@ -447,10 +411,10 @@ abstract class StylesheetParser extends Parser
         $this->isUseAllowed = false;
 
         if ($this->scanner->matches('/*')) {
-            $nameBuffer->write($this->rawText([$this, 'loudComment']));
+            $nameBuffer->write($this->rawText($this->loudComment(...)));
         }
 
-        $midBuffer = $this->rawText([$this, 'whitespace']);
+        $midBuffer = $this->rawText($this->whitespace(...));
         $beforeColon = $this->scanner->getPosition();
 
         if (!$this->scanner->scanChar(':')) {
@@ -466,7 +430,7 @@ abstract class StylesheetParser extends Parser
         // Parse custom properties as declarations no matter what.
         $name = $nameBuffer->buildInterpolation($this->scanner->spanFrom($start, $beforeColon));
 
-        if (0 === strpos($name->getInitialPlain(), '--')) {
+        if (str_starts_with($name->getInitialPlain(), '--')) {
             $value = new StringExpression($this->interpolatedDeclarationValue());
             $this->expectStatementSeparator('custom property');
 
@@ -486,12 +450,11 @@ abstract class StylesheetParser extends Parser
             return $nameBuffer;
         }
 
-        $postColonWhitespace = $this->rawText([$this, 'whitespace']);
+        $postColonWhitespace = $this->rawText($this->whitespace(...));
 
-        if ($this->lookingAtChildren()) {
-            return $this->withChildren($this->declarationChildCallable, $start, function (array $children, FileSpan $span) use ($name) {
-                return Declaration::nested($name, $children, $span);
-            });
+        $nested = $this->tryDeclarationChildren($name, $start);
+        if ($nested !== null) {
+            return $nested;
         }
 
         $midBuffer .= $postColonWhitespace;
@@ -515,7 +478,6 @@ abstract class StylesheetParser extends Parser
                 // reparsed.
                 $this->expectStatementSeparator();
             }
-
         } catch (FormatException $e) {
             if (!$couldBeSelector) {
                 throw $e;
@@ -537,10 +499,9 @@ abstract class StylesheetParser extends Parser
             return $nameBuffer;
         }
 
-        if ($this->lookingAtChildren()) {
-            return $this->withChildren($this->declarationChildCallable, $start, function (array $children, FileSpan $span) use ($name, $value) {
-                return Declaration::nested($name, $children, $span, $value);
-            });
+        $nested = $this->tryDeclarationChildren($name, $start, $value);
+        if ($nested !== null) {
+            return $nested;
         }
 
         $this->expectStatementSeparator();
@@ -556,10 +517,8 @@ abstract class StylesheetParser extends Parser
      * consume a variable declaration and that property declaration or selector
      * parsing should be attempted; or it can return a {@see VariableDeclaration},
      * indicating that it successfully consumed a variable declaration.
-     *
-     * @return Interpolation|VariableDeclaration
      */
-    private function variableDeclarationOrInterpolation()
+    private function variableDeclarationOrInterpolation(): Interpolation|VariableDeclaration
     {
         if (!$this->lookingAtIdentifier()) {
             return $this->interpolatedIdentifier();
@@ -606,7 +565,7 @@ abstract class StylesheetParser extends Parser
         $wasInStyleRule = $this->inStyleRule;
         $this->inStyleRule = true;
 
-        return $this->withChildren($this->statementCallable, $start, function (array $children) use ($wasInStyleRule, $start, $interpolation) {
+        return $this->withChildren($this->statement(...), $start, function (array $children) use ($wasInStyleRule, $start, $interpolation) {
             $this->inStyleRule = $wasInStyleRule;
 
             return new StyleRule($interpolation, $children, $this->scanner->spanFrom($start));
@@ -633,7 +592,7 @@ abstract class StylesheetParser extends Parser
         if ($first === ':' || $first === '*' || $first === '.' || ($first === '#' && $this->scanner->peekChar(1) !== '{')) {
             $nameBuffer = new InterpolationBuffer();
             $nameBuffer->write($this->scanner->readChar());
-            $nameBuffer->write($this->rawText([$this, 'whitespace']));
+            $nameBuffer->write($this->rawText($this->whitespace(...)));
             $nameBuffer->addInterpolation($this->interpolatedIdentifier());
             $name = $nameBuffer->buildInterpolation($this->scanner->spanFrom($start));
         } elseif (!$this->isPlainCss()) {
@@ -651,7 +610,7 @@ abstract class StylesheetParser extends Parser
         $this->whitespace();
         $this->scanner->expectChar(':');
 
-        if ($parseCustomProperties && 0 === strpos($name->getInitialPlain(), '--')) {
+        if ($parseCustomProperties && str_starts_with($name->getInitialPlain(), '--')) {
             $value = new StringExpression($this->interpolatedDeclarationValue());
             $this->expectStatementSeparator('custom property');
 
@@ -660,31 +619,41 @@ abstract class StylesheetParser extends Parser
 
         $this->whitespace();
 
-        if ($this->lookingAtChildren()) {
-            if ($this->isPlainCss()) {
-                $this->scanner->error("Nested declarations aren't allowed in plain CSS.");
-            }
-
-            return $this->withChildren($this->declarationChildCallable, $start, function (array $children, FileSpan $span) use ($name) {
-                return Declaration::nested($name, $children, $span);
-            });
+        $nested = $this->tryDeclarationChildren($name, $start);
+        if ($nested !== null) {
+            return $nested;
         }
 
         $value = $this->expression();
 
-        if ($this->lookingAtChildren()) {
-            if ($this->isPlainCss()) {
-                $this->scanner->error("Nested declarations aren't allowed in plain CSS.");
-            }
-
-            return $this->withChildren($this->declarationChildCallable, $start, function (array $children, FileSpan $span) use ($name, $value) {
-                return Declaration::nested($name, $children, $span, $value);
-            });
+        $nested = $this->tryDeclarationChildren($name, $start);
+        if ($nested !== null) {
+            return $nested;
         }
 
         $this->expectStatementSeparator();
 
         return Declaration::create($name, $value, $this->scanner->spanFrom($start));
+    }
+
+    /**
+     * Tries parsing nested children of a declaration whose $name has already
+     * been parsed, and returns `null` if it doesn't have any.
+     *
+     * If $value is passed, it's used as the value of the property without
+     * nesting.
+     */
+    private function tryDeclarationChildren(Interpolation $name, int $start, ?Expression $value = null): ?Declaration
+    {
+        if (!$this->lookingAtChildren()) {
+            return null;
+        }
+
+        if ($this->isPlainCss()) {
+            $this->scanner->error("Nested declarations aren't allowed in plain CSS.");
+        }
+
+        return $this->withChildren($this->declarationChild(...), $start, fn(array $children, FileSpan $span) => Declaration::nested($name, $children, $span, $value));
     }
 
     /**
@@ -797,21 +766,21 @@ abstract class StylesheetParser extends Parser
             case 'debug':
                 return $this->debugRule($start);
             case 'each':
-                return $this->eachRule($start, $this->declarationChildCallable);
+                return $this->eachRule($start, $this->declarationChild(...));
             case 'else':
                 $this->disallowedAtRule($start);
             case 'error':
                 return $this->errorRule($start);
             case 'for':
-                return $this->forRule($start, $this->declarationChildCallable);
+                return $this->forRule($start, $this->declarationChild(...));
             case 'if':
-                return $this->ifRule($start, $this->declarationChildCallable);
+                return $this->ifRule($start, $this->declarationChild(...));
             case 'include':
                 return $this->includeRule($start);
             case 'warn':
                 return $this->warnRule($start);
             case 'while':
-                return $this->whileRule($start, $this->declarationChildCallable);
+                return $this->whileRule($start, $this->declarationChild(...));
             default:
                 $this->disallowedAtRule($start);
         }
@@ -840,7 +809,7 @@ abstract class StylesheetParser extends Parser
                 // function. If so, throw a more helpful error message.
                 try {
                     $statement = $this->declarationOrStyleRule();
-                } catch (FormatException $e) {
+                } catch (FormatException) {
                     throw $variableDeclarationError;
                 }
 
@@ -854,21 +823,21 @@ abstract class StylesheetParser extends Parser
             case 'debug':
                 return $this->debugRule($start);
             case 'each':
-                return $this->eachRule($start, $this->functionChildCallable);
+                return $this->eachRule($start, $this->functionChild(...));
             case 'else':
                 $this->disallowedAtRule($start);
             case 'error':
                 return $this->errorRule($start);
             case 'for':
-                return $this->forRule($start, $this->functionChildCallable);
+                return $this->forRule($start, $this->functionChild(...));
             case 'if':
-                return $this->ifRule($start, $this->functionChildCallable);
+                return $this->ifRule($start, $this->functionChild(...));
             case 'return':
                 return $this->returnRule($start);
             case 'warn':
                 return $this->warnRule($start);
             case 'while':
-                return $this->whileRule($start, $this->functionChildCallable);
+                return $this->whileRule($start, $this->functionChild(...));
             default:
                 $this->disallowedAtRule($start);
         }
@@ -898,15 +867,11 @@ abstract class StylesheetParser extends Parser
             $query = $this->atRootQuery();
             $this->whitespace();
 
-            return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($query) {
-                return new AtRootRule($children, $span, $query);
-            });
+            return $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new AtRootRule($children, $span, $query));
         }
 
         if ($this->lookingAtChildren()) {
-            return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) {
-                return new AtRootRule($children, $span);
-            });
+            return $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new AtRootRule($children, $span));
         }
 
         $child = $this->styleRule();
@@ -919,12 +884,6 @@ abstract class StylesheetParser extends Parser
      */
     private function atRootQuery(): Interpolation
     {
-        if ($this->scanner->peekChar() === '#') {
-            $interpolation = $this->singleInterpolation();
-
-            return new Interpolation([$interpolation], $interpolation->getSpan());
-        }
-
         $start = $this->scanner->getPosition();
         $buffer = new InterpolationBuffer();
         $this->scanner->expectChar('(');
@@ -1085,9 +1044,11 @@ abstract class StylesheetParser extends Parser
 
         $this->whitespace();
 
-        return $this->withChildren($this->functionChildCallable, $start, function (array $children, FileSpan $span) use ($name, $precedingComment, $arguments) {
-            return new FunctionRule($name, $arguments, $span, $children, $precedingComment);
-        });
+        return $this->withChildren(
+            $this->functionChild(...),
+            $start,
+            fn(array $children, FileSpan $span) => new FunctionRule($name, $arguments, $span, $children, $precedingComment)
+        );
     }
 
     /**
@@ -1252,10 +1213,10 @@ abstract class StylesheetParser extends Parser
         // Backwards-compatibility for implementations that allow absolute Windows
         // paths in imports.
         if (Path::isWindowsAbsolute($url) && !self::isRootRelativeUrl($url)) {
-            return (string) Uri::createFromWindowsPath($url);
+            return (string) Uri::fromWindowsPath($url);
         }
 
-        Uri::createFromString($url);
+        Uri::new($url);
         return $url;
     }
 
@@ -1273,7 +1234,7 @@ abstract class StylesheetParser extends Parser
             return false;
         }
 
-        if (substr($url, -4) === '.css') {
+        if (str_ends_with($url, '.css')) {
             return true;
         }
 
@@ -1285,7 +1246,7 @@ abstract class StylesheetParser extends Parser
             return false;
         }
 
-        return 0 === strpos($url, 'http://') || 0 === strpos($url, 'https://');
+        return str_starts_with($url, 'http://') || str_starts_with($url, 'https://');
     }
 
     /**
@@ -1447,9 +1408,7 @@ abstract class StylesheetParser extends Parser
             $wasInContentBlock = $this->inContentBlock;
             $this->inContentBlock = true;
 
-            $content = $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($contentArguments) {
-                return new ContentBlock($contentArguments, $children, $span);
-            });
+            $content = $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new ContentBlock($contentArguments, $children, $span));
 
             $this->inContentBlock = $wasInContentBlock;
         } else {
@@ -1475,9 +1434,7 @@ abstract class StylesheetParser extends Parser
     {
         $query = $this->mediaQueryList();
 
-        return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($query) {
-            return new MediaRule($query, $children, $span);
-        });
+        return $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new MediaRule($query, $children, $span));
     }
 
     /**
@@ -1506,7 +1463,7 @@ abstract class StylesheetParser extends Parser
         $this->whitespace();
         $this->inMixin = true;
 
-        return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($name, $arguments, $precedingComment) {
+        return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($name, $arguments, $precedingComment) {
             $this->inMixin = false;
 
             return new MixinRule($name, $arguments, $span, $children, $precedingComment);
@@ -1559,7 +1516,7 @@ abstract class StylesheetParser extends Parser
                         // A url-prefix with no argument, or with an empty string as an
                         // argument, is not (yet) deprecated.
                         $trailing = $buffer->getTrailingString();
-                        if (!StringUtil::endsWith($trailing, 'url-prefix()') && !StringUtil::endsWith($trailing, "url-prefix('')") && !StringUtil::endsWith($trailing, 'url-prefix("")')) {
+                        if (!str_ends_with($trailing, 'url-prefix()') && !str_ends_with($trailing, "url-prefix('')") && !str_ends_with($trailing, 'url-prefix("")')) {
                             $needsDeprecationWarning = true;
                         }
                         break;
@@ -1585,14 +1542,14 @@ abstract class StylesheetParser extends Parser
             }
 
             $buffer->write(',');
-            $buffer->write($this->rawText([$this, 'whitespace']));
+            $buffer->write($this->rawText($this->whitespace(...)));
         }
 
         $value = $buffer->buildInterpolation($this->scanner->spanFrom($valueStart));
 
-        return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($name, $value, $needsDeprecationWarning) {
+        return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($name, $value, $needsDeprecationWarning) {
             if ($needsDeprecationWarning) {
-                $this->logger->warn("@-moz-document is deprecated and support will be removed in Dart Sass 2.0.0.\n\nFor details, see https://sass-lang.com/d/moz-document.", true, $span);
+                $this->logger->warnForDeprecation(Deprecation::mozDocument, "@-moz-document is deprecated and support will be removed in Dart Sass 2.0.0.\n\nFor details, see https://sass-lang.com/d/moz-document.", $span);
             }
 
             return new AtRule($name, $span, $value, $children);
@@ -1622,9 +1579,7 @@ abstract class StylesheetParser extends Parser
         $condition = $this->supportsCondition();
         $this->whitespace();
 
-        return $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($condition) {
-            return new SupportsRule($condition, $children, $span);
-        });
+        return $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new SupportsRule($condition, $children, $span));
     }
 
     /**
@@ -1679,9 +1634,7 @@ abstract class StylesheetParser extends Parser
         }
 
         if ($this->lookingAtChildren()) {
-            $rule = $this->withChildren($this->statementCallable, $start, function (array $children, FileSpan $span) use ($name, $value) {
-                return new AtRule($name, $span, $value, $children);
-            });
+            $rule = $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new AtRule($name, $span, $value, $children));
         } else {
             $this->expectStatementSeparator();
             $rule = new AtRule($name, $this->scanner->spanFrom($start), $value);
@@ -1827,7 +1780,6 @@ abstract class StylesheetParser extends Parser
      * Consumes an expression.
      *
      * @param (callable(): bool)|null $until
-     *
      * @phpstan-impure
      */
     private function expression(?callable $until = null, bool $singleEquals = false, bool $bracketList = false): Expression
@@ -1849,13 +1801,16 @@ abstract class StylesheetParser extends Parser
         }
 
         $start = $this->scanner->getPosition();
+        $wasInExpression = $this->inExpression;
         $wasInParentheses = $this->inParentheses;
+        $this->inExpression = true;
+
         /**
-         * @var Expression[]|null $commaExpressions
+         * @var list<Expression>|null $commaExpressions
          */
         $commaExpressions = null;
         /**
-         * @var Expression[]|null $spaceExpressions
+         * @var list<Expression>|null $spaceExpressions
          */
         $spaceExpressions = null;
         /**
@@ -1864,7 +1819,7 @@ abstract class StylesheetParser extends Parser
          * parsing to finish for all preceding higher-precedence $operators, this is
          * naturally ordered from lowest to highest precedence.
          *
-         * @phpstan-var list<BinaryOperator::*>|null $operators
+         * @var list<BinaryOperator>|null $operators
          */
         $operators = null;
         /**
@@ -1920,7 +1875,7 @@ abstract class StylesheetParser extends Parser
             $right = $singleExpression;
 
             if ($right === null) {
-                $this->scanner->error('Expected expression.', $this->scanner->getPosition() - \strlen($operator), \strlen($operator));
+                $this->scanner->error('Expected expression.', $this->scanner->getPosition() - \strlen($operator->getOperator()), \strlen($operator->getOperator()));
             }
 
             if ($allowSlash && !$this->inParentheses && $operator === BinaryOperator::DIVIDED_BY && self::isSlashOperand($left) && self::isSlashOperand($right)) {
@@ -1931,26 +1886,27 @@ abstract class StylesheetParser extends Parser
 
                 if ($operator === BinaryOperator::PLUS || $operator === BinaryOperator::MINUS) {
                     if (
-                        $this->scanner->substring($right->getSpan()->getStart()->getOffset() - 1, $right->getSpan()->getStart()->getOffset()) === $operator
+                        $this->scanner->substring($right->getSpan()->getStart()->getOffset() - 1, $right->getSpan()->getStart()->getOffset()) === $operator->getOperator()
                         && Character::isWhitespace($this->scanner->getString()[$left->getSpan()->getEnd()->getOffset()])
                     ) {
+                        $operatorText = $operator->getOperator();
                         $message = <<<WARNING
 This operation is parsed as:
 
-    $left $operator $right
+    $left $operatorText $right
 
 but you may have intended it to mean:
 
-    $left ($operator$right)
+    $left ($operatorText$right)
 
-Add a space after $operator to clarify that it's meant to be a binary operation, or wrap
+Add a space after $operatorText to clarify that it's meant to be a binary operation, or wrap
 it in parentheses to make it a unary operation. This will be an error in future
 versions of Sass.
 
 More info and automated migrator: https://sass-lang.com/d/strict-unary
 WARNING;
 
-                        $this->logger->warn($message, true, $singleExpression->getSpan());
+                        $this->logger->warnForDeprecation(Deprecation::strictUnary, $message, $singleExpression->getSpan());
                     }
                 }
             }
@@ -1991,38 +1947,42 @@ WARNING;
             $singleExpression = $expression;
         };
 
-        $addOperator =
-            /**
-             * @param BinaryOperator::* $operator
-             */
-            function (string $operator) use (&$allowSlash, &$operators, &$operands, &$singleExpression, $resolveOneOperation): void {
-                /** @var BinaryOperator::* $operator */
-                if ($this->isPlainCss() && $operator !== BinaryOperator::DIVIDED_BY && $operator !== BinaryOperator::SINGLE_EQUALS) {
-                    $this->scanner->error("Operators aren't allowed in plain CSS.", $this->scanner->getPosition() - \strlen($operator), \strlen($operator));
-                }
+        $addOperator = function (BinaryOperator $operator) use (&$allowSlash, &$operators, &$operands, &$singleExpression, $resolveOneOperation): void {
+            if (
+                $this->isPlainCss()
+                && $operator !== BinaryOperator::SINGLE_EQUALS
+                // These are allowed in calculations, so we have to check them at
+                // evaluation time.
+                && $operator !== BinaryOperator::PLUS
+                && $operator !== BinaryOperator::MINUS
+                && $operator !== BinaryOperator::TIMES
+                && $operator !== BinaryOperator::DIVIDED_BY
+            ) {
+                $this->scanner->error("Operators aren't allowed in plain CSS.", $this->scanner->getPosition() - \strlen($operator->getOperator()), \strlen($operator->getOperator()));
+            }
 
-                $allowSlash = $allowSlash && $operator === BinaryOperator::DIVIDED_BY;
+            $allowSlash = $allowSlash && $operator === BinaryOperator::DIVIDED_BY;
 
-                $operators = $operators ?? [];
-                $operands = $operands ?? [];
+            $operators = $operators ?? [];
+            $operands = $operands ?? [];
 
-                $precedence = BinaryOperator::getPrecedence($operator);
+            $precedence = $operator->getPrecedence();
 
-                while ($operators && BinaryOperator::getPrecedence($operators[\count($operators) - 1]) >= $precedence) {
-                    $resolveOneOperation();
-                }
+            while ($operators && $operators[\count($operators) - 1]->getPrecedence() >= $precedence) {
+                $resolveOneOperation();
+            }
 
-                $operators[] = $operator;
+            $operators[] = $operator;
 
-                if ($singleExpression === null) {
-                    $this->scanner->error('Expected expression.', $this->scanner->getPosition() - \strlen($operator), \strlen($operator));
-                }
+            if ($singleExpression === null) {
+                $this->scanner->error('Expected expression.', $this->scanner->getPosition() - \strlen($operator->getOperator()), \strlen($operator->getOperator()));
+            }
 
-                $operands[] = $singleExpression;
+            $operands[] = $singleExpression;
 
-                $this->whitespace();
-                $singleExpression = $this->singleExpression();
-            };
+            $this->whitespace();
+            $singleExpression = $this->singleExpression();
+        };
 
         $resolveSpaceExpressions = function () use (&$spaceExpressions, &$singleExpression, $resolveOperations): void {
             $resolveOperations();
@@ -2304,11 +2264,14 @@ WARNING;
                 $commaExpressions[] = $singleExpression;
             }
 
+            $this->inExpression = $wasInExpression;
+
             return new ListExpression($commaExpressions, ListSeparator::COMMA, $this->scanner->spanFrom($beforeBracket ?? $start), $bracketList);
         }
 
         if ($bracketList && $spaceExpressions !== null) {
             $resolveOperations();
+            $this->inExpression = $wasInExpression;
             assert($singleExpression !== null);
             $spaceExpressions[] = $singleExpression;
 
@@ -2322,6 +2285,7 @@ WARNING;
             assert($beforeBracket !== null);
             $singleExpression = new ListExpression([$singleExpression], ListSeparator::UNDECIDED, $this->scanner->spanFrom($beforeBracket), true);
         }
+        $this->inExpression = $wasInExpression;
 
         return $singleExpression;
     }
@@ -2336,9 +2300,7 @@ WARNING;
      */
     protected function expressionUntilComma(bool $singleEquals = false): Expression
     {
-        return $this->expression(function () {
-            return $this->scanner->peekChar() === ',';
-        }, $singleEquals);
+        return $this->expression(fn() => $this->scanner->peekChar() === ',', $singleEquals);
     }
 
     /**
@@ -2347,7 +2309,7 @@ WARNING;
      */
     private static function isSlashOperand(Expression $expression): bool
     {
-        return $expression instanceof NumberExpression || $expression instanceof CalculationExpression || ($expression instanceof BinaryOperationExpression && $expression->allowsSlash());
+        return $expression instanceof NumberExpression || $expression instanceof FunctionExpression || ($expression instanceof BinaryOperationExpression && $expression->allowsSlash());
     }
 
     /**
@@ -2473,7 +2435,7 @@ WARNING;
     /**
      * Consumes a parenthesized expression.
      */
-    private function parentheses(): Expression
+    protected function parentheses(): Expression
     {
         if ($this->isPlainCss()) {
             $this->scanner->error("Parentheses aren't allowed in plain CSS.");
@@ -2636,7 +2598,7 @@ WARNING;
 
         // Don't emit four- or eight-digit hex colors as hex, since that's not
         // yet well-supported in browsers.
-        return SassColor::rgbInternal($red, $green, $blue, $alpha, $alpha === null ? new SpanColorFormat($this->scanner->spanFrom($start)) : null);
+        return SassColor::rgbInternal($red, $green, $blue, $alpha ?? 1.0, $alpha === null ? new SpanColorFormat($this->scanner->spanFrom($start)) : null);
     }
 
     private function isHexColor(Interpolation $interpolation): bool
@@ -2752,24 +2714,15 @@ WARNING;
     /**
      * Returns the unary operator corresponding to $character, or `null` if
      * the character is not a unary operator.
-     *
-     * @return UnaryOperator::*|null
      */
-    private function unaryOperatorFor(string $character): ?string
+    private function unaryOperatorFor(string $character): ?UnaryOperator
     {
-        switch ($character) {
-            case '+':
-                return UnaryOperator::PLUS;
-
-            case '-':
-                return UnaryOperator::MINUS;
-
-            case '/':
-                return UnaryOperator::DIVIDE;
-
-            default:
-                return null;
-        }
+        return match ($character) {
+            '+' => UnaryOperator::PLUS,
+            '-' => UnaryOperator::MINUS,
+            '/' => UnaryOperator::DIVIDE,
+            default => null,
+        };
     }
 
     /**
@@ -2791,7 +2744,7 @@ WARNING;
         // Don't complain about a dot after a number unless the number starts with a
         // dot. We don't allow a plain ".", but we need to allow "1." so that
         // "1..." will work as a rest argument.
-        $this->tryDecimal($this->scanner->getPosition() !== $start);
+        $this->tryDecimal($this->scanner->getPosition() !== $start && $first !== '+' && $first !== '-');
         $this->tryExponent();
 
         // Use PHP's built-in double parsing so that we don't accumulate
@@ -2892,7 +2845,7 @@ WARNING;
         $this->scanner->expectChar('+');
 
         $firstRangeLength = 0;
-        while ($this->scanCharIf([Character::class, 'isHex'])) {
+        while ($this->scanCharIf(Character::isHex(...))) {
             $firstRangeLength++;
         }
 
@@ -2914,7 +2867,7 @@ WARNING;
         if ($this->scanner->scanChar('-')) {
             $secondRangeStart = $this->scanner->getPosition();
             $secondRangeLength = 0;
-            while ($this->scanCharIf([Character::class, 'isHex'])) {
+            while ($this->scanCharIf(Character::isHex(...))) {
                 $secondRangeLength++;
             }
 
@@ -3039,7 +2992,9 @@ WARNING;
             if ($plain === 'not') {
                 $this->whitespace();
 
-                return new UnaryOperationExpression(UnaryOperator::NOT, $this->singleExpression(), $identifier->getSpan());
+                $expression = $this->singleExpression();
+
+                return new UnaryOperationExpression(UnaryOperator::NOT, $expression, $identifier->getSpan()->expand($expression->getSpan()));
             }
 
             $lower = strtolower($plain);
@@ -3107,9 +3062,7 @@ WARNING;
     {
         if ($this->scanner->peekChar() === '$') {
             $name = $this->variableName();
-            $this->assertPublic($name, function () use ($start) {
-                return $this->scanner->spanFrom($start);
-            });
+            $this->assertPublic($name, fn() => $this->scanner->spanFrom($start));
 
             // TODO remove this when implementing modules
             $this->error('Sass modules are not implemented yet.', $this->scanner->spanFrom($start));
@@ -3120,7 +3073,6 @@ WARNING;
         $this->publicIdentifier();
         $this->error('Sass modules are not implemented yet.', $this->scanner->spanFrom($start));
         // return new FunctionExpression($this->publicIdentifier(), $this->argumentInvocation(), $this->scanner->spanFrom($start), $plain);
-
     }
 
     /**
@@ -3130,16 +3082,15 @@ WARNING;
      */
     protected function trySpecialFunction(string $name, int $start): ?Expression
     {
-        $calculation = $this->scanner->peekChar() === '(' ? $this->tryCalculation($name, $start) : null;
-
-        if ($calculation !== null) {
-            return $calculation;
-        }
-
         $normalized = Util::unvendor($name);
 
         switch ($normalized) {
             case 'calc':
+                if ($normalized === $name) {
+                    return null;
+                }
+
+                // fall through
             case 'element':
             case 'expression':
                 if (!$this->scanner->scanChar('(')) {
@@ -3189,281 +3140,6 @@ WARNING;
         $buffer->write(')');
 
         return new StringExpression($buffer->buildInterpolation($this->scanner->spanFrom($start)));
-    }
-
-    /**
-     * If $name is the name of a calculation expression, parses the
-     * corresponding calculation and returns it.
-     *
-     * Assumes the scanner is positioned immediately before the opening
-     * parenthesis of the argument list.
-     */
-    private function tryCalculation(string $name, int $start): ?CalculationExpression
-    {
-        assert($this->scanner->peekChar() === '(');
-
-        switch ($name) {
-            case 'calc':
-                $arguments = $this->calculationArguments(1);
-
-                return new CalculationExpression($name, $arguments, $this->scanner->spanFrom($start));
-
-            case 'min':
-            case 'max':
-                // min() and max() are parsed as calculations if possible, and otherwise
-                // are parsed as normal Sass functions.
-                $beforeArguments = $this->scanner->getPosition();
-
-                try {
-                    $arguments = $this->calculationArguments();
-                } catch (FormatException $e) {
-                    $this->scanner->setPosition($beforeArguments);
-
-                    return null;
-                }
-
-                return new CalculationExpression($name, $arguments, $this->scanner->spanFrom($start));
-
-            case 'clamp':
-                $arguments = $this->calculationArguments(3);
-
-                return new CalculationExpression($name, $arguments, $this->scanner->spanFrom($start));
-
-            default:
-                return null;
-        }
-    }
-
-    /**
-     * Consumes and returns arguments for a calculation expression, including the
-     * opening and closing parentheses.
-     *
-     * If $maxArgs is passed, at most that many arguments are consumed.
-     * Otherwise, any number greater than zero are consumed.
-     *
-     * @param int|null $maxArgs
-     *
-     * @return list<Expression>
-     *
-     * @throws FormatException
-     */
-    private function calculationArguments(?int $maxArgs = null): array
-    {
-        $this->scanner->expectChar('(');
-        $interpolation = $this->tryCalculationInterpolation();
-
-        if ($interpolation !== null) {
-            $this->scanner->expectChar(')');
-
-            return [$interpolation];
-        }
-
-        $this->whitespace();
-
-        $arguments = [$this->calculationSum()];
-
-        while (($maxArgs === null || \count($arguments) < $maxArgs) && $this->scanner->scanChar(',')) {
-            $this->whitespace();
-            $arguments[] = $this->calculationSum();
-        }
-
-        $this->scanner->expectChar(')', \count($arguments) === $maxArgs ? '"+", "-", "*", "/", or ")"' : '"+", "-", "*", "/", ",", or ")"');
-
-        return $arguments;
-    }
-
-    /**
-     * Parses a calculation operation or value expression.
-     */
-    private function calculationSum(): Expression
-    {
-        $sum = $this->calculationProduct();
-
-        while (true) {
-            $next = $this->scanner->peekChar();
-
-            if ($next === '+' || $next === '-') {
-                if (!Character::isWhitespace($this->scanner->peekChar(-1)) || !Character::isWhitespace($this->scanner->peekChar(1))) {
-                    $this->scanner->error('"+" and "-" must be surrounded by whitespace in calculations.');
-                }
-
-                $this->scanner->readChar();
-                $this->whitespace();
-                $sum = new BinaryOperationExpression(
-                    $next === '+' ? BinaryOperator::PLUS : BinaryOperator::MINUS,
-                    $sum,
-                    $this->calculationProduct()
-                );
-            } else {
-                return $sum;
-            }
-        }
-    }
-
-    /**
-     * Parses a calculation product or value expression.
-     */
-    private function calculationProduct(): Expression
-    {
-        $product = $this->calculationValue();
-
-        while (true) {
-            $this->whitespace();
-            $next = $this->scanner->peekChar();
-
-            if ($next === '*' || $next === '/') {
-                $this->scanner->readChar();
-                $this->whitespace();
-                $product = new BinaryOperationExpression(
-                    $next === '*' ? BinaryOperator::TIMES : BinaryOperator::DIVIDED_BY,
-                    $product,
-                    $this->calculationValue()
-                );
-            } else {
-                return $product;
-            }
-        }
-    }
-
-    /**
-     * Parses a single calculation value.
-     */
-    private function calculationValue(): Expression
-    {
-        $next = $this->scanner->peekChar();
-
-        if ($next === '+' || $next === '-' || $next === '.' || Character::isDigit($next)) {
-            return $this->number();
-        }
-
-        if ($next === '$') {
-            return $this->variable();
-        }
-
-        if ($next === '(') {
-            $start = $this->scanner->getPosition();
-            $this->scanner->readChar();
-
-            $value = $this->tryCalculationInterpolation();
-
-            if ($value === null) {
-                $this->whitespace();
-                $value = $this->calculationSum();
-            }
-
-            $this->whitespace();
-            $this->scanner->expectChar(')');
-
-            return new ParenthesizedExpression($value, $this->scanner->spanFrom($start));
-        }
-
-        if (!$this->lookingAtIdentifier()) {
-            $this->scanner->error('Expected number, variable, function, or calculation.');
-        }
-
-        $start = $this->scanner->getPosition();
-        $ident = $this->identifier();
-
-        if ($this->scanner->scanChar('.')) {
-            return $this->namespacedExpression($ident, $start);
-        }
-
-        if ($this->scanner->peekChar() !== '(') {
-            $this->scanner->error('Expected "(" or ".".');
-        }
-
-        $lowercase = strtolower($ident);
-        $calculation = $this->tryCalculation($lowercase, $start);
-
-        if ($calculation !== null) {
-            return $calculation;
-        }
-
-        if ($lowercase === 'if') {
-            return new IfExpression($this->argumentInvocation(), $this->scanner->spanFrom($start));
-        }
-
-        return new FunctionExpression($ident, $this->argumentInvocation(), $this->scanner->spanFrom($start));
-    }
-
-    /**
-     * If the following text up to the next unbalanced `")"`, `"]"`, or `"}"`
-     * contains interpolation, parses that interpolation as an unquoted
-     * {@see StringExpression} and returns it.
-     */
-    private function tryCalculationInterpolation(): ?StringExpression
-    {
-        return $this->containsCalculationInterpolation() ? new StringExpression($this->interpolatedDeclarationValue()) : null;
-    }
-
-    /**
-     * Returns whether the following text up to the next unbalanced `")"`, `"]"`,
-     * or `"}"` contains interpolation.
-     */
-    private function containsCalculationInterpolation(): bool
-    {
-        $parens = 0;
-        $brackets = [];
-
-        $start = $this->scanner->getPosition();
-        while (!$this->scanner->isDone()) {
-            $next = $this->scanner->peekChar();
-
-            switch ($next) {
-                case '\\':
-                    $this->scanner->readChar();
-                    $this->scanner->readUtf8Char();
-                    break;
-
-                case '/':
-                    if (!$this->scanComment()) {
-                        $this->scanner->readChar();
-                    }
-                    break;
-
-                case "'":
-                case '"':
-                    $this->interpolatedString();
-                    break;
-
-                case '#':
-                    if ($parens === 0 && $this->scanner->peekChar(1) === '{') {
-                        $this->scanner->setPosition($start);
-                        return true;
-                    }
-                    $this->scanner->readChar();
-                    break;
-
-                case '(':
-                    $parens++;
-                    // fallthrough
-                case '{':
-                case '[':
-                    assert($next !== null); // https://github.com/phpstan/phpstan/issues/5678
-                    $brackets[] = Character::opposite($next);
-                    $this->scanner->readChar();
-                    break;
-
-                case ')':
-                    $parens--;
-                    // fallthrough
-                case '}':
-                case ']':
-                    if (empty($brackets) || array_pop($brackets) !== $next) {
-                        $this->scanner->setPosition($start);
-                        return false;
-                    }
-                    $this->scanner->readChar();
-                    break;
-
-                default:
-                    $this->scanner->readUtf8Char();
-            }
-        }
-
-        $this->scanner->setPosition($start);
-
-        return false;
     }
 
     private function tryUrlContents(int $start, ?string $name = null): ?Interpolation
@@ -3684,7 +3360,7 @@ WARNING;
 
                 case '/':
                     if ($this->scanner->peekChar(1) === '*') {
-                        $buffer->write($this->rawText([$this, 'loudComment']));
+                        $buffer->write($this->rawText($this->loudComment(...)));
                     } else {
                         $buffer->write($this->scanner->readChar());
                     }
@@ -3772,7 +3448,6 @@ WARNING;
                         $buffer->write($this->scanner->readChar());
                         $wroteNewline = false;
                         break;
-
                     }
 
                     $contents = $this->tryUrlContents($beforeUrl);
@@ -4043,49 +3718,55 @@ WARNING;
         $buffer->write('(');
         $this->whitespace();
 
-        $needsParenDeprecation = $this->scanner->peekChar() === '(';
-        $needsNotDeprecation = $this->matchesIdentifier('not');
-        $expression = $this->expressionUntilComparison();
-
-        if ($needsParenDeprecation || $needsNotDeprecation) {
-            $this->logger->warn(sprintf(
-                "Starting a @media query with \"%s\" is deprecated because it conflicts with official CSS syntax.\n\nTo preserve existing behavior: #{%s}\nTo migrate to new behavior: #{\"%s\"}\n\nFor details, see https://sass-lang.com/d/media-logic",
-                $needsParenDeprecation ? '(' : 'not',
-                $expression,
-                $expression
-            ), true, $expression->getSpan());
-        }
-
-        $buffer->add($expression);
-
-        if ($this->scanner->scanChar(':')) {
+        if ($this->scanner->peekChar() === '(') {
+            $this->mediaInParens($buffer);
             $this->whitespace();
-            $buffer->write(': ');
-            $buffer->add($this->expression());
+
+            if ($this->scanIdentifier('and')) {
+                $buffer->write(' and ');
+                $this->expectWhitespace();
+                $this->mediaLogicSequence($buffer, 'and');
+            } elseif ($this->scanIdentifier('or')) {
+                $buffer->write(' or ');
+                $this->expectWhitespace();
+                $this->mediaLogicSequence($buffer, 'or');
+            }
+        } elseif ($this->scanIdentifier('not')) {
+            $buffer->write('not ');
+            $this->expectWhitespace();
+            $this->mediaOrInterp($buffer);
         } else {
-            $next = $this->scanner->peekChar();
+            $buffer->add($this->expressionUntilComparison());
 
-            if ($next === '<' || $next === '>' || $next === '=') {
-                $buffer->write(' ');
-                $buffer->write($this->scanner->readChar());
-                if (($next === '<' || $next === '>') && $this->scanner->scanChar('=')) {
-                    $buffer->write('=');
-                }
-                $buffer->write(' ');
-
+            if ($this->scanner->scanChar(':')) {
                 $this->whitespace();
-                $buffer->add($this->expressionUntilComparison());
+                $buffer->write(': ');
+                $buffer->add($this->expression());
+            } else {
+                $next = $this->scanner->peekChar();
 
-                if (($next === '<' || $next === '>') && $this->scanner->scanChar($next)) {
+                if ($next === '<' || $next === '>' || $next === '=') {
                     $buffer->write(' ');
-                    $buffer->write($next);
-                    if ($this->scanner->scanChar('=')) {
+                    $buffer->write($this->scanner->readChar());
+                    if (($next === '<' || $next === '>') && $this->scanner->scanChar('=')) {
                         $buffer->write('=');
                     }
                     $buffer->write(' ');
 
                     $this->whitespace();
                     $buffer->add($this->expressionUntilComparison());
+
+                    if (($next === '<' || $next === '>') && $this->scanner->scanChar($next)) {
+                        $buffer->write(' ');
+                        $buffer->write($next);
+                        if ($this->scanner->scanChar('=')) {
+                            $buffer->write('=');
+                        }
+                        $buffer->write(' ');
+
+                        $this->whitespace();
+                        $buffer->add($this->expressionUntilComparison());
+                    }
                 }
             }
         }
@@ -4256,7 +3937,7 @@ WARNING;
 
     private function supportsDeclarationValue(Expression $name, int $start): SupportsDeclaration
     {
-        if ($name instanceof StringExpression && !$name->hasQuotes() && StringUtil::startsWith($name->getText()->getInitialPlain(), '--')) {
+        if ($name instanceof StringExpression && !$name->hasQuotes() && str_starts_with($name->getText()->getInitialPlain(), '--')) {
             $value = new StringExpression($this->interpolatedDeclarationValue());
         } else {
             $this->whitespace();
@@ -4436,9 +4117,7 @@ WARNING;
     {
         $start = $this->scanner->getPosition();
         $result = $this->identifier(true);
-        $this->assertPublic($result, function () use ($start) {
-            return $this->scanner->spanFrom($start);
-        });
+        $this->assertPublic($result, fn() => $this->scanner->spanFrom($start));
 
         return $result;
     }

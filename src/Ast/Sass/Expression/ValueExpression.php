@@ -27,17 +27,9 @@ use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
  */
 final class ValueExpression implements Expression
 {
-    /**
-     * @var Value
-     * @readonly
-     */
-    private $value;
+    private readonly Value $value;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     public function __construct(Value $value, FileSpan $span)
     {

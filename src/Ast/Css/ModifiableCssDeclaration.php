@@ -15,6 +15,7 @@ namespace ScssPhp\ScssPhp\Ast\Css;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Value\SassString;
 use ScssPhp\ScssPhp\Value\Value;
+use ScssPhp\ScssPhp\Visitor\ModifiableCssVisitor;
 
 /**
  * A modifiable version of {@see CssDeclaration} for use in the evaluation step.
@@ -25,42 +26,26 @@ final class ModifiableCssDeclaration extends ModifiableCssNode implements CssDec
 {
     /**
      * @var CssValue<string>
-     * @readonly
      */
-    private $name;
+    private readonly CssValue $name;
 
     /**
      * @var CssValue<Value>
-     * @readonly
      */
-    private $value;
+    private readonly CssValue $value;
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $parsedAsCustomProperty;
+    private readonly bool $parsedAsCustomProperty;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $valueSpanForMap;
+    private readonly FileSpan $valueSpanForMap;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     /**
      * @param CssValue<string> $name
-     * @param CssValue<Value>  $value
-     * @param bool             $parsedAsCustomProperty
-     * @param FileSpan         $valueSpanForMap
-     * @param FileSpan         $span
+     * @param CssValue<Value> $value
      */
-    public function __construct(CssValue $name, CssValue $value, FileSpan $span, bool $parsedAsCustomProperty, ?FileSpan $valueSpanForMap = null) {
+    public function __construct(CssValue $name, CssValue $value, FileSpan $span, bool $parsedAsCustomProperty, ?FileSpan $valueSpanForMap = null)
+    {
         $this->name = $name;
         $this->value = $value;
         $this->parsedAsCustomProperty = $parsedAsCustomProperty;
@@ -73,7 +58,7 @@ final class ModifiableCssDeclaration extends ModifiableCssNode implements CssDec
             }
 
             if (!$value->getValue() instanceof SassString) {
-                throw new \InvalidArgumentException(sprintf('If parsedAsCustomProperty is true, value must contain a SassString (was %s).', get_class($value->getValue())));
+                throw new \InvalidArgumentException(sprintf('If parsedAsCustomProperty is true, value must contain a SassString (was %s).', get_debug_type($value->getValue())));
             }
         }
     }
@@ -105,10 +90,10 @@ final class ModifiableCssDeclaration extends ModifiableCssNode implements CssDec
 
     public function isCustomProperty(): bool
     {
-        return 0 === strpos($this->name->getValue(), '--');
+        return str_starts_with($this->name->getValue(), '--');
     }
 
-    public function accept($visitor)
+    public function accept(ModifiableCssVisitor $visitor)
     {
         return $visitor->visitCssDeclaration($this);
     }

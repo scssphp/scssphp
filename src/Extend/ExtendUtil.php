@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Extend;
 
+use ScssPhp\ScssPhp\Ast\Css\CssValue;
 use ScssPhp\ScssPhp\Ast\Selector\Combinator;
 use ScssPhp\ScssPhp\Ast\Selector\ComplexSelector;
 use ScssPhp\ScssPhp\Ast\Selector\ComplexSelectorComponent;
@@ -24,8 +25,10 @@ use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\Ast\Selector\SimpleSelector;
 use ScssPhp\ScssPhp\Ast\Selector\TypeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\UniversalSelector;
+use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Util\ListUtil;
+use ScssPhp\ScssPhp\Util\SpanUtil;
 
 /**
  * @internal
@@ -48,7 +51,7 @@ final class ExtendUtil
      *
      * @return list<ComplexSelector>|null
      */
-    public static function unifyComplex(array $complexes): ?array
+    public static function unifyComplex(array $complexes, FileSpan $span): ?array
     {
         if (\count($complexes) === 1) {
             return $complexes;
@@ -65,7 +68,7 @@ final class ExtendUtil
 
             if (\count($complex->getComponents()) === 1 && \count($complex->getLeadingCombinators()) !== 0) {
                 $newLeadingCombinator = \count($complex->getLeadingCombinators()) === 1 ? $complex->getLeadingCombinators()[0] : null;
-                if ($leadingCombinator !== null && $newLeadingCombinator !== $leadingCombinator) {
+                if ($leadingCombinator !== null && !EquatableUtil::equals($newLeadingCombinator, $leadingCombinator)) {
                     return null;
                 }
 
@@ -101,7 +104,7 @@ final class ExtendUtil
         $hasLineBreak = false;
         foreach ($complexes as $complex) {
             if (\count($complex->getComponents()) > 1) {
-                $withoutBases[] = new ComplexSelector($complex->getLeadingCombinators(), array_slice($complex->getComponents(), 0, \count($complex->getComponents()) - 1), $complex->getLineBreak());
+                $withoutBases[] = new ComplexSelector($complex->getLeadingCombinators(), array_slice($complex->getComponents(), 0, \count($complex->getComponents()) - 1), $complex->getSpan(), $complex->getLineBreak());
             }
 
             if ($complex->getLineBreak()) {
@@ -113,11 +116,12 @@ final class ExtendUtil
 
         $base = new ComplexSelector(
             $leadingCombinator === null ? [] : [$leadingCombinator],
-            [new ComplexSelectorComponent(new CompoundSelector($unifiedBase), $trailingCombinator === null ? [] : [$trailingCombinator])],
+            [new ComplexSelectorComponent(new CompoundSelector($unifiedBase, $span), $trailingCombinator === null ? [] : [$trailingCombinator], $span)],
+            $span,
             $hasLineBreak
         );
 
-        return self::weave($withoutBases === [] ? [$base] : array_merge(ListUtil::exceptLast($withoutBases), [ListUtil::last($withoutBases)->concatenate($base)]));
+        return self::weave($withoutBases === [] ? [$base] : array_merge(ListUtil::exceptLast($withoutBases), [ListUtil::last($withoutBases)->concatenate($base, $span)]), $span);
     }
 
     /**
@@ -125,17 +129,12 @@ final class ExtendUtil
      * both $compound1 and $compound2.
      *
      * If no such selector can be produced, returns `null`.
-     *
-     * @param list<SimpleSelector> $compound1
-     * @param list<SimpleSelector> $compound2
-     *
-     * @return CompoundSelector|null
      */
-    public static function unifyCompound(array $compound1, array $compound2): ?CompoundSelector
+    public static function unifyCompound(CompoundSelector $compound1, CompoundSelector $compound2): ?CompoundSelector
     {
-        $result = $compound2;
+        $result = $compound2->getComponents();
 
-        foreach ($compound1 as $simple) {
+        foreach ($compound1->getComponents() as $simple) {
             $unified = $simple->unify($result);
 
             if ($unified === null) {
@@ -145,7 +144,7 @@ final class ExtendUtil
             $result = $unified;
         }
 
-        return new CompoundSelector($result);
+        return new CompoundSelector($result, $compound1->getSpan());
     }
 
     /**
@@ -157,25 +156,8 @@ final class ExtendUtil
      */
     public static function unifyUniversalAndElement(SimpleSelector $selector1, SimpleSelector $selector2): ?SimpleSelector
     {
-        $name1 = null;
-        if ($selector1 instanceof UniversalSelector) {
-            $namespace1 = $selector1->getNamespace();
-        } elseif ($selector1 instanceof TypeSelector) {
-            $namespace1 = $selector1->getName()->getNamespace();
-            $name1 = $selector1->getName()->getName();
-        } else {
-            throw new \InvalidArgumentException('selector1 must be a UniversalSelector or a TypeSelector');
-        }
-
-        $name2 = null;
-        if ($selector2 instanceof UniversalSelector) {
-            $namespace2 = $selector2->getNamespace();
-        } elseif ($selector2 instanceof TypeSelector) {
-            $namespace2 = $selector2->getName()->getNamespace();
-            $name2 = $selector2->getName()->getName();
-        } else {
-            throw new \InvalidArgumentException('selector2 must be a UniversalSelector or a TypeSelector');
-        }
+        [$namespace1, $name1] = self::namespaceAndName($selector1, 'selector1');
+        [$namespace2, $name2] = self::namespaceAndName($selector2, 'selector2');
 
         if ($namespace1 === $namespace2 || $namespace2 === '*') {
             $namespace = $namespace1;
@@ -194,10 +176,31 @@ final class ExtendUtil
         }
 
         if ($name === null) {
-            return new UniversalSelector($namespace);
+            return new UniversalSelector($selector1->getSpan(), $namespace);
         }
 
-        return new TypeSelector(new QualifiedName($name, $namespace));
+        return new TypeSelector(new QualifiedName($name, $namespace), $selector1->getSpan());
+    }
+
+    /**
+     * Returns the namespace and name for $selector, which must be a
+     * {@see UniversalSelector} or a {@see TypeSelector}.
+     *
+     * The $name parameter is used for error reporting.
+     *
+     * @return array{string|null, string|null} The namespace and the name
+     */
+    private static function namespaceAndName(SimpleSelector $selector, string $name): array
+    {
+        if ($selector instanceof UniversalSelector) {
+            return [$selector->getNamespace(), null];
+        }
+
+        if ($selector instanceof TypeSelector) {
+            return [$selector->getName()->getNamespace(), $selector->getName()->getName()];
+        }
+
+        throw new \InvalidArgumentException("Argument $name must be a UniversalSelector or a TypeSelector.");
     }
 
     /**
@@ -211,6 +214,8 @@ final class ExtendUtil
      *
      * The selector `.D (.A .B)` is represented as the list `[.D, .A .B]`.
      *
+     * The $span will be used for any new combined selectors.
+     *
      * If $forceLineBreak is `true`, this will mark all returned complex selectors
      * as having line breaks.
      *
@@ -218,7 +223,7 @@ final class ExtendUtil
      *
      * @return list<ComplexSelector>
      */
-    public static function weave(array $complexes, bool $forceLineBreak = false): array
+    public static function weave(array $complexes, FileSpan $span, bool $forceLineBreak = false): array
     {
         if (\count($complexes) === 1) {
             $complex = $complexes[0];
@@ -228,18 +233,16 @@ final class ExtendUtil
             }
 
             return [
-                new ComplexSelector($complex->getLeadingCombinators(), $complex->getComponents(), true),
+                new ComplexSelector($complex->getLeadingCombinators(), $complex->getComponents(), $complex->getSpan(), true),
             ];
         }
 
         $prefixes = [$complexes[0]];
 
         foreach (array_slice($complexes, 1) as $complex) {
-            $target = ListUtil::last($complex->getComponents());
-
             if (\count($complex->getComponents()) === 1) {
                 foreach ($prefixes as $i => $prefix) {
-                    $prefixes[$i] = $prefix->concatenate($complex, $forceLineBreak);
+                    $prefixes[$i] = $prefix->concatenate($complex, $span, $forceLineBreak);
                 }
 
                 continue;
@@ -248,8 +251,8 @@ final class ExtendUtil
             $newPrefixes = [];
 
             foreach ($prefixes as $prefix) {
-                foreach (self::weaveParents($prefix, $complex) ?? [] as $parentPrefix) {
-                    $newPrefixes[] = $parentPrefix->withAdditionalComponent($target, $forceLineBreak);
+                foreach (self::weaveParents($prefix, $complex, $span) ?? [] as $parentPrefix) {
+                    $newPrefixes[] = $parentPrefix->withAdditionalComponent(ListUtil::last($complex->getComponents()), $span, $forceLineBreak);
                 }
             }
 
@@ -276,14 +279,13 @@ final class ExtendUtil
      * elements matched by `P`. Some `PC_i` are elided to reduce the size of the
      * output.
      *
-     * Returns `null` if this intersection is empty.
+     * The $span will be used for any new combined selectors.
      *
-     * @param ComplexSelector $prefix
-     * @param ComplexSelector $base
+     * Returns `null` if this intersection is empty.
      *
      * @return list<ComplexSelector>|null
      */
-    private static function weaveParents(ComplexSelector $prefix, ComplexSelector $base): ?array
+    private static function weaveParents(ComplexSelector $prefix, ComplexSelector $base, FileSpan $span): ?array
     {
         $leadingCombinators = self::mergeLeadingCombinators($prefix->getLeadingCombinators(), $base->getLeadingCombinators());
         if ($leadingCombinators === null) {
@@ -296,7 +298,7 @@ final class ExtendUtil
         $queue1 = $prefix->getComponents();
         $queue2 = ListUtil::exceptLast($base->getComponents());
 
-        $finalCombinators = self::mergeTrailingCombinators($queue1, $queue2);
+        $finalCombinators = self::mergeTrailingCombinators($queue1, $queue2, $span);
         if ($finalCombinators === null) {
             return null;
         }
@@ -307,14 +309,14 @@ final class ExtendUtil
         $rootish2 = self::firstIfRootish($queue2);
 
         if ($rootish1 !== null && $rootish2 !== null) {
-            $rootish = self::unifyCompound($rootish1->getSelector()->getComponents(), $rootish2->getSelector()->getComponents());
+            $rootish = self::unifyCompound($rootish1->getSelector(), $rootish2->getSelector());
 
             if ($rootish === null) {
                 return null;
             }
 
-            array_unshift($queue1, new ComplexSelectorComponent($rootish, $rootish1->getCombinators()));
-            array_unshift($queue2, new ComplexSelectorComponent($rootish, $rootish2->getCombinators()));
+            array_unshift($queue1, new ComplexSelectorComponent($rootish, $rootish1->getCombinators(), $rootish1->getSpan()));
+            array_unshift($queue2, new ComplexSelectorComponent($rootish, $rootish2->getCombinators(), $rootish2->getSpan()));
         } elseif ($rootish1 !== null || $rootish2 !== null) {
             // If there's only one rootish selector, it should only appear in the first
             // position of the resulting selector. We can ensure that happens by adding
@@ -328,7 +330,7 @@ final class ExtendUtil
         $groups2 = self::groupSelectors($queue2);
 
         /** @phpstan-var list<list<ComplexSelectorComponent>> $lcs */
-        $lcs = ListUtil::longestCommonSubsequence($groups2, $groups1, function ($group1, $group2) {
+        $lcs = ListUtil::longestCommonSubsequence($groups2, $groups1, function ($group1, $group2) use ($span) {
             if (EquatableUtil::listEquals($group1, $group2)) {
                 return $group1;
             }
@@ -345,7 +347,7 @@ final class ExtendUtil
                 return null;
             }
 
-            $unified = self::unifyComplex([new ComplexSelector([], $group1), new ComplexSelector([], $group2)]);
+            $unified = self::unifyComplex([new ComplexSelector([], $group1, $span), new ComplexSelector([], $group2, $span)], $span);
 
             if ($unified === null) {
                 return null;
@@ -362,9 +364,7 @@ final class ExtendUtil
         foreach ($lcs as $group) {
             $newChoice = [];
             /** @var list<list<list<ComplexSelectorComponent>>> $chunks */
-            $chunks = self::chunks($groups1, $groups2, function ($sequence) use ($group) {
-                return self::complexIsParentSuperselector($sequence[0], $group);
-            });
+            $chunks = self::chunks($groups1, $groups2, fn($sequence) => self::complexIsParentSuperselector($sequence[0], $group));
             foreach ($chunks as $chunk) {
                 $flattened = [];
                 foreach ($chunk as $chunkGroup) {
@@ -383,9 +383,7 @@ final class ExtendUtil
 
         $newChoice = [];
         /** @var list<list<list<ComplexSelectorComponent>>> $chunks */
-        $chunks = self::chunks($groups1, $groups2, function ($sequence) {
-            return count($sequence) === 0;
-        });
+        $chunks = self::chunks($groups1, $groups2, fn($sequence) => count($sequence) === 0);
         foreach ($chunks as $chunk) {
             $flattened = [];
             foreach ($chunk as $chunkGroup) {
@@ -400,20 +398,18 @@ final class ExtendUtil
             $choices[] = $finalCombinator;
         }
 
-        $choices = array_filter($choices, function ($choice) {
-            return $choice !== [];
-        });
+        $choices = array_filter($choices, fn($choice) => $choice !== []);
 
         $paths = self::paths($choices);
 
-        return array_map(function (array $path) use ($leadingCombinators, $prefix, $base) {
+        return array_map(function (array $path) use ($leadingCombinators, $prefix, $base, $span) {
             $result = [];
 
             foreach ($path as $group) {
                 $result = array_merge($result, $group);
             }
 
-            return new ComplexSelector($leadingCombinators, $result, $prefix->getLineBreak() || $base->getLineBreak());
+            return new ComplexSelector($leadingCombinators, $result, $span, $prefix->getLineBreak() || $base->getLineBreak());
         }, $paths);
     }
 
@@ -450,15 +446,10 @@ final class ExtendUtil
      *
      * Returns `null` if the combinator lists can't be unified.
      *
-     * @param list<string>|null $combinators1
-     * @param list<string>|null $combinators2
+     * @param list<CssValue<Combinator>>|null $combinators1
+     * @param list<CssValue<Combinator>>|null $combinators2
      *
-     * @return list<string>|null
-     *
-     * @phpstan-param list<Combinator::*> $combinators1
-     * @phpstan-param list<Combinator::*> $combinators2
-     *
-     * @phpstan-return list<Combinator::*>|null
+     * @return list<CssValue<Combinator>>|null
      */
     private static function mergeLeadingCombinators(?array $combinators1, ?array $combinators2): ?array
     {
@@ -502,13 +493,15 @@ final class ExtendUtil
      * If there are no combinators to be merged, returns an empty list. If the
      * sequences can't be merged, returns `null`.
      *
+     * The $span will be used for any new combined selectors.
+     *
      * @param list<ComplexSelectorComponent>             $components1
      * @param list<ComplexSelectorComponent>             $components2
      * @param list<list<list<ComplexSelectorComponent>>> $result
      *
      * @return list<list<list<ComplexSelectorComponent>>>|null
      */
-    private static function mergeTrailingCombinators(array &$components1, array &$components2, array $result = []): ?array
+    private static function mergeTrailingCombinators(array &$components1, array &$components2, FileSpan $span, array $result = []): ?array
     {
         $combinators1 = \count($components1) === 0 ? [] : ListUtil::last($components1)->getCombinators();
         $combinators2 = \count($components2) === 0 ? [] : ListUtil::last($components2)->getCombinators();
@@ -532,7 +525,7 @@ final class ExtendUtil
             $component2 = array_pop($components2);
             assert($component2 instanceof ComplexSelectorComponent);
 
-            if ($combinator1 === Combinator::FOLLOWING_SIBLING && $combinator2 === Combinator::FOLLOWING_SIBLING) {
+            if ($combinator1->getValue() === Combinator::FOLLOWING_SIBLING && $combinator2->getValue() === Combinator::FOLLOWING_SIBLING) {
                 if ($component1->getSelector()->isSuperselector($component2->getSelector())) {
                     array_unshift($result, [[$component2]]);
                 } elseif ($component2->getSelector()->isSuperselector($component1->getSelector())) {
@@ -543,78 +536,78 @@ final class ExtendUtil
                         [$component2, $component1],
                     ];
 
-                    $unified = self::unifyCompound($component1->getSelector()->getComponents(), $component2->getSelector()->getComponents());
+                    $unified = self::unifyCompound($component1->getSelector(), $component2->getSelector());
 
                     if ($unified !== null) {
-                        $choices[] = [new ComplexSelectorComponent($unified, [Combinator::FOLLOWING_SIBLING])];
+                        $choices[] = [new ComplexSelectorComponent($unified, [$combinator1], $span)];
                     }
 
                     array_unshift($result, $choices);
                 }
-            } elseif (($combinator1 === Combinator::FOLLOWING_SIBLING && $combinator2 === Combinator::NEXT_SIBLING) || ($combinator1 === Combinator::NEXT_SIBLING && $combinator2 === Combinator::FOLLOWING_SIBLING)) {
-                $followingSiblingComponent = $combinator1 === Combinator::FOLLOWING_SIBLING ? $component1 : $component2;
-                $nextSiblingComponent = $combinator1 === Combinator::FOLLOWING_SIBLING ? $component2 : $component1;
+            } elseif (($combinator1->getValue() === Combinator::FOLLOWING_SIBLING && $combinator2->getValue() === Combinator::NEXT_SIBLING) || ($combinator1->getValue() === Combinator::NEXT_SIBLING && $combinator2->getValue() === Combinator::FOLLOWING_SIBLING)) {
+                $followingSiblingComponent = $combinator1->getValue() === Combinator::FOLLOWING_SIBLING ? $component1 : $component2;
+                $nextSiblingComponent = $combinator1->getValue() === Combinator::FOLLOWING_SIBLING ? $component2 : $component1;
 
                 if ($followingSiblingComponent->getSelector()->isSuperselector($nextSiblingComponent->getSelector())) {
                     array_unshift($result, [[$nextSiblingComponent]]);
                 } else {
-                    $unified = self::unifyCompound($component1->getSelector()->getComponents(), $component2->getSelector()->getComponents());
+                    $unified = self::unifyCompound($followingSiblingComponent->getSelector(), $nextSiblingComponent->getSelector());
 
                     $choices = [
                         [$followingSiblingComponent, $nextSiblingComponent],
                     ];
 
                     if ($unified !== null) {
-                        $choices[] = [new ComplexSelectorComponent($unified, [Combinator::NEXT_SIBLING])];
+                        $choices[] = [new ComplexSelectorComponent($unified, $nextSiblingComponent->getCombinators(), $span)];
                     }
 
                     array_unshift($result, $choices);
                 }
-            } elseif ($combinator1 === Combinator::CHILD && ($combinator2 === Combinator::NEXT_SIBLING || $combinator2 === Combinator::FOLLOWING_SIBLING)) {
+            } elseif ($combinator1->getValue() === Combinator::CHILD && ($combinator2->getValue() === Combinator::NEXT_SIBLING || $combinator2->getValue() === Combinator::FOLLOWING_SIBLING)) {
                 array_unshift($result, [[$component2]]);
                 $components1[] = $component1;
-            } elseif ($combinator2 === Combinator::CHILD && ($combinator1 === Combinator::NEXT_SIBLING || $combinator1 === Combinator::FOLLOWING_SIBLING)) {
+            } elseif ($combinator2->getValue() === Combinator::CHILD && ($combinator1->getValue() === Combinator::NEXT_SIBLING || $combinator1->getValue() === Combinator::FOLLOWING_SIBLING)) {
                 array_unshift($result, [[$component1]]);
                 $components2[] = $component2;
-            } elseif ($combinator1 === $combinator2) {
-                $unified = self::unifyCompound($component1->getSelector()->getComponents(), $component2->getSelector()->getComponents());
+            } elseif (EquatableUtil::equals($combinator1, $combinator2)) {
+                $unified = self::unifyCompound($component1->getSelector(), $component2->getSelector());
 
                 if ($unified === null) {
                     return null;
                 }
 
-                array_unshift($result, [[new ComplexSelectorComponent($unified, [$combinator1])]]);
+                array_unshift($result, [[new ComplexSelectorComponent($unified, [$combinator1], $span)]]);
             } else {
                 return null;
             }
 
-            return self::mergeTrailingCombinators($components1, $components2, $result);
+            return self::mergeTrailingCombinators($components1, $components2, $span, $result);
         }
 
         if ($combinator1 !== null) {
             $component1 = array_pop($components1);
             \assert($component1 instanceof ComplexSelectorComponent);
 
-            if ($combinator1 === Combinator::CHILD && \count($components2) > 0 && ListUtil::last($components2)->getSelector()->isSuperselector($component1->getSelector())) {
+            if ($combinator1->getValue() === Combinator::CHILD && \count($components2) > 0 && ListUtil::last($components2)->getSelector()->isSuperselector($component1->getSelector())) {
                 array_pop($components2);
             }
 
             array_unshift($result, [[$component1]]);
 
-            return self::mergeTrailingCombinators($components1, $components2, $result);
+            return self::mergeTrailingCombinators($components1, $components2, $span, $result);
         }
 
         $component2 = array_pop($components2);
         \assert($component2 instanceof ComplexSelectorComponent);
         assert($combinator2 !== null);
 
-        if ($combinator2 === Combinator::CHILD && \count($components1) > 0 && ListUtil::last($components1)->getSelector()->isSuperselector($component2->getSelector())) {
+        if ($combinator2->getValue() === Combinator::CHILD && \count($components1) > 0 && ListUtil::last($components1)->getSelector()->isSuperselector($component2->getSelector())) {
             array_pop($components1);
         }
 
         array_unshift($result, [[$component2]]);
 
-        return self::mergeTrailingCombinators($components2, $components1, $result);
+        return self::mergeTrailingCombinators($components1, $components2, $span, $result);
     }
 
     /**
@@ -646,7 +639,7 @@ final class ExtendUtil
 
         foreach ($complex2 as $component) {
             foreach ($component->getSelector()->getComponents() as $simple) {
-                if (self::isUnique($simple) && EquatableUtil::listContains($uniqueSelectors, $simple)) {
+                if (self::isUnique($simple) && EquatableUtil::iterableContains($uniqueSelectors, $simple)) {
                     return true;
                 }
             }
@@ -837,7 +830,9 @@ final class ExtendUtil
             return false;
         }
 
-        $base = new ComplexSelectorComponent(new CompoundSelector([new PlaceholderSelector('<temp>')]), []);
+        $bogusSpan = SpanUtil::bogusSpan();
+
+        $base = new ComplexSelectorComponent(new CompoundSelector([new PlaceholderSelector('<temp>', $bogusSpan)], $bogusSpan), [], $bogusSpan);
         $complex1[] = $base;
         $complex2[] = $base;
 
@@ -868,6 +863,7 @@ final class ExtendUtil
 
         $i1 = 0;
         $i2 = 0;
+        $previousCombinator = null;
 
         while (true) {
             $remaining1 = \count($complex1) - $i1;
@@ -924,6 +920,10 @@ final class ExtendUtil
                 $parents[] = $component2;
             }
 
+            if (!self::compatibleWithPreviousCombinator($previousCombinator, $parents ?? [])) {
+                return false;
+            }
+
             $component2 = $complex2[$endOfSubselector];
             $combinator1 = $component1->getCombinators()[0] ?? null;
             $combinator2 = $component2->getCombinators()[0] ?? null;
@@ -934,9 +934,10 @@ final class ExtendUtil
 
             $i1++;
             $i2 = $endOfSubselector + 1;
+            $previousCombinator = $combinator1;
 
             if (\count($complex1) - $i1 === 1) {
-                if ($combinator1 === Combinator::FOLLOWING_SIBLING) {
+                if ($combinator1 !== null && $combinator1->getValue() === Combinator::FOLLOWING_SIBLING) {
                     // The selector `.foo ~ .bar` is only a superselector of selectors that
                     // *exclusively* contain subcombinators of `~`.
                     for ($index = $i2; $index < \count($complex2) - 1; $index++) {
@@ -958,16 +959,50 @@ final class ExtendUtil
     }
 
     /**
+     * @param CssValue<Combinator>|null $previous
+     * @param list<ComplexSelectorComponent> $parents
+     */
+    private static function compatibleWithPreviousCombinator(?CssValue $previous, array $parents): bool
+    {
+        if ($parents === []) {
+            return true;
+        }
+
+        if ($previous === null) {
+            return true;
+        }
+
+        // The child and next sibling combinators require that the *immediate*
+        // following component be a superselector.
+        if ($previous->getValue() !== Combinator::FOLLOWING_SIBLING) {
+            return false;
+        }
+
+        // The following sibling combinator does allow intermediate components, but
+        // only if they're all siblings.
+        foreach ($parents as $component) {
+            $firstCombinator = $component->getCombinators()[0] ?? null;
+            $firstCombinatorValue = $firstCombinator?->getValue();
+
+            if ($firstCombinatorValue !== Combinator::FOLLOWING_SIBLING && $firstCombinatorValue !== Combinator::NEXT_SIBLING) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Returns whether $combinator1 is a supercombinator of $combinator2.
      *
      * That is, whether `X $combinator1 Y` is a superselector of `X $combinator2 Y`.
      *
-     * @phpstan-param Combinator::*|null $combinator1
-     * @phpstan-param Combinator::*|null $combinator2
+     * @param CssValue<Combinator>|null $combinator1
+     * @param CssValue<Combinator>|null $combinator2
      */
-    private static function isSupercombinator(?string $combinator1, ?string $combinator2): bool
+    private static function isSupercombinator(?CssValue $combinator1, ?CssValue $combinator2): bool
     {
-        return $combinator1 === $combinator2 || ($combinator1 === null && $combinator2 === Combinator::CHILD) || ($combinator1 === Combinator::FOLLOWING_SIBLING && $combinator2 === Combinator::NEXT_SIBLING);
+        return EquatableUtil::equals($combinator1, $combinator2) || ($combinator1 === null && $combinator2 !== null && $combinator2->getValue() === Combinator::CHILD) || ($combinator1 !== null && $combinator1->getValue() === Combinator::FOLLOWING_SIBLING && $combinator2 !== null && $combinator2->getValue() === Combinator::NEXT_SIBLING);
     }
 
     /**
@@ -1068,11 +1103,13 @@ final class ExtendUtil
             return true;
         }
 
+        $bogusSpan = SpanUtil::bogusSpan();
+
         if (\count($compound2) === 0) {
-            $compound2 = [new UniversalSelector('*')];
+            $compound2 = [new UniversalSelector($bogusSpan, '*')];
         }
 
-        return self::compoundIsSuperselector(new CompoundSelector($compound1), new CompoundSelector($compound2), $parents);
+        return self::compoundIsSuperselector(new CompoundSelector($compound1, $bogusSpan), new CompoundSelector($compound2, $bogusSpan), $parents);
     }
 
     /**
@@ -1111,7 +1148,7 @@ final class ExtendUtil
                 }
 
                 $componentWithParents = $parents;
-                $componentWithParents[] = new ComplexSelectorComponent($compound2, []);
+                $componentWithParents[] = new ComplexSelectorComponent($compound2, [], $compound2->getSpan());
 
                 foreach ($selector1->getComponents() as $complex1) {
                     if (\count($complex1->getLeadingCombinators()) === 0 && self::complexIsSuperselector($complex1->getComponents(), $componentWithParents)) {

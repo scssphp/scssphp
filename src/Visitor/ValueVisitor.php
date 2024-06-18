@@ -18,6 +18,7 @@ use ScssPhp\ScssPhp\Value\SassColor;
 use ScssPhp\ScssPhp\Value\SassFunction;
 use ScssPhp\ScssPhp\Value\SassList;
 use ScssPhp\ScssPhp\Value\SassMap;
+use ScssPhp\ScssPhp\Value\SassMixin;
 use ScssPhp\ScssPhp\Value\SassNumber;
 use ScssPhp\ScssPhp\Value\SassString;
 
@@ -49,6 +50,11 @@ interface ValueVisitor
      * @return T
      */
     public function visitFunction(SassFunction $value);
+
+    /**
+     * @return T
+     */
+    public function visitMixin(SassMixin $value);
 
     /**
      * @return T

@@ -235,6 +235,11 @@ final class Parser
         $this->saveEncoding();
         $this->extractLineNumbers($buffer);
 
+        if (!preg_match('//u', $buffer)) {
+            $message = $this->sourceName ? 'Invalid UTF-8 file: ' . $this->sourceName : 'Invalid UTF-8 file';
+            throw new ParserException($message);
+        }
+
         $this->pushBlock(null); // root block
         $this->whitespace();
         $this->pushBlock(null);
@@ -282,6 +287,10 @@ final class Parser
         $this->extractLineNumbers($this->buffer);
 
         $list = $this->valueList($out);
+
+        if ($this->count !== \strlen($this->buffer)) {
+            throw $this->parseError('Expected end of value');
+        }
 
         $this->restoreEncoding();
 
@@ -339,9 +348,12 @@ final class Parser
         $this->inParens        = false;
         $this->eatWhiteDefault = true;
         $this->buffer          = $buffer;
+        $this->discardComments = true;
 
         $this->saveEncoding();
         $this->extractLineNumbers($this->buffer);
+
+        $this->whitespace();
 
         $isMediaQuery = $this->mediaQueryList($out);
 
@@ -1615,9 +1627,9 @@ final class Parser
      */
     private function appendComment(array $comment): void
     {
-        assert($this->env !== null);
-
         if (! $this->discardComments) {
+            assert($this->env !== null);
+
             $this->env->comments[] = $comment;
         }
     }

@@ -32,22 +32,12 @@ final class IfExpression implements Expression, CallableInvocation
 {
     /**
      * The arguments passed to `if()`.
-     *
-     * @var ArgumentInvocation
-     * @readonly
      */
-    private $arguments;
+    private readonly ArgumentInvocation $arguments;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
-    /**
-     * @var ArgumentDeclaration|null
-     */
-    private static $declaration;
+    private static ?ArgumentDeclaration $declaration;
 
     public function __construct(ArgumentInvocation $arguments, FileSpan $span)
     {

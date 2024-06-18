@@ -27,17 +27,14 @@ use ScssPhp\ScssPhp\Value\Value;
  */
 final class Map implements \Countable, \IteratorAggregate
 {
-    /**
-     * @var bool
-     */
-    private $modifiable = true;
+    private bool $modifiable = true;
 
     // TODO implement a better internal storage to allow reading keys in O(1).
 
     /**
      * @var array<int, array{Value, T}>
      */
-    private $pairs = [];
+    private array $pairs = [];
 
     /**
      * Returns a modifiable version of the Map.
@@ -105,6 +102,11 @@ final class Map implements \Countable, \IteratorAggregate
         return null;
     }
 
+    public function containsKey(Value $key): bool
+    {
+        return $this->get($key) !== null;
+    }
+
     /**
      * Associates the key with the given value.
      *
@@ -152,6 +154,34 @@ final class Map implements \Countable, \IteratorAggregate
         }
 
         return null;
+    }
+
+    /**
+     * @return list<Value>
+     */
+    public function keys(): array
+    {
+        $keys = [];
+
+        foreach ($this->pairs as $pair) {
+            $keys[] = $pair[0];
+        }
+
+        return $keys;
+    }
+
+    /**
+     * @return list<T>
+     */
+    public function values(): array
+    {
+        $values = [];
+
+        foreach ($this->pairs as $pair) {
+            $values[] = $pair[1];
+        }
+
+        return $values;
     }
 
     private function assertModifiable(): void

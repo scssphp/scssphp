@@ -26,24 +26,16 @@ use ScssPhp\ScssPhp\Visitor\ModifiableCssVisitor;
  */
 abstract class ModifiableCssNode implements CssNode
 {
-    /**
-     * @var ModifiableCssParentNode|null
-     */
-    private $parent;
+    private ?ModifiableCssParentNode $parent = null;
 
     /**
      * The index of `$this` in parent's children.
      *
      * This makes {@see remove} more efficient.
-     *
-     * @var int|null
      */
-    private $indexInParent;
+    private ?int $indexInParent = null;
 
-    /**
-     * @var bool
-     */
-    private $groupEnd = false;
+    private bool $groupEnd = false;
 
     public function getParent(): ?ModifiableCssParentNode
     {
@@ -115,7 +107,7 @@ abstract class ModifiableCssNode implements CssNode
      *
      * @return T
      */
-    abstract public function accept($visitor);
+    abstract public function accept(ModifiableCssVisitor $visitor);
 
     /**
      * Removes $this from {@see parent}'s child list.
@@ -140,6 +132,15 @@ abstract class ModifiableCssNode implements CssNode
             assert($child->indexInParent !== null);
             $child->indexInParent = $child->indexInParent - 1;
         }
+        $this->parent = null;
+        $this->indexInParent = null;
+    }
+
+    /**
+     * @@internal
+     */
+    protected function resetParentReferences(): void
+    {
         $this->parent = null;
         $this->indexInParent = null;
     }

@@ -13,11 +13,13 @@
 namespace ScssPhp\ScssPhp\Parser;
 
 use ScssPhp\ScssPhp\Exception\SassFormatException;
-use ScssPhp\ScssPhp\Logger\AdaptingLogger;
-use ScssPhp\ScssPhp\Logger\LocationAwareLoggerInterface;
+use ScssPhp\ScssPhp\Logger\AdaptingDeprecationAwareLogger;
+use ScssPhp\ScssPhp\Logger\DeprecationAwareLoggerInterface;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
+use ScssPhp\ScssPhp\SourceSpan\FileLocation;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\SourceSpan\LazyFileSpan;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\ParserUtil;
@@ -27,23 +29,18 @@ use ScssPhp\ScssPhp\Util\ParserUtil;
  */
 class Parser
 {
-    /**
-     * @var StringScanner
-     * @readonly
-     */
-    protected $scanner;
+    protected readonly StringScanner $scanner;
+
+    protected readonly DeprecationAwareLoggerInterface $logger;
 
     /**
-     * @var LocationAwareLoggerInterface
-     * @readonly
+     * A map used to map source spans in the text being parsed back to their
+     * original locations in the source file, if this isn't being parsed directly
+     * from source.
      */
-    protected $logger;
+    private readonly ?InterpolationMap $interpolationMap;
 
-    /**
-     * @var string|null
-     * @readonly
-     */
-    protected $sourceUrl;
+    protected readonly ?string $sourceUrl;
 
     /**
      * Parses $text as a CSS identifier and returns the result.
@@ -64,16 +61,17 @@ class Parser
             self::parseIdentifier($text, $logger);
 
             return true;
-        } catch (SassFormatException $e) {
+        } catch (SassFormatException) {
             return false;
         }
     }
 
-    public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null)
+    public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null, ?InterpolationMap $interpolationMap = null)
     {
         $this->scanner = new StringScanner($contents);
-        $this->logger = AdaptingLogger::adaptLogger($logger ?? new QuietLogger());
+        $this->logger = AdaptingDeprecationAwareLogger::adaptLogger($logger ?? new QuietLogger());
         $this->sourceUrl = $sourceUrl;
+        $this->interpolationMap = $interpolationMap;
     }
 
     /**
@@ -81,14 +79,12 @@ class Parser
      */
     private function doParseIdentifier(): string
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $result = $this->identifier();
             $this->scanner->expectDone();
 
             return $result;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     /**
@@ -135,9 +131,7 @@ class Parser
         $next = $this->scanner->peekChar(1);
 
         if ($next === '/') {
-            $this->silentComment();
-
-            return true;
+            return $this->silentComment();
         }
 
         if ($next === '*') {
@@ -162,14 +156,18 @@ class Parser
 
     /**
      * Consumes and ignores a silent (Sass-style) comment.
+     *
+     * Returns whether the comment was consumed.
      */
-    protected function silentComment(): void
+    protected function silentComment(): bool
     {
         $this->scanner->expect('//');
 
         while (!$this->scanner->isDone() && !Character::isNewline($this->scanner->peekChar())) {
             $this->scanner->readChar();
         }
+
+        return true;
     }
 
     /**
@@ -386,13 +384,13 @@ class Parser
 
                 case '"':
                 case "'":
-                    $buffer .= $this->rawText([$this, 'string']);
+                    $buffer .= $this->rawText($this->string(...));
                     $wroteNewline = false;
                     break;
 
                 case '/':
                     if ($this->scanner->peekChar(1) === '*') {
-                        $buffer .= $this->rawText([$this, 'loudComment']);
+                        $buffer .= $this->rawText($this->loudComment(...));
                     } else {
                         $buffer .= $this->scanner->readChar();
                     }
@@ -582,7 +580,7 @@ class Parser
                 assert(\is_int($value));
             }
 
-            $this->scanCharIf([Character::class, 'isWhitespace']);
+            $this->scanCharIf(Character::isWhitespace(...));
             $valueText = Util::mbChr($value);
         } else {
             $valueText = $this->scanner->readUtf8Char();
@@ -824,7 +822,7 @@ class Parser
     }
 
     /**
-     * Consumes $text as an identifer, but doesn't verify whether there's
+     * Consumes $text as an identifier, but doesn't verify whether there's
      * additional identifier text afterwards.
      *
      * Returns `true` if the full $text is consumed and `false` otherwise, but
@@ -850,7 +848,7 @@ class Parser
      */
     protected function expectIdentifier(string $text, ?string $name = null, bool $caseSensitive = false): void
     {
-        $name = $name ?? "\"$text\"";
+        $name ??= "\"$text\"";
 
         $start = $this->scanner->getPosition();
 
@@ -872,7 +870,7 @@ class Parser
     /**
      * Runs $consumer and returns the source text that it consumes.
      *
-     * @param callable(): void $consumer
+     * @param callable(): (mixed|void) $consumer
      */
     protected function rawText(callable $consumer): string
     {
@@ -880,6 +878,22 @@ class Parser
         $consumer();
 
         return $this->scanner->substring($start);
+    }
+
+    /**
+     * Like {@see StringScanner::spanFrom()} but passes the span through {@see $interpolationMap} if it's available.
+     */
+    protected function spanFrom(int $position): FileSpan
+    {
+        $span = $this->scanner->spanFrom($position);
+
+        if ($this->interpolationMap === null) {
+            return $span;
+        }
+
+        $interpolationMap = $this->interpolationMap;
+
+        return new LazyFileSpan(static fn() => $interpolationMap->mapSpan($span));
     }
 
     /**
@@ -894,54 +908,85 @@ class Parser
      * Throws an error associated with $position.
      *
      * @throws FormatException
-     *
-     * @return never-returns
      */
-    protected function error(string $message, FileSpan $span, ?\Throwable $previous = null): void
+    protected function error(string $message, FileSpan $span, ?\Throwable $previous = null): never
     {
         throw new FormatException($message, $span, $previous);
     }
 
-    protected function wrapException(FormatException $error): SassFormatException
+    /**
+     * Runs $callback and wraps any {@see FormatException} it throws in a
+     * {@see SassFormatException}
+     *
+     * @template T
+     * @param callable(): T $callback
+     * @return T
+     *
+     * @throws SassFormatException
+     */
+    protected function wrapSpanFormatException(callable $callback)
     {
-        $span = $error->getSpan();
+        try {
+            try {
+                return $callback();
+            } catch (FormatException $e) {
+                if ($this->interpolationMap === null) {
+                    throw $e;
+                }
 
-        if ($span->getLength() === 0 && 0 === stripos($error->getMessage(), 'expected')) {
-            $startPosition = $this->firstNewlineBefore($span->getStart()->getOffset());
-
-            if ($startPosition !== $span->getStart()->getOffset()) {
-                $span = $span->getFile()->span($startPosition, $startPosition);
+                throw $this->interpolationMap->mapException($e);
             }
-        }
+        } catch (FormatException $error) {
+            $span = $error->getSpan();
 
-        return new SassFormatException($error->getMessage(), $span, $error);
+            if (0 === stripos($error->getMessage(), 'expected')) {
+                $span = $this->adjustExceptionSpan($span);
+            }
+
+            throw new SassFormatException($error->getMessage(), $span, $error);
+        }
+        // TODO handle multi-span exceptions
     }
 
     /**
-     * If [position] is separated from the previous non-whitespace character in
-     * `$scanner->getString()` by one or more newlines, returns the offset of the last
+     * Moves span to {@see firstNewlineBefore} if necessary.
+     */
+    private function adjustExceptionSpan(FileSpan $span): FileSpan
+    {
+        if ($span->getLength() > 0) {
+            return $span;
+        }
+
+        $start = $this->firstNewlineBefore($span->getStart());
+
+        if ($start === $span->getStart()) {
+            return $span;
+        }
+
+        return $start->pointSpan();
+    }
+
+    /**
+     * If $location is separated from the previous non-whitespace character in
+     * `$scanner->getString()` by one or more newlines, returns the location of the last
      * separating newline.
      *
-     * Otherwise returns $position.
+     * Otherwise returns $location.
      *
      * This helps avoid missing token errors pointing at the next closing bracket
      * rather than the line where the problem actually occurred.
-     *
-     * @param int $position
-     *
-     * @return int
      */
-    private function firstNewlineBefore(int $position): int
+    private function firstNewlineBefore(FileLocation $location): FileLocation
     {
-        $index = $position - 1;
+        $text = $location->getFile()->getText(0, $location->getOffset());
+        $index = $location->getOffset() - 1;
         $lastNewline = null;
-        $string = $this->scanner->getString();
 
         while ($index >= 0) {
-            $char = $string[$index];
+            $char = $text[$index];
 
             if (!Character::isWhitespace($char)) {
-                return $lastNewline ?? $position;
+                return $lastNewline === null ? $location : $location->getFile()->location($lastNewline);
             }
 
             if (Character::isNewline($char)) {
@@ -950,9 +995,9 @@ class Parser
             $index--;
         }
 
-        // If the document *only* contains whitespace before $position, always
-        // return $position.
+        // If the document *only* contains whitespace before $location, always
+        // return $location.
 
-        return $position;
+        return $location;
     }
 }

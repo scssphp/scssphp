@@ -20,6 +20,7 @@ use ScssPhp\ScssPhp\Ast\Css\CssSupportsRule;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\AtRootQueryParser;
+use ScssPhp\ScssPhp\Parser\InterpolationMap;
 
 /**
  * A query for the `@at-root` rule.
@@ -30,11 +31,8 @@ final class AtRootQuery
 {
     /**
      * Whether the query includes or excludes rules with the specified names.
-     *
-     * @var bool
-     * @readonly
      */
-    private $include;
+    private readonly bool $include;
 
     /**
      * The names of the rules included or excluded by this query.
@@ -43,25 +41,18 @@ final class AtRootQuery
      * or excluded, and "rule" indicates style rules are included or excluded.
      *
      * @var string[]
-     * @readonly
      */
-    private $names;
+    private readonly array $names;
 
     /**
      * Whether this includes or excludes *all* rules.
-     *
-     * @var bool
-     * @readonly
      */
-    private $all;
+    private readonly bool $all;
 
     /**
      * Whether this includes or excludes style rules.
-     *
-     * @var bool
-     * @readonly
      */
-    private $rule;
+    private readonly bool $rule;
 
     /**
      * Parses an at-root query from $contents.
@@ -70,14 +61,13 @@ final class AtRootQuery
      *
      * @throws SassFormatException if parsing fails
      */
-    public static function parse(string $contents, ?LoggerInterface $logger = null, ?string $url = null): AtRootQuery
+    public static function parse(string $contents, ?LoggerInterface $logger = null, ?string $url = null, ?InterpolationMap $interpolationMap = null): AtRootQuery
     {
-        return (new AtRootQueryParser($contents, $logger, $url))->parse();
+        return (new AtRootQueryParser($contents, $logger, $url, $interpolationMap))->parse();
     }
 
     /**
      * @param string[] $names
-     * @param bool     $include
      */
     public static function create(array $names, bool $include): AtRootQuery
     {
@@ -94,9 +84,6 @@ final class AtRootQuery
 
     /**
      * @param string[] $names
-     * @param bool     $include
-     * @param bool     $all
-     * @param bool     $rule
      */
     private function __construct(array $names, bool $include, bool $all, bool $rule)
     {

@@ -121,11 +121,6 @@ parameters:
 			path: src/Cache.php
 
 		-
-			message: "#^Anonymous function should return null but returns float\\|int\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:HWBtoRGB\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1336,11 +1331,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$dimension of class ScssPhp\\\\ScssPhp\\\\Node\\\\Number constructor expects float\\|int, float\\|int\\|string given\\.$#"
-			count: 2
-			path: src/Compiler.php
-
-		-
 			message: "#^Parameter \\#1 \\$envs of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:extractEnv\\(\\) expects non\\-empty\\-array\\<ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\>, array\\<ScssPhp\\\\ScssPhp\\\\Compiler\\\\Environment\\> given\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1376,7 +1366,7 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$string of function str_pad expects string, int\\<\\-9999999, 9999999\\> given\\.$#"
+			message: "#^Parameter \\#1 \\$string of function str_pad expects string, int\\<0, 9999999\\> given\\.$#"
 			count: 1
 			path: src/Compiler.php
 
@@ -1531,6 +1521,21 @@ parameters:
 			path: src/Formatter/OutputBlock.php
 
 		-
+			message: "#^Parameter \\#2 \\$overloads of static method ScssPhp\\\\ScssPhp\\\\SassCallable\\\\BuiltInCallable\\:\\:overloadedFunction\\(\\) expects array\\<string, callable\\(list\\<ScssPhp\\\\ScssPhp\\\\Value\\\\Value\\>\\)\\: ScssPhp\\\\ScssPhp\\\\Value\\\\Value\\>, 'sass\\:color'\\|'sass\\:list'\\|'sass\\:map'\\|'sass\\:math'\\|'sass\\:meta'\\|'sass\\:selector'\\|'sass\\:string'\\|non\\-empty\\-array\\<literal\\-string, array\\{'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\ColorFunctions', 'adjust'\\|'adjustHue'\\|'alpha'\\|'alphaMicrosoft'\\|'blue'\\|'change'\\|'complement'\\|'darken'\\|'desaturate'\\|'grayscale'\\|'green'\\|'hsl'\\|'hsla'\\|'hslaOneArgs'\\|'hslaTwoArgs'\\|'hslOneArgs'\\|'hslTwoArgs'\\|'hue'\\|'ieHexStr'\\|'invert'\\|'lighten'\\|'lightness'\\|'mix'\\|'opacify'\\|'opacity'\\|'red'\\|'rgb'\\|'rgba'\\|'rgbaOneArgs'\\|'rgbaTwoArgs'\\|'rgbOneArgs'\\|'rgbTwoArgs'\\|'saturate'\\|'saturateCss'\\|'saturation'\\|'scale'\\|'transparentize'\\}\\|array\\{'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\ListFunctions'\\|'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\SelectorFunctions'\\|'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\StringFunctions', 'append'\\|'extend'\\|'index'\\|'insert'\\|'isBracketed'\\|'isSuperselector'\\|'join'\\|'length'\\|'nest'\\|'nth'\\|'parse'\\|'quote'\\|'replace'\\|'separator'\\|'setNth'\\|'simpleSelectors'\\|'slice'\\|'toLowerCase'\\|'toUpperCase'\\|'unify'\\|'uniqueId'\\|'unquote'\\|'zip'\\}\\|array\\{'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\MapFunctions', 'get'\\|'hasKey'\\|'keys'\\|'mergeTwoArgs'\\|'mergeVariadic'\\|'remove'\\|'removeNoKeys'\\|'values'\\}\\|array\\{'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\MathFunctions', 'abs'\\|'ceil'\\|'compatible'\\|'floor'\\|'isUnitless'\\|'max'\\|'min'\\|'percentage'\\|'random'\\|'round'\\|'unit'\\}\\|array\\{'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\MetaFunctions', 'featureExists'\\|'inspect'\\|'typeof'\\}\\> given\\.$#"
+			count: 1
+			path: src/Function/FunctionRegistry.php
+
+		-
+			message: "#^Parameter \\#3 \\$url of static method ScssPhp\\\\ScssPhp\\\\SassCallable\\\\BuiltInCallable\\:\\:overloadedFunction\\(\\) expects string\\|null, array\\<string, array\\<int, string\\>\\>\\|string given\\.$#"
+			count: 1
+			path: src/Function/FunctionRegistry.php
+
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Importer\\\\FilesystemImporter\\:\\:load\\(\\) never returns null so it can be removed from the return type\\.$#"
+			count: 1
+			path: src/Importer/FilesystemImporter.php
+
+		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 1
 			path: src/Parser.php
@@ -1661,11 +1666,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Result of && is always false\\.$#"
-			count: 2
-			path: src/Parser.php
-
-		-
 			message: "#^Right side of && is always true\\.$#"
 			count: 5
 			path: src/Parser.php
@@ -1701,6 +1701,11 @@ parameters:
 			path: src/Parser.php
 
 		-
+			message: "#^Call to function assert\\(\\) with false and 'unknown format' will always evaluate to false\\.$#"
+			count: 1
+			path: src/Serializer/SerializeVisitor.php
+
+		-
 			message: "#^Negated boolean expression is always true\\.$#"
 			count: 1
 			path: src/Serializer/SerializeVisitor.php
@@ -1725,3 +1730,7 @@ parameters:
 			count: 1
 			path: src/Util.php
 
+		-
+			message: "#^Method ScssPhp\\\\ScssPhp\\\\Value\\\\SassMap\\:\\:tryMap\\(\\) never returns null so it can be removed from the return type\\.$#"
+			count: 1
+			path: src/Value/SassMap.php

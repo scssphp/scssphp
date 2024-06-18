@@ -190,7 +190,7 @@ final class Colors
             return null;
         }
 
-        return SassColor::rgb($rgba[0], $rgba[1], $rgba[2], $rgba[3] ?? null);
+        return SassColor::rgb($rgba[0], $rgba[1], $rgba[2], $rgba[3] ?? 1.0);
     }
 
     /**

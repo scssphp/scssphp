@@ -18,16 +18,15 @@ use ScssPhp\ScssPhp\Util\Equatable;
  * A [qualified name][].
  *
  * [qualified name]: https://www.w3.org/TR/css3-namespace/#css-qnames
+ *
+ * @internal
  */
 final class QualifiedName implements Equatable
 {
     /**
      * The identifier name.
-     *
-     * @var string
-     * @readonly
      */
-    private $name;
+    private readonly string $name;
 
     /**
      * The namespace name.
@@ -35,11 +34,8 @@ final class QualifiedName implements Equatable
      * If this is `null`, {@see name} belongs to the default namespace. If it's the
      * empty string, {@see name} belongs to no namespace. If it's `*`, {@see name} belongs
      * to any namespace. Otherwise, {@see name} belongs to the given namespace.
-     *
-     * @var string|null
-     * @readonly
      */
-    private $namespace;
+    private readonly ?string $namespace;
 
     public function __construct(string $name, ?string $namespace = null)
     {

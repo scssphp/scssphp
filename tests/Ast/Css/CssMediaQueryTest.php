@@ -14,13 +14,15 @@ namespace ScssPhp\ScssPhp\Tests\Ast\Css;
 
 use ScssPhp\ScssPhp\Ast\Css\CssMediaQuery;
 use PHPUnit\Framework\TestCase;
+use ScssPhp\ScssPhp\Ast\Css\MediaQueryMergeResult;
+use ScssPhp\ScssPhp\Ast\Css\MediaQuerySingletonMergeResult;
 
 class CssMediaQueryTest extends TestCase
 {
     /**
      * @dataProvider provideMergedQueries
      */
-    public function testMerging($expected, string $first, string $other)
+    public function testMerging(MediaQueryMergeResult $expected, string $first, string $other)
     {
         $firstQuery = self::parseQuery($first);
         $otherQuery = self::parseQuery($other);
@@ -52,17 +54,17 @@ class CssMediaQueryTest extends TestCase
         // narrower `not screen and (color)`.
         yield [self::parseQuery('not screen and (color)'), 'not screen', 'not screen and (color)'];
         // The intersection of two different media types is empty, so they're eliminated.
-        yield [CssMediaQuery::MERGE_RESULT_EMPTY, 'screen', 'print'];
+        yield [MediaQuerySingletonMergeResult::empty, 'screen', 'print'];
         // The intersection of `not screen` and `screen` is empty.
-        yield [CssMediaQuery::MERGE_RESULT_EMPTY, 'screen', 'not screen'];
+        yield [MediaQuerySingletonMergeResult::empty, 'screen', 'not screen'];
         // That's true even if `screen` has features.
-        yield [CssMediaQuery::MERGE_RESULT_EMPTY, 'screen and (color)', 'not screen'];
+        yield [MediaQuerySingletonMergeResult::empty, 'screen and (color)', 'not screen'];
         // No way to represent those non-empty intersections
-        yield [CssMediaQuery::MERGE_RESULT_UNREPRESENTABLE, 'not screen', '(color)'];
-        yield [CssMediaQuery::MERGE_RESULT_UNREPRESENTABLE, 'not screen', 'all and (color)'];
-        yield [CssMediaQuery::MERGE_RESULT_UNREPRESENTABLE, 'not screen and (color)', 'screen'];
-        yield [CssMediaQuery::MERGE_RESULT_UNREPRESENTABLE, 'not screen and (color)', 'not screen and (grid)'];
-        yield [CssMediaQuery::MERGE_RESULT_UNREPRESENTABLE, 'not screen', 'not print'];
+        yield [MediaQuerySingletonMergeResult::unrepresentable, 'not screen', '(color)'];
+        yield [MediaQuerySingletonMergeResult::unrepresentable, 'not screen', 'all and (color)'];
+        yield [MediaQuerySingletonMergeResult::unrepresentable, 'not screen and (color)', 'screen'];
+        yield [MediaQuerySingletonMergeResult::unrepresentable, 'not screen and (color)', 'not screen and (grid)'];
+        yield [MediaQuerySingletonMergeResult::unrepresentable, 'not screen', 'not print'];
     }
 
     private static function parseQuery(string $query): CssMediaQuery

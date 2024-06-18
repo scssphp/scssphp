@@ -14,9 +14,11 @@ namespace ScssPhp\ScssPhp\Tests;
 
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Logger\StreamLogger;
 use ScssPhp\ScssPhp\Node\Number;
 use ScssPhp\ScssPhp\ValueConverter;
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 
 /**
  * API test
@@ -25,6 +27,8 @@ use ScssPhp\ScssPhp\ValueConverter;
  */
 class ApiTest extends TestCase
 {
+    use ExpectDeprecationTrait;
+
     /**
      * @var Compiler
      */
@@ -231,7 +235,38 @@ class ApiTest extends TestCase
                     'color' => 'blue',
                 ],
             ],
+            // Comment in value
+            [
+                "a {\n  b: d, e;\n}",
+                'a { b: $c; }',
+                [
+                    'c' => 'd, /* comment */ e'
+                ]
+            ],
         ];
+    }
+
+    public function testConvertVariableWithTrailingComment()
+    {
+        $value = 'd, /* comment */ e /* trailing comment */';
+
+        $convertedValue = ValueConverter::parseValue($value);
+
+        $this->scss = new Compiler();
+
+        $this->scss->replaceVariables(['c' => $convertedValue]);
+
+        $this->assertEquals("a {\n  b: d, e;\n}", $this->compile('a { b: $c; }'));
+    }
+
+    public function testConvertVariableWithTrailingContent()
+    {
+        $value = 'd, /* comment */ e; trailing';
+
+        $this->expectException(SassException::class);
+        $this->expectExceptionMessage('Expected end of value: failed at `; trailing`');
+
+        ValueConverter::parseValue($value);
     }
 
     public function testCompileWithoutCharset()

@@ -1,5 +1,37 @@
 # Changelog
 
+## **1.12.1** -- January 13, 2024
+
+**Fixed**
+
+* Fix the handling of leading spaces in interpolated media queries (@stof)
+* Fix the compilation cache key when using numbers in variables (@stof)
+
+## **1.12.0** -- November 14, 2023
+
+**Deprecated**
+
+* Deprecate passing string with extra content after the expression in `ValueConverter::parseValue` (@stof)
+
+**Added**
+
+* Add the `Compiler::compileFile` method (@stof)
+* Add the `OutputStyle::fromString` and `OutputStyle::toString` methods to allow writing code supporting both Scssphp 1.12+ and 2.0 (@stof)
+
+**Fixed**
+
+* Fix the parsing of values in `ValueConverter::parseValue` when using comments inside the value source (@stof)
+
+## **1.11.1** -- September 24, 2023
+
+**Added**
+
+* Add dedicated error handling when passing invalid UTF-8 (@stof)
+
+**Fixed**
+
+* Fix extending a selector using `:is()` (@ssltg)
+
 ## **1.11.0** -- September 2, 2022
 
 **Deprecated**
@@ -401,7 +433,7 @@
 
 ## **1.0.0** -- June 4, 2019
   * Moving development to ScssPhp organization, https://github.com/scssphp/
-  * Online documentation can be found at http://scssphp.github.com/scssphp/
+  * Online documentation can be found at https://scssphp.github.io/scssphp/
   * Renamed namespace from Leafo to ScssPhp
 
 ## **0.8.4** -- June 18, 2019
@@ -748,7 +780,7 @@
   * Add `ie_hex_str`, `abs`, `min`, `max` functions (Martin Hasoň)
   * Ignore expressions inside of `calc()` (Martin Hasoň)
   * Improve operator evaluation (Martin Hasoň)
-  * Add [`@content`](http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#mixin-content) support.
+  * Add [`@content`](https://sass-lang.com/documentation/at-rules/mixin/#content-blocks) support.
   * Misc bug fixes.
 
 ## **0.0.3** -- August 2nd, 2012

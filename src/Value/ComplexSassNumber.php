@@ -21,18 +21,15 @@ final class ComplexSassNumber extends SassNumber
 {
     /**
      * @var list<string>
-     * @readonly
      */
-    private $numeratorUnits;
+    private readonly array $numeratorUnits;
 
     /**
      * @var list<string>
-     * @readonly
      */
-    private $denominatorUnits;
+    private readonly array $denominatorUnits;
 
     /**
-     * @param float                              $value
      * @param list<string>                       $numeratorUnits
      * @param list<string>                       $denominatorUnits
      * @param array{SassNumber, SassNumber}|null $asSlash
@@ -57,6 +54,11 @@ final class ComplexSassNumber extends SassNumber
     }
 
     public function hasUnits(): bool
+    {
+        return true;
+    }
+
+    public function hasComplexUnits(): bool
     {
         return true;
     }

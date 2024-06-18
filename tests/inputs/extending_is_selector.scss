@@ -1,0 +1,8 @@
+
+.ext-test {
+  @extend .ext-test-inner;
+}
+
+:is(.ext-test-inner, .ext-test-inner3) {
+  padding: inherit;
+}

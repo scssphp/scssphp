@@ -23,11 +23,7 @@ use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
  */
 final class NullExpression implements Expression
 {
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     public function __construct(FileSpan $span)
     {

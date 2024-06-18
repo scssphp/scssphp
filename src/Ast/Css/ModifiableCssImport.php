@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Visitor\ModifiableCssVisitor;
 
 /**
  * A modifiable version of {@see CssImport} for use in the evaluation step.
@@ -27,26 +28,19 @@ final class ModifiableCssImport extends ModifiableCssNode implements CssImport
      * This includes quotes.
      *
      * @var CssValue<string>
-     * @readonly
      */
-    private $url;
+    private readonly CssValue $url;
 
     /**
      * @var CssValue<string>|null
-     * @readonly
      */
-    private $modifiers;
+    private readonly ?CssValue $modifiers;
+
+    private readonly FileSpan $span;
 
     /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
-
-    /**
-     * @param CssValue<string>         $url
-     * @param FileSpan                 $span
-     * @param CssValue<string>|null    $modifiers
+     * @param CssValue<string> $url
+     * @param CssValue<string>|null $modifiers
      */
     public function __construct(CssValue $url, FileSpan $span, ?CssValue $modifiers = null)
     {
@@ -70,7 +64,7 @@ final class ModifiableCssImport extends ModifiableCssNode implements CssImport
         return $this->span;
     }
 
-    public function accept($visitor)
+    public function accept(ModifiableCssVisitor $visitor)
     {
         return $visitor->visitCssImport($this);
     }

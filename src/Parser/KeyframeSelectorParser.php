@@ -29,7 +29,7 @@ final class KeyframeSelectorParser extends Parser
      */
     public function parse(): array
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $selectors = [];
 
             do {
@@ -49,9 +49,7 @@ final class KeyframeSelectorParser extends Parser
             $this->scanner->expectDone();
 
             return $selectors;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     private function percentage(): string

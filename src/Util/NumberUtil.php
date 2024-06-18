@@ -35,6 +35,19 @@ final class NumberUtil
     private const EPSILON = 10 ** (-SassNumber::PRECISION - 1);
     private const INVERSE_EPSILON = 10 ** (SassNumber::PRECISION + 1);
 
+    public static function clamp(float $value, float $lowerLimit, float $upperLimit): float
+    {
+        if ($value < $lowerLimit) {
+            return $lowerLimit;
+        }
+
+        if ($value > $upperLimit) {
+            return $upperLimit;
+        }
+
+        return $value;
+    }
+
     public static function fuzzyEquals(float $number1, float $number2): bool
     {
         if ($number1 == $number2) {
@@ -110,13 +123,6 @@ final class NumberUtil
     }
 
     /**
-     * @param float       $number
-     * @param float       $min
-     * @param float       $max
-     * @param string|null $name
-     *
-     * @return float
-     *
      * @throws \OutOfRangeException
      */
     public static function fuzzyAssertRange(float $number, float $min, float $max, ?string $name = null): float
@@ -136,11 +142,6 @@ final class NumberUtil
      * Returns $num1 / $num2, using Sass's division semantic.
      *
      * Sass allows dividing by 0.
-     *
-     * @param float $num1
-     * @param float $num2
-     *
-     * @return float
      */
     public static function divideLikeSass(float $num1, float $num2): float
     {
@@ -167,6 +168,14 @@ final class NumberUtil
      */
     public static function moduloLikeSass(float $num1, float $num2): float
     {
+        if (is_infinite($num1)) {
+            return NAN;
+        }
+
+        if (is_infinite($num2)) {
+            return self::signIncludingZero($num1) === self::sign($num2) ? $num1 : NAN;
+        }
+
         if ($num2 == 0) {
             return NAN;
         }
@@ -183,5 +192,104 @@ final class NumberUtil
         }
 
         return $result;
+    }
+
+    public static function sqrt(SassNumber $number): SassNumber
+    {
+        $number->assertNoUnits('number');
+
+        return SassNumber::create(sqrt($number->getValue()));
+    }
+
+    public static function sin(SassNumber $number): SassNumber
+    {
+        return SassNumber::create(sin($number->coerceValueToUnit('rad', 'number')));
+    }
+
+    public static function cos(SassNumber $number): SassNumber
+    {
+        return SassNumber::create(cos($number->coerceValueToUnit('rad', 'number')));
+    }
+
+    public static function tan(SassNumber $number): SassNumber
+    {
+        return SassNumber::create(tan($number->coerceValueToUnit('rad', 'number')));
+    }
+
+    public static function atan(SassNumber $number): SassNumber
+    {
+        $number->assertNoUnits('number');
+        return self::radiansToDegrees(atan($number->getValue()));
+    }
+
+    public static function asin(SassNumber $number): SassNumber
+    {
+        $number->assertNoUnits('number');
+        return self::radiansToDegrees(asin($number->getValue()));
+    }
+
+    public static function acos(SassNumber $number): SassNumber
+    {
+        $number->assertNoUnits('number');
+        return self::radiansToDegrees(acos($number->getValue()));
+    }
+
+    public static function abs(SassNumber $number): SassNumber
+    {
+        return SassNumber::create(abs($number->getValue()))->coerceToMatch($number);
+    }
+
+    public static function log(SassNumber $number, ?SassNumber $base): SassNumber
+    {
+        if ($base !== null) {
+            return SassNumber::create(log($number->getValue(), $base->getValue()));
+        }
+
+        return SassNumber::create(log($number->getValue()));
+    }
+
+    public static function pow(SassNumber $base, SassNumber $exponent): SassNumber
+    {
+        $base->assertNoUnits('base');
+        $exponent->assertNoUnits('exponent');
+
+        return SassNumber::create($base->getValue() ** $exponent->getValue());
+    }
+
+    public static function atan2(SassNumber $x, SassNumber $y): SassNumber
+    {
+        return self::radiansToDegrees(atan2($y->getValue(), $x->convertValueToMatch($y, 'x', 'y')));
+    }
+
+    private static function radiansToDegrees(float $radians): SassNumber
+    {
+        return SassNumber::withUnits($radians * (180 / \M_PI), ['deg']);
+    }
+
+    public static function sign(float $num): int
+    {
+        if ($num > 0) {
+            return 1;
+        }
+
+        if ($num < 0) {
+            return -1;
+        }
+
+        return 0;
+    }
+
+    public static function signIncludingZero(float $num): int
+    {
+        // In PHP, negative 0 and positive 0 are equal even for strict equality, so we need a different detection
+        if ($num ** -1 === -INF) {
+            return -1;
+        }
+
+        if ($num === 0.0) {
+            return 1;
+        }
+
+        return self::sign($num);
     }
 }

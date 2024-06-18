@@ -33,7 +33,7 @@ use ScssPhp\ScssPhp\Util;
  *
  * @template-implements \ArrayAccess<int, mixed>
  */
-final class Number extends Node implements \ArrayAccess
+final class Number extends Node implements \ArrayAccess, \JsonSerializable
 {
     const PRECISION = 10;
 
@@ -125,7 +125,7 @@ final class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function getNumeratorUnits()
     {
@@ -133,11 +133,21 @@ final class Number extends Node implements \ArrayAccess
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function getDenominatorUnits()
     {
         return $this->denominatorUnits;
+    }
+
+    /**
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
+    {
+        // Passing a compiler instance makes the method output a Sass representation instead of a CSS one, supporting full units.
+        return $this->output(new Compiler());
     }
 
     /**
@@ -548,7 +558,7 @@ final class Number extends Node implements \ArrayAccess
 
         try {
             return $this->coerceUnits($other, function ($num1, $num2) {
-                return round($num1,self::PRECISION) == round($num2, self::PRECISION);
+                return round($num1, self::PRECISION) == round($num2, self::PRECISION);
             });
         } catch (SassScriptException $e) {
             return false;

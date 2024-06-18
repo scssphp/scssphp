@@ -2,7 +2,7 @@ name: CI
 
 on:
     push:
-        branches: [ master, '[1-9]+.x' ]
+        branches: [ main, '[1-9]+.x' ]
     pull_request:
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [ '7.2', '7.3', '7.4', '8.0', '8.1', '8.2' ]
+                php: [ '8.1', '8.2' ]
                 extensions: [ '' ]
                 os: [ubuntu-latest]
                 include:
@@ -33,7 +33,7 @@ jobs:
                 run: git config --global core.autocrlf false
 
             -   name: Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v4
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
@@ -65,13 +65,13 @@ jobs:
 
         steps:
             -   name: Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v4
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
                     coverage: "none"
-                    php-version: "8.1"
+                    php-version: "8.2"
                     ini-file: development
 
             -   name: Install dependencies
@@ -82,3 +82,24 @@ jobs:
 
             -   name: Run phpstan
                 run: vendor-bin/phpstan/vendor/bin/phpstan analyse --ansi --no-progress
+
+    coding_styles:
+        name: Coding styles
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    coverage: "none"
+                    php-version: "8.2"
+                    ini-file: development
+
+            -   name: Install dependencies
+                run: composer update --ansi --no-progress
+
+            -   name: Run phpcs
+                run: vendor/bin/phpcs --extensions=php bin src tests *.php

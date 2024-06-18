@@ -13,6 +13,8 @@
 namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
+use ScssPhp\ScssPhp\Visitor\ModifiableCssVisitor;
 
 /**
  * A modifiable version of {@see CssSupportsRule} for use in the evaluation step.
@@ -23,19 +25,13 @@ final class ModifiableCssSupportsRule extends ModifiableCssParentNode implements
 {
     /**
      * @var CssValue<string>
-     * @readonly
      */
-    private $condition;
+    private readonly CssValue $condition;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     /**
      * @param CssValue<string> $condition
-     * @param FileSpan         $span
      */
     public function __construct(CssValue $condition, FileSpan $span)
     {
@@ -54,15 +50,17 @@ final class ModifiableCssSupportsRule extends ModifiableCssParentNode implements
         return $this->span;
     }
 
-    public function accept($visitor)
+    public function accept(ModifiableCssVisitor $visitor)
     {
         return $visitor->visitCssSupportsRule($this);
     }
 
-    /**
-     * @phpstan-return ModifiableCssSupportsRule
-     */
-    public function copyWithoutChildren(): ModifiableCssParentNode
+    public function equalsIgnoringChildren(ModifiableCssNode $other): bool
+    {
+        return $other instanceof ModifiableCssSupportsRule && EquatableUtil::equals($this->condition, $other->condition);
+    }
+
+    public function copyWithoutChildren(): ModifiableCssSupportsRule
     {
         return new ModifiableCssSupportsRule($this->condition, $this->span);
     }

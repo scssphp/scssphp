@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 
 /**
@@ -19,28 +20,23 @@ use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
  *
  * This selects for elements with the given attribute, and optionally with a
  * value matching certain conditions as well.
+ *
+ * @internal
  */
 final class AttributeSelector extends SimpleSelector
 {
     /**
      * The name of the attribute being selected for.
-     *
-     * @var QualifiedName
-     * @readonly
      */
-    private $name;
+    private readonly QualifiedName $name;
 
     /**
      * The operator that defines the semantics of {@see value}.
      *
      * If this is `null`, this matches any element with the given property,
      * regardless of this value. It's `null` if and only if {@see value} is `null`.
-     *
-     * @var string|null
-     * @phpstan-var AttributeOperator::*|null
-     * @readonly
      */
-    private $op;
+    private readonly ?AttributeOperator $op;
 
     /**
      * An assertion about the value of {@see name}.
@@ -49,11 +45,8 @@ final class AttributeSelector extends SimpleSelector
      *
      * If this is `null`, this matches any element with the given property,
      * regardless of this value. It's `null` if and only if {@see op} is `null`.
-     *
-     * @var string|null
-     * @readonly
      */
-    private $value;
+    private readonly ?string $value;
 
     /**
      * The modifier which indicates how the attribute selector should be
@@ -64,41 +57,34 @@ final class AttributeSelector extends SimpleSelector
      * [case-sensitivity]: https://www.w3.org/TR/selectors-4/#attribute-case
      *
      * If {@see op} is `null`, this is always `null` as well.
-     *
-     * @var string|null
-     * @readonly
      */
-    private $modifier;
+    private readonly ?string $modifier;
 
     /**
      * Creates an attribute selector that matches any element with a property of
      * the given name.
      */
-    public static function create(QualifiedName $name): AttributeSelector
+    public static function create(QualifiedName $name, FileSpan $span): AttributeSelector
     {
-        return new AttributeSelector($name, null, null, null);
+        return new AttributeSelector($name, $span, null, null, null);
     }
 
     /**
      * Creates an attribute selector that matches an element with a property
      * named $name, whose value matches $value based on the semantics of $op.
-     *
-     * @phpstan-param AttributeOperator::*|null $op
      */
-    public static function withOperator(QualifiedName $name, ?string $op, ?string $value, ?string $modifier = null): AttributeSelector
+    public static function withOperator(QualifiedName $name, ?AttributeOperator $op, ?string $value, FileSpan $span, ?string $modifier = null): AttributeSelector
     {
-        return new AttributeSelector($name, $op, $value, $modifier);
+        return new AttributeSelector($name, $span, $op, $value, $modifier);
     }
 
-    /**
-     * @phpstan-param AttributeOperator::*|null $op
-     */
-    private function __construct(QualifiedName $name, ?string $op, ?string $value, ?string $modifier)
+    private function __construct(QualifiedName $name, FileSpan $span, ?AttributeOperator $op, ?string $value, ?string $modifier)
     {
         $this->name = $name;
         $this->op = $op;
         $this->value = $value;
         $this->modifier = $modifier;
+        parent::__construct($span);
     }
 
     public function getName(): QualifiedName
@@ -106,10 +92,7 @@ final class AttributeSelector extends SimpleSelector
         return $this->name;
     }
 
-    /**
-     * @phpstan-return AttributeOperator::*|null
-     */
-    public function getOp(): ?string
+    public function getOp(): ?AttributeOperator
     {
         return $this->op;
     }

@@ -14,7 +14,8 @@ namespace ScssPhp\ScssPhp\Parser;
 
 use ScssPhp\ScssPhp\Ast\Sass\ArgumentInvocation;
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
-use ScssPhp\ScssPhp\Ast\Sass\Expression\InterpolatedFunctionExpression;
+use ScssPhp\ScssPhp\Ast\Sass\Expression\FunctionExpression;
+use ScssPhp\ScssPhp\Ast\Sass\Expression\ParenthesizedExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\StringExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Import\StaticImport;
 use ScssPhp\ScssPhp\Ast\Sass\Interpolation;
@@ -35,6 +36,7 @@ final class CssParser extends ScssParser
     private const CSS_ALLOWED_FUNCTIONS = [
         'rgb' => true, 'rgba' => true, 'hsl' => true, 'hsla' => true, 'grayscale' => true,
         'invert' => true, 'alpha' => true, 'opacity' => true, 'saturate' => true,
+        'min' => true, 'max' => true, 'round' => true, 'abs' => true,
     ];
 
     protected function isPlainCss(): bool
@@ -42,8 +44,12 @@ final class CssParser extends ScssParser
         return true;
     }
 
-    protected function silentComment(): void
+    protected function silentComment(): bool
     {
+        if ($this->inExpression()) {
+            return false;
+        }
+
         $start = $this->scanner->getPosition();
         parent::silentComment();
         $this->error("Silent comments aren't allowed in plain CSS.", $this->scanner->spanFrom($start));
@@ -89,7 +95,6 @@ final class CssParser extends ScssParser
 
             default:
                 return $this->unknownAtRule($start, $name);
-
         }
     }
 
@@ -114,6 +119,19 @@ final class CssParser extends ScssParser
         ], $this->scanner->spanFrom($start));
     }
 
+    protected function parentheses(): Expression
+    {
+        // Expressions are only allowed within calculations, but we verify this at
+        // evaluation time.
+        $start = $this->scanner->getPosition();
+        $this->scanner->expectChar('(');
+        $this->whitespace();
+        $expression = $this->expressionUntilComma();
+        $this->scanner->expectChar(')');
+
+        return new ParenthesizedExpression($expression, $this->scanner->spanFrom($start));
+    }
+
     protected function identifierLike(): Expression
     {
         $start = $this->scanner->getPosition();
@@ -129,6 +147,10 @@ final class CssParser extends ScssParser
         }
 
         $beforeArguments = $this->scanner->getPosition();
+        // `namespacedExpression()` is just here to throw a clearer error.
+        if ($this->scanner->scanChar('.')) {
+            return $this->namespacedExpression($plain, $start);
+        }
         if (!$this->scanner->scanChar('(')) {
             return new StringExpression($identifier);
         }
@@ -155,10 +177,8 @@ final class CssParser extends ScssParser
             $this->error("This function isn't allowed in plain CSS.", $this->scanner->spanFrom($start));
         }
 
-        return new InterpolatedFunctionExpression(
-            // Create a fake interpolation to force the function to be interpreted
-            // as plain CSS, rather than calling a user-defined function.
-            new Interpolation([new StringExpression($identifier)], $identifier->getSpan()),
+        return new FunctionExpression(
+            $plain,
             new ArgumentInvocation($arguments, [], $this->scanner->spanFrom($beforeArguments)),
             $this->scanner->spanFrom($start)
         );

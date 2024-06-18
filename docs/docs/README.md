@@ -8,7 +8,7 @@ title: Documentation
 
 ### Including
 
-The project can be loaded through the `composer` generated auto-loader.
+The project can be loaded through the `composer` generated autoloader.
 
 Alternatively, the entire project can be loaded through a utility file.
 Just include it somewhere to start using it:
@@ -21,7 +21,7 @@ require_once 'scssphp/scss.inc.php';
 
 In order to manually compile code from PHP you must create an instance of the
 `Compiler` class. The typical flow is to create the instance, set any compile time
-options, then run the compiler with the `compile` method.
+options, then run the compiler with the `compileString` or `compileFile` methods.
 
 ```php
 use ScssPhp\ScssPhp\Compiler;
@@ -39,6 +39,10 @@ SCSS code. If it succeeds, a `\ScssPhp\ScssPhp\CompilationResult` containing the
 CSS will be returned. If there is any error, a
 `\ScssPhp\ScssPhp\Exception\SassException` is thrown with an appropriate error
 message.
+`compileFile($path)` will attempt to compile a SCSS file from the provided path. If
+it succeeds, a `\ScssPhp\ScssPhp\CompilationResult` containing the CSS will be
+returned. If there is any error, a `\ScssPhp\ScssPhp\Exception\SassException` is
+thrown with an appropriate error message.
 
 ### Import Paths
 

@@ -15,58 +15,69 @@ namespace ScssPhp\ScssPhp\Ast\Sass\Expression;
 /**
  * @internal
  */
-final class BinaryOperator
+enum BinaryOperator
 {
-    const SINGLE_EQUALS = '=';
-    const OR = 'or';
-    const AND = 'and';
-    const EQUALS = '==';
-    const NOT_EQUALS = '!=';
-    const GREATER_THAN = '>';
-    const GREATER_THAN_OR_EQUALS = '>=';
-    const LESS_THAN = '<';
-    const LESS_THAN_OR_EQUALS = '<=';
-    const PLUS = '+';
-    const MINUS = '-';
-    const TIMES = '*';
-    const DIVIDED_BY = '/';
-    const MODULO = '%';
+    case SINGLE_EQUALS;
+    case OR;
+    case AND;
+    case EQUALS;
+    case NOT_EQUALS;
+    case GREATER_THAN;
+    case GREATER_THAN_OR_EQUALS;
+    case LESS_THAN;
+    case LESS_THAN_OR_EQUALS;
+    case PLUS;
+    case MINUS;
+    case TIMES;
+    case DIVIDED_BY;
+    case MODULO;
 
     /**
-     * @param BinaryOperator::* $operator
+     * The Sass syntax for this operator
      */
-    public static function getPrecedence(string $operator): int
+    public function getOperator(): string
     {
-        switch ($operator) {
-            case self::SINGLE_EQUALS:
-                return 0;
+        return match ($this) {
+            self::SINGLE_EQUALS => '=',
+            self::OR => 'or',
+            self::AND => 'and',
+            self::EQUALS => '==',
+            self::NOT_EQUALS => '!=',
+            self::GREATER_THAN => '>',
+            self::GREATER_THAN_OR_EQUALS => '>=',
+            self::LESS_THAN => '<',
+            self::LESS_THAN_OR_EQUALS => '<=',
+            self::PLUS => '+',
+            self::MINUS => '-',
+            self::TIMES => '*',
+            self::DIVIDED_BY => '/',
+            self::MODULO => '%',
+        };
+    }
 
-            case self::OR:
-                return 1;
+    public function getPrecedence(): int
+    {
+        return match ($this) {
+            self::SINGLE_EQUALS => 0,
+            self::OR => 1,
+            self::AND => 2,
+            self::EQUALS, self::NOT_EQUALS => 3,
+            self::GREATER_THAN, self::GREATER_THAN_OR_EQUALS, self::LESS_THAN, self::LESS_THAN_OR_EQUALS => 4,
+            self::PLUS, self::MINUS => 5,
+            self::TIMES, self::DIVIDED_BY, self::MODULO => 6,
+        };
+    }
 
-            case self::AND:
-                return 2;
-
-            case self::EQUALS:
-            case self::NOT_EQUALS:
-                return 3;
-
-            case self::GREATER_THAN:
-            case self::GREATER_THAN_OR_EQUALS:
-            case self::LESS_THAN:
-            case self::LESS_THAN_OR_EQUALS:
-                return 4;
-
-            case self::PLUS:
-            case self::MINUS:
-                return 5;
-
-            case self::TIMES:
-            case self::DIVIDED_BY:
-            case self::MODULO:
-                return 6;
-        }
-
-        throw new \InvalidArgumentException(sprintf('Unknown operator "%s".', $operator));
+    /**
+     * Whether this operation has the [associative property].
+     *
+     * [associative property]: https://en.wikipedia.org/wiki/Associative_property
+     */
+    public function isAssociative(): bool
+    {
+        return match ($this) {
+            self::OR, self::AND, self::PLUS, self::TIMES => true,
+            default => false,
+        };
     }
 }

@@ -15,10 +15,23 @@ namespace ScssPhp\ScssPhp\Ast\Sass\Expression;
 /**
  * @internal
  */
-final class UnaryOperator
+enum UnaryOperator
 {
-    const PLUS = '+';
-    const MINUS = '-';
-    const DIVIDE = '/';
-    const NOT = 'not';
+    case PLUS;
+    case MINUS;
+    case DIVIDE;
+    case NOT;
+
+    /**
+     * The Sass syntax for this operator
+     */
+    public function getOperator(): string
+    {
+        return match ($this) {
+            self::PLUS => '+',
+            self::MINUS => '-',
+            self::DIVIDE => '/',
+            self::NOT => 'not',
+        };
+    }
 }

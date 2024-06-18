@@ -19,18 +19,11 @@ use ScssPhp\ScssPhp\Visitor\ValueVisitor;
  */
 final class SassNull extends Value
 {
-    /**
-     * @var SassNull|null
-     */
-    private static $instance;
+    private static SassNull $instance;
 
     public static function create(): SassNull
     {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
+        return self::$instance ??= new self();
     }
 
     private function __construct()
@@ -45,6 +38,11 @@ final class SassNull extends Value
     public function isBlank(): bool
     {
         return true;
+    }
+
+    public function realNull(): ?Value
+    {
+        return null;
     }
 
     public function accept(ValueVisitor $visitor)

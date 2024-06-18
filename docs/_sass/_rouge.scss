@@ -104,6 +104,10 @@
 .highlight .m, .highlight .mb, .highlight .mx {
   color: #009999;
 }
+.highlight .sa {
+  color: #000000;
+  font-weight: bold;
+}
 .highlight .sb {
   color: #d14;
 }
@@ -137,7 +141,7 @@
 .highlight .ss {
   color: #990073;
 }
-.highlight .s, .highlight .sa, .highlight .dl {
+.highlight .s, .highlight .dl {
   color: #d14;
 }
 .highlight .na {

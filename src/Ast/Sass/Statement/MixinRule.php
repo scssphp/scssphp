@@ -30,10 +30,8 @@ final class MixinRule extends CallableDeclaration implements SassDeclaration
 {
     /**
      * Whether the mixin contains a `@content` rule.
-     *
-     * @var bool|null
      */
-    private $content;
+    private ?bool $content;
 
     /**
      * @param Statement[] $children

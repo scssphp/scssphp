@@ -13,6 +13,8 @@
 namespace ScssPhp\ScssPhp\Exception;
 
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\StackTrace\Trace;
+use ScssPhp\ScssPhp\Util;
 
 /**
  * @internal
@@ -31,12 +33,25 @@ final class SassRuntimeException extends \Exception implements SassException
      */
     private $span;
 
-    public function __construct(string $message, FileSpan $span, \Throwable $previous = null)
+    private readonly Trace $sassTrace;
+
+    public function __construct(string $message, FileSpan $span, ?Trace $sassTrace = null, \Throwable $previous = null)
     {
         $this->originalMessage = $message;
         $this->span = $span;
+        $this->sassTrace = $sassTrace ?? new Trace([Util::frameForSpan($span, 'root stylesheet')]);
 
-        parent::__construct($span->message($message), 0, $previous);
+        $formattedMessage = $span->message($message); // TODO add the highlighting
+
+        foreach (explode("\n", $this->sassTrace->getFormattedTrace()) as $frame) {
+            if ($frame === '') {
+                continue;
+            }
+            $formattedMessage .= "\n";
+            $formattedMessage .= '  ' . $frame;
+        }
+
+        parent::__construct($formattedMessage, 0, $previous);
     }
 
     /**
@@ -50,5 +65,10 @@ final class SassRuntimeException extends \Exception implements SassException
     public function getSpan(): FileSpan
     {
         return $this->span;
+    }
+
+    public function getSassTrace(): Trace
+    {
+        return $this->sassTrace;
     }
 }

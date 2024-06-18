@@ -54,10 +54,9 @@ class InputTest extends TestCase
             $this->fail("$outFname is missing, consider building tests with \"make rebuild-outputs\".");
         }
 
-        $input = file_get_contents($inFname);
         $output = file_get_contents($outFname);
 
-        $css = $this->scss->compileString($input, $inFname)->getCss();
+        $css = $this->scss->compileFile($inFname)->getCss();
         $this->assertEquals($output, $css);
     }
 
@@ -79,7 +78,7 @@ class InputTest extends TestCase
      */
     private function buildInput($inFname, $outFname)
     {
-        $css = $this->scss->compileString(file_get_contents($inFname), $inFname)->getCss();
+        $css = $this->scss->compileFile($inFname)->getCss();
 
         file_put_contents($outFname, $css);
     }

@@ -18,41 +18,36 @@ namespace ScssPhp\ScssPhp\Util;
 final class StringUtil
 {
     /**
-     * Checks whether $haystack starts with $needle.
-     *
-     * This is a userland implementation of `str_starts_with` of PHP 8+.
-     *
-     * @param string $haystack
-     * @param string $needle
-     *
-     * @return bool
+     * @phpstan-param non-empty-array<string> $iter
      */
-    public static function startsWith(string $haystack, string $needle): bool
+    public static function toSentence(array $iter, string $conjunction = 'and'): string
     {
-        if (\PHP_VERSION_ID >= 80000) {
-            return str_starts_with($haystack, $needle);
+        if (\count($iter) === 1) {
+            return $iter[array_key_first($iter)];
         }
 
-        return '' === $needle || ('' !== $haystack && 0 === substr_compare($haystack, $needle, 0, \strlen($needle)));
+        $last = array_pop($iter);
+
+        return implode(', ', $iter) . ' ' . $conjunction . ' ' . $last;
     }
 
     /**
-     * Checks whether $haystack ends with $needle.
+     * Returns $name if $number is 1, or the plural of $name otherwise.
      *
-     * This is a userland implementation of `str_ends_with` of PHP 8+.
-     *
-     * @param string $haystack
-     * @param string $needle
-     *
-     * @return bool
+     * By default, this just adds "s" to the end of $name to get the plural. If
+     * $plural is passed, that's used instead.
      */
-    public static function endsWith(string $haystack, string $needle): bool
+    public static function pluralize(string $name, int $number, ?string $plural = null): string
     {
-        if (\PHP_VERSION_ID >= 80000) {
-            return str_ends_with($haystack, $needle);
+        if ($number === 1) {
+            return $name;
         }
 
-        return '' === $needle || ('' !== $haystack && 0 === substr_compare($haystack, $needle, -\strlen($needle)));
+        if ($plural !== null) {
+            return $plural;
+        }
+
+        return $name . 's';
     }
 
     public static function trimAsciiRight(string $string, bool $excludeEscape = false): string
@@ -92,11 +87,6 @@ final class StringUtil
 
     /**
      * Returns whether $string1 and $string2 are equal, ignoring ASCII case.
-     *
-     * @param string|null $string1
-     * @param string      $string2
-     *
-     * @return bool
      */
     public static function equalsIgnoreCase(?string $string1, string $string2): bool
     {
@@ -112,19 +102,46 @@ final class StringUtil
     }
 
     /**
+     * Returns whether $string starts with $prefix, ignoring ASCII case.
+     */
+    public static function startsWithIgnoreCase(string $string, string $prefix): bool
+    {
+        if (\strlen($string) < \strlen($prefix)) {
+            return false;
+        }
+
+        for ($i = 0; $i < \strlen($prefix); $i++) {
+            if (!Character::equalsIgnoreCase($string[$i], $prefix[$i])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Converts all ASCII chars to lowercase in the input string.
      *
-     * This does not uses `strtolower` because `strtolower` is locale-dependant
+     * This does not use `strtolower` because `strtolower` is locale-dependant
      * rather than operating on ASCII.
      * Passing an input string in an encoding that it is not ASCII compatible is
      * unsupported, and will probably generate garbage.
-     *
-     * @param string $string
-     *
-     * @return string
      */
     public static function toAsciiLowerCase(string $string): string
     {
         return strtr($string, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
+    }
+
+    /**
+     * Converts all ASCII chars to uppercase in the input string.
+     *
+     * This does not use `strtoupper` because `strtoupper` is locale-dependant
+     * rather than operating on ASCII.
+     * Passing an input string in an encoding that it is not ASCII compatible is
+     * unsupported, and will probably generate garbage.
+     */
+    public static function toAsciiUpperCase(string $string): string
+    {
+        return strtr($string, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
     }
 }

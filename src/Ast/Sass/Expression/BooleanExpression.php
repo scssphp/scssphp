@@ -23,17 +23,9 @@ use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
  */
 final class BooleanExpression implements Expression
 {
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $value;
+    private readonly bool $value;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     public function __construct(bool $value, FileSpan $span)
     {

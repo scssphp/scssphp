@@ -41,6 +41,7 @@ use ScssPhp\ScssPhp\Ast\Sass\Statement\SupportsRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\VariableDeclaration;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\WarnRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\WhileRule;
+use ScssPhp\ScssPhp\Util\IterableUtil;
 
 /**
  * A StatementVisitor whose `visit*` methods default to returning `null`, but
@@ -121,16 +122,10 @@ abstract class StatementSearchVisitor implements StatementVisitor
 
     public function visitIfRule(IfRule $node)
     {
-        $value = $this->searchIterable($node->getClauses(), function (IfClause $clause) {
-            return $this->searchIterable($clause->getChildren(), function (Statement $child) {
-                return $child->accept($this);
-            });
-        });
+        $value = IterableUtil::search($node->getClauses(), fn(IfClause $clause) => IterableUtil::search($clause->getChildren(), fn(Statement $child) => $child->accept($this)));
 
         if ($node->getLastClause() !== null) {
-            $value = $value ?? $this->searchIterable($node->getLastClause()->getChildren(), function (Statement $child) {
-                return $child->accept($this);
-            });
+            $value ??= IterableUtil::search($node->getLastClause()->getChildren(), fn(Statement $child) => $child->accept($this));
         }
 
         return $value;
@@ -230,37 +225,6 @@ abstract class StatementSearchVisitor implements StatementVisitor
      */
     protected function visitChildren(array $children)
     {
-        foreach ($children as $child) {
-            $result = $child->accept($this);
-
-            if ($result !== null) {
-                return $result;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns the first `T` returned by $callback for an element of $iterable,
-     * or `null` if it returns `null` for every element.
-     *
-     * @template E
-     * @param iterable<E> $iterable
-     * @param callable(E): (T|null) $callback
-     *
-     * @return T|null
-     */
-    private function searchIterable(iterable $iterable, callable $callback)
-    {
-        foreach ($iterable as $element) {
-            $value = $callback($element);
-
-            if ($value !== null) {
-                return $value;
-            }
-        }
-
-        return null;
+        return IterableUtil::search($children, fn (Statement $child) => $child->accept($this));
     }
 }

@@ -12,59 +12,40 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
+use ScssPhp\ScssPhp\Serializer\Serializer;
 use ScssPhp\ScssPhp\Util\Equatable;
 
 /**
  * A binary operation that can appear in a {@see SassCalculation}.
  */
-final class CalculationOperation implements Equatable
+final class CalculationOperation implements Equatable, \Stringable
 {
-    /**
-     * @phpstan-var CalculationOperator::*
-     * @readonly
-     */
-    private $operator;
+    private readonly CalculationOperator $operator;
 
     /**
      * The left-hand operand.
      *
      * This is either a {@see SassNumber}, a {@see SassCalculation}, an unquoted
-     * {@see SassString}, a {@see CalculationOperation}, or a {@see CalculationInterpolation}.
-     *
-     * @var object
-     * @readonly
+     * {@see SassString}, or a {@see CalculationOperation}.
      */
-    private $left;
+    private readonly object $left;
 
     /**
      * The right-hand operand.
      *
      * This is either a {@see SassNumber}, a {@see SassCalculation}, an unquoted
-     * {@see SassString}, a {@see CalculationOperation}, or a {@see CalculationInterpolation}.
-     *
-     * @var object
-     * @readonly
+     * {@see SassString}, or a {@see CalculationOperation}.
      */
-    private $right;
+    private readonly object $right;
 
-    /**
-     * @param string $operator
-     * @param object $left
-     * @param object $right
-     *
-     * @phpstan-param CalculationOperator::* $operator
-     */
-    public function __construct(string $operator, object $left, object $right)
+    public function __construct(CalculationOperator $operator, object $left, object $right)
     {
         $this->operator = $operator;
         $this->left = $left;
         $this->right = $right;
     }
 
-    /**
-     * @phpstan-return CalculationOperator::*
-     */
-    public function getOperator(): string
+    public function getOperator(): CalculationOperator
     {
         return $this->operator;
     }
@@ -85,5 +66,12 @@ final class CalculationOperation implements Equatable
         assert($this->right instanceof Equatable);
 
         return $other instanceof CalculationOperation && $this->operator === $other->operator && $this->left->equals($other->left) && $this->right->equals($other->right);
+    }
+
+    public function __toString(): string
+    {
+        $parenthesized = Serializer::serializeValue(SassCalculation::unsimplified('', [$this]), true);
+
+        return substr($parenthesized, 1, \strlen($parenthesized) - 2);
     }
 }

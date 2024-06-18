@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Parser;
 
+use ScssPhp\ScssPhp\Ast\Css\CssValue;
 use ScssPhp\ScssPhp\Ast\Selector\AttributeOperator;
 use ScssPhp\ScssPhp\Ast\Selector\AttributeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\ClassSelector;
@@ -28,6 +29,7 @@ use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\Ast\Selector\SimpleSelector;
 use ScssPhp\ScssPhp\Ast\Selector\TypeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\UniversalSelector;
+use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
@@ -49,28 +51,35 @@ final class SelectorParser extends Parser
      */
     private const SELECTOR_PSEUDO_ELEMENTS = ['slotted'];
 
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $allowParent;
+    private readonly bool $allowParent;
 
     /**
-     * @var bool
-     * @readonly
+     * Whether to parse the selector as plain CSS.
      */
-    private $allowPlaceholder;
+    private readonly bool $plainCss;
 
-    public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true, bool $allowPlaceholder = true)
+    /**
+     * Creates a parser that parses CSS selectors.
+     *
+     * If $allowParent is `false`, this will throw a @see SassFormatException} if
+     * the selector includes the parent selector `&`.
+     *
+     * If $plainCss is `true`, this will parse the selector as a plain CSS
+     * selector rather than a Sass selector.
+     */
+    public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true, ?InterpolationMap $interpolationMap = null, bool $plainCss = false)
     {
         $this->allowParent = $allowParent;
-        $this->allowPlaceholder = $allowPlaceholder;
-        parent::__construct($contents, $logger, $url);
+        $this->plainCss = $plainCss;
+        parent::__construct($contents, $logger, $url, $interpolationMap);
     }
 
+    /**
+     * @throws SassFormatException
+     */
     public function parse(): SelectorList
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $selector = $this->selectorList();
 
             if (!$this->scanner->isDone()) {
@@ -78,14 +87,12 @@ final class SelectorParser extends Parser
             }
 
             return $selector;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     public function parseComplexSelector(): ComplexSelector
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $complex = $this->complexSelector();
 
             if (!$this->scanner->isDone()) {
@@ -93,14 +100,12 @@ final class SelectorParser extends Parser
             }
 
             return $complex;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     public function parseCompoundSelector(): CompoundSelector
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $compound = $this->compoundSelector();
 
             if (!$this->scanner->isDone()) {
@@ -108,14 +113,12 @@ final class SelectorParser extends Parser
             }
 
             return $compound;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     public function parseSimpleSelector(): SimpleSelector
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $simple = $this->simpleSelector();
 
             if (!$this->scanner->isDone()) {
@@ -123,9 +126,7 @@ final class SelectorParser extends Parser
             }
 
             return $simple;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     /**
@@ -133,6 +134,7 @@ final class SelectorParser extends Parser
      */
     private function selectorList(): SelectorList
     {
+        $start = $this->scanner->getPosition();
         $previousLine = $this->scanner->getLine();
         $components = [$this->complexSelector()];
 
@@ -158,7 +160,7 @@ final class SelectorParser extends Parser
             $components[] = $this->complexSelector($lineBreak);
         }
 
-        return new SelectorList($components);
+        return new SelectorList($components, $this->spanFrom($start));
     }
 
     /**
@@ -169,7 +171,11 @@ final class SelectorParser extends Parser
      */
     private function complexSelector(bool $lineBreak = false): ComplexSelector
     {
+        $start = $this->scanner->getPosition();
+
+        $componentStart = $this->scanner->getPosition();
         $lastCompound = null;
+        /** @var list<CssValue<Combinator>> $combinators */
         $combinators = [];
 
         $initialCombinators = null;
@@ -182,18 +188,21 @@ final class SelectorParser extends Parser
 
             switch ($next) {
                 case '+':
+                    $combinatorStart = $this->scanner->getPosition();
                     $this->scanner->readChar();
-                    $combinators[] = Combinator::NEXT_SIBLING;
+                    $combinators[] = new CssValue(Combinator::NEXT_SIBLING, $this->spanFrom($combinatorStart));
                     break;
 
                 case '>':
+                    $combinatorStart = $this->scanner->getPosition();
                     $this->scanner->readChar();
-                    $combinators[] = Combinator::CHILD;
+                    $combinators[] = new CssValue(Combinator::CHILD, $this->spanFrom($combinatorStart));
                     break;
 
                 case '~':
+                    $combinatorStart = $this->scanner->getPosition();
                     $this->scanner->readChar();
-                    $combinators[] = Combinator::FOLLOWING_SIBLING;
+                    $combinators[] = new CssValue(Combinator::FOLLOWING_SIBLING, $this->spanFrom($combinatorStart));
                     break;
 
                 default:
@@ -202,10 +211,11 @@ final class SelectorParser extends Parser
                     }
 
                     if ($lastCompound !== null) {
-                        $components[] = new ComplexSelectorComponent($lastCompound, $combinators);
+                        $components[] = new ComplexSelectorComponent($lastCompound, $combinators, $this->spanFrom($componentStart));
                     } elseif (\count($combinators) !== 0) {
                         \assert($initialCombinators === null);
                         $initialCombinators = $combinators;
+                        $componentStart = $this->scanner->getPosition();
                     }
                     $lastCompound = $this->compoundSelector();
                     $combinators = [];
@@ -217,15 +227,18 @@ final class SelectorParser extends Parser
             }
         }
 
+        if (\count($combinators) > 0 && $this->plainCss) {
+            $this->scanner->error('expected selector.');
+        }
         if ($lastCompound !== null) {
-            $components[] = new ComplexSelectorComponent($lastCompound, $combinators);
+            $components[] = new ComplexSelectorComponent($lastCompound, $combinators, $this->spanFrom($componentStart));
         } elseif (\count($combinators) !== 0) {
             $initialCombinators = $combinators;
         } else {
             $this->scanner->error('expected selector.');
         }
 
-        return new ComplexSelector($initialCombinators ?? [], $components, $lineBreak);
+        return new ComplexSelector($initialCombinators ?? [], $components, $this->spanFrom($start), $lineBreak);
     }
 
     /**
@@ -233,13 +246,14 @@ final class SelectorParser extends Parser
      */
     private function compoundSelector(): CompoundSelector
     {
+        $start = $this->scanner->getPosition();
         $components = [$this->simpleSelector()];
 
-        while (Character::isSimpleSelectorStart($this->scanner->peekChar())) {
+        while ($this->isSimpleSelectorStart($this->scanner->peekChar())) {
             $components[] = $this->simpleSelector(false);
         }
 
-        return new CompoundSelector($components);
+        return new CompoundSelector($components, $this->spanFrom($start));
     }
 
     /**
@@ -251,7 +265,7 @@ final class SelectorParser extends Parser
     private function simpleSelector(?bool $allowParent = null): SimpleSelector
     {
         $start = $this->scanner->getPosition();
-        $allowParent = $allowParent ?? $this->allowParent;
+        $allowParent ??= $this->allowParent;
 
         switch ($this->scanner->peekChar()) {
             case '[':
@@ -265,8 +279,8 @@ final class SelectorParser extends Parser
 
             case '%':
                 $selector = $this->placeholderSelector();
-                if (!$this->allowPlaceholder) {
-                    $this->error("Placeholder selectors aren't allowed here.", $this->scanner->spanFrom($start));
+                if ($this->plainCss) {
+                    $this->error("Placeholder selectors aren't allowed in plain CSS.", $this->scanner->spanFrom($start));
                 }
                 return $selector;
 
@@ -290,6 +304,7 @@ final class SelectorParser extends Parser
      */
     private function attributeSelector(): AttributeSelector
     {
+        $start = $this->scanner->getPosition();
         $this->scanner->expectChar('[');
         $this->whitespace();
 
@@ -297,7 +312,7 @@ final class SelectorParser extends Parser
         $this->whitespace();
 
         if ($this->scanner->scanChar(']')) {
-            return AttributeSelector::create($name);
+            return AttributeSelector::create($name, $this->spanFrom($start));
         }
 
         $operator = $this->attributeOperator();
@@ -312,7 +327,7 @@ final class SelectorParser extends Parser
 
         $this->scanner->expectChar(']');
 
-        return AttributeSelector::withOperator($name, $operator, $value, $modifier);
+        return AttributeSelector::withOperator($name, $operator, $value, $this->spanFrom($start), $modifier);
     }
 
     /**
@@ -339,10 +354,8 @@ final class SelectorParser extends Parser
 
     /**
      * Consumes an attribute selector's operator.
-     *
-     * @phpstan-return AttributeOperator::*
      */
-    private function attributeOperator(): string
+    private function attributeOperator(): AttributeOperator
     {
         $start = $this->scanner->getPosition();
 
@@ -380,10 +393,11 @@ final class SelectorParser extends Parser
      */
     private function classSelector(): ClassSelector
     {
+        $start = $this->scanner->getPosition();
         $this->scanner->expectChar('.');
         $name = $this->identifier();
 
-        return new ClassSelector($name);
+        return new ClassSelector($name, $this->spanFrom($start));
     }
 
     /**
@@ -391,10 +405,11 @@ final class SelectorParser extends Parser
      */
     private function idSelector(): IDSelector
     {
+        $start = $this->scanner->getPosition();
         $this->scanner->expectChar('#');
         $name = $this->identifier();
 
-        return new IDSelector($name);
+        return new IDSelector($name, $this->spanFrom($start));
     }
 
     /**
@@ -402,10 +417,11 @@ final class SelectorParser extends Parser
      */
     private function placeholderSelector(): PlaceholderSelector
     {
+        $start = $this->scanner->getPosition();
         $this->scanner->expectChar('%');
         $name = $this->identifier();
 
-        return new PlaceholderSelector($name);
+        return new PlaceholderSelector($name, $this->spanFrom($start));
     }
 
     /**
@@ -413,10 +429,15 @@ final class SelectorParser extends Parser
      */
     private function parentSelector(): ParentSelector
     {
+        $start = $this->scanner->getPosition();
         $this->scanner->expectChar('&');
         $suffix = $this->lookingAtIdentifierBody() ? $this->identifierBody() : null;
 
-        return new ParentSelector($suffix);
+        if ($this->plainCss && $suffix !== null) {
+            $this->scanner->error("Parent selectors can't have suffixes in plain CSS.", $start, $this->scanner->getPosition() - $start);
+        }
+
+        return new ParentSelector($this->spanFrom($start), $suffix);
     }
 
     /**
@@ -424,12 +445,13 @@ final class SelectorParser extends Parser
      */
     private function pseudoSelector(): PseudoSelector
     {
+        $start = $this->scanner->getPosition();
         $this->scanner->expectChar(':');
         $element = $this->scanner->scanChar(':');
         $name = $this->identifier();
 
         if (!$this->scanner->scanChar('(')) {
-            return new PseudoSelector($name, $element);
+            return new PseudoSelector($name, $this->spanFrom($start), $element);
         }
         $this->whitespace();
 
@@ -462,7 +484,7 @@ final class SelectorParser extends Parser
 
         $this->scanner->expectChar(')');
 
-        return new PseudoSelector($name, $element, $argument, $selector);
+        return new PseudoSelector($name, $this->spanFrom($start), $element, $argument, $selector);
     }
 
     /**
@@ -533,42 +555,55 @@ final class SelectorParser extends Parser
      */
     private function typeOrUniversalSelector(): SimpleSelector
     {
+        $start = $this->scanner->getPosition();
         $first = $this->scanner->peekChar();
 
         if ($first === '*') {
             $this->scanner->readChar();
 
             if (!$this->scanner->scanChar('|')) {
-                return new UniversalSelector();
+                return new UniversalSelector($this->spanFrom($start));
             }
 
             if ($this->scanner->scanChar('*')) {
-                return new UniversalSelector('*');
+                return new UniversalSelector($this->spanFrom($start), '*');
             }
 
-            return new TypeSelector(new QualifiedName($this->identifier(), '*'));
+            return new TypeSelector(new QualifiedName($this->identifier(), '*'), $this->spanFrom($start));
         }
 
         if ($first === '|') {
             $this->scanner->readChar();
 
             if ($this->scanner->scanChar('*')) {
-                return new UniversalSelector('');
+                return new UniversalSelector($this->spanFrom($start), '');
             }
 
-            return new TypeSelector(new QualifiedName($this->identifier(), ''));
+            return new TypeSelector(new QualifiedName($this->identifier(), ''), $this->spanFrom($start));
         }
 
         $nameOrNamespace = $this->identifier();
 
         if (!$this->scanner->scanChar('|')) {
-            return new TypeSelector(new QualifiedName($nameOrNamespace));
+            return new TypeSelector(new QualifiedName($nameOrNamespace), $this->spanFrom($start));
         }
 
         if ($this->scanner->scanChar('*')) {
-            return new UniversalSelector($nameOrNamespace);
+            return new UniversalSelector($this->spanFrom($start), $nameOrNamespace);
         }
 
-        return new TypeSelector(new QualifiedName($this->identifier(), $nameOrNamespace));
+        return new TypeSelector(new QualifiedName($this->identifier(), $nameOrNamespace), $this->spanFrom($start));
+    }
+
+    /**
+     *  Returns whether $character can start a simple selector in the middle of a compound selector.
+     */
+    private function isSimpleSelectorStart(?string $character): bool
+    {
+        return match ($character) {
+            '*', '[', '.', '#', '%', ':' => true,
+            '&' => $this->plainCss,
+            default => false,
+        };
     }
 }

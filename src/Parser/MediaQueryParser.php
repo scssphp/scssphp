@@ -29,7 +29,7 @@ final class MediaQueryParser extends Parser
      */
     public function parse(): array
     {
-        try {
+        return $this->wrapSpanFormatException(function () {
             $queries = [];
 
             do {
@@ -40,9 +40,7 @@ final class MediaQueryParser extends Parser
             $this->scanner->expectDone();
 
             return $queries;
-        } catch (FormatException $e) {
-            throw $this->wrapException($e);
-        }
+        });
     }
 
     /**

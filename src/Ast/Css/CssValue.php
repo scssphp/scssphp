@@ -13,35 +13,34 @@
 namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\Ast\AstNode;
+use ScssPhp\ScssPhp\Ast\Selector\Combinator;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\Equatable;
+use ScssPhp\ScssPhp\Util\EquatableUtil;
 
 /**
  * A value in a plain CSS tree.
  *
  * This is used to associate a span with a value that doesn't otherwise track
- * its span.
+ * its span. It has value equality semantics.
  *
- * @template T
+ * @template-covariant T of string|\Stringable|array<string|\Stringable>|Combinator|null
  *
  * @internal
  */
-class CssValue implements AstNode
+final class CssValue implements AstNode, Equatable
 {
     /**
      * @phpstan-var T
      */
-    protected $value;
+    private readonly mixed $value;
 
-    /**
-     * @var FileSpan
-     * @readonly
-     */
-    private $span;
+    private readonly FileSpan $span;
 
     /**
      * @param T $value
      */
-    public function __construct($value, FileSpan $span)
+    public function __construct(mixed $value, FileSpan $span)
     {
         $this->value = $value;
         $this->span = $span;
@@ -50,7 +49,7 @@ class CssValue implements AstNode
     /**
      * @return T
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
@@ -60,8 +59,17 @@ class CssValue implements AstNode
         return $this->span;
     }
 
+    public function equals(object $other): bool
+    {
+        return $other instanceof CssValue && EquatableUtil::equals($this->value, $other->value);
+    }
+
     public function __toString(): string
     {
+        if ($this->value instanceof Combinator) {
+            return $this->value->getText();
+        }
+
         if (\is_array($this->value)) {
             return implode($this->value);
         }
