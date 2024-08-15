@@ -1416,11 +1416,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileValue\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|string given\\.$#"
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: "#^Parameter \\#2 \\$baseDir of method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:resolveImportPath\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Compiler.php
@@ -1626,11 +1621,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:func\\(\\) has parameter \\$func with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:isPlainCssValidElement\\(\\) has parameter \\$parsed with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Parser.php
@@ -1676,11 +1666,6 @@ parameters:
 			path: src/Parser.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:unit\\(\\) has parameter \\$unit with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Parser.php
-
-		-
 			message: "#^PHPDoc tag @var for variable \\$nextValue has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Parser.php
@@ -1697,6 +1682,16 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$code of static method ScssPhp\\\\ScssPhp\\\\Util\\:\\:mbChr\\(\\) expects int, float\\|int\\<min, 31\\> given\\.$#"
+			count: 1
+			path: src/Parser.php
+
+		-
+			message: "#^Parameter &\\$out @param\\-out type of method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:enclosedExpression\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|hasOffsetValue\\(int, string\\) given\\.$#"
+			count: 2
+			path: src/Parser.php
+
+		-
+			message: "#^Parameter &\\$out @param\\-out type of method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:genericList\\(\\) expects array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number, array\\|ScssPhp\\\\ScssPhp\\\\Node\\\\Number\\|null given\\.$#"
 			count: 1
 			path: src/Parser.php
 

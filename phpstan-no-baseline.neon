@@ -38,5 +38,9 @@ parameters:
             message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:[^(]+\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
             path: src/Parser.php
 
+        -
+            message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:[^(]+\\(\\) has @param-out PHPDoc tag for parameter \\$\\w+ with no value type specified in iterable type array\\.$#"
+            path: src/Parser.php
+
 includes:
     - vendor-bin/phpstan/vendor/phpstan/phpstan/conf/bleedingEdge.neon
