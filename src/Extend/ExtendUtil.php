@@ -27,6 +27,7 @@ use ScssPhp\ScssPhp\Ast\Selector\TypeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\UniversalSelector;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
+use ScssPhp\ScssPhp\Util\IterableUtil;
 use ScssPhp\ScssPhp\Util\ListUtil;
 use ScssPhp\ScssPhp\Util\SpanUtil;
 
@@ -884,27 +885,27 @@ final class ExtendUtil
                 return false;
             }
             if ($remaining1 === 1) {
-                $parents = array_slice($complex2, $i2, -1);
-                foreach ($parents as $parent) {
-                    if (\count($parent->getCombinators()) > 1) {
-                        return false;
-                    }
+                if (IterableUtil::any($complex2, fn (ComplexSelectorComponent $parent) => \count($parent->getCombinators()) > 1)) {
+                    return false;
                 }
 
-                return self::compoundIsSuperselector($component1->getSelector(), ListUtil::last($complex2)->getSelector(), $parents);
+                return self::compoundIsSuperselector(
+                    $component1->getSelector(),
+                    ListUtil::last($complex2)->getSelector(),
+                    $component1->getSelector()->hasComplicatedSuperselectorSemantics() ? array_slice($complex2, $i2, -1) : null
+                );
             }
 
             // Find the first index $endOfSubselector in $complex2 such that
             // `complex2.sublist(i2, endOfSubselector + 1)` is a subselector of
             // `$component1->getSelector()`.
             $endOfSubselector = $i2;
-            $parents = null;
             while (true) {
                 $component2 = $complex2[$endOfSubselector];
                 if (\count($component2->getCombinators()) > 1) {
                     return false;
                 }
-                if (self::compoundIsSuperselector($component1->getSelector(), $component2->getSelector(), $parents)) {
+                if (self::compoundIsSuperselector($component1->getSelector(), $component2->getSelector(), $component1->getSelector()->hasComplicatedSuperselectorSemantics() ? array_slice($complex2, $i2, $endOfSubselector - $i2) : null)) {
                     break;
                 }
 
@@ -917,11 +918,9 @@ final class ExtendUtil
                     // to match.
                     return false;
                 }
-
-                $parents[] = $component2;
             }
 
-            if (!self::compatibleWithPreviousCombinator($previousCombinator, $parents ?? [])) {
+            if (!self::compatibleWithPreviousCombinator($previousCombinator, array_slice($complex2, $i2, $endOfSubselector - $i2))) {
                 return false;
             }
 
@@ -1024,6 +1023,17 @@ final class ExtendUtil
      */
     public static function compoundIsSuperselector(CompoundSelector $compound1, CompoundSelector $compound2, ?array $parents = null): bool
     {
+        if (!$compound1->hasComplicatedSuperselectorSemantics() && !$compound2->hasComplicatedSuperselectorSemantics()) {
+            if (\count($compound1->getComponents()) > \count($compound2->getComponents())) {
+                return false;
+            }
+
+            return IterableUtil::every(
+                $compound1->getComponents(),
+                fn (SimpleSelector $simple1) => IterableUtil::any($compound2->getComponents(), $simple1->isSuperselector(...))
+            );
+        }
+
         // Pseudo elements effectively change the target of a compound selector rather
         // than narrowing the set of elements to which it applies like other
         // selectors. As such, if either selector has a pseudo element, they both must

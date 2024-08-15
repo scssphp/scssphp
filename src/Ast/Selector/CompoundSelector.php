@@ -18,6 +18,8 @@ use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\SelectorParser;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
+use ScssPhp\ScssPhp\Util\IterableUtil;
+use ScssPhp\ScssPhp\Util\ListUtil;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 
 /**
@@ -40,6 +42,8 @@ final class CompoundSelector extends Selector
     private readonly array $components;
 
     private ?int $specificity = null;
+
+    private ?bool $complicatedSuperselectorSemantics = null;
 
     /**
      * Parses a compound selector from $contents.
@@ -112,6 +116,21 @@ final class CompoundSelector extends Selector
     public function getSingleSimple(): ?SimpleSelector
     {
         return \count($this->components) === 1 ? $this->components[0] : null;
+    }
+
+    /**
+     * Whether any simple selector in this contains a selector that requires
+     * complex non-local reasoning to determine whether it's a super- or
+     * sub-selector.
+     *
+     * This includes both pseudo-elements and pseudo-selectors that take
+     * selectors as arguments.
+     *
+     * @internal
+     */
+    public function hasComplicatedSuperselectorSemantics(): bool
+    {
+        return $this->complicatedSuperselectorSemantics ??= IterableUtil::any($this->components, fn (SimpleSelector $component) => $component->hasComplicatedSuperselectorSemantics());
     }
 
     public function accept(SelectorVisitor $visitor)

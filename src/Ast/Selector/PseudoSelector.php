@@ -196,6 +196,14 @@ final class PseudoSelector extends SimpleSelector
         return $this->specificity;
     }
 
+    /**
+     * @internal
+     */
+    public function hasComplicatedSuperselectorSemantics(): bool
+    {
+        return $this->isElement() || $this->selector !== null;
+    }
+
     private function computeSpecificity(): int
     {
         if ($this->isElement()) {
