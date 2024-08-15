@@ -48,7 +48,7 @@ final class AdaptingDeprecationAwareLogger implements DeprecationAwareLoggerInte
         $this->logger->warn($message, $deprecation, $span, $trace);
     }
 
-    public function debug(string $message, FileSpan $span = null): void
+    public function debug(string $message, ?FileSpan $span = null): void
     {
         $this->logger->debug($message, $span);
     }

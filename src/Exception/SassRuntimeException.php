@@ -35,7 +35,7 @@ final class SassRuntimeException extends \Exception implements SassException
 
     private readonly Trace $sassTrace;
 
-    public function __construct(string $message, FileSpan $span, ?Trace $sassTrace = null, \Throwable $previous = null)
+    public function __construct(string $message, FileSpan $span, ?Trace $sassTrace = null, ?\Throwable $previous = null)
     {
         $this->originalMessage = $message;
         $this->span = $span;

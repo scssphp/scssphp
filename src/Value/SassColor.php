@@ -102,7 +102,7 @@ final class SassColor extends Value
      *
      * @throws \OutOfRangeException if values are outside the expected range.
      */
-    public static function hslInternal(float $hue, float $saturation, float $lightness, float $alpha = 1.0, ColorFormat $format = null): SassColor
+    public static function hslInternal(float $hue, float $saturation, float $lightness, float $alpha = 1.0, ?ColorFormat $format = null): SassColor
     {
         $alpha = NumberUtil::fuzzyAssertRange($alpha, 0, 1, 'alpha');
 

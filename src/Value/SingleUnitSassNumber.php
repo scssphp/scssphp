@@ -96,7 +96,7 @@ final class SingleUnitSassNumber extends SassNumber
     /**
      * @param array{SassNumber, SassNumber}|null $asSlash
      */
-    public function __construct(float $value, string $unit, array $asSlash = null)
+    public function __construct(float $value, string $unit, ?array $asSlash = null)
     {
         parent::__construct($value, $asSlash);
         $this->unit = $unit;

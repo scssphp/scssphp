@@ -114,7 +114,7 @@ abstract class SassNumber extends Value
     /**
      * @param array{SassNumber, SassNumber}|null $asSlash
      */
-    protected function __construct(float $value, array $asSlash = null)
+    protected function __construct(float $value, ?array $asSlash = null)
     {
         $this->value = $value;
         $this->asSlash = $asSlash;
@@ -826,7 +826,7 @@ abstract class SassNumber extends Value
      *
      * @throws SassScriptException if this number's units are not compatible with $newNumeratorUnits and $newDenominatorUnits
      */
-    private function convertOrCoerceValue(array $newNumeratorUnits, array $newDenominatorUnits, bool $coerceUnitless, ?string $name = null, SassNumber $other = null, ?string $otherName = null): float
+    private function convertOrCoerceValue(array $newNumeratorUnits, array $newDenominatorUnits, bool $coerceUnitless, ?string $name = null, ?SassNumber $other = null, ?string $otherName = null): float
     {
         assert($other === null || ($other->getNumeratorUnits() === $newNumeratorUnits && $other->getDenominatorUnits() === $newDenominatorUnits), sprintf("Expected %s to have units %s.", $other, self::buildUnitString($newNumeratorUnits, $newDenominatorUnits)));
 

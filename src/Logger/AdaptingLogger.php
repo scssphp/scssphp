@@ -62,7 +62,7 @@ final class AdaptingLogger implements LocationAwareLoggerInterface
         $this->logger->warn($formattedMessage, $deprecation);
     }
 
-    public function debug(string $message, FileSpan $span = null)
+    public function debug(string $message, ?FileSpan $span = null)
     {
         $location = '';
         if ($span !== null) {

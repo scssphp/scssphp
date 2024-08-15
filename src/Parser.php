@@ -136,7 +136,7 @@ final class Parser
      * @param bool                 $cssOnly
      * @param LoggerInterface|null $logger
      */
-    public function __construct(?string $sourceName, int $sourceIndex = 0, Cache $cache = null, bool $cssOnly = false, LoggerInterface $logger = null)
+    public function __construct(?string $sourceName, int $sourceIndex = 0, ?Cache $cache = null, bool $cssOnly = false, ?LoggerInterface $logger = null)
     {
         $this->sourceName       = $sourceName ?: '(stdin)';
         $this->sourceIndex      = $sourceIndex;
