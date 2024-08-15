@@ -15,6 +15,7 @@ namespace ScssPhp\ScssPhp\Evaluation;
 use League\Uri\Uri;
 use ScssPhp\ScssPhp\Ast\AstNode;
 use ScssPhp\ScssPhp\Ast\Css\CssAtRule;
+use ScssPhp\ScssPhp\Ast\Css\CssKeyframeBlock;
 use ScssPhp\ScssPhp\Ast\Css\CssMediaQuery;
 use ScssPhp\ScssPhp\Ast\Css\CssMediaRule;
 use ScssPhp\ScssPhp\Ast\Css\CssNode;
@@ -1541,6 +1542,10 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
     {
         if ($this->declarationName !== null) {
             throw $this->exception('Style rules may not be used within nested declarations.', $node->getSpan());
+        }
+
+        if ($this->inKeyFrames && $this->getParent() instanceof CssKeyframeBlock) {
+            throw $this->exception('Style rules may not be used within keyframe blocks.', $node->getSpan());
         }
 
         [$selectorText, $selectorMap] = $this->performInterpolationWithMap($node->getSelector(), true);
