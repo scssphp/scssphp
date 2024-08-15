@@ -32,7 +32,7 @@ final class QuietLogger implements LocationAwareLoggerInterface, DeprecationAwar
     {
     }
 
-    public function debug(string $message, FileSpan $span = null): void
+    public function debug(string $message, ?FileSpan $span = null): void
     {
     }
 }

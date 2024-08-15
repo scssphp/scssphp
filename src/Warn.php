@@ -64,7 +64,7 @@ final class Warn
      *
      * @internal
      */
-    public static function setCallback(callable $callback = null): ?callable
+    public static function setCallback(?callable $callback = null): ?callable
     {
         $previousCallback = self::$callback;
         self::$callback = $callback;

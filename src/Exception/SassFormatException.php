@@ -31,7 +31,7 @@ final class SassFormatException extends \Exception implements SassException
      */
     private $span;
 
-    public function __construct(string $message, FileSpan $span, \Throwable $previous = null)
+    public function __construct(string $message, FileSpan $span, ?\Throwable $previous = null)
     {
         $this->originalMessage = $message;
         $this->span = $span;

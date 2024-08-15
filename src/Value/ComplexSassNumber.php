@@ -34,7 +34,7 @@ final class ComplexSassNumber extends SassNumber
      * @param list<string>                       $denominatorUnits
      * @param array{SassNumber, SassNumber}|null $asSlash
      */
-    public function __construct(float $value, array $numeratorUnits, array $denominatorUnits, array $asSlash = null)
+    public function __construct(float $value, array $numeratorUnits, array $denominatorUnits, ?array $asSlash = null)
     {
         assert(\count($numeratorUnits) > 1 || \count($denominatorUnits) > 0);
 

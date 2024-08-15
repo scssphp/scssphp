@@ -264,7 +264,7 @@ abstract class Formatter
      *
      * @return string
      */
-    public function format(OutputBlock $block, SourceMapGenerator $sourceMapGenerator = null): string
+    public function format(OutputBlock $block, ?SourceMapGenerator $sourceMapGenerator = null): string
     {
         $this->sourceMapGenerator = null;
 
