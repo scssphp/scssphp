@@ -4,7 +4,7 @@
     },
     "require": {
         "jiripudil/phpstan-sealed-classes": "^1.1",
-        "phpstan/phpstan": "1.10.55",
+        "phpstan/phpstan": "1.11.10",
         "phpstan/phpstan-deprecation-rules": "^1.1"
     }
 }

@@ -322,6 +322,7 @@ final class ExtendUtil
             // position of the resulting selector. We can ensure that happens by adding
             // it to the beginning of _both_ queues.
             $rootish = $rootish1 ?? $rootish2;
+            \assert($rootish !== null);
             array_unshift($queue1, $rootish);
             array_unshift($queue2, $rootish);
         }

@@ -270,8 +270,9 @@ final class Parser
     /**
      * Parse a value or value list
      *
-     * @param string       $buffer
-     * @param string|array $out
+     * @param string $buffer
+     * @param mixed  $out
+     * @param-out array|Number $out
      *
      * @return bool
      */
@@ -300,9 +301,9 @@ final class Parser
     /**
      * Parse a selector or selector list
      *
-     * @param string       $buffer
-     * @param string|array $out
-     * @param bool         $shouldValidate
+     * @param string $buffer
+     * @param array  $out
+     * @param bool   $shouldValidate
      *
      * @return bool
      */
@@ -1190,10 +1191,10 @@ final class Parser
     /**
      * Assert a parsed part is plain CSS Valid
      *
-     * @param array|false $parsed
+     * @param array|Number|false $parsed
      * @param int         $startPos
      *
-     * @return array
+     * @return array|Number
      *
      * @throws ParserException
      */
@@ -1223,15 +1224,19 @@ final class Parser
     /**
      * Check a parsed element is plain CSS Valid
      *
-     * @param array|string $parsed
+     * @param array|Number|string $parsed
      * @param bool  $allowExpression
      *
-     * @return false|array|string
+     * @return ($parsed is string ? string : ($parsed is Number ? Number : array|false))
      */
     private function isPlainCssValidElement($parsed, bool $allowExpression = false)
     {
         // keep string as is
         if (is_string($parsed)) {
+            return $parsed;
+        }
+
+        if ($parsed instanceof Number) {
             return $parsed;
         }
 
@@ -2027,8 +2032,9 @@ final class Parser
     /**
      * Parse directive value list that considers $vars as keyword
      *
-     * @param array        $out
+     * @param mixed        $out
      * @param string|false $endChar
+     * @param-out array|Number $out
      *
      * @return bool
      *
@@ -2091,7 +2097,8 @@ final class Parser
     /**
      * Parse comma separated value list
      *
-     * @param array $out
+     * @param mixed $out
+     * @param-out array|Number $out
      *
      * @return bool
      */
@@ -2109,10 +2116,11 @@ final class Parser
      * Parse a function call, where externals () are part of the call
      * and not of the value list
      *
-     * @param array       $out
+     * @param mixed       $out
      * @param bool        $mandatoryEnclos
      * @param null|string $charAfter
      * @param null|bool   $eatWhiteSp
+     * @param-out array|Number $out
      *
      * @return bool
      */
@@ -2148,7 +2156,8 @@ final class Parser
     /**
      * Parse space separated value list
      *
-     * @param array $out
+     * @param mixed $out
+     * @param-out array|Number $out
      *
      * @return bool
      */
@@ -2160,10 +2169,11 @@ final class Parser
     /**
      * Parse generic list
      *
-     * @param array  $out
+     * @param mixed  $out
      * @param string $parseItem The name of the method used to parse items
      * @param string $delim
      * @param bool   $flatten
+     * @param-out ($flatten is false ? array : array|Number) $out
      *
      * @return bool
      */
@@ -2267,9 +2277,10 @@ final class Parser
     /**
      * Parse expression
      *
-     * @param array|Number $out
-     * @param bool         $listOnly
-     * @param bool         $lookForExp
+     * @param mixed $out
+     * @param bool  $listOnly
+     * @param bool  $lookForExp
+     * @param-out array|Number $out
      *
      * @return bool
      *
@@ -2334,10 +2345,11 @@ final class Parser
     /**
      * Parse expression specifically checking for lists in parenthesis or brackets
      *
-     * @param array    $out
+     * @param mixed    $out
      * @param int      $s
      * @param string   $closingParen
      * @param string[] $allowedTypes
+     * @param-out array|Number $out
      *
      * @return bool
      *
@@ -2450,7 +2462,8 @@ final class Parser
     /**
      * Parse value
      *
-     * @param array|Number $out
+     * @param mixed $out
+     * @param-out array|Number $out
      *
      * @return bool
      */
@@ -2658,7 +2671,8 @@ final class Parser
     /**
      * Parse parenthesized value
      *
-     * @param array|Number $out
+     * @param mixed $out
+     * @param-out array|Number $out
      *
      * @return bool
      */
@@ -2730,7 +2744,8 @@ final class Parser
      * Parse function call
      *
      * @param string $name
-     * @param array  $func
+     * @param mixed  $func
+     * @param-out array $func
      *
      * @return bool
      */
@@ -2833,7 +2848,8 @@ final class Parser
     /**
      * Parse mixin/function definition  argument list
      *
-     * @param array $out
+     * @param mixed $out
+     * @param-out list<array{string, array|Number|null, bool}> $out
      *
      * @return bool
      */
@@ -2895,7 +2911,8 @@ final class Parser
     /**
      * Parse map
      *
-     * @param array $out
+     * @param mixed $out
+     * @param-out array $out
      *
      * @return bool
      */
@@ -2937,7 +2954,8 @@ final class Parser
     /**
      * Parse color
      *
-     * @param array $out
+     * @param mixed $out
+     * @param-out array $out
      *
      * @return bool
      */
@@ -2963,7 +2981,8 @@ final class Parser
     /**
      * Parse number with unit
      *
-     * @param array|Number $unit
+     * @param mixed $unit
+     * @param-out Number $unit
      *
      * @return bool
      */
@@ -3169,11 +3188,12 @@ final class Parser
      * Parse an unbounded string stopped by $end
      *
      * @param string $end
-     * @param array  $out
+     * @param mixed  $out
      * @param string $nestOpen
      * @param string $nestClose
      * @param bool   $rtrim
      * @param string $disallow
+     * @param-out array $out
      *
      * @return bool
      */
@@ -3250,8 +3270,9 @@ final class Parser
     /**
      * Parser interpolation
      *
-     * @param string|array $out
-     * @param bool         $lookWhite save information about whitespace before and after
+     * @param mixed $out
+     * @param bool  $lookWhite save information about whitespace before and after
+     * @param-out array $out
      *
      * @return bool
      */
@@ -3785,7 +3806,8 @@ final class Parser
     /**
      * Parse a variable
      *
-     * @param array $out
+     * @param mixed $out
+     * @param-out array{Type::*, string} $out
      *
      * @return bool
      */
@@ -3814,9 +3836,10 @@ final class Parser
     /**
      * Parse a keyword
      *
-     * @param string $word
-     * @param bool   $eatWhitespace
-     * @param bool   $inSelector
+     * @param mixed $word
+     * @param bool  $eatWhitespace
+     * @param bool  $inSelector
+     * @param-out string $word
      *
      * @return bool
      */
@@ -3928,7 +3951,8 @@ final class Parser
     /**
      * Parse a url
      *
-     * @param array $out
+     * @param mixed $out
+     * @param-out array $out
      *
      * @return bool
      */
@@ -3938,10 +3962,10 @@ final class Parser
             $s = $this->count;
 
             if (
-                ($this->string($out) || $this->spaceList($out)) &&
+                ($this->string($inner) || $this->spaceList($inner)) &&
                 $this->matchChar(')')
             ) {
-                $out = [Type::T_STRING, '', ['url(', $out, ')']];
+                $out = [Type::T_STRING, '', ['url(', $inner, ')']];
 
                 return true;
             }
@@ -3984,7 +4008,7 @@ final class Parser
     /**
      * Strip assignment flag from the list
      *
-     * @param array $value
+     * @param array|Number $value
      *
      * @return string[]
      */

@@ -1528,6 +1528,7 @@ final class Compiler
                 $parser = $this->parserFactory(__METHOD__);
 
                 if ($parser->parseValue($buffer, $reParsedWith)) {
+                    \assert(\is_array($reParsedWith));
                     $withCondition = $reParsedWith;
                 }
             }
