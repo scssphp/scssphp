@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Parser;
 
+use ScssPhp\ScssPhp\SourceSpan\FileLocation;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\SourceSpan\SourceFile;
 
@@ -66,6 +67,14 @@ class StringScanner
     public function spanFrom(int $start, ?int $end = null): FileSpan
     {
         return $this->sourceFile->span($start, $end ?? $this->position);
+    }
+
+    /**
+     * The current location of the scanner.
+     */
+    public function getLocation(): FileLocation
+    {
+        return $this->sourceFile->location($this->position);
     }
 
     /**

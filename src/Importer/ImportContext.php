@@ -12,31 +12,25 @@
 
 namespace ScssPhp\ScssPhp\Importer;
 
-use League\Uri\Contracts\UriInterface;
-
 /**
  * @internal
  */
 final class ImportContext
 {
-    private static bool $fromImport = false;
-
-    private static bool $hasContainingUrl = false;
-
-    private static ?UriInterface $containingUrl;
+    private static ?CanonicalizeContext $context = null;
 
     /**
      * Whether the Sass compiler is currently evaluating an `@import` rule.
-     * ///
-     * /// When evaluating `@import` rules, URLs should canonicalize to an import-only
-     * /// file if one exists for the URL being canonicalized. Otherwise,
-     * /// canonicalization should be identical for `@import` and `@use` rules. It's
-     * /// admittedly hacky to set this globally, but `@import` will eventually be
-     * /// removed, at which point we can delete this and have one consistent behavior.
+     *
+     * When evaluating `@import` rules, URLs should canonicalize to an import-only
+     * file if one exists for the URL being canonicalized. Otherwise,
+     * canonicalization should be identical for `@import` and `@use` rules. It's
+     * admittedly hacky to set this globally, but `@import` will eventually be
+     * removed, at which point we can delete this and have one consistent behavior.
      */
     public static function isFromImport(): bool
     {
-        return self::$fromImport;
+        return self::$context?->isFromImport() ?? false;
     }
 
     /**
@@ -47,44 +41,40 @@ final class ImportContext
      */
     public static function inImportRule(callable $callback)
     {
-        $oldFromImport = self::$fromImport;
-        self::$fromImport = true;
-
-        try {
-            return $callback();
-        } finally {
-            self::$fromImport = $oldFromImport;
+        if (self::$context !== null) {
+            return self::$context->withFromImport(true, $callback);
         }
+
+        return self::withCanonicalizeContext(new CanonicalizeContext(null, true), $callback);
     }
 
-    public static function getContainingUrl(): ?UriInterface
+    public static function getCanonicalizeContext(): CanonicalizeContext
     {
-        if (!self::$hasContainingUrl) {
-            throw new \LogicException('containingUrl may only be accessed within a call to canonicalize().');
+        if (self::$context === null) {
+            throw new \LogicException('canonicalizeContext may only be accessed within a call to canonicalize().');
         }
 
-        return self::$containingUrl;
+        return self::$context;
     }
 
     /**
+     * Runs $callback in the given context.
+     *
      * @template T
      *
      * @param callable(): T $callback
      * @return T
      */
-    public static function withContainingUrl(?UriInterface $url, callable $callback)
+    public static function withCanonicalizeContext(?CanonicalizeContext $canonicalizeContext, callable $callback)
     {
-        $oldContainingUrl = self::$containingUrl;
-        $oldHasContainingUrl = self::$hasContainingUrl;
+        $oldCanonicalizeContext = self::$context;
 
-        self::$containingUrl = $url;
-        self::$hasContainingUrl = true;
+        self::$context = $canonicalizeContext;
 
         try {
             return $callback();
         } finally {
-            self::$containingUrl = $oldContainingUrl;
-            self::$hasContainingUrl = $oldHasContainingUrl;
+            self::$context = $oldCanonicalizeContext;
         }
     }
 }

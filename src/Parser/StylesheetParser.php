@@ -295,7 +295,7 @@ abstract class StylesheetParser extends Parser
             $flag = $this->identifier();
             if ($flag === 'default') {
                 if ($guarded) {
-                    $this->logger->warn("!default should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", true, $this->scanner->spanFrom($flagStart));
+                    $this->logger->warnForDeprecation(Deprecation::duplicateVarFlags, "!default should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", $this->scanner->spanFrom($flagStart));
                 }
 
                 $guarded = true;
@@ -303,7 +303,7 @@ abstract class StylesheetParser extends Parser
                 if ($namespace !== null) {
                     $this->error("!global isn't allowed for variables in other modules.", $this->scanner->spanFrom($flagStart));
                 } elseif ($global) {
-                    $this->logger->warn("!global should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", true, $this->scanner->spanFrom($flagStart));
+                    $this->logger->warnForDeprecation(Deprecation::duplicateVarFlags, "!global should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", $this->scanner->spanFrom($flagStart));
                 }
 
                 $global = true;
@@ -431,7 +431,7 @@ abstract class StylesheetParser extends Parser
         $name = $nameBuffer->buildInterpolation($this->scanner->spanFrom($start, $beforeColon));
 
         if (str_starts_with($name->getInitialPlain(), '--')) {
-            $value = new StringExpression($this->interpolatedDeclarationValue());
+            $value = new StringExpression($this->interpolatedDeclarationValue(silentComments: false));
             $this->expectStatementSeparator('custom property');
 
             return Declaration::create($name, $value, $this->scanner->spanFrom($start));
@@ -611,7 +611,7 @@ abstract class StylesheetParser extends Parser
         $this->scanner->expectChar(':');
 
         if ($parseCustomProperties && str_starts_with($name->getInitialPlain(), '--')) {
-            $value = new StringExpression($this->interpolatedDeclarationValue());
+            $value = new StringExpression($this->interpolatedDeclarationValue(silentComments: false));
             $this->expectStatementSeparator('custom property');
 
             return Declaration::create($name, $value, $this->scanner->spanFrom($start));
@@ -916,9 +916,15 @@ abstract class StylesheetParser extends Parser
             $this->error('@content is only allowed within mixin declarations.', $this->scanner->spanFrom($start));
         }
 
+        $beforeWhitespace = $this->scanner->getLocation();
         $this->whitespace();
 
-        $arguments = $this->scanner->peekChar() === '(' ? $this->argumentInvocation(true) : ArgumentInvocation::createEmpty($this->scanner->getEmptySpan());
+        if ($this->scanner->peekChar() === '(') {
+            $arguments = $this->argumentInvocation(true);
+            $this->whitespace();
+        } else {
+            $arguments = ArgumentInvocation::createEmpty($beforeWhitespace->pointSpan());
+        }
 
         $this->expectStatementSeparator('@content rule');
 
@@ -1001,6 +1007,7 @@ abstract class StylesheetParser extends Parser
 
         if ($optional) {
             $this->expectIdentifier('optional');
+            $this->whitespace();
         }
 
         $this->expectStatementSeparator('@extend rule');
@@ -1018,7 +1025,17 @@ abstract class StylesheetParser extends Parser
         $precedingComment = $this->lastSilentComment;
         $this->lastSilentComment = null;
 
-        $name = $this->identifier(true);
+        $beforeName = $this->scanner->getPosition();
+        $name = $this->identifier();
+
+        if (str_starts_with($name, '--')) {
+            $this->logger->warnForDeprecation(
+                Deprecation::cssFunctionMixin,
+                "Sass @function names beginning with -- are deprecated for forward-compatibility with plain CSS mixins.\n\nFor details, see https://sass-lang.com/d/css-function-mixin",
+                $this->scanner->spanFrom($beforeName)
+            );
+        }
+
         $this->whitespace();
         $arguments = $this->argumentDeclaration();
 
@@ -1386,8 +1403,6 @@ abstract class StylesheetParser extends Parser
         if ($this->scanner->scanChar('.')) {
             $namespace = $name;
             $name = $this->publicIdentifier();
-        } else {
-            $name = str_replace('_', '-', $name);
         }
 
         $this->whitespace();
@@ -1447,7 +1462,17 @@ abstract class StylesheetParser extends Parser
         $precedingComment = $this->lastSilentComment;
         $this->lastSilentComment = null;
 
-        $name = $this->identifier(true);
+        $beforeName = $this->scanner->getPosition();
+        $name = $this->identifier();
+
+        if (str_starts_with($name, '--')) {
+            $this->logger->warnForDeprecation(
+                Deprecation::cssFunctionMixin,
+                "Sass @mixin names beginning with -- are deprecated for forward-compatibility with plain CSS mixins.\n\nFor details, see https://sass-lang.com/d/css-function-mixin",
+                $this->scanner->spanFrom($beforeName)
+            );
+        }
+
         $this->whitespace();
 
         $arguments = $this->scanner->peekChar() === '(' ? $this->argumentDeclaration() : ArgumentDeclaration::createEmpty($this->scanner->getEmptySpan());
@@ -1630,7 +1655,7 @@ abstract class StylesheetParser extends Parser
         $value = null;
         $next = $this->scanner->peekChar();
         if ($next !== '!' && !$this->atEndOfStatement()) {
-            $value = $this->almostAnyValue();
+            $value = $this->interpolatedDeclarationValue(allowOpenBrace: false);
         }
 
         if ($this->lookingAtChildren()) {
@@ -1648,12 +1673,10 @@ abstract class StylesheetParser extends Parser
     /**
      * Throws an exception indicating that the at-rule starting at $start is
      * not allowed in the current context.
-     *
-     * @return never-return
      */
-    private function disallowedAtRule(int $start)
+    private function disallowedAtRule(int $start): never
     {
-        $this->almostAnyValue();
+        $this->interpolatedDeclarationValue(allowEmpty: true, allowOpenBrace: false);
         $this->error('This at-rule is not allowed here.', $this->scanner->spanFrom($start));
     }
 
@@ -3220,10 +3243,9 @@ WARNING;
      *
      * Differences from {@see interpolatedDeclarationValue} include:
      *
-     * - This does not balance brackets.
+     * - This always stops at curly braces.
      * - This does not interpret backslashes, since the text is expected to be
      *   re-parsed.
-     * - This supports Sass-style single-line comments.
      * - This does not compress adjacent whitespace characters.
      */
     protected function almostAnyValue(bool $omitComments = false): Interpolation
@@ -3247,14 +3269,25 @@ WARNING;
                     break;
 
                 case '/':
-                    $commentStart = $this->scanner->getPosition();
+                    switch ($this->scanner->peekChar(1)) {
+                        case '*':
+                            if (!$omitComments) {
+                                $buffer->write($this->rawText($this->loudComment(...)));
+                            } else {
+                                $this->loudComment();
+                            }
+                            break;
 
-                    if ($this->scanComment()) {
-                        if (!$omitComments) {
-                            $buffer->write($this->scanner->substring($commentStart));
-                        }
-                    } else {
-                        $buffer->write($this->scanner->readChar());
+                        case '/':
+                            if (!$omitComments) {
+                                $buffer->write($this->rawText($this->silentComment(...)));
+                            } else {
+                                $this->silentComment();
+                            }
+                            break;
+
+                        default:
+                            $buffer->write($this->scanner->readChar());
                     }
                     break;
 
@@ -3286,13 +3319,20 @@ WARNING;
                 case 'u':
                 case 'U':
                     $beforeUrl = $this->scanner->getPosition();
+                    $identifier = $this->identifier();
 
-                    if (!$this->scanIdentifier('url')) {
-                        $buffer->write($this->scanner->readChar());
-                        break;
+                    if (
+                        $identifier !== 'url'
+                        // This isn't actually a standard CSS feature, but it was
+                        // supported by the old `@document` rule, so we continue to support
+                        // it for backwards-compatibility.
+                        && $identifier !== 'url-prefix'
+                    ) {
+                        $buffer->write($identifier);
+                        continue 2;
                     }
 
-                    $contents = $this->tryUrlContents($beforeUrl);
+                    $contents = $this->tryUrlContents($beforeUrl, $identifier);
 
                     if ($contents === null) {
                         $this->scanner->setPosition($beforeUrl);
@@ -3330,9 +3370,15 @@ WARNING;
      *
      * If $allowColon is `false`, this stops at top-level colons.
      *
+     * If $allowOpenBrace is `false`, this stops at opening curly braces.
+     *
+     * If $silentComments is `true`, this will parse silent comments as
+     * comments. Otherwise, it will preserve two adjacent slashes and emit them
+     * to CSS.
+     *
      * Unlike {@see declarationValue}, this allows interpolation.
      */
-    private function interpolatedDeclarationValue(bool $allowEmpty = false, bool $allowSemicolon = false, bool $allowColon = true): Interpolation
+    private function interpolatedDeclarationValue(bool $allowEmpty = false, bool $allowSemicolon = false, bool $allowColon = true, bool $allowOpenBrace = true, bool $silentComments = true): Interpolation
     {
         $start = $this->scanner->getPosition();
         $buffer = new InterpolationBuffer();
@@ -3359,8 +3405,12 @@ WARNING;
                     break;
 
                 case '/':
-                    if ($this->scanner->peekChar(1) === '*') {
+                    $peekedChar = $this->scanner->peekChar(1);
+
+                    if ($peekedChar === '*') {
                         $buffer->write($this->rawText($this->loudComment(...)));
+                    } elseif ($peekedChar === '/' && $silentComments) {
+                        $this->silentComment();
                     } else {
                         $buffer->write($this->scanner->readChar());
                     }
@@ -3402,11 +3452,17 @@ WARNING;
                     $wroteNewline = true;
                     break;
 
-                case '(':
                 case '{':
+                    if (!$allowOpenBrace) {
+                        break 2;
+                    }
+
+                    // Fallthrough
+                case '(':
                 case '[':
-                    $buffer->write($next);
-                    $brackets[] = Character::opposite($this->scanner->readChar());
+                    $bracket = $this->scanner->readChar();
+                    $buffer->write($bracket);
+                    $brackets[] = Character::opposite($bracket);
                     $wroteNewline = false;
                     break;
 
@@ -3417,8 +3473,9 @@ WARNING;
                         break 2;
                     }
 
-                    $buffer->write($next);
-                    $this->scanner->expectChar(array_pop($brackets));
+                    $bracket = array_pop($brackets);
+                    $this->scanner->expectChar($bracket);
+                    $buffer->write($bracket);
                     $wroteNewline = false;
                     break;
 
@@ -3443,14 +3500,21 @@ WARNING;
                 case 'u':
                 case 'U':
                     $beforeUrl = $this->scanner->getPosition();
+                    $identifier = $this->identifier();
 
-                    if (!$this->scanIdentifier('url')) {
-                        $buffer->write($this->scanner->readChar());
+                    if (
+                        $identifier !== 'url'
+                        // This isn't actually a standard CSS feature, but it was
+                        // supported by the old `@document` rule, so we continue to support
+                        // it for backwards-compatibility.
+                        && $identifier !== 'url-prefix'
+                    ) {
+                        $buffer->write($identifier);
                         $wroteNewline = false;
-                        break;
+                        continue 2;
                     }
 
-                    $contents = $this->tryUrlContents($beforeUrl);
+                    $contents = $this->tryUrlContents($beforeUrl, $identifier);
 
                     if ($contents === null) {
                         $this->scanner->setPosition($beforeUrl);
@@ -4116,7 +4180,7 @@ WARNING;
     private function publicIdentifier(): string
     {
         $start = $this->scanner->getPosition();
-        $result = $this->identifier(true);
+        $result = $this->identifier();
         $this->assertPublic($result, fn() => $this->scanner->spanFrom($start));
 
         return $result;

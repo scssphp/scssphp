@@ -28,6 +28,8 @@ abstract class CallableDeclaration extends ParentStatement
 {
     private readonly string $name;
 
+    private readonly string $originalName;
+
     private readonly ArgumentDeclaration $arguments;
 
     private readonly ?SilentComment $comment;
@@ -37,9 +39,10 @@ abstract class CallableDeclaration extends ParentStatement
     /**
      * @param Statement[] $children
      */
-    public function __construct(string $name, ArgumentDeclaration $arguments, FileSpan $span, array $children, ?SilentComment $comment = null)
+    public function __construct(string $originalName, ArgumentDeclaration $arguments, FileSpan $span, array $children, ?SilentComment $comment = null)
     {
-        $this->name = $name;
+        $this->originalName = $originalName;
+        $this->name = str_replace('_', '-', $originalName);
         $this->arguments = $arguments;
         $this->comment = $comment;
         $this->span = $span;
@@ -52,6 +55,14 @@ abstract class CallableDeclaration extends ParentStatement
     final public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * The callable's original name, without underscores converted to hyphens.
+     */
+    public function getOriginalName(): string
+    {
+        return $this->originalName;
     }
 
     final public function getArguments(): ArgumentDeclaration

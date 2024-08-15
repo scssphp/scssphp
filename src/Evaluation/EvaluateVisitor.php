@@ -15,6 +15,7 @@ namespace ScssPhp\ScssPhp\Evaluation;
 use League\Uri\Uri;
 use ScssPhp\ScssPhp\Ast\AstNode;
 use ScssPhp\ScssPhp\Ast\Css\CssAtRule;
+use ScssPhp\ScssPhp\Ast\Css\CssKeyframeBlock;
 use ScssPhp\ScssPhp\Ast\Css\CssMediaQuery;
 use ScssPhp\ScssPhp\Ast\Css\CssMediaRule;
 use ScssPhp\ScssPhp\Ast\Css\CssNode;
@@ -947,6 +948,25 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             throw $this->exception('Declarations whose names begin with "--" may not be nested.', $node->getSpan());
         }
 
+        \assert($this->getParent()->getParent() !== null);
+        $sibling = ListUtil::last($this->getParent()->getParent()->getChildren());
+
+        if ($sibling !== $this->getParent()) {
+            $this->warn(
+                <<<'MESSAGE'
+                Sass's behavior for declarations that appear after nested
+                rules will be changing to match the behavior specified by CSS in an upcoming
+                version. To keep the existing behavior, move the declaration above the nested
+                rule. To opt into the new behavior, wrap the declaration in `& {}`.
+
+                More info: https://sass-lang.com/d/mixed-decls
+                MESSAGE,
+                // TODO use a MultiSpan
+                $node->getSpan(),
+                Deprecation::mixedDecls
+            );
+        }
+
         $name = $this->interpolationToValue($node->getName(), true);
 
         if ($this->declarationName !== null) {
@@ -1374,6 +1394,10 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             return $this->environment->getMixin($node->getName());
         });
 
+        if (str_starts_with($node->getOriginalName(), '--') && $mixin instanceof UserDefinedCallable && !str_starts_with($mixin->getDeclaration()->getOriginalName(), '--')) {
+            $this->warn("Sass @mixin names beginning with -- are deprecated for forward-compatibility with plain CSS mixins.\n\nFor details, see https://sass-lang.com/d/css-function-mixin", $node->getNameSpan(), Deprecation::cssFunctionMixin);
+        }
+
         $contentCallable = null;
         if ($node->getContent() !== null) {
             $contentCallable = new UserDefinedCallable($node->getContent(), $this->environment->closure(), $this->inDependency);
@@ -1543,6 +1567,10 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             throw $this->exception('Style rules may not be used within nested declarations.', $node->getSpan());
         }
 
+        if ($this->inKeyFrames && $this->getParent() instanceof CssKeyframeBlock) {
+            throw $this->exception('Style rules may not be used within keyframe blocks.', $node->getSpan());
+        }
+
         [$selectorText, $selectorMap] = $this->performInterpolationWithMap($node->getSelector(), true);
 
         if ($this->inKeyFrames) {
@@ -1601,8 +1629,20 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
         );
         $this->atRootExcludingStyleRule = $oldAtRootExcludingStyleRule;
 
+        $this->warnForBogusCombinators($rule);
+
+        if ($this->getStyleRule() === null && \count($this->getParent()->getChildren()) > 0) {
+            $lastChild = $this->getParent()->getChildren()[\count($this->getParent()->getChildren()) - 1];
+            $lastChild->setGroupEnd(true);
+        }
+
+        return null;
+    }
+
+    private function warnForBogusCombinators(CssStyleRule $rule): void
+    {
         if (!$rule->isInvisibleOtherThanBogusCombinators()) {
-            foreach ($parsedSelector->getComponents() as $complex) {
+            foreach ($rule->getSelector()->getComponents() as $complex) {
                 if (!$complex->isBogus()) {
                     continue;
                 }
@@ -1634,13 +1674,6 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
                 }
             }
         }
-
-        if ($this->getStyleRule() === null && \count($this->getParent()->getChildren()) > 0) {
-            $lastChild = $this->getParent()->getChildren()[\count($this->getParent()->getChildren()) - 1];
-            $lastChild->setGroupEnd(true);
-        }
-
-        return null;
     }
 
     public function visitSupportsRule(SupportsRule $node): ?Value
@@ -2059,6 +2092,10 @@ WARNING;
             }
 
             $function = $this->getStylesheet()->isPlainCss() ? null : $this->getBuiltinFunction($node->getName()) ?? new PlainCssCallable($node->getOriginalName());
+        }
+
+        if (str_starts_with($node->getOriginalName(), '--') && $function instanceof UserDefinedCallable && !str_starts_with($function->getDeclaration()->getOriginalName(), '--')) {
+            $this->warn("Sass @function names beginning with -- are deprecated for forward-compatibility with plain CSS functions.\n\nFor details, see https://sass-lang.com/d/css-function-mixin", $node->getNameSpan(), Deprecation::cssFunctionMixin);
         }
 
         $oldInFunction = $this->inFunction;

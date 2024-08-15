@@ -165,6 +165,6 @@ abstract class Importer implements \Stringable
      */
     final protected function getContainingUrl(): ?UriInterface
     {
-        return ImportContext::getContainingUrl();
+        return ImportContext::getCanonicalizeContext()->getContainingUrl();
     }
 }

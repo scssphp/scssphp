@@ -68,6 +68,20 @@ abstract class SimpleSelector extends Selector
     }
 
     /**
+     * Whether this requires complex non-local reasoning to determine whether
+     * it's a super- or sub-selector.
+     *
+     * This includes both pseudo-elements and pseudo-selectors that take
+     * selectors as arguments.
+     *
+     * @internal
+     */
+    public function hasComplicatedSuperselectorSemantics(): bool
+    {
+        return false;
+    }
+
+    /**
      * Returns a new {@see SimpleSelector} based on $this, as though it had been
      * written with $suffix at the end.
      *

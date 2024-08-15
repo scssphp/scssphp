@@ -21,27 +21,27 @@ namespace ScssPhp\ScssPhp;
 enum Deprecation: string
 {
     /**
-     * Deprecation for passing a string to `call` instead of `get-function`.
+     * Deprecation for passing a string directly to meta.call().
      */
     case callString = 'call-string';
 
     /**
-     * Deprecation for `@elseif`.
+     * Deprecation for @elseif.
      */
     case elseif = 'elseif';
 
     /**
-     * Deprecation for parsing `@-moz-document`.
+     * Deprecation for @-moz-document.
      */
     case mozDocument = 'moz-document';
 
     /**
-     * Deprecation for declaring new variables with `!global`.
+     * Deprecation for declaring new variables with !global.
      */
     case newGlobal = 'new-global';
 
     /**
-     * Deprecation for treating `/` as division.
+     * Deprecation for / operator for division.
      */
     case slashDiv = 'slash-div';
 
@@ -51,21 +51,34 @@ enum Deprecation: string
     case bogusCombinators = 'bogus-combinators';
 
     /**
-     * Deprecation for ambiguous `+` and `-` operators.
+     * Deprecation for ambiguous + and - operators.
      */
     case strictUnary = 'strict-unary';
 
     /**
-     * Deprecation for passing invalid units to certain built-in functions.
+     * Deprecation for passing invalid units to built-in functions.
      */
     case functionUnits = 'function-units';
+
+    /**
+     * Deprecation for using !default or !global multiple times for one variable.
+     */
+    case duplicateVarFlags = 'duplicate-var-flags';
 
     /**
      * Deprecation for passing percentages to the Sass abs() function.
      */
     case absPercent = 'abs-percent';
 
-    case duplicateVariableFlags = 'duplicate-var-flags';
+    /**
+     * Deprecation for function and mixin names beginning with --.
+     */
+    case cssFunctionMixin = 'css-function-mixin';
+
+    /**
+     * Deprecation for declarations after or between nested rules.
+     */
+    case mixedDecls = 'mixed-decls';
 
     /**
      * Used for deprecations coming from user-authored code.
@@ -83,8 +96,10 @@ enum Deprecation: string
             self::bogusCombinators => 'Leading, trailing, and repeated combinators.',
             self::strictUnary => 'Ambiguous + and - operators.',
             self::functionUnits => 'Passing invalid units to built-in functions.',
+            self::duplicateVarFlags => 'Using !default or !global multiple times for one variable.',
             self::absPercent => 'Passing percentages to the Sass abs() function.',
-            self::duplicateVariableFlags => 'Using !default or !global multiple times for one variable.',
+            self::cssFunctionMixin => 'Function and mixin names beginning with --.',
+            self::mixedDecls => 'Declarations after or between nested rules.',
             self::userAuthored => null,
         };
     }
@@ -103,8 +118,10 @@ enum Deprecation: string
             self::bogusCombinators => '2.0.0',
             self::strictUnary => '2.0.0',
             self::functionUnits => '2.0.0',
+            self::duplicateVarFlags => '2.0.0',
             self::absPercent => '2.0.0',
-            self::duplicateVariableFlags => '2.0.0',
+            self::cssFunctionMixin => '2.0.0',
+            self::mixedDecls => '2.0.0',
             self::userAuthored => null,
         };
     }
