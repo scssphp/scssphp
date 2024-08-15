@@ -65,6 +65,8 @@ enum Deprecation: string
      */
     case absPercent = 'abs-percent';
 
+    case cssFunctionMixin = 'css-function-mixin';
+
     case duplicateVariableFlags = 'duplicate-var-flags';
 
     /**
@@ -84,6 +86,7 @@ enum Deprecation: string
             self::strictUnary => 'Ambiguous + and - operators.',
             self::functionUnits => 'Passing invalid units to built-in functions.',
             self::absPercent => 'Passing percentages to the Sass abs() function.',
+            self::cssFunctionMixin => 'Function and mixin names beginning with --.',
             self::duplicateVariableFlags => 'Using !default or !global multiple times for one variable.',
             self::userAuthored => null,
         };
@@ -104,6 +107,7 @@ enum Deprecation: string
             self::strictUnary => '2.0.0',
             self::functionUnits => '2.0.0',
             self::absPercent => '2.0.0',
+            self::cssFunctionMixin => '2.0.0',
             self::duplicateVariableFlags => '2.0.0',
             self::userAuthored => null,
         };

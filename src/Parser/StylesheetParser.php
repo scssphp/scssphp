@@ -1018,7 +1018,17 @@ abstract class StylesheetParser extends Parser
         $precedingComment = $this->lastSilentComment;
         $this->lastSilentComment = null;
 
+        $beforeName = $this->scanner->getPosition();
         $name = $this->identifier(true);
+
+        if (str_starts_with($name, '--')) {
+            $this->logger->warnForDeprecation(
+                Deprecation::cssFunctionMixin,
+                "Sass @function names beginning with -- are deprecated for forward-compatibility with plain CSS mixins.\n\nFor details, see https://sass-lang.com/d/css-function-mixin",
+                $this->scanner->spanFrom($beforeName)
+            );
+        }
+
         $this->whitespace();
         $arguments = $this->argumentDeclaration();
 
@@ -1447,7 +1457,17 @@ abstract class StylesheetParser extends Parser
         $precedingComment = $this->lastSilentComment;
         $this->lastSilentComment = null;
 
+        $beforeName = $this->scanner->getPosition();
         $name = $this->identifier(true);
+
+        if (str_starts_with($name, '--')) {
+            $this->logger->warnForDeprecation(
+                Deprecation::cssFunctionMixin,
+                "Sass @mixin names beginning with -- are deprecated for forward-compatibility with plain CSS mixins.\n\nFor details, see https://sass-lang.com/d/css-function-mixin",
+                $this->scanner->spanFrom($beforeName)
+            );
+        }
+
         $this->whitespace();
 
         $arguments = $this->scanner->peekChar() === '(' ? $this->argumentDeclaration() : ArgumentDeclaration::createEmpty($this->scanner->getEmptySpan());
