@@ -29,8 +29,8 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-json": "*",
-        "league/uri": "^7.4@dev",
-        "league/uri-interfaces": "^7.3",
+        "league/uri": "^7.4",
+        "league/uri-interfaces": "^7.4",
         "symfony/filesystem": "^5.4 || ^6.0 || ^7.0"
     },
     "suggest": {
