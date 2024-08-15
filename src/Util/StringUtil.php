@@ -50,6 +50,20 @@ final class StringUtil
         return $name . 's';
     }
 
+    public static function trimAscii(string $string, bool $excludeEscape = false): string
+    {
+        $start = self::firstNonWhitespace($string);
+
+        if ($start === null) {
+            return '';
+        }
+
+        $end = self::lastNonWhitespace($string, $excludeEscape);
+        assert($end !== null);
+
+        return substr($string, $start, $end + 1);
+    }
+
     public static function trimAsciiRight(string $string, bool $excludeEscape = false): string
     {
         $end = self::lastNonWhitespace($string, $excludeEscape);
@@ -59,6 +73,26 @@ final class StringUtil
         }
 
         return substr($string, 0, $end + 1);
+    }
+
+    /**
+     * Returns the index of the first character in $string that's not ASCII
+     * whitespace, or `null` if $string is entirely spaces.
+     *
+     * If $excludeEscape is `true`, this doesn't move past whitespace that's
+     * included in a CSS escape.
+     */
+    private static function firstNonWhitespace(string $string): ?int
+    {
+        for ($i = 0; $i < \strlen($string); $i++) {
+            $char = $string[$i];
+
+            if (!Character::isWhitespace($char)) {
+                return $i;
+            }
+        }
+
+        return null;
     }
 
     /**
