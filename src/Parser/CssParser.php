@@ -63,39 +63,33 @@ final class CssParser extends ScssParser
         $name = $this->interpolatedIdentifier();
         $this->whitespace();
 
-        switch ($name->getAsPlain()) {
-            case 'at-root':
-            case 'content':
-            case 'debug':
-            case 'each':
-            case 'error':
-            case 'extend':
-            case 'for':
-            case 'function':
-            case 'if':
-            case 'include':
-            case 'mixin':
-            case 'return':
-            case 'warn':
-            case 'while':
-                $this->almostAnyValue();
-                $this->error("This at-rule isn't allowed in plain CSS.", $this->scanner->spanFrom($start));
+        return match ($name->getAsPlain()) {
+            'at-root',
+            'content',
+            'debug',
+            'each',
+            'error',
+            'extend',
+            'for',
+            'function',
+            'if',
+            'include',
+            'mixin',
+            'return',
+            'warn',
+            'while' => $this->forbiddenAtRule($start),
+            'import' => $this->cssImportRule($start),
+            'media' => $this->mediaRule($start),
+            '-moz-document' => $this->mozDocumentRule($start, $name),
+            'supports' => $this->supportsRule($start),
+            default => $this->unknownAtRule($start, $name),
+        };
+    }
 
-            case 'import':
-                return $this->cssImportRule($start);
-
-            case 'media':
-                return $this->mediaRule($start);
-
-            case '-moz-document':
-                return $this->mozDocumentRule($start, $name);
-
-            case 'supports':
-                return $this->supportsRule($start);
-
-            default:
-                return $this->unknownAtRule($start, $name);
-        }
+    private function forbiddenAtRule(int $start): never
+    {
+        $this->almostAnyValue();
+        $this->error("This at-rule isn't allowed in plain CSS.", $this->scanner->spanFrom($start));
     }
 
     private function cssImportRule(int $start): ImportRule
@@ -115,7 +109,7 @@ final class CssParser extends ScssParser
         $this->expectStatementSeparator('@import rule');
 
         return new ImportRule([
-            new StaticImport(new Interpolation([$url], $urlSpan), $this->scanner->spanFrom($start), $modifiers)
+            new StaticImport(new Interpolation([$url], $urlSpan), $this->scanner->spanFrom($start), $modifiers),
         ], $this->scanner->spanFrom($start));
     }
 

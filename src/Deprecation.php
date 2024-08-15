@@ -76,6 +76,11 @@ enum Deprecation: string
     case cssFunctionMixin = 'css-function-mixin';
 
     /**
+     * Deprecation for declarations after or between nested rules.
+     */
+    case mixedDecls = 'mixed-decls';
+
+    /**
      * Used for deprecations coming from user-authored code.
      */
     case userAuthored = 'user-authored';
@@ -94,6 +99,7 @@ enum Deprecation: string
             self::duplicateVarFlags => 'Using !default or !global multiple times for one variable.',
             self::absPercent => 'Passing percentages to the Sass abs() function.',
             self::cssFunctionMixin => 'Function and mixin names beginning with --.',
+            self::mixedDecls => 'Declarations after or between nested rules.',
             self::userAuthored => null,
         };
     }
@@ -115,6 +121,7 @@ enum Deprecation: string
             self::duplicateVarFlags => '2.0.0',
             self::absPercent => '2.0.0',
             self::cssFunctionMixin => '2.0.0',
+            self::mixedDecls => '2.0.0',
             self::userAuthored => null,
         };
     }

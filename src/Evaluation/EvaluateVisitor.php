@@ -948,6 +948,25 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             throw $this->exception('Declarations whose names begin with "--" may not be nested.', $node->getSpan());
         }
 
+        \assert($this->getParent()->getParent() !== null);
+        $sibling = ListUtil::last($this->getParent()->getParent()->getChildren());
+
+        if ($sibling !== $this->getParent()) {
+            $this->warn(
+                <<<'MESSAGE'
+                Sass's behavior for declarations that appear after nested
+                rules will be changing to match the behavior specified by CSS in an upcoming
+                version. To keep the existing behavior, move the declaration above the nested
+                rule. To opt into the new behavior, wrap the declaration in `& {}`.
+
+                More info: https://sass-lang.com/d/mixed-decls
+                MESSAGE,
+                // TODO use a MultiSpan
+                $node->getSpan(),
+                Deprecation::mixedDecls
+            );
+        }
+
         $name = $this->interpolationToValue($node->getName(), true);
 
         if ($this->declarationName !== null) {
@@ -1610,8 +1629,20 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
         );
         $this->atRootExcludingStyleRule = $oldAtRootExcludingStyleRule;
 
+        $this->warnForBogusCombinators($rule);
+
+        if ($this->getStyleRule() === null && \count($this->getParent()->getChildren()) > 0) {
+            $lastChild = $this->getParent()->getChildren()[\count($this->getParent()->getChildren()) - 1];
+            $lastChild->setGroupEnd(true);
+        }
+
+        return null;
+    }
+
+    private function warnForBogusCombinators(CssStyleRule $rule): void
+    {
         if (!$rule->isInvisibleOtherThanBogusCombinators()) {
-            foreach ($parsedSelector->getComponents() as $complex) {
+            foreach ($rule->getSelector()->getComponents() as $complex) {
                 if (!$complex->isBogus()) {
                     continue;
                 }
@@ -1643,13 +1674,6 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
                 }
             }
         }
-
-        if ($this->getStyleRule() === null && \count($this->getParent()->getChildren()) > 0) {
-            $lastChild = $this->getParent()->getChildren()[\count($this->getParent()->getChildren()) - 1];
-            $lastChild->setGroupEnd(true);
-        }
-
-        return null;
     }
 
     public function visitSupportsRule(SupportsRule $node): ?Value
