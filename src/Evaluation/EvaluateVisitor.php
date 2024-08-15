@@ -1753,6 +1753,8 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
      *
      * @param callable(): T $callback
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function withSupportsDeclaration(callable $callback)
     {
@@ -2452,6 +2454,8 @@ WARNING;
      * @param callable(): V $run
      *
      * @return V
+     *
+     * @param-immediately-invoked-callable $run
      */
     private function runUserDefinedCallable(ArgumentInvocation $arguments, UserDefinedCallable $callable, AstNode $nodeWithSpan, callable $run): ?Value
     {
@@ -2823,6 +2827,8 @@ WARNING;
      * @param callable(Value): T $convert
      *
      * @return void
+     *
+     * @param-immediately-invoked-callable $convert
      */
     private function addRestMap(array &$values, SassMap $map, AstNode $nodeWithSpan, callable $convert): void
     {
@@ -2902,6 +2908,8 @@ WARNING;
      * @param callable(T): ?Value $callback
      *
      * @return Value|null
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function handleReturn(array $list, callable $callback): ?Value
     {
@@ -2925,6 +2933,8 @@ WARNING;
      * @param callable(): T $callback
      *
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function withEnvironment(Environment $environment, callable $callback)
     {
@@ -3055,6 +3065,8 @@ WARNING;
      * @param callable(): T          $callback
      *
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function withStyleRule(ModifiableCssStyleRule $rule, callable $callback)
     {
@@ -3080,6 +3092,8 @@ WARNING;
      * @param callable(): T            $callback
      *
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function withMediaQueries(?array $queries, ?array $sources, callable $callback)
     {
@@ -3131,6 +3145,9 @@ WARNING;
      * @param bool                         $scopeWhen
      *
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
+     * @param-immediately-invoked-callable $through
      */
     private function withParent(ModifiableCssParentNode $node, callable $callback, ?callable $through = null, bool $scopeWhen = true)
     {
@@ -3152,6 +3169,8 @@ WARNING;
      * lattermost child of its parent.
      *
      * @param null|callable(CssNode): bool $through
+     *
+     * @param-immediately-invoked-callable $through
      */
     private function addChild(ModifiableCssNode $node, ?callable $through = null): void
     {
@@ -3204,6 +3223,8 @@ WARNING;
      * @param callable(): T $callback
      *
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function withStackFrame(string $member, AstNode $nodeWithSpan, callable $callback)
     {
@@ -3331,6 +3352,8 @@ WARNING;
      * @return T
      *
      * @throws SassRuntimeException
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function addExceptionSpan(AstNode $nodeWithSpan, callable $callback, bool $addStackFrame = true)
     {
@@ -3352,6 +3375,8 @@ WARNING;
      *
      * @param callable(): T $callback
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function addExceptionTrace(callable $callback)
     {
@@ -3376,6 +3401,8 @@ WARNING;
      * @param callable(): T $callback
      *
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function addErrorSpan(AstNode $nodeWithSpan, callable $callback)
     {

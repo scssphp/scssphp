@@ -1095,6 +1095,8 @@ class ConcreteExtensionStore implements ExtensionStore
      * @param iterable<E> $elements
      * @param callable(E): iterable<T> $callback
      * @return \Traversable<T>
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private static function expandIterable(iterable $elements, callable $callback): \Traversable
     {
@@ -1113,6 +1115,8 @@ class ConcreteExtensionStore implements ExtensionStore
      * @param list<ComplexSelector> $selectors
      * @param callable(ComplexSelector): bool $isOriginal
      * @return list<ComplexSelector>
+     *
+     * @param-immediately-invoked-callable $isOriginal
      */
     private function trim(array $selectors, callable $isOriginal): array
     {

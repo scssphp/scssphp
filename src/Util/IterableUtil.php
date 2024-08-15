@@ -22,6 +22,8 @@ final class IterableUtil
      *
      * @param iterable<T>       $list
      * @param callable(T): bool $callback
+     *
+     * @param-immediately-invoked-callable $callback
      */
     public static function any(iterable $list, callable $callback): bool
     {
@@ -39,6 +41,8 @@ final class IterableUtil
      *
      * @param iterable<T>       $list
      * @param callable(T): bool $callback
+     *
+     * @param-immediately-invoked-callable $callback
      */
     public static function every(iterable $list, callable $callback): bool
     {
@@ -76,6 +80,8 @@ final class IterableUtil
      * @param callable(E): (T|null) $callback
      *
      * @return T|null
+     *
+     * @param-immediately-invoked-callable $callback
      */
     public static function search(iterable $iterable, callable $callback)
     {

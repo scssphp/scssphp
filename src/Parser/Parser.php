@@ -614,6 +614,8 @@ class Parser
     /**
      * @param callable(string): bool $condition
      *
+     * @param-immediately-invoked-callable $condition
+     *
      * @phpstan-impure
      */
     protected function scanCharIf(callable $condition): bool
@@ -872,6 +874,8 @@ class Parser
      * Runs $consumer and returns the source text that it consumes.
      *
      * @param callable(): (mixed|void) $consumer
+     *
+     * @param-immediately-invoked-callable $consumer
      */
     protected function rawText(callable $consumer): string
     {
@@ -922,6 +926,8 @@ class Parser
      * @template T
      * @param callable(): T $callback
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      *
      * @throws SassFormatException
      */

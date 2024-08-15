@@ -35,6 +35,8 @@ interface ExtensionStore
     /**
      * @param callable(SimpleSelector): bool $callback
      * @return iterable<Extension>
+     *
+     * @param-immediately-invoked-callable $callback
      */
     public function extensionsWhereTarget(callable $callback): iterable;
 

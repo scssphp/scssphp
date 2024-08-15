@@ -45,6 +45,8 @@ abstract class EvaluationContext
      * @param callable(): T $callback
      *
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     public static function withEvaluationContext(EvaluationContext $context, callable $callback)
     {

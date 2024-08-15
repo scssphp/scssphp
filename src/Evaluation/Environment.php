@@ -449,6 +449,8 @@ final class Environment
      * Sets $content as {@see content} for the duration of $callback.
      *
      * @param callable(): void $callback
+     *
+     * @param-immediately-invoked-callable $callback
      */
     public function withContent(?UserDefinedCallable $content, callable $callback): void
     {
@@ -462,6 +464,8 @@ final class Environment
      * Sets {@see inMixin} to `true` for the duration of $callback.
      *
      * @param callable(): void $callback
+     *
+     * @param-immediately-invoked-callable $callback
      */
     public function asMixin(callable $callback): void
     {
@@ -486,6 +490,8 @@ final class Environment
      * @param callable(): T $callback
      *
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     public function scope(callable $callback, bool $when = true, bool $semiGlobal = false)
     {
