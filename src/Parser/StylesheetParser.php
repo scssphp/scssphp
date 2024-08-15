@@ -916,9 +916,15 @@ abstract class StylesheetParser extends Parser
             $this->error('@content is only allowed within mixin declarations.', $this->scanner->spanFrom($start));
         }
 
+        $beforeWhitespace = $this->scanner->getLocation();
         $this->whitespace();
 
-        $arguments = $this->scanner->peekChar() === '(' ? $this->argumentInvocation(true) : ArgumentInvocation::createEmpty($this->scanner->getEmptySpan());
+        if ($this->scanner->peekChar() === '(') {
+            $arguments = $this->argumentInvocation(true);
+            $this->whitespace();
+        } else {
+            $arguments = ArgumentInvocation::createEmpty($beforeWhitespace->pointSpan());
+        }
 
         $this->expectStatementSeparator('@content rule');
 
@@ -1001,6 +1007,7 @@ abstract class StylesheetParser extends Parser
 
         if ($optional) {
             $this->expectIdentifier('optional');
+            $this->whitespace();
         }
 
         $this->expectStatementSeparator('@extend rule');
