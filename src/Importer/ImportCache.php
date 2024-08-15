@@ -38,18 +38,25 @@ final class ImportCache
      * The `forImport` in each key is true when this canonicalization is for an
      * `@import` rule. Otherwise, it's for a `@use` or `@forward` rule.
      *
-     * This cache isn't used for relative imports, because they depend on the
-     * specific base importer. That's stored separately in
-     * {@see $relativeCanonicalizeCache}.
+     * This cache covers loads that go through the entire chain of {@see $importers},
+     * but it doesn't cover individual loads or loads in which any importer
+     * accesses `containingUrl`. See also {@see $perImporterCanonicalizeCache}.
      *
      * @var array<string, array<0|1, CanonicalizeResult|SpecialCacheValue>>
      */
     private array $canonicalizeCache = [];
 
     /**
-     * @var array<string, array<0|1, array<string, \SplObjectStorage<Importer, CanonicalizeResult|SpecialCacheValue>>>>
+     * Like {@see $canonicalizeCache} but also includes the specific importer in the
+     * key.
+     *
+     * This is used to cache both relative imports from the base importer and
+     * individual importer results in the case where some other component of the
+     * importer chain isn't cacheable.
+     *
+     * @var \SplObjectStorage<Importer, array<string, array<0|1, CanonicalizeResult|SpecialCacheValue>>>
      */
-    private array $relativeCanonicalizeCache = [];
+    private \SplObjectStorage $perImporterCanonicalizeCache;
 
     /**
      * The parsed stylesheets for each canonicalized import URL.
@@ -72,6 +79,7 @@ final class ImportCache
     {
         $this->importers = $importers;
         $this->logger = $logger;
+        $this->perImporterCanonicalizeCache = new \SplObjectStorage();
     }
 
     public function canonicalize(UriInterface $url, ?Importer $baseImporter = null, ?UriInterface $baseUrl = null, bool $forImport = false): ?CanonicalizeResult
@@ -80,21 +88,84 @@ final class ImportCache
         $forImportCacheKey = (int) $forImport;
 
         if ($baseImporter !== null && $url->getScheme() === null) {
-            $baseUrlCacheKey = (string) $baseUrl;
+            $resolvedUrl = self::resolveUri($baseUrl, $url);
+            $resolvedUrlCacheKey = (string) $resolvedUrl;
 
-            $this->relativeCanonicalizeCache[$urlCacheKey][$forImportCacheKey][$baseUrlCacheKey] ??= self::createStorage();
+            if (!isset($this->perImporterCanonicalizeCache[$baseImporter][$resolvedUrlCacheKey][$forImportCacheKey])) {
+                [$result, $cacheable] = $this->doCanonicalize($baseImporter, $resolvedUrl, $baseUrl, $forImport);
+                \assert($cacheable, 'Relative loads should always be cacheable because they never provide access to the containing URL.');
 
-            $relativeResult = $this->relativeCanonicalizeCache[$urlCacheKey][$forImportCacheKey][$baseUrlCacheKey][$baseImporter] ??= $this->doCanonicalize($baseImporter, self::resolveUri($baseUrl, $url), $baseUrl, $forImport) ?? SpecialCacheValue::null;
+                $this->perImporterCanonicalizeCache[$baseImporter][$resolvedUrlCacheKey][$forImportCacheKey] = $result ?? SpecialCacheValue::null;
+            }
+
+            $relativeResult = $this->perImporterCanonicalizeCache[$baseImporter][$resolvedUrlCacheKey][$forImportCacheKey];
 
             if ($relativeResult !== SpecialCacheValue::null) {
                 return $relativeResult;
             }
         }
 
-        $cacheResult = $this->canonicalizeCache[$urlCacheKey][$forImportCacheKey] ??= $this->doCanonicalizeWithImporters($url, $baseUrl, $forImport) ?? SpecialCacheValue::null;
+        if (isset($this->canonicalizeCache[$urlCacheKey][$forImportCacheKey])) {
+            $cacheResult = $this->canonicalizeCache[$urlCacheKey][$forImportCacheKey];
 
-        if ($cacheResult !== SpecialCacheValue::null) {
-            return $cacheResult;
+            if ($cacheResult !== SpecialCacheValue::null) {
+                return $cacheResult;
+            }
+
+            return null;
+        }
+
+        // Each individual call to a `canonicalize()` override may not be cacheable
+        // (specifically, if it has access to `containingUrl` it's too
+        // context-sensitive to usefully cache). We want to cache a given URL across
+        // the _entire_ importer chain, so we use $cacheable to track whether _all_
+        // `canonicalize()` calls we've attempted are cacheable. Only if they are, do
+        // we store the result in the cache.
+        $cacheable = true;
+        foreach ($this->importers as $i => $importer) {
+            if (isset($this->perImporterCanonicalizeCache[$importer][$urlCacheKey][$forImportCacheKey])) {
+                $result = $this->perImporterCanonicalizeCache[$importer][$urlCacheKey][$forImportCacheKey];
+
+                if ($result !== SpecialCacheValue::null) {
+                    return $result;
+                }
+
+                continue;
+            }
+
+            [$result, $importerCacheable] = $this->doCanonicalize($importer, $url, $baseUrl, $forImport);
+
+            if ($result !== null && $importerCacheable && $cacheable) {
+                $this->canonicalizeCache[$urlCacheKey][$forImportCacheKey] = $result;
+
+                return $result;
+            }
+            if ($importerCacheable && !$cacheable) {
+                $this->perImporterCanonicalizeCache[$importer][$urlCacheKey][$forImportCacheKey] = $result ?? SpecialCacheValue::null;
+
+                if ($result !== null) {
+                    return $result;
+                }
+            }
+            if (!$importerCacheable) {
+                if ($cacheable) {
+                    // If this is the first uncacheable result, add all previous results
+                    // to the per-importer cache so we don't have to re-run them for
+                    // future uses of this importer.
+                    for ($j = 0; $j < $i; ++$j) {
+                        $this->perImporterCanonicalizeCache[$this->importers[$j]][$urlCacheKey][$forImportCacheKey] = SpecialCacheValue::null;
+                    }
+                    $cacheable = false;
+                }
+
+                if ($result !== null) {
+                    return $result;
+                }
+            }
+        }
+
+        if ($cacheable) {
+            $this->canonicalizeCache[$urlCacheKey][$forImportCacheKey] = SpecialCacheValue::null;
         }
 
         return null;
@@ -110,46 +181,29 @@ final class ImportCache
     }
 
     /**
-     * Creates a new storage for the importer-level cache
+     * Calls {@see Importer::canonicalize} and prints a deprecation warning if it
+     * returns a relative URL.
      *
-     * This is in a dedicated method because phpstan cannot infer the generic types from the constructor.
+     * This returns both the result of the call to `canonicalize()` and whether
+     * that result is cacheable at all.
      *
-     * @return \SplObjectStorage<Importer, CanonicalizeResult|SpecialCacheValue>
+     * @return array{CanonicalizeResult|null, bool}
      */
-    private static function createStorage(): \SplObjectStorage
+    private function doCanonicalize(Importer $importer, UriInterface $url, ?UriInterface $baseUrl, bool $forImport): array
     {
-        /** @var \SplObjectStorage<Importer, CanonicalizeResult|SpecialCacheValue> $storage */
-        $storage = new \SplObjectStorage();
-        return $storage;
-    }
-
-    private function doCanonicalizeWithImporters(UriInterface $url, ?UriInterface $baseUrl, bool $forImport): ?CanonicalizeResult
-    {
-        foreach ($this->importers as $importer) {
-            $result = $this->doCanonicalize($importer, $url, $baseUrl, $forImport);
-
-            if ($result !== null) {
-                return $result;
-            }
-        }
-
-        return null;
-    }
-
-    private function doCanonicalize(Importer $importer, UriInterface $url, ?UriInterface $baseUrl, bool $forImport): ?CanonicalizeResult
-    {
-        $canonicalize = $forImport
-            ? fn () => ImportContext::inImportRule(fn () => $importer->canonicalize($url))
-            : fn () => $importer->canonicalize($url);
-
         $passContainingUrl = $baseUrl !== null && ($url->getScheme() === null || $importer->isNonCanonicalScheme($url->getScheme()));
-        $result = ImportContext::withContainingUrl($passContainingUrl ? $baseUrl : null, $canonicalize);
+        $canonicalizeContext = new CanonicalizeContext($passContainingUrl ? $baseUrl : null, $forImport);
+
+        $result = ImportContext::withCanonicalizeContext($canonicalizeContext, fn () => $importer->canonicalize($url));
+
+        $cacheable = !$passContainingUrl || !$canonicalizeContext->wasContainingUrlAccessed();
 
         if ($result === null) {
-            return null;
+            return [null, $cacheable];
         }
 
         if ($result->getScheme() === null) {
+            // dart-sass triggers a deprecation here. As we never supported the old behavior, we forbid it directly.
             throw new \UnexpectedValueException("Importer $importer canonicalized $url to $result but canonical URLs must be absolute.");
         }
 
@@ -157,7 +211,7 @@ final class ImportCache
             throw new \UnexpectedValueException("Importer $importer canonicalized $url to $result, which uses a scheme declared as non-canonical.");
         }
 
-        return new CanonicalizeResult($importer, $result, $url);
+        return [new CanonicalizeResult($importer, $result, $url), $cacheable];
     }
 
     /**
