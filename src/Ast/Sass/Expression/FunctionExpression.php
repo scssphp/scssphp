@@ -31,6 +31,14 @@ use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
 final class FunctionExpression implements Expression, CallableInvocation, SassReference
 {
     /**
+     * The name of the function being invoked, with underscores converted to
+     * hyphens.
+     *
+     * If this function is a plain CSS function, use {@see $originalName} instead.
+     */
+    private readonly string $name;
+
+    /**
      * The name of the function being invoked, with underscores left as-is.
      */
     private readonly string $originalName;
@@ -54,6 +62,7 @@ final class FunctionExpression implements Expression, CallableInvocation, SassRe
         $this->originalName = $originalName;
         $this->arguments = $arguments;
         $this->namespace = $namespace;
+        $this->name = str_replace('_', '-', $this->originalName);
     }
 
     public function getOriginalName(): string
@@ -69,7 +78,7 @@ final class FunctionExpression implements Expression, CallableInvocation, SassRe
      */
     public function getName(): string
     {
-        return str_replace('_', '-', $this->originalName);
+        return $this->name;
     }
 
     public function getArguments(): ArgumentInvocation

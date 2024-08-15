@@ -1019,7 +1019,7 @@ abstract class StylesheetParser extends Parser
         $this->lastSilentComment = null;
 
         $beforeName = $this->scanner->getPosition();
-        $name = $this->identifier(true);
+        $name = $this->identifier();
 
         if (str_starts_with($name, '--')) {
             $this->logger->warnForDeprecation(
@@ -1396,8 +1396,6 @@ abstract class StylesheetParser extends Parser
         if ($this->scanner->scanChar('.')) {
             $namespace = $name;
             $name = $this->publicIdentifier();
-        } else {
-            $name = str_replace('_', '-', $name);
         }
 
         $this->whitespace();
@@ -1458,7 +1456,7 @@ abstract class StylesheetParser extends Parser
         $this->lastSilentComment = null;
 
         $beforeName = $this->scanner->getPosition();
-        $name = $this->identifier(true);
+        $name = $this->identifier();
 
         if (str_starts_with($name, '--')) {
             $this->logger->warnForDeprecation(
@@ -4136,7 +4134,7 @@ WARNING;
     private function publicIdentifier(): string
     {
         $start = $this->scanner->getPosition();
-        $result = $this->identifier(true);
+        $result = $this->identifier();
         $this->assertPublic($result, fn() => $this->scanner->spanFrom($start));
 
         return $result;

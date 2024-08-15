@@ -31,15 +31,18 @@ final class IncludeRule implements Statement, CallableInvocation, SassReference
 
     private readonly string $name;
 
+    private readonly string $originalName;
+
     private readonly ArgumentInvocation $arguments;
 
     private readonly ?ContentBlock $content;
 
     private readonly FileSpan $span;
 
-    public function __construct(string $name, ArgumentInvocation $arguments, FileSpan $span, ?string $namespace = null, ?ContentBlock $content = null)
+    public function __construct(string $originalName, ArgumentInvocation $arguments, FileSpan $span, ?string $namespace = null, ?ContentBlock $content = null)
     {
-        $this->name = $name;
+        $this->originalName = $originalName;
+        $this->name = str_replace('_', '-', $originalName);
         $this->arguments = $arguments;
         $this->span = $span;
         $this->namespace = $namespace;
@@ -54,6 +57,15 @@ final class IncludeRule implements Statement, CallableInvocation, SassReference
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * The original name of the mixin being invoked, without underscores
+     * converted to hyphens.
+     */
+    public function getOriginalName(): string
+    {
+        return $this->originalName;
     }
 
     public function getArguments(): ArgumentInvocation

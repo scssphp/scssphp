@@ -1375,6 +1375,10 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             return $this->environment->getMixin($node->getName());
         });
 
+        if (str_starts_with($node->getOriginalName(), '--') && $mixin instanceof UserDefinedCallable && !str_starts_with($mixin->getDeclaration()->getOriginalName(), '--')) {
+            $this->warn("Sass @mixin names beginning with -- are deprecated for forward-compatibility with plain CSS mixins.\n\nFor details, see https://sass-lang.com/d/css-function-mixin", $node->getNameSpan(), Deprecation::cssFunctionMixin);
+        }
+
         $contentCallable = null;
         if ($node->getContent() !== null) {
             $contentCallable = new UserDefinedCallable($node->getContent(), $this->environment->closure(), $this->inDependency);
@@ -2064,6 +2068,10 @@ WARNING;
             }
 
             $function = $this->getStylesheet()->isPlainCss() ? null : $this->getBuiltinFunction($node->getName()) ?? new PlainCssCallable($node->getOriginalName());
+        }
+
+        if (str_starts_with($node->getOriginalName(), '--') && $function instanceof UserDefinedCallable && !str_starts_with($function->getDeclaration()->getOriginalName(), '--')) {
+            $this->warn("Sass @function names beginning with -- are deprecated for forward-compatibility with plain CSS functions.\n\nFor details, see https://sass-lang.com/d/css-function-mixin", $node->getNameSpan(), Deprecation::cssFunctionMixin);
         }
 
         $oldInFunction = $this->inFunction;
