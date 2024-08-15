@@ -295,7 +295,7 @@ abstract class StylesheetParser extends Parser
             $flag = $this->identifier();
             if ($flag === 'default') {
                 if ($guarded) {
-                    $this->logger->warnForDeprecation(Deprecation::duplicateVariableFlags, "!default should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", $this->scanner->spanFrom($flagStart));
+                    $this->logger->warnForDeprecation(Deprecation::duplicateVarFlags, "!default should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", $this->scanner->spanFrom($flagStart));
                 }
 
                 $guarded = true;
@@ -303,7 +303,7 @@ abstract class StylesheetParser extends Parser
                 if ($namespace !== null) {
                     $this->error("!global isn't allowed for variables in other modules.", $this->scanner->spanFrom($flagStart));
                 } elseif ($global) {
-                    $this->logger->warnForDeprecation(Deprecation::duplicateVariableFlags, "!global should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", $this->scanner->spanFrom($flagStart));
+                    $this->logger->warnForDeprecation(Deprecation::duplicateVarFlags, "!global should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", $this->scanner->spanFrom($flagStart));
                 }
 
                 $global = true;
