@@ -1632,7 +1632,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
         $this->warnForBogusCombinators($rule);
 
         if ($this->getStyleRule() === null && \count($this->getParent()->getChildren()) > 0) {
-            $lastChild = $this->getParent()->getChildren()[\count($this->getParent()->getChildren()) - 1];
+            $lastChild = ListUtil::last($this->getParent()->getChildren());
             $lastChild->setGroupEnd(true);
         }
 
