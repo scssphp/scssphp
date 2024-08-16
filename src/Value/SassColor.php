@@ -355,7 +355,7 @@ final class SassColor extends Value
         $this->lightness = 50 * ($max + $min);
 
         if ($max == $min) {
-            $this->saturation = 50;
+            $this->saturation = 0;
         } elseif ($this->lightness < 50) {
             $this->saturation = 100 * $delta / ($max + $min);
         } else {
