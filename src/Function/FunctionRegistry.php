@@ -107,7 +107,7 @@ class FunctionRegistry
         ], 'url' => 'sass:map'],
         'map-keys' => ['overloads' => ['$map' => [MapFunctions::class, 'keys']], 'url' => 'sass:map'],
         'map-values' => ['overloads' => ['$map' => [MapFunctions::class, 'values']], 'url' => 'sass:map'],
-        'map-has-key' => ['overloads' => ['map, $key, $keys...' => [MapFunctions::class, 'hasKey']], 'url' => 'sass:map'],
+        'map-has-key' => ['overloads' => ['$map, $key, $keys...' => [MapFunctions::class, 'hasKey']], 'url' => 'sass:map'],
         // sass:math
         'abs' => ['overloads' => ['$number' => [MathFunctions::class, 'abs']], 'url' => 'sass:math'],
         'ceil' => ['overloads' => ['$number' => [MathFunctions::class, 'ceil']], 'url' => 'sass:math'],
