@@ -940,7 +940,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
 
     public function visitDeclaration(Declaration $node): ?Value
     {
-        if ($this->getStyleRule() !== null && !$this->inUnknownAtRule && !$this->inKeyFrames) {
+        if ($this->getStyleRule() === null && !$this->inUnknownAtRule && !$this->inKeyFrames) {
             throw $this->exception('Declarations may only be used within style rules.', $node->getSpan());
         }
 
@@ -2093,7 +2093,7 @@ WARNING;
                     return $this->visitCalculation($node);
             }
 
-            $function = $this->getStylesheet()->isPlainCss() ? null : $this->getBuiltinFunction($node->getName()) ?? new PlainCssCallable($node->getOriginalName());
+            $function = ($this->getStylesheet()->isPlainCss() ? null : $this->getBuiltinFunction($node->getName())) ?? new PlainCssCallable($node->getOriginalName());
         }
 
         if (str_starts_with($node->getOriginalName(), '--') && $function instanceof UserDefinedCallable && !str_starts_with($function->getDeclaration()->getOriginalName(), '--')) {
@@ -2472,7 +2472,7 @@ WARNING;
         $result = $this->withStackFrame($name, $nodeWithSpan, function () use ($callable, $evaluated, $nodeWithSpan, $run) {
             // Add an extra closure() call so that modifications to the environment
             // don't affect the underlying environment closure.
-            return $this->withEnvironment($this->environment->closure(), function () use ($callable, $evaluated, $nodeWithSpan, $run) {
+            return $this->withEnvironment($callable->getEnvironment()->closure(), function () use ($callable, $evaluated, $nodeWithSpan, $run) {
                 return $this->environment->scope(function () use ($callable, $evaluated, $nodeWithSpan, $run) {
                     $this->verifyArguments(\count($evaluated->getPositional()), $evaluated->getNamed(), $callable->getDeclaration()->getArguments(), $nodeWithSpan);
 
