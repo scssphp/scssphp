@@ -434,7 +434,7 @@ final class Environment
      */
     public function mixinExists(string $name): bool
     {
-        return $this->getFunction($name) !== null;
+        return $this->getMixin($name) !== null;
     }
 
     public function setMixin(SassCallable $callable): void
