@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Parser;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\SourceSpan\FileLocation;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\SourceSpan\SourceFile;
@@ -43,7 +44,7 @@ class StringScanner
 
     private readonly SourceFile $sourceFile;
 
-    public function __construct(string $content, ?string $sourceUrl = null)
+    public function __construct(string $content, ?UriInterface $sourceUrl = null)
     {
         $this->string = $content;
         $this->sourceFile = new SourceFile($content, $sourceUrl);

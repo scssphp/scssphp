@@ -12,6 +12,8 @@
 
 namespace ScssPhp\ScssPhp\SourceSpan;
 
+use League\Uri\Contracts\UriInterface;
+
 /**
  * @internal
  */
@@ -19,7 +21,7 @@ interface FileSpan
 {
     public function getFile(): SourceFile;
 
-    public function getSourceUrl(): ?string;
+    public function getSourceUrl(): ?UriInterface;
 
     public function getLength(): int;
 

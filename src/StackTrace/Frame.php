@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\StackTrace;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Util\Path;
 
 /**
@@ -22,7 +23,7 @@ final class Frame
     /**
      * The URI of the file in which the code is located.
      */
-    private readonly string $url;
+    private readonly UriInterface $url;
 
     /**
      * The line number on which the code location is located.
@@ -45,7 +46,7 @@ final class Frame
      */
     private readonly ?string $member;
 
-    public function __construct(string $url, ?int $line, ?int $column, ?string $member)
+    public function __construct(UriInterface $url, ?int $line, ?int $column, ?string $member)
     {
         $this->url = $url;
         $this->line = $line;
@@ -56,7 +57,7 @@ final class Frame
     /**
      * The URI of the file in which the code is located.
      */
-    public function getUrl(): string
+    public function getUrl(): UriInterface
     {
         return $this->url;
     }

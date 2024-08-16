@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Tests;
 
+use League\Uri\Uri;
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\Stylesheet;
 use ScssPhp\ScssPhp\Compiler;
@@ -257,7 +258,7 @@ class SassSpecTest extends TestCase
         // Our new parser is a port of the dart-sass one, so it should be able to parse all non-error specs
         // without triggering a parsing error.
         if (!$error && !preg_match('/:todo:\n *+- dart-sass\n/', $options) && !\in_array($this->canonicalTestName($name), ['directives/forward/escaped', 'directives/use/escaped', 'values/calculation/calc/no_operator/interpolation/line_noise'])) {
-            Stylesheet::parseScss($scss, null, 'input.scss');
+            Stylesheet::parseScss($scss, null, Uri::new('input.scss'));
         }
 
         if (! getenv('TEST_SASS_SPEC') && $this->matchExclusionList($name, $this->getExclusionList())) {

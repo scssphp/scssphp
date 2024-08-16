@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\SassCallable;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Ast\Sass\ArgumentDeclaration;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Value\SassNull;
@@ -52,7 +53,7 @@ class BuiltInCallable implements SassCallable
      *
      * @throws SassFormatException
      */
-    public static function function(string $name, string $arguments, callable $callback, ?string $url = null): BuiltInCallable
+    public static function function(string $name, string $arguments, callable $callback, ?UriInterface $url = null): BuiltInCallable
     {
         return self::parsed(
             $name,
@@ -75,7 +76,7 @@ class BuiltInCallable implements SassCallable
      *
      * @throws SassFormatException
      */
-    public static function mixin(string $name, string $arguments, callable $callback, ?string $url = null, bool $acceptsContent = false): BuiltInCallable
+    public static function mixin(string $name, string $arguments, callable $callback, ?UriInterface $url = null, bool $acceptsContent = false): BuiltInCallable
     {
         return self::parsed(
             $name,
@@ -104,7 +105,7 @@ class BuiltInCallable implements SassCallable
      *
      * @throws SassFormatException
      */
-    public static function overloadedFunction(string $name, array $overloads, ?string $url = null): BuiltInCallable
+    public static function overloadedFunction(string $name, array $overloads, ?UriInterface $url = null): BuiltInCallable
     {
         $processedOverloads = [];
 

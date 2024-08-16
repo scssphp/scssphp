@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Extend\ExtendUtil;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
@@ -54,7 +55,7 @@ final class CompoundSelector extends Selector
      *
      * @throws SassFormatException if parsing fails.
      */
-    public static function parse(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true): CompoundSelector
+    public static function parse(string $contents, ?LoggerInterface $logger = null, ?UriInterface $url = null, bool $allowParent = true): CompoundSelector
     {
         return (new SelectorParser($contents, $logger, $url, $allowParent))->parseCompoundSelector();
     }

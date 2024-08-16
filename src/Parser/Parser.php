@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Parser;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\AdaptingDeprecationAwareLogger;
 use ScssPhp\ScssPhp\Logger\DeprecationAwareLoggerInterface;
@@ -64,7 +65,7 @@ class Parser
         }
     }
 
-    public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null, ?InterpolationMap $interpolationMap = null)
+    public function __construct(string $contents, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null, ?InterpolationMap $interpolationMap = null)
     {
         $this->scanner = new StringScanner($contents, $sourceUrl);
         $this->logger = AdaptingDeprecationAwareLogger::adaptLogger($logger ?? new QuietLogger());

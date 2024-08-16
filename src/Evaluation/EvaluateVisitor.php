@@ -369,6 +369,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
         $this->sourceMap = $sourceMap;
         $this->environment = Environment::create();
 
+        $sassMetaUri = Uri::new('sass:meta');
         // These functions are defined in the context of the evaluator because
         // they need access to the environment or other local state.
         $metaFunctions = [
@@ -382,12 +383,12 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
                 }
 
                 return SassBoolean::create($this->environment->globalVariableExists(str_replace('_', '-', $variable->getText())));
-            }, 'sass:meta'),
+            }, $sassMetaUri),
             BuiltInCallable::function('variable-exists', '$name', function ($arguments) {
                 $variable = $arguments[0]->assertString('name');
 
                 return SassBoolean::create($this->environment->variableExists(str_replace('_', '-', $variable->getText())));
-            }, 'sass:meta'),
+            }, $sassMetaUri),
             BuiltInCallable::function('function-exists', '$name, $module: null', function ($arguments) {
                 $variable = $arguments[0]->assertString('name');
                 $module = $arguments[1]->realNull()?->assertString('module');
@@ -398,7 +399,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
                 }
 
                 return SassBoolean::create($this->environment->functionExists(str_replace('_', '-', $variable->getText())) || isset($this->builtInFunctions[$variable->getText()]) || FunctionRegistry::has($variable->getText()));
-            }, 'sass:meta'),
+            }, $sassMetaUri),
             BuiltInCallable::function('mixin-exists', '$name, $module: null', function ($arguments) {
                 $variable = $arguments[0]->assertString('name');
                 $module = $arguments[1]->realNull()?->assertString('module');
@@ -409,14 +410,14 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
                 }
 
                 return SassBoolean::create($this->environment->mixinExists(str_replace('_', '-', $variable->getText())));
-            }, 'sass:meta'),
+            }, $sassMetaUri),
             BuiltInCallable::function('content-exists', '', function ($arguments) {
                 if (! $this->environment->isInMixin()) {
                     throw new SassScriptException('content-exists() may only be called within a mixin.');
                 }
 
                 return SassBoolean::create($this->environment->getContent() !== null);
-            }, 'sass:meta'),
+            }, $sassMetaUri),
             BuiltInCallable::function('get-function', '$name, $css: false, $module: null', function ($arguments) {
                 $name = $arguments[0]->assertString('name');
                 $css = $arguments[1]->isTruthy();
@@ -454,7 +455,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
                 }
 
                 return new SassFunction($callable);
-            }, 'sass:meta'),
+            }, $sassMetaUri),
             BuiltInCallable::function('get-mixin', '$name, $module: null', function ($arguments) {
                 $name = $arguments[0]->assertString('name');
                 $module = $arguments[1]->realNull()?->assertString('module');
@@ -474,7 +475,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
                 }
 
                 return new SassMixin($callable);
-            }, 'sass:meta'),
+            }, $sassMetaUri),
             BuiltInCallable::function('call', '$function, $args...', function ($arguments) {
                 $function = $arguments[0];
                 $args = $arguments[1];
@@ -506,7 +507,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
                 $callable = $function->assertFunction('function')->getCallable();
 
                 return $this->runFunctionCallable($invocation, $callable, $callableNode);
-            }, 'sass:meta'),
+            }, $sassMetaUri),
         ];
 
         foreach ($functions as $function) {
@@ -599,9 +600,10 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             $url = $node->getSpan()->getSourceUrl();
 
             if ($url !== null) {
-                $this->activeModules[$url] = null;
+                $urlString = (string) $url;
+                $this->activeModules[$urlString] = null;
                 // TODO check how to handle stdin
-                $this->loadedUrls[$url] = true;
+                $this->loadedUrls[$urlString] = true;
             }
 
             /** @var ExtensionStore $extensionStore */
@@ -1260,12 +1262,13 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             $url = $stylesheet->getSpan()->getSourceUrl();
 
             if ($url !== null) {
-                if (array_key_exists($url, $this->activeModules)) {
+                $urlString = (string) $url;
+                if (array_key_exists($urlString, $this->activeModules)) {
                     // TODO use a multispan exception when the previousLoad is available
                     throw $this->exception('This file is already being loaded.');
                 }
 
-                $this->activeModules[$url] = $import;
+                $this->activeModules[$urlString] = $import;
             }
 
             $oldImporter = $this->importer;
@@ -1280,7 +1283,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             $this->inDependency = $oldInDependency;
 
             if ($url !== null) {
-                unset($this->activeModules[$url]);
+                unset($this->activeModules[(string) $url]);
             }
         });
     }
@@ -3276,7 +3279,7 @@ WARNING;
         $url = $span->getSourceUrl();
 
         if ($url !== null) {
-            $url = $this->importCache->humanize(Uri::new($url))->toString();
+            $url = $this->importCache->humanize($url);
         }
 
         return Util::frameForSpan($span, $member, $url);

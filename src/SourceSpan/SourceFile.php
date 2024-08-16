@@ -12,6 +12,8 @@
 
 namespace ScssPhp\ScssPhp\SourceSpan;
 
+use League\Uri\Contracts\UriInterface;
+
 /**
  * @internal
  */
@@ -19,7 +21,7 @@ final class SourceFile
 {
     private readonly string $string;
 
-    private readonly ?string $sourceUrl;
+    private readonly ?UriInterface $sourceUrl;
 
     /**
      * @var int[]
@@ -38,7 +40,7 @@ final class SourceFile
      */
     private ?int $cachedLine = null;
 
-    public function __construct(string $content, ?string $sourceUrl = null)
+    public function __construct(string $content, ?UriInterface $sourceUrl = null)
     {
         $this->string = $content;
         $this->sourceUrl = $sourceUrl;
@@ -91,7 +93,7 @@ final class SourceFile
         return new FileLocation($this, $offset);
     }
 
-    public function getSourceUrl(): ?string
+    public function getSourceUrl(): ?UriInterface
     {
         return $this->sourceUrl;
     }

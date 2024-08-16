@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Function;
 
+use League\Uri\Uri;
 use ScssPhp\ScssPhp\SassCallable\BuiltInCallable;
 use ScssPhp\ScssPhp\Value\Value;
 
@@ -157,6 +158,6 @@ class FunctionRegistry
             throw new \InvalidArgumentException("There is no builtin function named $name.");
         }
 
-        return BuiltInCallable::overloadedFunction($name, self::BUILTIN_FUNCTIONS[$name]['overloads'], self::BUILTIN_FUNCTIONS[$name]['url']);
+        return BuiltInCallable::overloadedFunction($name, self::BUILTIN_FUNCTIONS[$name]['overloads'], Uri::new(self::BUILTIN_FUNCTIONS[$name]['url']));
     }
 }

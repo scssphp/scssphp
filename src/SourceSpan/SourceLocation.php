@@ -12,6 +12,8 @@
 
 namespace ScssPhp\ScssPhp\SourceSpan;
 
+use League\Uri\Contracts\UriInterface;
+
 /**
  * @internal
  */
@@ -29,5 +31,5 @@ interface SourceLocation
      */
     public function getColumn(): int;
 
-    public function getSourceUrl(): ?string;
+    public function getSourceUrl(): ?UriInterface;
 }

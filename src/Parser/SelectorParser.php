@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Parser;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Ast\Css\CssValue;
 use ScssPhp\ScssPhp\Ast\Selector\AttributeOperator;
 use ScssPhp\ScssPhp\Ast\Selector\AttributeSelector;
@@ -67,7 +68,7 @@ final class SelectorParser extends Parser
      * If $plainCss is `true`, this will parse the selector as a plain CSS
      * selector rather than a Sass selector.
      */
-    public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true, ?InterpolationMap $interpolationMap = null, bool $plainCss = false)
+    public function __construct(string $contents, ?LoggerInterface $logger = null, ?UriInterface $url = null, bool $allowParent = true, ?InterpolationMap $interpolationMap = null, bool $plainCss = false)
     {
         $this->allowParent = $allowParent;
         $this->plainCss = $plainCss;
