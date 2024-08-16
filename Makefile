@@ -11,10 +11,10 @@ rebuild-outputs: vendor
 	BUILD=1 vendor/bin/phpunit tests/InputTest.php
 
 standard: vendor
-	vendor/bin/phpcs -s --extensions=php bin src tests *.php
+	vendor/bin/phpcs -s --extensions=php bin src tests
 
 fix-cs: vendor
-	vendor/bin/phpcbf -s --extensions=php bin src tests *.php
+	vendor/bin/phpcbf -s --extensions=php bin src tests
 
 vendor: composer.json
 	composer update
