@@ -142,7 +142,7 @@ final class StringFunctions
         }
 
         return new SassString(
-            mb_substr($string->getText(), $startCodepoint, $endCodepoint - $startCodepoint),
+            mb_substr($string->getText(), $startCodepoint, $endCodepoint + 1 - $startCodepoint),
             $string->hasQuotes()
         );
     }
