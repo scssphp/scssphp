@@ -71,7 +71,7 @@ final class SelectorFunctions
         $span = EvaluationContext::getCurrent()->getCurrentCallableSpan();
 
         return ArrayUtil::reduce(array_map(fn(Value $selector) => $selector->assertSelector(), $selectors), function (SelectorList $parent, SelectorList $child) use ($span) {
-            return new SelectorList(array_map(function (ComplexSelector $complex) use ($span, $parent) {
+            return (new SelectorList(array_map(function (ComplexSelector $complex) use ($span, $parent) {
                 if (\count($complex->getLeadingCombinators()) > 0) {
                     throw new SassScriptException("Can't append $complex to $parent.");
                 }
@@ -88,7 +88,7 @@ final class SelectorFunctions
                     new ComplexSelectorComponent($newCompound, $component->getCombinators(), $span),
                     ...$rest,
                 ], $span);
-            }, $child->getComponents()), $span);
+            }, $child->getComponents()), $span))->nestWithin($parent);
         })->asSassList();
     }
 

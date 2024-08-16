@@ -1632,7 +1632,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
         $this->warnForBogusCombinators($rule);
 
         if ($this->getStyleRule() === null && \count($this->getParent()->getChildren()) > 0) {
-            $lastChild = $this->getParent()->getChildren()[\count($this->getParent()->getChildren()) - 1];
+            $lastChild = ListUtil::last($this->getParent()->getChildren());
             $lastChild->setGroupEnd(true);
         }
 
@@ -1731,7 +1731,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
 
         if ($condition instanceof SupportsDeclaration) {
             return $this->withSupportsDeclaration(function () use ($condition) {
-                return sprintf('%s:%s%s', $this->evaluateToCss($condition->getName()), $condition->isCustomProperty() ? '' : ' ', $this->evaluateToCss($condition->getValue()));
+                return sprintf('(%s:%s%s)', $this->evaluateToCss($condition->getName()), $condition->isCustomProperty() ? '' : ' ', $this->evaluateToCss($condition->getValue()));
             });
         }
 

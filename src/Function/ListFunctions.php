@@ -171,7 +171,7 @@ class ListFunctions
     private static function getAutoJoinSeparator(ListSeparator $separator1, ListSeparator $separator2): ListSeparator
     {
         if ($separator1 === ListSeparator::UNDECIDED && $separator2 === ListSeparator::UNDECIDED) {
-            return ListSeparator::COMMA;
+            return ListSeparator::SPACE;
         }
 
         if ($separator1 === ListSeparator::UNDECIDED) {

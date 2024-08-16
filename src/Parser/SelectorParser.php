@@ -341,6 +341,10 @@ final class SelectorParser extends Parser
             return new QualifiedName($this->identifier(), '*');
         }
 
+        if ($this->scanner->scanChar('|')) {
+            return new QualifiedName($this->identifier(), '');
+        }
+
         $nameOrNamespace = $this->identifier();
 
         if ($this->scanner->peekChar() !== '|' || $this->scanner->peekChar(1) === '=') {

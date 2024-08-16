@@ -91,6 +91,10 @@ final class NumberUtil
             return null;
         }
 
+        if ($number > \PHP_INT_MAX || $number < \PHP_INT_MIN) {
+            return null;
+        }
+
         $rounded = (int) round($number);
 
         return self::fuzzyEquals($number, $rounded) ? $rounded : null;
@@ -242,7 +246,7 @@ final class NumberUtil
     public static function log(SassNumber $number, ?SassNumber $base): SassNumber
     {
         if ($base !== null) {
-            return SassNumber::create(log($number->getValue(), $base->getValue()));
+            return SassNumber::create(self::divideLikeSass(log($number->getValue()), log($base->getValue())));
         }
 
         return SassNumber::create(log($number->getValue()));
@@ -256,7 +260,7 @@ final class NumberUtil
         return SassNumber::create($base->getValue() ** $exponent->getValue());
     }
 
-    public static function atan2(SassNumber $x, SassNumber $y): SassNumber
+    public static function atan2(SassNumber $y, SassNumber $x): SassNumber
     {
         return self::radiansToDegrees(atan2($y->getValue(), $x->convertValueToMatch($y, 'x', 'y')));
     }

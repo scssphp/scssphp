@@ -16,13 +16,14 @@ use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\InterpolationMap;
 use ScssPhp\ScssPhp\Parser\MediaQueryParser;
+use ScssPhp\ScssPhp\Util\Equatable;
 
 /**
  * A plain CSS media query, as used in `@media` and `@import`.
  *
  * @internal
  */
-final class CssMediaQuery implements MediaQueryMergeResult
+final class CssMediaQuery implements MediaQueryMergeResult, Equatable
 {
     /**
      * The modifier, probably either "not" or "only".
@@ -239,5 +240,10 @@ final class CssMediaQuery implements MediaQueryMergeResult
             $modifier === $ourModifier ? $this->modifier : $other->modifier,
             $conditions
         );
+    }
+
+    public function equals(object $other): bool
+    {
+        return $other instanceof CssMediaQuery && $other->modifier === $this->modifier && $other->type === $this->type && $other->conditions === $this->conditions;
     }
 }

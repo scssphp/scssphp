@@ -556,7 +556,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
             if ($firstUnit !== null) {
                 $this->buffer->write($firstUnit);
-                $this->writeCalculationUnits(array_slice($value->getDenominatorUnits(), 1), $value->getDenominatorUnits());
+                $this->writeCalculationUnits(array_slice($value->getNumeratorUnits(), 1), $value->getDenominatorUnits());
             } else {
                 $this->writeCalculationUnits([], $value->getDenominatorUnits());
             }
@@ -1001,9 +1001,204 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             return;
         }
 
-        $output = number_format($number, SassNumber::PRECISION, '.', '');
 
-        $this->buffer->write(rtrim(rtrim($output, '0'), '.'));
+        $text = $this->removeExponent((string) $number);
+
+        // Any double that's less than `SassNumber.precision + 2` digits long is
+        // guaranteed to be safe to emit directly, since it'll contain at most `0.`
+        // followed by [SassNumber.precision] digits.
+        $canWriteDirectly = \strlen($text) < SassNumber::PRECISION + 2;
+
+        if ($canWriteDirectly) {
+            if ($this->compressed && $text[0] === '0') {
+                $text = substr($text, 1);
+            }
+
+            $this->buffer->write($text);
+            return;
+        }
+
+        $this->writeRounded($text);
+    }
+
+    /**
+     * If $text is written in exponent notation, returns a string representation
+     * of it without exponent notation.
+     *
+     * Otherwise, returns $text as-is.
+     */
+    private function removeExponent(string $text): string
+    {
+        $exponentDelimiterPosition = strpos($text, 'E');
+
+        if ($exponentDelimiterPosition === false) {
+            return $text;
+        }
+
+        $negative = $text[0] === '-';
+
+        $buffer = $text[0];
+
+        // If the number has more than one significant digit, the second
+        // character will be a decimal point that we don't want to include in
+        // the generated number.
+        if ($negative) {
+            $buffer .= $text[1];
+
+            if ($exponentDelimiterPosition > 3) {
+                $buffer .= substr($text, 3, $exponentDelimiterPosition - 3);
+            }
+        } elseif ($exponentDelimiterPosition > 2) {
+            $buffer .= substr($text, 2, $exponentDelimiterPosition - 2);
+        }
+
+        $exponent = intval(substr($text, $exponentDelimiterPosition + 1));
+
+        if ($exponent > 0) {
+            // Write an additional zero for each exponent digits other than those
+            // already written to the buffer. We subtract 1 from `buffer.length`
+            // because the first digit doesn't count towards the exponent. Subtract 1
+            // more for negative numbers because of the `-` written to the buffer.
+            $additionalZeroes = $exponent - (\strlen($buffer) - 1 - ($negative ? 1 : 0));
+            $buffer .= str_repeat('0', $additionalZeroes);
+
+            return $buffer;
+        }
+
+        $result = '';
+        if ($negative) {
+            $result .= '-';
+        }
+        $result .= '0.';
+        for ($i = -1; $i > $exponent; --$i) {
+            $result .= '0';
+        }
+
+        $result .= $negative ? substr($buffer, 1) : $buffer;
+
+        return $result;
+    }
+
+    /**
+     * Assuming $text is a number written without exponent notation, rounds it
+     * to {@see SassNumber::PRECISION} digits after the decimal and writes the result
+     * to {@see $buffer}.
+     */
+    private function writeRounded(string $text): void
+    {
+        \assert(preg_match('/^-?\d+(\.\d+)?$/D', $text) === 1, "\"$text\" should be a number written without exponent notation.");
+
+        // We need to ensure that we write at most [SassNumber.precision] digits
+        // after the decimal point, and that we round appropriately if necessary. To
+        // do this, we maintain an intermediate buffer of digits (both before and
+        // after the decimal point), which we then write to [_buffer] as text. We
+        // start writing after the first digit to give us room to round up to a
+        // higher decimal place than was represented in the original number.
+        $digits = array_fill(0, \strlen($text) + 1, 0);
+        $digitsIndex = 1;
+
+        // Write the digits before the decimal to $digits.
+        $textIndex = 0;
+        $negative = $text[0] === '-';
+        if ($negative) {
+            $textIndex++;
+        }
+
+        while (true) {
+            if ($textIndex === \strlen($text)) {
+                // If we get here, $text has no decimal point. It definitely doesn't
+                // need to be rounded; we can write it as-is.
+                $this->buffer->write($text);
+                return;
+            }
+
+            $codeUnit = $text[$textIndex++];
+            if ($codeUnit === '.') {
+                break;
+            }
+
+            $digits[$digitsIndex++] = intval($codeUnit);
+        }
+
+        $firstFractionalDigit = $digitsIndex;
+
+        // Only write at most PRECISION digits after the decimal. If there aren't
+        // that many digits left in the number, write it as-is since no rounding or
+        // truncation is needed.
+        $indexAfterPrecision = $textIndex + SassNumber::PRECISION;
+        if ($indexAfterPrecision >= \strlen($text)) {
+            $this->buffer->write($text);
+            return;
+        }
+
+        // Write the digits after the decimal to $digits.
+        while ($textIndex < $indexAfterPrecision) {
+            $digits[$digitsIndex++] = intval($text[$textIndex++]);
+        }
+
+        // Round the trailing digits in $digits up if necessary.
+        if (intval($text[$textIndex]) >= 5) {
+            while (true) {
+                // $digitsIndex is guaranteed to be >0 here because we added a leading
+                // 0 to $digits when we constructed it, so even if we round everything
+                // up $newDigit will always be 1 when $digitsIndex is 1.
+                $newDigit = ++$digits[$digitsIndex - 1];
+
+                if ($newDigit !== 10) {
+                    break;
+                }
+                $digitsIndex--;
+            }
+        }
+
+        // At most one of the following loops will actually execute. If we rounded
+        // digits up before the decimal point, the first loop will set those digits
+        // to 0 (rather than 10, which is not a valid decimal digit). On the other
+        // hand, if we have trailing zeros left after the decimal point, the second
+        // loop will move $digitsIndex before them and cause them not to be
+        // written. Either way, $digitsIndex will end up >= $firstFractionalDigit.
+        for (; $digitsIndex < $firstFractionalDigit; $digitsIndex++) {
+            $digits[$digitsIndex] = 0;
+        }
+        while ($digitsIndex > $firstFractionalDigit && $digits[$digitsIndex - 1] === 0) {
+            $digitsIndex--;
+        }
+
+        // Omit the minus sign if the number ended up being rounded to exactly zero,
+        // write "0" explicit to avoid adding a minus sign or omitting the number
+        // entirely in compressed mode.
+        if ($digitsIndex === 2 && $digits[0] === 0 && $digits[1] == 0) {
+            $this->buffer->writeChar('0');
+            return;
+        }
+
+        if ($negative) {
+            $this->buffer->writeChar('-');
+        }
+
+        // Write the digits before the decimal point to $buffer. Omit the leading
+        // 0 that's added to $digits to accommodate rounding, and in compressed
+        // mode omit the 0 before the decimal point as well.
+        $writtenIndex = 0;
+
+        if ($digits[0] === 0) {
+            $writtenIndex++;
+            if ($this->compressed && $digits[1] === 0) {
+                $writtenIndex++;
+            }
+        }
+
+        for (; $writtenIndex < $firstFractionalDigit; $writtenIndex++) {
+            $this->buffer->writeChar((string) $digits[$writtenIndex]);
+        }
+
+        if ($digitsIndex > $firstFractionalDigit) {
+            $this->buffer->writeChar('.');
+
+            for (; $writtenIndex < $digitsIndex; $writtenIndex++) {
+                $this->buffer->writeChar((string) $digits[$writtenIndex]);
+            }
+        }
     }
 
     public function visitString(SassString $value): void
@@ -1473,7 +1668,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 $this->buffer->writeChar(';');
             }
 
-            if ($prePrevious !== null && $this->isTrailingComment($previous, $parent)) {
+            if ($prePrevious === null && $this->isTrailingComment($previous, $parent)) {
                 $this->writeOptionalSpace();
             } else {
                 $this->writeLineFeed();

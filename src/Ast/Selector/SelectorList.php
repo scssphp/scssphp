@@ -194,7 +194,16 @@ final class SelectorList extends Selector
                         $newComplexes = array_map(fn ($newComplex) => $newComplex->withAdditionalComponent($component, $complex->getSpan()), $newComplexes);
                     }
                 } elseif (\count($newComplexes) === 0) {
-                    $newComplexes = $resolved;
+                    if (\count($complex->getLeadingCombinators()) === 0) {
+                        $newComplexes = $resolved;
+                    } else {
+                        $newComplexes = array_map(fn (ComplexSelector $resolvedComplex) => new ComplexSelector(
+                            array_merge($complex->getLeadingCombinators(), $resolvedComplex->getLeadingCombinators()),
+                            $resolvedComplex->getComponents(),
+                            $complex->getSpan(),
+                            $resolvedComplex->getLineBreak()
+                        ), $resolved);
+                    }
                 } else {
                     $previousComplexes = $newComplexes;
                     $newComplexes = [];

@@ -110,6 +110,7 @@ final class MediaQueryParser extends Parser
         // `IDENTIFIER IDENTIFIER "and"`.
 
         if ($this->scanIdentifier('not')) {
+            $this->expectWhitespace();
             // For example, "@media screen and not (...) {"
             return CssMediaQuery::type($type, $modifier, ['(not ' . $this->mediaInParens() . ')']);
         }

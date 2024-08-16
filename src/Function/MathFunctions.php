@@ -133,7 +133,7 @@ final class MathFunctions
     {
         $number = $arguments[0]->assertNumber('number');
 
-        return new SassString($number->getUnitString(), false);
+        return new SassString($number->getUnitString(), true);
     }
 
     /**

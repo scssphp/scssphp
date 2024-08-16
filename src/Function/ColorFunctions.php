@@ -95,7 +95,7 @@ class ColorFunctions
             }
 
             // Use the native CSS `invert` filter function.
-            return self::functionString('invert', $arguments);
+            return self::functionString('invert', [$arguments[0]]);
         }
 
         $color = $arguments[0]->assertColor('color');

@@ -29,6 +29,16 @@ final class LineScanner extends StringScanner
      */
     private int $column = 0;
 
+    public function getLine(): int
+    {
+        return $this->line;
+    }
+
+    public function getColumn(): int
+    {
+        return $this->column;
+    }
+
     /**
      * Whether the current position is between a CR character and an LF
      * character.
@@ -67,8 +77,16 @@ final class LineScanner extends StringScanner
             if ($newlines === []) {
                 $this->column -= $oldPosition - $newPosition;
             } else {
-                // TODO check that
-                $this->column = $newPosition - strrpos($this->getString(), "\n", $newPosition) - 1;
+                $lastCrlfPosition = strrpos($this->getString(), "\r\n", $newPosition);
+                if ($lastCrlfPosition === false) {
+                    $lastCrlfPosition = -1;
+                }
+                $lastLfPosition = strrpos($this->getString(), "\n", $newPosition);
+                if ($lastLfPosition === false) {
+                    $lastLfPosition = -1;
+                }
+                $lastNewLinePosition = max($lastCrlfPosition, $lastLfPosition);
+                $this->column = $newPosition - $lastNewLinePosition - 1;
             }
         }
     }

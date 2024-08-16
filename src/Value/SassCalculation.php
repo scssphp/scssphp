@@ -398,7 +398,7 @@ WARNING;
         $argument = self::simplify($argument);
 
         if (!$argument instanceof SassNumber) {
-            return new SassCalculation('exp', [$argument]);
+            return new SassCalculation('sign', [$argument]);
         }
 
         if (!$argument->hasUnits() && (is_nan($argument->getValue()) || $argument->getValue() === 0.0)) {
@@ -406,10 +406,10 @@ WARNING;
         }
 
         if (!$argument->hasUnit('%')) {
-            SassNumber::create(NumberUtil::sign($argument->getValue()))->coerceValueToMatch($argument);
+            return SassNumber::create(NumberUtil::sign($argument->getValue()))->coerceToMatch($argument);
         }
 
-        return new SassCalculation('exp', [$argument]);
+        return new SassCalculation('sign', [$argument]);
     }
 
     /**
