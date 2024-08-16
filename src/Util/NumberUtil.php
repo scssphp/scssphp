@@ -91,6 +91,10 @@ final class NumberUtil
             return null;
         }
 
+        if ($number > \PHP_INT_MAX || $number < \PHP_INT_MIN) {
+            return null;
+        }
+
         $rounded = (int) round($number);
 
         return self::fuzzyEquals($number, $rounded) ? $rounded : null;
