@@ -242,7 +242,7 @@ final class NumberUtil
     public static function log(SassNumber $number, ?SassNumber $base): SassNumber
     {
         if ($base !== null) {
-            return SassNumber::create(log($number->getValue(), $base->getValue()));
+            return SassNumber::create(self::divideLikeSass(log($number->getValue()), log($base->getValue())));
         }
 
         return SassNumber::create(log($number->getValue()));
