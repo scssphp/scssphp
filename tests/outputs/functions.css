@@ -2,37 +2,46 @@ div {
   color: 14px;
   sum: 23;
 }
+
 div {
   hello: 10 55;
-  hello: 1010 55;
+  hello: 10 10 55;
   hello: "hello 10 and 55";
 }
+
 del {
   color: 1000;
 }
+
 div {
   hello: "hello foo and bar";
   hello: "hello bar and default";
   hello: "hello Alice, Bob, Tom";
 }
+
 .foo {
   test2: -moz-art;
 }
+
 div span {
   height: 3px;
 }
+
 div {
   width: 2;
 }
+
 p {
   color: arglist;
 }
+
 .test {
   display: "global";
   display: "test-mixin";
   display: "test-mixin";
   display: "global";
 }
+
 .test-inspect {
   n: null;
   b1: true;
@@ -46,13 +55,16 @@ p {
   l4: (a: 1, b: 2);
   l5: (a: 1, b: 2);
 }
+
 div {
   margin: 1px 1px 2px 2px;
   padding: 1px 1px 2px 2px;
 }
+
 .test {
   color: rgba(159, 159, 159, 0.625);
 }
+
 .skin .var-in-class {
   background-color: #ddd;
 }

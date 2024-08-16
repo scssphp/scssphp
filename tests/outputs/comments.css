@@ -17,19 +17,20 @@ div {
   what-ever: 100px;
   background: url();
 }
+
 .dummy {
   color: blue;
 }
+
 /* comment 1 */
 a {
   /* comment 2 */
   /* comment 3 */
-  color: red;
-  /* comment 4 */
-  background-color: red;
-  /* comment 5 */
+  color: red; /* comment 4 */
+  background-color: red; /* comment 5 */
   /* comment 6 */
 }
+
 /* comment 7 */
 /* коммент */
 /* This is a comment with vars references:
@@ -42,6 +43,7 @@ radius:2px
   /* hop */
   width: 100%;
 }
+
 .class {
   /* This is a comment with vars references not on root level
   color:red

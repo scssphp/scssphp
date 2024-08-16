@@ -1,6 +1,7 @@
 div {
   color: blue;
 }
+
 pre {
   val-1: "red";
   val-2: "blue";
@@ -8,15 +9,18 @@ pre {
   val-4: "red";
   val-5: "red";
 }
+
 span {
   color: blue;
   height: 10px;
   width: 20px;
 }
+
 div {
   color: blue;
   border-color: green;
 }
+
 .debug {
   color: red;
 }

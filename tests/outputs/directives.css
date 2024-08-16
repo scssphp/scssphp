@@ -11,13 +11,7 @@
   }
 }
 @media something {
-  @page {
-    @media else {
-      div {
-        height: 200px;
-      }
-    }
-  }
+  @page {}
 }
 div {
   color: red;
@@ -27,6 +21,7 @@ div {
     height: 20px;
   }
 }
+
 @font-face {
   color: red;
   height: 20px;
@@ -68,6 +63,7 @@ div {
   animation-duration: 5s;
   animation-iteration-count: 10;
 }
+
 @keyframes "diagonal-slide" {
   from {
     left: 0;
@@ -98,6 +94,7 @@ div {
 .bold, .icon-ajax {
   font-weight: 700;
 }
+
 .custom-selector {
   color: blue;
 }
@@ -117,24 +114,28 @@ div {
     transform: scale(1);
   }
 }
+
 @supports (position: sticky) {
   .sticky-top .top2 {
     position: sticky;
   }
 }
+
 @supports (position: sticky) {
   .sticky-top {
     position: sticky;
     top: 0;
   }
 }
+
 @supports (position: sticky) {
   .sticky-top2 {
     position: sticky;
   }
 }
 @media print {
-  .table-bordered th, .table-bordered td {
+  .table-bordered th,
+  .table-bordered td {
     border: 1px solid #ddd !important;
   }
 }

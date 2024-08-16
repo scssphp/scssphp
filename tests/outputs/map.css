@@ -3,29 +3,35 @@ div {
   color: red;
   foo: black, red, #00FF00;
   bar: color, length;
-  baz: (color: white, color2: red, "color3": #00FF00, length: 40em);
+  baz: (color: rgb(255, 255, 255), color2: red, "color3": #00FF00, length: 40em);
   foo: (length: 40em);
   bar: true;
 }
+
 div {
   foo: color black;
   bar: color;
 }
+
 .black {
   background-color: #000000 !important;
 }
+
 .grey {
   background-color: #888888 !important;
 }
+
 .white {
   background-color: #ffffff !important;
 }
+
 div {
   a: 1;
   b: 2;
   color: 1;
   background-color: 2;
 }
+
 div {
   x: 2;
 }

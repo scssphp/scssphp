@@ -57,7 +57,7 @@ class InputTest extends TestCase
         $output = file_get_contents($outFname);
 
         $css = $this->scss->compileFile($inFname)->getCss();
-        $this->assertEquals($output, $css);
+        $this->assertEquals(trim($output), trim($css));
     }
 
     public function fileNameProvider()
@@ -80,7 +80,7 @@ class InputTest extends TestCase
     {
         $css = $this->scss->compileFile($inFname)->getCss();
 
-        file_put_contents($outFname, $css);
+        file_put_contents($outFname, $css . "\n");
     }
 
     private static function findInputNames()

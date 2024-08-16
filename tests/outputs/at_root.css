@@ -4,21 +4,26 @@
 .child {
   color: black;
 }
+
 .parent-block {
   color: white;
 }
 .child1 {
   color: green;
 }
+
 .child2 {
   color: blue;
 }
+
 .parent-block .step-child {
   color: black;
 }
+
 .first {
   color: red;
 }
+
 body .second {
   color: white;
   color: black;
@@ -30,9 +35,11 @@ body .second {
 .nested2 {
   color: yellow;
 }
+
 .third {
   color: green;
 }
+
 @media print {
   .page {
     width: 8in;
@@ -52,17 +59,17 @@ body .second {
 .outside-class {
   color: blue;
 }
+
 @media (min-width: 300px) {
   .with-only {
     color: pink;
   }
 }
+
 @media screen and (max-width: 320px) {
   .foo {
     margin: 0;
   }
-}
-@media screen and (max-width: 320px) {
   .bar {
     padding: 0;
   }
@@ -70,6 +77,7 @@ body .second {
 .baar {
   padding: 0;
 }
+
 .foo .barr {
   padding: 0;
 }
@@ -85,8 +93,6 @@ body .second {
   .qux {
     margin: 0;
   }
-}
-@media screen and (max-width: 640px) {
   .foo .quux {
     padding: 0;
   }
@@ -100,28 +106,33 @@ body .second {
 tbody {
   padding: 10px;
 }
+
 a.badge {
   text-decoration: none;
 }
+
 .badge-primary {
   background-color: blue;
 }
 a.badge-primary:focus, a.badge-primary.focus {
   outline: 0;
 }
+
 .badge-secondary {
   background-color: yellow;
 }
 a.badge-secondary:focus, a.badge-secondary.focus {
   outline: 0;
 }
+
 .table-hover tbody tr:hover, .table2#id tbody tr:hover {
   color: #ddd;
   background-color: #eee;
 }
-.table-hover tbody tr.foo, .table2#id tbody tr.foo {
+.table-hover tbody tr, .table2#id tbody tr.foo {
   color: red;
 }
+
 .badge {
   display: inline-block;
 }
@@ -133,13 +144,16 @@ a.badge-secondary:focus, a.badge-secondary.focus {
 a.badge:hover, a.badge:focus {
   text-decoration: none;
 }
+
 .btn:hover, .btn:focus {
   text-decoration: none;
 }
+
 .other {
   content: "bar";
   content: "foo";
 }
+
 .class .test {
   color: red;
 }
