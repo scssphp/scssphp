@@ -12,6 +12,8 @@
 
 namespace ScssPhp\ScssPhp;
 
+use League\Uri\Contracts\UriInterface;
+use League\Uri\Uri;
 use ScssPhp\ScssPhp\Base\Range;
 use ScssPhp\ScssPhp\Exception\RangeException;
 use ScssPhp\ScssPhp\Node\Number;
@@ -85,10 +87,10 @@ final class Util
         return strtr(rawurlencode($string), $revert);
     }
 
-    public static function frameForSpan(FileSpan $span, string $member, ?string $url = null): Frame
+    public static function frameForSpan(FileSpan $span, string $member, ?UriInterface $url = null): Frame
     {
         return new Frame(
-            $url ?? $span->getSourceUrl() ?? '-',
+            $url ?? $span->getSourceUrl() ?? Uri::new('-'),
             $span->getStart()->getLine() + 1,
             $span->getStart()->getColumn() + 1,
             $member

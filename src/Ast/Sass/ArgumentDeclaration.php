@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
@@ -58,7 +59,7 @@ final class ArgumentDeclaration implements SassNode
      *
      * @throws SassFormatException if parsing fails.
      */
-    public static function parse(string $contents, ?LoggerInterface $logger = null, ?string $url = null): ArgumentDeclaration
+    public static function parse(string $contents, ?LoggerInterface $logger = null, ?UriInterface $url = null): ArgumentDeclaration
     {
         return (new ScssParser($contents, $logger, $url))->parseArgumentDeclaration();
     }

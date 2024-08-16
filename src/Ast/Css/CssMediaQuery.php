@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Css;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\InterpolationMap;
@@ -70,7 +71,7 @@ final class CssMediaQuery implements MediaQueryMergeResult, Equatable
      *
      * @throws SassFormatException if parsing fails
      */
-    public static function parseList(string $contents, ?LoggerInterface $logger = null, ?string $url = null, ?InterpolationMap $interpolationMap = null): array
+    public static function parseList(string $contents, ?LoggerInterface $logger = null, ?UriInterface $url = null, ?InterpolationMap $interpolationMap = null): array
     {
         return (new MediaQueryParser($contents, $logger, $url, $interpolationMap))->parse();
     }

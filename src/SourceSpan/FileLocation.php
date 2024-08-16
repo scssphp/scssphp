@@ -12,6 +12,8 @@
 
 namespace ScssPhp\ScssPhp\SourceSpan;
 
+use League\Uri\Contracts\UriInterface;
+
 /**
  * @internal
  */
@@ -47,7 +49,7 @@ final class FileLocation implements SourceLocation
         return $this->file->getColumn($this->offset);
     }
 
-    public function getSourceUrl(): ?string
+    public function getSourceUrl(): ?UriInterface
     {
         return $this->file->getSourceUrl();
     }

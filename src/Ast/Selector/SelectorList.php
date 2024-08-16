@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Ast\Css\CssValue;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Exception\SassRuntimeException;
@@ -60,7 +61,7 @@ final class SelectorList extends Selector
      *
      * @throws SassFormatException if parsing fails.
      */
-    public static function parse(string $contents, ?LoggerInterface $logger = null, ?InterpolationMap $interpolationMap = null, ?string $url = null, bool $allowParent = true, bool $plainCss = false): SelectorList
+    public static function parse(string $contents, ?LoggerInterface $logger = null, ?InterpolationMap $interpolationMap = null, ?UriInterface $url = null, bool $allowParent = true, bool $plainCss = false): SelectorList
     {
         return (new SelectorParser($contents, $logger, $url, $allowParent, $interpolationMap, $plainCss))->parse();
     }

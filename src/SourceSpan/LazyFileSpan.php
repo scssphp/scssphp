@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\SourceSpan;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 
 /**
@@ -55,7 +56,7 @@ class LazyFileSpan implements FileSpan
         return $this->getSpan()->getFile();
     }
 
-    public function getSourceUrl(): ?string
+    public function getSourceUrl(): ?UriInterface
     {
         return $this->getSpan()->getSourceUrl();
     }

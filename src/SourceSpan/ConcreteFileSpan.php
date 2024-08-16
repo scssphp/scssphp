@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\SourceSpan;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Util\ErrorUtil;
 use ScssPhp\ScssPhp\Util\Path;
 
@@ -42,7 +43,7 @@ final class ConcreteFileSpan implements FileSpan
         return $this->file;
     }
 
-    public function getSourceUrl(): ?string
+    public function getSourceUrl(): ?UriInterface
     {
         return $this->file->getSourceUrl();
     }

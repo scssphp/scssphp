@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Ast\Css\CssValue;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Extend\ExtendUtil;
@@ -91,7 +92,7 @@ final class ComplexSelector extends Selector
      *
      * @throws SassFormatException if parsing fails.
      */
-    public static function parse(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true): ComplexSelector
+    public static function parse(string $contents, ?LoggerInterface $logger = null, ?UriInterface $url = null, bool $allowParent = true): ComplexSelector
     {
         return (new SelectorParser($contents, $logger, $url, $allowParent))->parseComplexSelector();
     }

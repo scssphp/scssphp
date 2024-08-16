@@ -12,24 +12,18 @@
 
 namespace ScssPhp\ScssPhp\SourceSpan;
 
+use League\Uri\Contracts\UriInterface;
+
 /**
  * @internal
  */
 final class StringSourceLocation implements SourceLocation
 {
-    /**
-     * @var int
-     * @readonly
-     */
-    private $offset;
+    private readonly int $offset;
 
-    /**
-     * @var string|null
-     * @readonly
-     */
-    private $sourceUrl;
+    private readonly ?UriInterface $sourceUrl;
 
-    public function __construct(int $offset, ?string $sourceUrl = null)
+    public function __construct(int $offset, ?UriInterface $sourceUrl = null)
     {
         $this->offset = $offset;
         $this->sourceUrl = $sourceUrl;
@@ -50,7 +44,7 @@ final class StringSourceLocation implements SourceLocation
         return $this->offset;
     }
 
-    public function getSourceUrl(): ?string
+    public function getSourceUrl(): ?UriInterface
     {
         return $this->sourceUrl;
     }

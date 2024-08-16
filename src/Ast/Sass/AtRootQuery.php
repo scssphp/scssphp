@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Ast\Css\CssAtRule;
 use ScssPhp\ScssPhp\Ast\Css\CssMediaRule;
 use ScssPhp\ScssPhp\Ast\Css\CssParentNode;
@@ -61,7 +62,7 @@ final class AtRootQuery
      *
      * @throws SassFormatException if parsing fails
      */
-    public static function parse(string $contents, ?LoggerInterface $logger = null, ?string $url = null, ?InterpolationMap $interpolationMap = null): AtRootQuery
+    public static function parse(string $contents, ?LoggerInterface $logger = null, ?UriInterface $url = null, ?InterpolationMap $interpolationMap = null): AtRootQuery
     {
         return (new AtRootQueryParser($contents, $logger, $url, $interpolationMap))->parse();
     }

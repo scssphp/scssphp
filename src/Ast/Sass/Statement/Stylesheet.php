@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass\Statement;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Ast\Sass\Statement;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
@@ -65,7 +66,7 @@ final class Stylesheet extends ParentStatement
     /**
      * @throws SassFormatException when parsing fails
      */
-    public static function parse(string $contents, Syntax $syntax, ?LoggerInterface $logger = null, ?string $sourceUrl = null): self
+    public static function parse(string $contents, Syntax $syntax, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null): self
     {
         return match ($syntax) {
             Syntax::SASS => self::parseSass($contents, $logger, $sourceUrl),
@@ -77,7 +78,7 @@ final class Stylesheet extends ParentStatement
     /**
      * @throws SassFormatException when parsing fails
      */
-    public static function parseSass(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null): self
+    public static function parseSass(string $contents, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null): self
     {
         $file = new SourceFile($contents, $sourceUrl);
         $span = $file->span(0, 0);
@@ -88,7 +89,7 @@ final class Stylesheet extends ParentStatement
     /**
      * @throws SassFormatException when parsing fails
      */
-    public static function parseScss(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null): self
+    public static function parseScss(string $contents, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null): self
     {
         return (new ScssParser($contents, $logger, $sourceUrl))->parse();
     }
@@ -96,7 +97,7 @@ final class Stylesheet extends ParentStatement
     /**
      * @throws SassFormatException when parsing fails
      */
-    public static function parseCss(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null): self
+    public static function parseCss(string $contents, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null): self
     {
         return (new CssParser($contents, $logger, $sourceUrl))->parse();
     }

@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Parser;
 
+use League\Uri\Contracts\UriInterface;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Uri;
 use ScssPhp\ScssPhp\Ast\Sass\Argument;
@@ -151,7 +152,7 @@ abstract class StylesheetParser extends Parser
      */
     private array $globalVariables = [];
 
-    public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null)
+    public function __construct(string $contents, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null)
     {
         parent::__construct($contents, $logger, $sourceUrl);
     }

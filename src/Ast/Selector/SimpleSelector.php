@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
+use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
@@ -50,7 +51,7 @@ abstract class SimpleSelector extends Selector
      *
      * @throws SassFormatException if parsing fails.
      */
-    public static function parse(string $contents, ?LoggerInterface $logger = null, ?string $url = null, bool $allowParent = true): SimpleSelector
+    public static function parse(string $contents, ?LoggerInterface $logger = null, ?UriInterface $url = null, bool $allowParent = true): SimpleSelector
     {
         return (new SelectorParser($contents, $logger, $url, $allowParent))->parseSimpleSelector();
     }

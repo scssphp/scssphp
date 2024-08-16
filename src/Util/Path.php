@@ -220,8 +220,16 @@ final class Path
     /**
      * Returns a pretty URI for a path
      */
-    public static function prettyUri(string $path): string
+    public static function prettyUri(string|UriInterface $path): string
     {
+        if ($path instanceof UriInterface) {
+            if ($path->getScheme() !== 'file') {
+                return (string) $path;
+            }
+
+            $path = self::fromUri($path);
+        }
+
         $normalizedPath = $path;
         $normalizedRootDirectory = getcwd() . '/';
 
