@@ -1731,7 +1731,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
 
         if ($condition instanceof SupportsDeclaration) {
             return $this->withSupportsDeclaration(function () use ($condition) {
-                return sprintf('%s:%s%s', $this->evaluateToCss($condition->getName()), $condition->isCustomProperty() ? '' : ' ', $this->evaluateToCss($condition->getValue()));
+                return sprintf('(%s:%s%s)', $this->evaluateToCss($condition->getName()), $condition->isCustomProperty() ? '' : ' ', $this->evaluateToCss($condition->getValue()));
             });
         }
 
