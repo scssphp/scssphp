@@ -109,7 +109,7 @@ class BuiltInCallable implements SassCallable
         $processedOverloads = [];
 
         foreach ($overloads as $args => $callback) {
-            $overloads[] = [
+            $processedOverloads[] = [
                 ArgumentDeclaration::parse("@function $name($args) {", url: $url),
                 $callback
             ];
