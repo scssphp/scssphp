@@ -1251,6 +1251,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 case "\xD":
                 case "\xE":
                 case "\xF":
+                case "\x10":
                 case "\x11":
                 case "\x12":
                 case "\x13":
