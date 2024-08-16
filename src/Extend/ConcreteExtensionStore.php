@@ -415,8 +415,9 @@ class ConcreteExtensionStore implements ExtensionStore
 
                     foreach ($complex->getComponents() as $component) {
                         foreach ($component->getSelector()->getComponents() as $simple) {
-                            $this->extensionsByExtender[$simple] ??= [];
-                            $this->extensionsByExtender[$simple][] = $withExtender;
+                            $extensionsByExtender = $this->extensionsByExtender[$simple] ?? [];
+                            $extensionsByExtender[] = $withExtender;
+                            $this->extensionsByExtender[$simple] = $extensionsByExtender;
                         }
                     }
 
