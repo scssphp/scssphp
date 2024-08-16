@@ -285,7 +285,7 @@ final class SingleUnitSassNumber extends SassNumber
      */
     protected function multiplyUnits(float $value, array $otherNumerators, array $otherDenominators): SassNumber
     {
-        $newNumerators = $otherDenominators;
+        $newNumerators = $otherNumerators;
         $removed = false;
 
         foreach ($otherDenominators as $key => $denominator) {

@@ -87,6 +87,6 @@ final class MetaFunctions
             return SassMap::create($map);
         }
 
-        throw SassScriptException::forArgument("${arguments[0]} is not an argument list.", 'args');
+        throw SassScriptException::forArgument("$arguments[0] is not an argument list.", 'args');
     }
 }

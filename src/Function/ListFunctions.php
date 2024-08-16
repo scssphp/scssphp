@@ -123,7 +123,7 @@ class ListFunctions
         $i = 0;
         $results = [];
 
-        while (IterableUtil::every($lists, fn ($list) => $i !== \count($lists))) {
+        while (IterableUtil::every($lists, fn ($list) => $i !== \count($list))) {
             $results[] = new SassList(array_map(fn ($list) => $list[$i], $lists), ListSeparator::SPACE);
             $i++;
         }
