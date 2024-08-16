@@ -593,8 +593,9 @@ class Parser
             return $valueText;
         }
 
-        if ($value < 0x1f || $valueText === "\x7f" || ($identifierStart && Character::isDigit($valueText))) {
-            return '\\' . bin2hex($valueText) . ' ';
+        if ($value <= 0x1f || $valueText === "\x7f" || ($identifierStart && Character::isDigit($valueText))) {
+            $hexValueText = $value === 0 ? '0' : ltrim(bin2hex($valueText), '0');
+            return '\\' . $hexValueText . ' ';
         }
 
         return '\\' . $valueText;
