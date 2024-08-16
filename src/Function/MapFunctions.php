@@ -54,7 +54,7 @@ class MapFunctions
     public static function mergeTwoArgs(array $arguments): Value
     {
         $map1 = $arguments[0]->assertMap('map1');
-        $map2 = $arguments[0]->assertMap('map2');
+        $map2 = $arguments[1]->assertMap('map2');
 
         $result = Map::of($map1->getContents());
 
