@@ -1473,7 +1473,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 $this->buffer->writeChar(';');
             }
 
-            if ($prePrevious !== null && $this->isTrailingComment($previous, $parent)) {
+            if ($prePrevious === null && $this->isTrailingComment($previous, $parent)) {
                 $this->writeOptionalSpace();
             } else {
                 $this->writeLineFeed();
