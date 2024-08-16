@@ -556,7 +556,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
             if ($firstUnit !== null) {
                 $this->buffer->write($firstUnit);
-                $this->writeCalculationUnits(array_slice($value->getDenominatorUnits(), 1), $value->getDenominatorUnits());
+                $this->writeCalculationUnits(array_slice($value->getNumeratorUnits(), 1), $value->getDenominatorUnits());
             } else {
                 $this->writeCalculationUnits([], $value->getDenominatorUnits());
             }
