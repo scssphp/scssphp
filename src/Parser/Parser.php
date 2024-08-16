@@ -40,8 +40,6 @@ class Parser
      */
     private readonly ?InterpolationMap $interpolationMap;
 
-    protected readonly ?string $sourceUrl;
-
     /**
      * Parses $text as a CSS identifier and returns the result.
      *
@@ -68,9 +66,8 @@ class Parser
 
     public function __construct(string $contents, ?LoggerInterface $logger = null, ?string $sourceUrl = null, ?InterpolationMap $interpolationMap = null)
     {
-        $this->scanner = new StringScanner($contents);
+        $this->scanner = new StringScanner($contents, $sourceUrl);
         $this->logger = AdaptingDeprecationAwareLogger::adaptLogger($logger ?? new QuietLogger());
-        $this->sourceUrl = $sourceUrl;
         $this->interpolationMap = $interpolationMap;
     }
 
