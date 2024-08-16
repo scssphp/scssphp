@@ -95,7 +95,9 @@ final class ImportCache
                 [$result, $cacheable] = $this->doCanonicalize($baseImporter, $resolvedUrl, $baseUrl, $forImport);
                 \assert($cacheable, 'Relative loads should always be cacheable because they never provide access to the containing URL.');
 
-                $this->perImporterCanonicalizeCache[$baseImporter][$resolvedUrlCacheKey][$forImportCacheKey] = $result ?? SpecialCacheValue::null;
+                $importerCache = $this->perImporterCanonicalizeCache[$baseImporter] ?? [];
+                $importerCache[$resolvedUrlCacheKey][$forImportCacheKey] = $result ?? SpecialCacheValue::null;
+                $this->perImporterCanonicalizeCache[$baseImporter] = $importerCache;
             }
 
             $relativeResult = $this->perImporterCanonicalizeCache[$baseImporter][$resolvedUrlCacheKey][$forImportCacheKey];
@@ -141,7 +143,9 @@ final class ImportCache
                 return $result;
             }
             if ($importerCacheable && !$cacheable) {
-                $this->perImporterCanonicalizeCache[$importer][$urlCacheKey][$forImportCacheKey] = $result ?? SpecialCacheValue::null;
+                $importerCache = $this->perImporterCanonicalizeCache[$importer] ?? [];
+                $importerCache[$urlCacheKey][$forImportCacheKey] = $result ?? SpecialCacheValue::null;
+                $this->perImporterCanonicalizeCache[$importer] = $importerCache;
 
                 if ($result !== null) {
                     return $result;
@@ -153,7 +157,9 @@ final class ImportCache
                     // to the per-importer cache so we don't have to re-run them for
                     // future uses of this importer.
                     for ($j = 0; $j < $i; ++$j) {
-                        $this->perImporterCanonicalizeCache[$this->importers[$j]][$urlCacheKey][$forImportCacheKey] = SpecialCacheValue::null;
+                        $importerCache = $this->perImporterCanonicalizeCache[$this->importers[$j]] ?? [];
+                        $importerCache[$urlCacheKey][$forImportCacheKey] = SpecialCacheValue::null;
+                        $this->perImporterCanonicalizeCache[$this->importers[$j]] = $importerCache;
                     }
                     $cacheable = false;
                 }
