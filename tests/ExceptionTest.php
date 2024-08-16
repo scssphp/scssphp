@@ -50,14 +50,14 @@ class ExceptionTest extends TestCase
   foo : bar;
 END_OF_SCSS
                 ,
-                'unclosed block'
+                'expected "}".'
             ],
             [<<<'END_OF_SCSS'
 .test {
 }}
 END_OF_SCSS
                 ,
-                'unexpected }'
+                'unmatched "}".'
             ],
             [<<<'END_OF_SCSS'
 .test {
@@ -65,7 +65,7 @@ END_OF_SCSS
 }
 END_OF_SCSS
                 ,
-                'Undefined mixin foo'
+                'Undefined mixin.'
             ],
             [<<<'END_OF_SCSS'
 @mixin do-nothing() {
@@ -104,7 +104,7 @@ BODY {
 }
 END_OF_SCSS
                 ,
-                'Undefined variable $bg'
+                'Undefined variable.'
             ],
             [<<<'END_OF_SCSS'
 @mixin example {
@@ -118,7 +118,7 @@ P {
 }
 END_OF_SCSS
                 ,
-                'Undefined variable $bg'
+                'Undefined variable.'
             ],
             [<<<'END_OF_SCSS'
 a.important {
@@ -132,7 +132,7 @@ END_OF_SCSS
 @import "missing";
 END_OF_SCSS
                 ,
-                'file not found for @import'
+                'Can\'t find stylesheet to import.'
             ],
             [<<<'END_OF_SCSS'
 .test {
@@ -141,7 +141,7 @@ END_OF_SCSS
 }
 END_OF_SCSS
                 ,
-                '1.5 is not an integer.'
+                '1.5 is not an int.'
             ],
             [<<<'END_OF_SCSS'
 .test {
@@ -150,11 +150,11 @@ END_OF_SCSS
 }
 END_OF_SCSS
                 ,
-                '1.5 is not an integer.'
+                '1.5 is not an int.'
             ],
             [
                 ".foo { } .bar { } /* comment with \xd6-character */",
-                'Invalid UTF-8 file',
+                'expected utf-8 char.',
             ]
         ];
     }
