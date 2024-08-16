@@ -9,42 +9,14 @@ parameters:
         -
             message: '#^PHPDoc tag @var with type ScssPhp\\ScssPhp\\Ast\\Sass\\Expression\|null is not subtype of native type ScssPhp\\ScssPhp\\Ast\\Sass\\Expression\.$#'
             path: src/Parser/StylesheetParser.php
-        # Ignore errors about not having typehints for definitions of builtin functions. These won't be typed until they are extracted.
-        -
-            message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$lib[\\w]+ has no type specified\\.$#"
-            path: src/Compiler.php
 
+        # Ignore errors about not specifying the array iterable type for legacy AST nodes
         -
-            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:lib[^(]+\\(\\) has no return type specified\\.$#"
-            path: src/Compiler.php
-
+            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\\\LegacyValueVisitor\\:\\:visit[\\w]+\\(\\) return type has no value type specified in iterable type array\\.$#"
+            path: src/Compiler/LegacyValueVisitor.php
         -
-            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:lib[^(]+\\(\\) return type has no value type specified in iterable type array\\.$#"
-            path: src/Compiler.php
-
-        -
-            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:lib[^(]+\\(\\) has parameter \\$args with no type specified\\.$#"
-            path: src/Compiler.php
-
-        -
-            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:lib[^(]+\\(\\) has parameter \\$args with no value type specified in iterable type array\\.$#"
-            path: src/Compiler.php
-
-        -
-            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:lib[^(]+\\(\\) has parameter \\$kwargs with no type specified\\.$#"
-            path: src/Compiler.php
-
-        -
-            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:lib[^(]+\\(\\) has parameter \\$kwargs with no value type specified in iterable type array\\.$#"
-            path: src/Compiler.php
-
-        -
-            message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:[^(]+\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
-            path: src/Parser.php
-
-        -
-            message: "#^Method ScssPhp\\\\ScssPhp\\\\Parser\\:\\:[^(]+\\(\\) has @param-out PHPDoc tag for parameter \\$\\w+ with no value type specified in iterable type array\\.$#"
-            path: src/Parser.php
+            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\\\LegacyValueVisitor\\:\\:visit[\\w]+\\(\\) never returns (ScssPhp\\\\ScssPhp\\\\Node\\\\Number|array) so it can be removed from the return type\\.$#"
+            path: src/Compiler/LegacyValueVisitor.php
 
 includes:
     - vendor-bin/phpstan/vendor/phpstan/phpstan/conf/bleedingEdge.neon

@@ -5,6 +5,7 @@ namespace ScssPhp\ScssPhp\Util;
 use League\Uri\BaseUri;
 use League\Uri\Contracts\UriInterface;
 use League\Uri\Uri;
+use Symfony\Component\Filesystem\Exception\InvalidArgumentException;
 use Symfony\Component\Filesystem\Path as SymfonyPath;
 
 /**
@@ -51,12 +52,29 @@ final class Path
         return false;
     }
 
+    /**
+     * Canonicalizes $path.
+     *
+     * This is guaranteed to return the same path for two different input paths
+     * if and only if both input paths point to the same location. Unlike
+     * {@see normalize}, it returns absolute paths when possible and canonicalizes
+     * ASCII case on Windows.
+     *
+     * Note that this does not resolve symlinks.
+     */
     public static function canonicalize(string $path): string
     {
         return self::realCasePath(self::normalize(self::absolute($path)));
     }
 
-    private static function normalize(string $path): string
+    /**
+     * Normalizes $path, simplifying it by handling `..`, and `.`, and
+     * removing redundant path separators whenever possible.
+     *
+     * Note that this is *not* guaranteed to return the same result for two
+     * equivalent input paths.
+     */
+    public static function normalize(string $path): string
     {
         $normalized = SymfonyPath::canonicalize($path);
 
@@ -66,6 +84,28 @@ final class Path
         }
 
         return $normalized;
+    }
+
+    /**
+     * Attempts to convert $path to an equivalent relative path from $from.
+     *
+     * Since there is no relative path from one drive letter to another on Windows,
+     * this will return an absolute path in those cases.
+     */
+    public static function relative(string $path, string $from): string
+    {
+        try {
+            $relativePath = SymfonyPath::makeRelative($path, $from);
+        } catch (InvalidArgumentException) {
+            return $path;
+        }
+
+        // The Symfony Path class always uses / as separator, while we want to use the platform one to get a real path
+        if (\DIRECTORY_SEPARATOR === '\\') {
+            $relativePath = str_replace('/', '\\', $relativePath);
+        }
+
+        return $relativePath;
     }
 
     private static function realCasePath(string $path): string
