@@ -626,7 +626,7 @@ abstract class StylesheetParser extends Parser
 
         $value = $this->expression();
 
-        $nested = $this->tryDeclarationChildren($name, $start);
+        $nested = $this->tryDeclarationChildren($name, $start, $value);
         if ($nested !== null) {
             return $nested;
         }
