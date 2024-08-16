@@ -281,6 +281,10 @@ abstract class StylesheetParser extends Parser
             $this->assertPublic($name, fn() => $this->scanner->spanFrom($start));
         }
 
+        if ($this->isPlainCss()) {
+            $this->error('Sass variables aren\'t allowed in plain CSS.', $this->scanner->spanFrom($start));
+        }
+
         $this->whitespace();
         $this->scanner->expectChar(':');
         $this->whitespace();
