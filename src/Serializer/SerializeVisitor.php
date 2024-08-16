@@ -1414,6 +1414,8 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      * @param callable(): T $callback
      *
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function for(AstNode $node, callable $callback)
     {
@@ -1578,6 +1580,8 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      *
      * @param iterable<T>       $iterable
      * @param callable(T): void $callback
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function writeBetween(iterable $iterable, string $text, callable $callback): void
     {
@@ -1606,6 +1610,8 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      * Runs $callback with indentation increased one level.
      *
      * @param callable(): void $callback
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function indent(callable $callback): void
     {
@@ -1618,6 +1624,8 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      * Runs $callback without any indentation.
      *
      * @param callable(): void $callback
+     *
+     * @param-immediately-invoked-callable $callback
      */
     private function withoutIndentation(callable $callback): void
     {

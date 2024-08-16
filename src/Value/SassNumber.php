@@ -803,6 +803,8 @@ abstract class SassNumber extends Value
      * @param callable(float, float): T $operation
      *
      * @return T
+     *
+     * @param-immediately-invoked-callable $operation
      */
     private function coerceUnits(SassNumber $other, callable $operation)
     {

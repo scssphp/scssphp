@@ -42,6 +42,8 @@ final class CanonicalizeContext
      *
      * @param callable(): T $callback
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     public function withFromImport(bool $fromImport, callable $callback)
     {

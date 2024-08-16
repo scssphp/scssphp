@@ -32,6 +32,8 @@ final class ArrayUtil
      * @param non-empty-array<T> $items
      * @param callable(T, T): T $combine
      * @return T
+     *
+     * @param-immediately-invoked-callable $combine
      */
     public static function reduce(array $items, callable $combine)
     {

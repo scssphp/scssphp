@@ -1133,6 +1133,8 @@ WARNING;
 
     /**
      * @param callable(SassNumber): SassNumber $mathFunc
+     *
+     * @param-immediately-invoked-callable $mathFunc
      */
     private static function singleArgument(string $name, object $argument, callable $mathFunc, bool $forbidUnits = false): Value
     {

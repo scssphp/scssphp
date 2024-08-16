@@ -180,6 +180,8 @@ class MapFunctions
      *
      * @param Value[] $keys
      * @param callable(Value $old): Value $modify
+     *
+     * @param-immediately-invoked-callable $modify
      */
     private static function modify(SassMap $map, array $keys, callable $modify, bool $addNesting = true): Value
     {

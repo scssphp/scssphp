@@ -679,6 +679,8 @@ abstract class StylesheetParser extends Parser
      * root of the stylesheet.
      *
      * @param callable(): Statement $child
+     *
+     * @param-immediately-invoked-callable $child
      */
     protected function atRule(callable $child, bool $root = false): Statement
     {
@@ -951,6 +953,8 @@ abstract class StylesheetParser extends Parser
      * children that are specifically allowed in the caller's context.
      *
      * @param callable(): Statement $child
+     *
+     * @param-immediately-invoked-callable $child
      */
     private function eachRule(int $start, callable $child): EachRule
     {
@@ -1075,6 +1079,8 @@ abstract class StylesheetParser extends Parser
      * children that are specifically allowed in the caller's context.
      *
      * @param callable(): Statement $child
+     *
+     * @param-immediately-invoked-callable $child
      */
     private function forRule(int $start, callable $child): ForRule
     {
@@ -1129,6 +1135,8 @@ abstract class StylesheetParser extends Parser
      * children that are specifically allowed in the caller's context.
      *
      * @param callable(): Statement $child
+     *
+     * @param-immediately-invoked-callable $child
      */
     private function ifRule(int $start, callable $child): IfRule
     {
@@ -1627,6 +1635,8 @@ abstract class StylesheetParser extends Parser
      * children that are specifically allowed in the caller's context.
      *
      * @param callable(): Statement $child
+     *
+     * @param-immediately-invoked-callable $child
      */
     private function whileRule(int $start, callable $child): WhileRule
     {
@@ -4164,6 +4174,9 @@ WARNING;
      * @param callable(): Statement $child
      * @param callable(Statement[], FileSpan): T $create
      * @return T
+     *
+     * @param-immediately-invoked-callable $child
+     * @param-immediately-invoked-callable $create
      */
     private function withChildren(callable $child, int $start, callable $create)
     {
@@ -4192,6 +4205,8 @@ WARNING;
      * Calls $span to provide the span for an error if one occurs.
      *
      * @param callable(): FileSpan $span
+     *
+     * @param-immediately-invoked-callable $span
      */
     private function assertPublic(string $identifier, callable $span): void
     {
@@ -4270,6 +4285,8 @@ WARNING;
      * @param callable(): Statement $child
      *
      * @return Statement[]
+     *
+     * @param-immediately-invoked-callable $child
      */
     abstract protected function children(callable $child): array;
 
@@ -4282,6 +4299,8 @@ WARNING;
      * @param callable(): ?Statement $statement
      *
      * @return Statement[]
+     *
+     * @param-immediately-invoked-callable $statement
      */
     abstract protected function statements(callable $statement): array;
 }

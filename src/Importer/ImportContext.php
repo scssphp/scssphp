@@ -38,6 +38,8 @@ final class ImportContext
      *
      * @param callable(): T $callback
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     public static function inImportRule(callable $callback)
     {
@@ -64,6 +66,8 @@ final class ImportContext
      *
      * @param callable(): T $callback
      * @return T
+     *
+     * @param-immediately-invoked-callable $callback
      */
     public static function withCanonicalizeContext(?CanonicalizeContext $canonicalizeContext, callable $callback)
     {

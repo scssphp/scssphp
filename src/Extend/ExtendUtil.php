@@ -679,6 +679,8 @@ final class ExtendUtil
      * @param callable(list<T>): bool $done
      *
      * @return list<list<T>>
+     *
+     * @param-immediately-invoked-callable $done
      */
     private static function chunks(array &$queue1, array &$queue2, callable $done): array
     {

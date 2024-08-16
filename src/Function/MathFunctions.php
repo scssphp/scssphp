@@ -193,6 +193,8 @@ final class MathFunctions
      *
      * @param list<Value> $arguments
      * @param callable(float): float $transform
+     *
+     * @param-immediately-invoked-callable $transform
      */
     private static function numberFunction(array $arguments, callable $transform): Value
     {
