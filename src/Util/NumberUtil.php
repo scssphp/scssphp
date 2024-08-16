@@ -256,7 +256,7 @@ final class NumberUtil
         return SassNumber::create($base->getValue() ** $exponent->getValue());
     }
 
-    public static function atan2(SassNumber $x, SassNumber $y): SassNumber
+    public static function atan2(SassNumber $y, SassNumber $x): SassNumber
     {
         return self::radiansToDegrees(atan2($y->getValue(), $x->convertValueToMatch($y, 'x', 'y')));
     }
