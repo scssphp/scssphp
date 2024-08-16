@@ -10,13 +10,6 @@ title: Documentation
 
 The project can be loaded through the `composer` generated autoloader.
 
-Alternatively, the entire project can be loaded through a utility file.
-Just include it somewhere to start using it:
-
-```php
-require_once 'scssphp/scss.inc.php';
-```
-
 ### Compiling
 
 In order to manually compile code from PHP you must create an instance of the

@@ -74,11 +74,11 @@ separated by a semi-colon.
 
 ## SCSSPHP Library Reference
 
-To use the scssphp library either require `scss.inc.php` or use your `composer`
-generated autoloader, and then invoke the `\ScssPhp\ScssPhp\Compiler` class:
+To use the scssphp library use your `composer` generated autoloader, and then
+invoke the `\ScssPhp\ScssPhp\Compiler` class:
 
 ```php
-require_once "scssphp/scss.inc.php";
+require "vendor/autoload.php";
 
 use ScssPhp\ScssPhp\Compiler;
 
