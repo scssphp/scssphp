@@ -37,7 +37,7 @@ final class IfExpression implements Expression, CallableInvocation
 
     private readonly FileSpan $span;
 
-    private static ?ArgumentDeclaration $declaration;
+    private static ?ArgumentDeclaration $declaration = null;
 
     public function __construct(ArgumentInvocation $arguments, FileSpan $span)
     {
