@@ -43,8 +43,8 @@ class ApiTest extends TestCase
         }, ['number1', 'number2']);
 
         $this->assertEquals(
-            'result: 30;',
-            $this->compile('result: add-two(10, 20);')
+            "a {\n  result: 30;\n}",
+            $this->compile('a { result: add-two(10, 20); }')
         );
     }
 
@@ -63,8 +63,8 @@ class ApiTest extends TestCase
         $this->expectDeprecation('Returning a PHP value from the "add-two" custom function is deprecated. A sass value must be returned instead.');
 
         $this->assertEquals(
-            'result: 30;',
-            $this->compile('result: add-two(10, 20);')
+            "a {\n  result: 30;\n}",
+            $this->compile('a { result: add-two(10, 20); }')
         );
     }
 
@@ -78,7 +78,7 @@ class ApiTest extends TestCase
 
         $this->assertEquals(
             '',
-            $this->compile('result: get-null();')
+            $this->compile('a { result: get-null(); }')
         );
     }
 
@@ -123,8 +123,8 @@ class ApiTest extends TestCase
         );
 
         $this->assertEquals(
-            'result: 15;',
-            $this->compile('result: divide($divisor: 2, $dividend: 30);')
+            "a {\n  result: 15;\n}",
+            $this->compile('a { result: divide($divisor: 2, $dividend: 30); }')
         );
     }
 
