@@ -54,7 +54,7 @@ final class SourceFile
         $prev = 0;
 
         while (($pos = strpos($content, "\n", $prev)) !== false) {
-            $lineStarts[] = $pos;
+            $lineStarts[] = $pos + 1;
             $prev = $pos + 1;
         }
 
