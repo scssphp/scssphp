@@ -39,6 +39,7 @@ SCSS code. If it succeeds, a `\ScssPhp\ScssPhp\CompilationResult` containing the
 CSS will be returned. If there is any error, a
 `\ScssPhp\ScssPhp\Exception\SassException` is thrown with an appropriate error
 message.
+
 `compileFile($path)` will attempt to compile a SCSS file from the provided path. If
 it succeeds, a `\ScssPhp\ScssPhp\CompilationResult` containing the CSS will be
 returned. If there is any error, a `\ScssPhp\ScssPhp\Exception\SassException` is
