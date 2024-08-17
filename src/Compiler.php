@@ -140,13 +140,28 @@ class Compiler
     /** @deprecated */
     public static $Infinity     = [Type::T_KEYWORD, 'Infinity'];
     public static $null         = [Type::T_NULL];
+    /**
+     * @internal
+     */
     public static $nullString   = [Type::T_STRING, '', []];
+    /**
+     * @internal
+     */
     public static $defaultValue = [Type::T_KEYWORD, ''];
+    /**
+     * @internal
+     */
     public static $selfSelector = [Type::T_SELF];
     public static $emptyList    = [Type::T_LIST, '', []];
     public static $emptyMap     = [Type::T_MAP, [], []];
     public static $emptyString  = [Type::T_STRING, '"', []];
+    /**
+     * @internal
+     */
     public static $with         = [Type::T_KEYWORD, 'with'];
+    /**
+     * @internal
+     */
     public static $without      = [Type::T_KEYWORD, 'without'];
     private static $emptyArgumentList = [Type::T_LIST, '', [], []];
 
