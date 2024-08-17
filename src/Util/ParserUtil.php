@@ -13,7 +13,6 @@
 namespace ScssPhp\ScssPhp\Util;
 
 use ScssPhp\ScssPhp\Parser\StringScanner;
-use ScssPhp\ScssPhp\Util;
 
 /**
  * @internal
@@ -61,7 +60,7 @@ final class ParserUtil
                 return "\u{FFFD}";
             }
 
-            return Util::mbChr($value);
+            return mb_chr($value, 'UTF-8');
         }
 
         return $scanner->readUtf8Char();

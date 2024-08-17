@@ -21,7 +21,6 @@ use ScssPhp\ScssPhp\Logger\QuietLogger;
 use ScssPhp\ScssPhp\SourceSpan\FileLocation;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\SourceSpan\LazyFileSpan;
-use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\ParserUtil;
 
@@ -580,10 +579,10 @@ class Parser
             }
 
             $this->scanCharIf(Character::isWhitespace(...));
-            $valueText = Util::mbChr($value);
+            $valueText = mb_chr($value, 'UTF-8');
         } else {
             $valueText = $this->scanner->readUtf8Char();
-            $value = Util::mbOrd($valueText);
+            $value = mb_ord($valueText, 'UTF-8');
         }
 
         if ($identifierStart ? Character::isNameStart($valueText) : Character::isName($valueText)) {
