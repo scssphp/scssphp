@@ -21,7 +21,7 @@ use ScssPhp\ScssPhp\Ast\Sass\Import\StaticImport;
 use ScssPhp\ScssPhp\Ast\Sass\Interpolation;
 use ScssPhp\ScssPhp\Ast\Sass\Statement;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\ImportRule;
-use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Function\FunctionRegistry;
 
 /**
  * A parser for imported CSS files.
@@ -167,7 +167,7 @@ final class CssParser extends ScssParser
             $this->scanner->expectChar(')');
         }
 
-        if ($plain === 'if' || (!isset(self::CSS_ALLOWED_FUNCTIONS[$plain]) && Compiler::isNativeFunction($plain))) {
+        if ($plain === 'if' || (!isset(self::CSS_ALLOWED_FUNCTIONS[$plain]) && FunctionRegistry::isBuiltinFunction($plain))) {
             $this->error("This function isn't allowed in plain CSS.", $this->scanner->spanFrom($start));
         }
 

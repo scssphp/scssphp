@@ -147,6 +147,20 @@ class FunctionRegistry
         'str-slice' => ['overloads' => ['$string, $start-at, $end-at: -1' => [StringFunctions::class, 'slice']], 'url' => 'sass:string'],
     ];
 
+    /**
+     * Special meta functions defined directly in the {@see EvaluateVisitor} constructor
+     */
+    private const SPECIAL_META_GLOBAL_FUNCTIONS = [
+        'global-variable-exists',
+        'variable-exists',
+        'function-exists',
+        'mixin-exists',
+        'content-exists',
+        'get-function',
+        'get-mixin',
+        'call',
+    ];
+
     public static function has(string $name): bool
     {
         return isset(self::BUILTIN_FUNCTIONS[$name]);
@@ -159,5 +173,10 @@ class FunctionRegistry
         }
 
         return BuiltInCallable::overloadedFunction($name, self::BUILTIN_FUNCTIONS[$name]['overloads'], Uri::new(self::BUILTIN_FUNCTIONS[$name]['url']));
+    }
+
+    public static function isBuiltinFunction(string $name): bool
+    {
+        return isset(self::BUILTIN_FUNCTIONS[$name]) || \in_array($name, self::SPECIAL_META_GLOBAL_FUNCTIONS, true);
     }
 }
