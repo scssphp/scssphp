@@ -17,6 +17,7 @@ use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Logger\StreamLogger;
 use ScssPhp\ScssPhp\Node\Number;
+use ScssPhp\ScssPhp\Type;
 use ScssPhp\ScssPhp\ValueConverter;
 use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 
@@ -320,7 +321,7 @@ SCSS;
     public function testGetStringText()
     {
         $compiler = new Compiler();
-        $string = ValueConverter::parseValue('"foobar"');
+        $string = [Type::T_STRING, '"', ['foobar']];
 
         $this->assertEquals('foobar', $compiler->getStringText($compiler->assertString($string)));
     }
