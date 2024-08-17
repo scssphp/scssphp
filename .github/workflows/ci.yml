@@ -17,14 +17,14 @@ jobs:
                 extensions: [ '' ]
                 os: [ubuntu-latest]
                 include:
-                    - php: '8.1'
+                    - php: '8.3'
                       os: ubuntu-latest
                       extensions: ':mbstring'
                       name_suffix: ' without mbstring'
-                    - php: '8.1'
+                    - php: '8.3'
                       os: windows-latest
                       name_suffix: ' on Windows'
-                    - php: '8.1'
+                    - php: '8.3'
                       os: macos-latest
                       name_suffix: ' on macOS'
 
