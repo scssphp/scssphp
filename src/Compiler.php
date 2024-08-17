@@ -333,6 +333,201 @@ final class Compiler
     }
 
     /**
+     * Replaces variables.
+     *
+     * @param array<string, mixed> $variables
+     *
+     * @return void
+     */
+    public function replaceVariables(array $variables): void
+    {
+        $this->registeredVars = [];
+        $this->addVariables($variables);
+    }
+
+    /**
+     * Replaces variables.
+     *
+     * @param array<string, mixed> $variables
+     *
+     * @return void
+     */
+    public function addVariables(array $variables): void
+    {
+        foreach ($variables as $name => $value) {
+            if (!$value instanceof Number && !\is_array($value)) {
+                throw new \InvalidArgumentException('Passing raw values to as custom variables to the Compiler is not supported anymore. Use "\ScssPhp\ScssPhp\ValueConverter::parseValue" or "\ScssPhp\ScssPhp\ValueConverter::fromPhp" to convert them instead.');
+            }
+
+            $this->registeredVars[$name] = $value;
+        }
+    }
+
+    /**
+     * Unset variable
+     *
+     * @param string $name
+     *
+     * @return void
+     */
+    public function unsetVariable(string $name): void
+    {
+        unset($this->registeredVars[$name]);
+    }
+
+    /**
+     * Returns list of variables
+     *
+     * @return array
+     */
+    public function getVariables(): array
+    {
+        return $this->registeredVars;
+    }
+
+    /**
+     * Add import path
+     *
+     * @param string|callable $path
+     *
+     * @return void
+     */
+    public function addImportPath($path): void
+    {
+        if (! \in_array($path, $this->importPaths)) {
+            $this->importPaths[] = $path;
+        }
+    }
+
+    /**
+     * Set import paths
+     *
+     * @param string|array<string|callable> $path
+     *
+     * @return void
+     */
+    public function setImportPaths($path): void
+    {
+        $paths = (array) $path;
+        $actualImportPaths = array_filter($paths, function ($path) {
+            return $path !== '';
+        });
+
+        if (\count($actualImportPaths) !== \count($paths)) {
+            throw new \InvalidArgumentException('Passing an empty string in the import paths to refer to the current working directory is not supported anymore. If that\'s the intended behavior, the value of "getcwd()" should be used directly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compileString()" instead.');
+        }
+
+        $this->importPaths = $actualImportPaths;
+    }
+
+    /**
+     * Sets the output style.
+     *
+     * @param string $style One of the OutputStyle constants
+     *
+     * @return void
+     *
+     * @phpstan-param OutputStyle::* $style
+     */
+    public function setOutputStyle(string $style): void
+    {
+        switch ($style) {
+            case OutputStyle::EXPANDED:
+            case OutputStyle::COMPRESSED:
+                $this->outputStyle = $style;
+                break;
+
+            default:
+                throw new \InvalidArgumentException(sprintf('Invalid output style "%s".', $style));
+        }
+    }
+
+    /**
+     * Configures the handling of non-ASCII outputs.
+     *
+     * If $charset is `true`, this will include a `@charset` declaration or a
+     * UTF-8 [byte-order mark][] if the stylesheet contains any non-ASCII
+     * characters. Otherwise, it will never include a `@charset` declaration or a
+     * byte-order mark.
+     *
+     * [byte-order mark]: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8
+     */
+    public function setCharset(bool $charset): void
+    {
+        $this->charset = $charset;
+    }
+
+    /**
+     * Enable/disable source maps
+     *
+     * @param int $sourceMap
+     *
+     * @return void
+     *
+     * @phpstan-param self::SOURCE_MAP_* $sourceMap
+     */
+    public function setSourceMap(int $sourceMap): void
+    {
+        $this->sourceMap = $sourceMap;
+    }
+
+    /**
+     * Set source map options
+     *
+     * @param array $sourceMapOptions
+     *
+     * @phpstan-param  array{sourceRoot?: string, sourceMapFilename?: string|null, sourceMapURL?: string|null, sourceMapWriteTo?: string|null, outputSourceFiles?: bool, sourceMapRootpath?: string, sourceMapBasepath?: string} $sourceMapOptions
+     *
+     * @return void
+     */
+    public function setSourceMapOptions(array $sourceMapOptions): void
+    {
+        $this->sourceMapOptions = $sourceMapOptions;
+    }
+
+    /**
+     * Register function
+     *
+     * @param string   $name
+     * @param callable $callback
+     * @param string[] $argumentDeclaration
+     *
+     * @return void
+     */
+    public function registerFunction(string $name, callable $callback, array $argumentDeclaration): void
+    {
+        if (self::isNativeFunction($name)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" function is a core sass function. Overriding it with a custom implementation through "%s" is not supported .', $name, __METHOD__));
+        }
+
+        $this->userFunctions[$this->normalizeName($name)] = [$callback, $argumentDeclaration];
+    }
+
+    /**
+     * Unregister function
+     *
+     * @param string $name
+     *
+     * @return void
+     */
+    public function unregisterFunction(string $name): void
+    {
+        unset($this->userFunctions[$this->normalizeName($name)]);
+    }
+
+    /**
+     * Normalize name
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    private function normalizeName(string $name): string
+    {
+        return str_replace('-', '_', $name);
+    }
+
+    /**
      * Compiles the provided scss file into CSS.
      *
      * @param string $path
@@ -3795,19 +3990,6 @@ EOL;
         return self::$null;
     }
 
-
-    /**
-     * Normalize name
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    private function normalizeName(string $name): string
-    {
-        return str_replace('-', '_', $name);
-    }
-
     /**
      * Normalize value
      *
@@ -5129,59 +5311,6 @@ EOL;
     }
 
     /**
-     * Replaces variables.
-     *
-     * @param array<string, mixed> $variables
-     *
-     * @return void
-     */
-    public function replaceVariables(array $variables): void
-    {
-        $this->registeredVars = [];
-        $this->addVariables($variables);
-    }
-
-    /**
-     * Replaces variables.
-     *
-     * @param array<string, mixed> $variables
-     *
-     * @return void
-     */
-    public function addVariables(array $variables): void
-    {
-        foreach ($variables as $name => $value) {
-            if (!$value instanceof Number && !\is_array($value)) {
-                throw new \InvalidArgumentException('Passing raw values to as custom variables to the Compiler is not supported anymore. Use "\ScssPhp\ScssPhp\ValueConverter::parseValue" or "\ScssPhp\ScssPhp\ValueConverter::fromPhp" to convert them instead.');
-            }
-
-            $this->registeredVars[$name] = $value;
-        }
-    }
-
-    /**
-     * Unset variable
-     *
-     * @param string $name
-     *
-     * @return void
-     */
-    public function unsetVariable(string $name): void
-    {
-        unset($this->registeredVars[$name]);
-    }
-
-    /**
-     * Returns list of variables
-     *
-     * @return array
-     */
-    public function getVariables(): array
-    {
-        return $this->registeredVars;
-    }
-
-    /**
      * Adds to list of parsed files
      *
      * @param string|null $path
@@ -5193,136 +5322,6 @@ EOL;
         if (! \is_null($path) && is_file($path)) {
             $this->parsedFiles[realpath($path)] = filemtime($path);
         }
-    }
-
-    /**
-     * Add import path
-     *
-     * @param string|callable $path
-     *
-     * @return void
-     */
-    public function addImportPath($path): void
-    {
-        if (! \in_array($path, $this->importPaths)) {
-            $this->importPaths[] = $path;
-        }
-    }
-
-    /**
-     * Set import paths
-     *
-     * @param string|array<string|callable> $path
-     *
-     * @return void
-     */
-    public function setImportPaths($path): void
-    {
-        $paths = (array) $path;
-        $actualImportPaths = array_filter($paths, function ($path) {
-            return $path !== '';
-        });
-
-        if (\count($actualImportPaths) !== \count($paths)) {
-            throw new \InvalidArgumentException('Passing an empty string in the import paths to refer to the current working directory is not supported anymore. If that\'s the intended behavior, the value of "getcwd()" should be used directly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compileString()" instead.');
-        }
-
-        $this->importPaths = $actualImportPaths;
-    }
-
-    /**
-     * Sets the output style.
-     *
-     * @param string $style One of the OutputStyle constants
-     *
-     * @return void
-     *
-     * @phpstan-param OutputStyle::* $style
-     */
-    public function setOutputStyle(string $style): void
-    {
-        switch ($style) {
-            case OutputStyle::EXPANDED:
-            case OutputStyle::COMPRESSED:
-                $this->outputStyle = $style;
-                break;
-
-            default:
-                throw new \InvalidArgumentException(sprintf('Invalid output style "%s".', $style));
-        }
-    }
-
-    /**
-     * Configures the handling of non-ASCII outputs.
-     *
-     * If $charset is `true`, this will include a `@charset` declaration or a
-     * UTF-8 [byte-order mark][] if the stylesheet contains any non-ASCII
-     * characters. Otherwise, it will never include a `@charset` declaration or a
-     * byte-order mark.
-     *
-     * [byte-order mark]: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8
-     */
-    public function setCharset(bool $charset): void
-    {
-        $this->charset = $charset;
-    }
-
-    /**
-     * Enable/disable source maps
-     *
-     * @param int $sourceMap
-     *
-     * @return void
-     *
-     * @phpstan-param self::SOURCE_MAP_* $sourceMap
-     */
-    public function setSourceMap(int $sourceMap): void
-    {
-        $this->sourceMap = $sourceMap;
-    }
-
-    /**
-     * Set source map options
-     *
-     * @param array $sourceMapOptions
-     *
-     * @phpstan-param  array{sourceRoot?: string, sourceMapFilename?: string|null, sourceMapURL?: string|null, sourceMapWriteTo?: string|null, outputSourceFiles?: bool, sourceMapRootpath?: string, sourceMapBasepath?: string} $sourceMapOptions
-     *
-     * @return void
-     */
-    public function setSourceMapOptions(array $sourceMapOptions): void
-    {
-        $this->sourceMapOptions = $sourceMapOptions;
-    }
-
-    /**
-     * Register function
-     *
-     * @param string   $name
-     * @param callable $callback
-     * @param string[] $argumentDeclaration
-     *
-     * @return void
-     */
-    public function registerFunction(string $name, callable $callback, array $argumentDeclaration): void
-    {
-        if (self::isNativeFunction($name)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" function is a core sass function. Overriding it with a custom implementation through "%s" is not supported .', $name, __METHOD__));
-        }
-
-        $this->userFunctions[$this->normalizeName($name)] = [$callback, $argumentDeclaration];
-    }
-
-    /**
-     * Unregister function
-     *
-     * @param string $name
-     *
-     * @return void
-     */
-    public function unregisterFunction(string $name): void
-    {
-        unset($this->userFunctions[$this->normalizeName($name)]);
     }
 
     /**
