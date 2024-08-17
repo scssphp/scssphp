@@ -119,6 +119,7 @@ use ScssPhp\ScssPhp\SassCallable\PlainCssCallable;
 use ScssPhp\ScssPhp\SassCallable\SassCallable;
 use ScssPhp\ScssPhp\SassCallable\UserDefinedCallable;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\SourceSpan\SourceFile;
 use ScssPhp\ScssPhp\SourceSpan\StringSourceLocation;
 use ScssPhp\ScssPhp\StackTrace\Frame;
 use ScssPhp\ScssPhp\StackTrace\Trace;
@@ -594,9 +595,12 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
         return $this->extensionStore;
     }
 
-    public function run(?Importer $importer, Stylesheet $node): EvaluateResult
+    /**
+     * @param array<string, Value> $initialVariables
+     */
+    public function run(?Importer $importer, Stylesheet $node, array $initialVariables = []): EvaluateResult
     {
-        return EvaluationContext::withEvaluationContext(new VisitorEvaluationContext($this, $node), function () use ($importer, $node) {
+        return EvaluationContext::withEvaluationContext(new VisitorEvaluationContext($this, $node), function () use ($importer, $node, $initialVariables) {
             $url = $node->getSpan()->getSourceUrl();
 
             if ($url !== null) {
@@ -607,7 +611,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             }
 
             /** @var ExtensionStore $extensionStore */
-            [$css, $extensionStore] = $this->addExceptionTrace(fn() => $this->execute($importer, $node));
+            [$css, $extensionStore] = $this->addExceptionTrace(fn() => $this->execute($importer, $node, $initialVariables));
             $selectors = $extensionStore->getSimpleSelectors();
             $unsatisfiedExtension = IterableUtil::firstOrNull($extensionStore->extensionsWhereTarget(fn (SimpleSelector $target) => !EquatableUtil::iterableContains($selectors, $target)));
             if ($unsatisfiedExtension !== null) {
@@ -619,11 +623,17 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
     }
 
     /**
+     * @param array<string, Value> $initialVariables
+     *
      * @return array{CssStylesheet, ExtensionStore}
      */
-    private function execute(?Importer $importer, Stylesheet $stylesheet): array
+    private function execute(?Importer $importer, Stylesheet $stylesheet, array $initialVariables = []): array
     {
         $environment = Environment::create();
+        foreach ($initialVariables as $variableName => $initialVariable) {
+            $environment->setVariable($variableName, $initialVariable, new FakeAstNode(fn () => (new SourceFile(''))->span(0)));
+        }
+
         $css = null;
 
         $extensionStore = ConcreteExtensionStore::create();
