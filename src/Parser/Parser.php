@@ -585,6 +585,10 @@ class Parser
             $value = mb_ord($valueText, 'UTF-8');
         }
 
+        if ($valueText === false) {
+            $this->scanner->error('Invalid Unicode code point.', $start);
+        }
+
         if ($identifierStart ? Character::isNameStart($valueText) : Character::isName($valueText)) {
             if ($value > 0x10ffff) {
                 $this->scanner->error('Invalid Unicode code point.', $start);
