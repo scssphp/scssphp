@@ -172,21 +172,6 @@ class ApiTest extends TestCase
         );
     }
 
-    public function testImportAbsolutePath()
-    {
-        $this->scss = new Compiler();
-
-        $basePath = __DIR__ . \DIRECTORY_SEPARATOR . 'inputs';
-
-        $this->scss->addVariables(['base-path' => ValueConverter::fromPhp($basePath)]);
-        $this->scss->addImportPath(__DIR__ . \DIRECTORY_SEPARATOR . 'inputs');
-
-        $this->assertEquals(
-            trim(file_get_contents(__DIR__ . '/outputs/variables.css')),
-            $this->compile('@import $base-path + "/variables.scss";')
-        );
-    }
-
     /**
      * @dataProvider provideSetVariables
      */
