@@ -1723,7 +1723,8 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             return false;
         }
 
-        $endOffset = strrpos($previous->getSpan()->getText(), '{', $searchFrom);
+        $previousSpanText = $previous->getSpan()->getText();
+        $endOffset = strrpos($previousSpanText, '{', $searchFrom - \strlen($previousSpanText));
         if ($endOffset === false) {
             $endOffset = 0;
         }
