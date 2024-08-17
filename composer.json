@@ -31,11 +31,11 @@
         "ext-json": "*",
         "league/uri": "^7.4",
         "league/uri-interfaces": "^7.4",
-        "symfony/filesystem": "^5.4 || ^6.0 || ^7.0"
+        "symfony/filesystem": "^5.4 || ^6.0 || ^7.0",
+        "symfony/polyfill-mbstring": "^1.30"
     },
     "suggest": {
-        "ext-mbstring": "For best performance, mbstring should be installed as it is faster than ext-iconv",
-        "ext-iconv": "Can be used as fallback when ext-mbstring is not available"
+        "ext-mbstring": "For best performance, mbstring should be installed as it is faster than the polyfill"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4",

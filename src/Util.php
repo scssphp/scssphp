@@ -148,23 +148,7 @@ final class Util
      */
     public static function mbChr(int $code): string
     {
-        // Use the native implementation if available, but not on PHP 7.2 as mb_chr(0) is buggy there
-        if (\PHP_VERSION_ID > 70300 && \function_exists('mb_chr')) {
-            return mb_chr($code, 'UTF-8');
-        }
-
-        if (0x80 > $code %= 0x200000) {
-            $s = \chr($code);
-        } elseif (0x800 > $code) {
-            $s = \chr(0xC0 | $code >> 6) . \chr(0x80 | $code & 0x3F);
-        } elseif (0x10000 > $code) {
-            $s = \chr(0xE0 | $code >> 12) . \chr(0x80 | $code >> 6 & 0x3F) . \chr(0x80 | $code & 0x3F);
-        } else {
-            $s = \chr(0xF0 | $code >> 18) . \chr(0x80 | $code >> 12 & 0x3F)
-                . \chr(0x80 | $code >> 6 & 0x3F) . \chr(0x80 | $code & 0x3F);
-        }
-
-        return $s;
+        return mb_chr($code, 'UTF-8');
     }
 
     /**
@@ -172,32 +156,7 @@ final class Util
      */
     public static function mbOrd(string $string): int
     {
-        if (\function_exists('mb_ord')) {
-            return mb_ord($string, 'UTF-8');
-        }
-
-        if (1 === \strlen($string)) {
-            return \ord($string);
-        }
-
-        $s = unpack('C*', substr($string, 0, 4));
-
-        if (!$s) {
-            return 0;
-        }
-
-        $code = $s[1];
-        if (0xF0 <= $code) {
-            return (($code - 0xF0) << 18) + (($s[2] - 0x80) << 12) + (($s[3] - 0x80) << 6) + $s[4] - 0x80;
-        }
-        if (0xE0 <= $code) {
-            return (($code - 0xE0) << 12) + (($s[2] - 0x80) << 6) + $s[3] - 0x80;
-        }
-        if (0xC0 <= $code) {
-            return (($code - 0xC0) << 6) + $s[2] - 0x80;
-        }
-
-        return $code;
+        return mb_ord($string, 'UTF-8');
     }
 
     /**
@@ -205,16 +164,7 @@ final class Util
      */
     public static function mbStrlen(string $string): int
     {
-        // Use the native implementation if available.
-        if (\function_exists('mb_strlen')) {
-            return mb_strlen($string, 'UTF-8');
-        }
-
-        if (\function_exists('iconv_strlen')) {
-            return (int) @iconv_strlen($string, 'UTF-8');
-        }
-
-        throw new \LogicException('Either mbstring (recommended) or iconv is necessary to use Scssphp.');
+        return mb_strlen($string, 'UTF-8');
     }
 
     /**
@@ -222,32 +172,7 @@ final class Util
      */
     public static function mbSubstr(string $string, int $start, ?int $length = null): string
     {
-        // Use the native implementation if available.
-        if (\function_exists('mb_substr')) {
-            return mb_substr($string, $start, $length, 'UTF-8');
-        }
-
-        if (\function_exists('iconv_substr')) {
-            if ($start < 0) {
-                $start = static::mbStrlen($string) + $start;
-                if ($start < 0) {
-                    $start = 0;
-                }
-            }
-
-            if (null === $length) {
-                $length = 2147483647;
-            } elseif ($length < 0) {
-                $length = static::mbStrlen($string) + $length - $start;
-                if ($length < 0) {
-                    return '';
-                }
-            }
-
-            return (string)iconv_substr($string, $start, $length, 'UTF-8');
-        }
-
-        throw new \LogicException('Either mbstring (recommended) or iconv is necessary to use Scssphp.');
+        return mb_substr($string, $start, $length, 'UTF-8');
     }
 
     /**
@@ -255,15 +180,7 @@ final class Util
      */
     public static function mbStrpos(string $haystack, string $needle, int $offset = 0): int|false
     {
-        if (\function_exists('mb_strpos')) {
-            return mb_strpos($haystack, $needle, $offset, 'UTF-8');
-        }
-
-        if (\function_exists('iconv_strpos')) {
-            return iconv_strpos($haystack, $needle, $offset, 'UTF-8');
-        }
-
-        throw new \LogicException('Either mbstring (recommended) or iconv is necessary to use Scssphp.');
+        return mb_strpos($haystack, $needle, $offset, 'UTF-8');
     }
 
     /**
