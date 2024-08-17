@@ -61,7 +61,7 @@ reporting.
 
 The callable receives 2 arguments. However, the second one is passed only for
 historical reasons (and for some special internal usages) and should not be used
-anymore.
+anymore. Registering a function that requires 2 parameters to be passed is deprecated.
 
 The first argument is an array of Sass values, with one value per declared
 arguments. The compiler guarantees that all arguments are always provided to the

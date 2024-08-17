@@ -5703,7 +5703,33 @@ EOL;
             @trigger_error('Omitting the argument declaration when registering custom function is deprecated and won\'t be supported in ScssPhp 2.0 anymore.', E_USER_DEPRECATED);
         }
 
+        if ($this->reflectCallable($callback)->getNumberOfRequiredParameters() > 1) {
+            @trigger_error('The second argument passed to the callback of custom functions is deprecated and won\'t be supported in ScssPhp 2.0 anymore. Register a callback accepting only 1 parameter instead.', E_USER_DEPRECATED);
+        }
+
         $this->userFunctions[$this->normalizeName($name)] = [$callback, $argumentDeclaration];
+    }
+
+    /**
+     * @return \ReflectionFunctionAbstract
+     */
+    private function reflectCallable(callable $c)
+    {
+        if (\is_object($c) && !$c instanceof \Closure) {
+            $c = [$c, '__invoke'];
+        }
+
+        if (\is_string($c) && false !== strpos($c, '::')) {
+            $c = explode('::', $c, 2);
+        }
+
+        if (\is_array($c)) {
+            return new \ReflectionMethod($c[0], $c[1]);
+        }
+
+        \assert(\is_string($c) || $c instanceof \Closure);
+
+        return new \ReflectionFunction($c);
     }
 
     /**
