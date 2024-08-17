@@ -333,6 +333,201 @@ final class Compiler
     }
 
     /**
+     * Replaces variables.
+     *
+     * @param array<string, mixed> $variables
+     *
+     * @return void
+     */
+    public function replaceVariables(array $variables): void
+    {
+        $this->registeredVars = [];
+        $this->addVariables($variables);
+    }
+
+    /**
+     * Replaces variables.
+     *
+     * @param array<string, mixed> $variables
+     *
+     * @return void
+     */
+    public function addVariables(array $variables): void
+    {
+        foreach ($variables as $name => $value) {
+            if (!$value instanceof Number && !\is_array($value)) {
+                throw new \InvalidArgumentException('Passing raw values to as custom variables to the Compiler is not supported anymore. Use "\ScssPhp\ScssPhp\ValueConverter::parseValue" or "\ScssPhp\ScssPhp\ValueConverter::fromPhp" to convert them instead.');
+            }
+
+            $this->registeredVars[$name] = $value;
+        }
+    }
+
+    /**
+     * Unset variable
+     *
+     * @param string $name
+     *
+     * @return void
+     */
+    public function unsetVariable(string $name): void
+    {
+        unset($this->registeredVars[$name]);
+    }
+
+    /**
+     * Returns list of variables
+     *
+     * @return array
+     */
+    public function getVariables(): array
+    {
+        return $this->registeredVars;
+    }
+
+    /**
+     * Add import path
+     *
+     * @param string|callable $path
+     *
+     * @return void
+     */
+    public function addImportPath($path): void
+    {
+        if (! \in_array($path, $this->importPaths)) {
+            $this->importPaths[] = $path;
+        }
+    }
+
+    /**
+     * Set import paths
+     *
+     * @param string|array<string|callable> $path
+     *
+     * @return void
+     */
+    public function setImportPaths($path): void
+    {
+        $paths = (array) $path;
+        $actualImportPaths = array_filter($paths, function ($path) {
+            return $path !== '';
+        });
+
+        if (\count($actualImportPaths) !== \count($paths)) {
+            throw new \InvalidArgumentException('Passing an empty string in the import paths to refer to the current working directory is not supported anymore. If that\'s the intended behavior, the value of "getcwd()" should be used directly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compileString()" instead.');
+        }
+
+        $this->importPaths = $actualImportPaths;
+    }
+
+    /**
+     * Sets the output style.
+     *
+     * @param string $style One of the OutputStyle constants
+     *
+     * @return void
+     *
+     * @phpstan-param OutputStyle::* $style
+     */
+    public function setOutputStyle(string $style): void
+    {
+        switch ($style) {
+            case OutputStyle::EXPANDED:
+            case OutputStyle::COMPRESSED:
+                $this->outputStyle = $style;
+                break;
+
+            default:
+                throw new \InvalidArgumentException(sprintf('Invalid output style "%s".', $style));
+        }
+    }
+
+    /**
+     * Configures the handling of non-ASCII outputs.
+     *
+     * If $charset is `true`, this will include a `@charset` declaration or a
+     * UTF-8 [byte-order mark][] if the stylesheet contains any non-ASCII
+     * characters. Otherwise, it will never include a `@charset` declaration or a
+     * byte-order mark.
+     *
+     * [byte-order mark]: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8
+     */
+    public function setCharset(bool $charset): void
+    {
+        $this->charset = $charset;
+    }
+
+    /**
+     * Enable/disable source maps
+     *
+     * @param int $sourceMap
+     *
+     * @return void
+     *
+     * @phpstan-param self::SOURCE_MAP_* $sourceMap
+     */
+    public function setSourceMap(int $sourceMap): void
+    {
+        $this->sourceMap = $sourceMap;
+    }
+
+    /**
+     * Set source map options
+     *
+     * @param array $sourceMapOptions
+     *
+     * @phpstan-param  array{sourceRoot?: string, sourceMapFilename?: string|null, sourceMapURL?: string|null, sourceMapWriteTo?: string|null, outputSourceFiles?: bool, sourceMapRootpath?: string, sourceMapBasepath?: string} $sourceMapOptions
+     *
+     * @return void
+     */
+    public function setSourceMapOptions(array $sourceMapOptions): void
+    {
+        $this->sourceMapOptions = $sourceMapOptions;
+    }
+
+    /**
+     * Register function
+     *
+     * @param string   $name
+     * @param callable $callback
+     * @param string[] $argumentDeclaration
+     *
+     * @return void
+     */
+    public function registerFunction(string $name, callable $callback, array $argumentDeclaration): void
+    {
+        if (self::isNativeFunction($name)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" function is a core sass function. Overriding it with a custom implementation through "%s" is not supported .', $name, __METHOD__));
+        }
+
+        $this->userFunctions[$this->normalizeName($name)] = [$callback, $argumentDeclaration];
+    }
+
+    /**
+     * Unregister function
+     *
+     * @param string $name
+     *
+     * @return void
+     */
+    public function unregisterFunction(string $name): void
+    {
+        unset($this->userFunctions[$this->normalizeName($name)]);
+    }
+
+    /**
+     * Normalize name
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    private function normalizeName(string $name): string
+    {
+        return str_replace('-', '_', $name);
+    }
+
+    /**
      * Compiles the provided scss file into CSS.
      *
      * @param string $path
@@ -486,6 +681,246 @@ final class Compiler
         $this->resolvedImports = [];
 
         return $result;
+    }
+
+    /**
+     * Detects whether the import is a CSS import.
+     *
+     * @param string $url
+     *
+     * @return bool
+     */
+    public static function isCssImport(string $url): bool
+    {
+        return 1 === preg_match('~\.css$|^https?://|^//~', $url);
+    }
+
+    /**
+     * Is truthy?
+     *
+     * @param array|Number $value
+     *
+     * @return bool
+     */
+    public function isTruthy($value): bool
+    {
+        return $value !== self::$false && $value !== self::$null;
+    }
+
+    /**
+     * Cast to boolean
+     *
+     * @param bool $thing
+     *
+     * @return array
+     */
+    public function toBool(bool $thing)
+    {
+        return $thing ? self::$true : self::$false;
+    }
+
+    /**
+     * Gets the text of a Sass string
+     *
+     * Calling this method on anything else than a SassString is unsupported. Use {@see assertString} first
+     * to ensure that the value is indeed a string.
+     *
+     * @param array $value
+     *
+     * @return string
+     */
+    public function getStringText(array $value): string
+    {
+        if ($value[0] !== Type::T_STRING) {
+            throw new \InvalidArgumentException('The argument is not a sass string. Did you forgot to use "assertString"?');
+        }
+
+        return $this->compileStringContent($value);
+    }
+
+    /**
+     * Compile string content
+     *
+     * @param array $string
+     * @param bool  $quote
+     *
+     * @return string
+     */
+    private function compileStringContent($string, bool $quote = true): string
+    {
+        $parts = [];
+
+        foreach ($string[2] as $part) {
+            if (\is_array($part) || $part instanceof Number) {
+                $parts[] = $this->compileValue($part, $quote);
+            } else {
+                $parts[] = $part;
+            }
+        }
+
+        return implode($parts);
+    }
+
+    /**
+     * Assert value is a string
+     *
+     * This method deals with internal implementation details of the value
+     * representation where unquoted strings can sometimes be stored under
+     * other types.
+     * The returned value is always using the T_STRING type.
+     *
+     * @param array|Number $value
+     * @param string|null  $varName
+     *
+     * @return array
+     *
+     * @throws SassScriptException
+     */
+    public function assertString($value, ?string $varName = null)
+    {
+        // case of url(...) parsed a a function
+        if ($value[0] === Type::T_FUNCTION) {
+            $value = $this->coerceString($value);
+        }
+
+        if (! \in_array($value[0], [Type::T_STRING, Type::T_KEYWORD])) {
+            $value = $this->compileValue($value);
+            throw SassScriptException::forArgument("$value is not a string.", $varName);
+        }
+
+        return $this->coerceString($value);
+    }
+
+    /**
+     * Assert value is a map
+     *
+     * @param array|Number $value
+     * @param string|null  $varName
+     *
+     * @return array
+     *
+     * @throws SassScriptException
+     */
+    public function assertMap($value, ?string $varName = null)
+    {
+        $map = $this->tryMap($value);
+
+        if ($map === null) {
+            $value = $this->compileValue($value);
+
+            throw SassScriptException::forArgument("$value is not a map.", $varName);
+        }
+
+        return $map;
+    }
+
+    /**
+     * Tries to convert an item to a Sass map
+     *
+     * @param Number|array $item
+     *
+     * @return array|null
+     */
+    private function tryMap($item)
+    {
+        if ($item instanceof Number) {
+            return null;
+        }
+
+        if ($item[0] === Type::T_MAP) {
+            return $item;
+        }
+
+        if (
+            $item[0] === Type::T_LIST &&
+            $item[2] === []
+        ) {
+            return self::$emptyMap;
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the keywords of an argument list.
+     *
+     * Keys in the returned array are normalized names (underscores are replaced with dashes)
+     * without the leading `$`.
+     * Calling this helper with anything that an argument list received for a rest argument
+     * of the function argument declaration is not supported.
+     *
+     * @param array|Number $value
+     *
+     * @return array<string, array|Number>
+     */
+    public function getArgumentListKeywords($value): array
+    {
+        if ($value[0] !== Type::T_LIST || !isset($value[3]) || !\is_array($value[3])) {
+            throw new \InvalidArgumentException('The argument is not a sass argument list.');
+        }
+
+        return $value[3];
+    }
+
+    /**
+     * Assert value is a color
+     *
+     * @param array|Number $value
+     * @param string|null  $varName
+     *
+     * @return array
+     *
+     * @throws SassScriptException
+     */
+    public function assertColor($value, ?string $varName = null)
+    {
+        if ($color = $this->coerceColor($value)) {
+            return $color;
+        }
+
+        $value = $this->compileValue($value);
+
+        throw SassScriptException::forArgument("$value is not a color.", $varName);
+    }
+
+    /**
+     * Assert value is a number
+     *
+     * @param array|Number $value
+     * @param string|null  $varName
+     *
+     * @return Number
+     *
+     * @throws SassScriptException
+     */
+    public function assertNumber($value, ?string $varName = null): Number
+    {
+        if (!$value instanceof Number) {
+            $value = $this->compileValue($value);
+            throw SassScriptException::forArgument("$value is not a number.", $varName);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Assert value is a integer
+     *
+     * @param array|Number $value
+     * @param string|null  $varName
+     *
+     * @return int
+     *
+     * @throws SassScriptException
+     */
+    public function assertInteger($value, ?string $varName = null): int
+    {
+        $value = $this->assertNumber($value, $varName)->getDimension();
+        if (round($value - \intval($value), Number::PRECISION) > 0) {
+            throw SassScriptException::forArgument("$value is not an integer.", $varName);
+        }
+
+        return intval($value);
     }
 
     /**
@@ -3334,18 +3769,6 @@ EOL;
     }
 
     /**
-     * Is truthy?
-     *
-     * @param array|Number $value
-     *
-     * @return bool
-     */
-    public function isTruthy($value): bool
-    {
-        return $value !== self::$false && $value !== self::$null;
-    }
-
-    /**
      * Is the value a direct relationship combinator?
      *
      * @param string $value
@@ -3795,19 +4218,6 @@ EOL;
         return self::$null;
     }
 
-
-    /**
-     * Normalize name
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    private function normalizeName(string $name): string
-    {
-        return str_replace('-', '_', $name);
-    }
-
     /**
      * Normalize value
      *
@@ -4207,18 +4617,6 @@ EOL;
     }
 
     /**
-     * Cast to boolean
-     *
-     * @param bool $thing
-     *
-     * @return array
-     */
-    public function toBool(bool $thing)
-    {
-        return $thing ? self::$true : self::$false;
-    }
-
-    /**
      * Escape non printable chars in strings output as in dart-sass
      *
      * @param string $string
@@ -4572,48 +4970,6 @@ EOL;
             default:
                 return $this->compileValue($value);
         }
-    }
-
-    /**
-     * Gets the text of a Sass string
-     *
-     * Calling this method on anything else than a SassString is unsupported. Use {@see assertString} first
-     * to ensure that the value is indeed a string.
-     *
-     * @param array $value
-     *
-     * @return string
-     */
-    public function getStringText(array $value): string
-    {
-        if ($value[0] !== Type::T_STRING) {
-            throw new \InvalidArgumentException('The argument is not a sass string. Did you forgot to use "assertString"?');
-        }
-
-        return $this->compileStringContent($value);
-    }
-
-    /**
-     * Compile string content
-     *
-     * @param array $string
-     * @param bool  $quote
-     *
-     * @return string
-     */
-    private function compileStringContent($string, bool $quote = true): string
-    {
-        $parts = [];
-
-        foreach ($string[2] as $part) {
-            if (\is_array($part) || $part instanceof Number) {
-                $parts[] = $this->compileValue($part, $quote);
-            } else {
-                $parts[] = $part;
-            }
-        }
-
-        return implode($parts);
     }
 
     /**
@@ -5129,59 +5485,6 @@ EOL;
     }
 
     /**
-     * Replaces variables.
-     *
-     * @param array<string, mixed> $variables
-     *
-     * @return void
-     */
-    public function replaceVariables(array $variables): void
-    {
-        $this->registeredVars = [];
-        $this->addVariables($variables);
-    }
-
-    /**
-     * Replaces variables.
-     *
-     * @param array<string, mixed> $variables
-     *
-     * @return void
-     */
-    public function addVariables(array $variables): void
-    {
-        foreach ($variables as $name => $value) {
-            if (!$value instanceof Number && !\is_array($value)) {
-                throw new \InvalidArgumentException('Passing raw values to as custom variables to the Compiler is not supported anymore. Use "\ScssPhp\ScssPhp\ValueConverter::parseValue" or "\ScssPhp\ScssPhp\ValueConverter::fromPhp" to convert them instead.');
-            }
-
-            $this->registeredVars[$name] = $value;
-        }
-    }
-
-    /**
-     * Unset variable
-     *
-     * @param string $name
-     *
-     * @return void
-     */
-    public function unsetVariable(string $name): void
-    {
-        unset($this->registeredVars[$name]);
-    }
-
-    /**
-     * Returns list of variables
-     *
-     * @return array
-     */
-    public function getVariables(): array
-    {
-        return $this->registeredVars;
-    }
-
-    /**
      * Adds to list of parsed files
      *
      * @param string|null $path
@@ -5193,136 +5496,6 @@ EOL;
         if (! \is_null($path) && is_file($path)) {
             $this->parsedFiles[realpath($path)] = filemtime($path);
         }
-    }
-
-    /**
-     * Add import path
-     *
-     * @param string|callable $path
-     *
-     * @return void
-     */
-    public function addImportPath($path): void
-    {
-        if (! \in_array($path, $this->importPaths)) {
-            $this->importPaths[] = $path;
-        }
-    }
-
-    /**
-     * Set import paths
-     *
-     * @param string|array<string|callable> $path
-     *
-     * @return void
-     */
-    public function setImportPaths($path): void
-    {
-        $paths = (array) $path;
-        $actualImportPaths = array_filter($paths, function ($path) {
-            return $path !== '';
-        });
-
-        if (\count($actualImportPaths) !== \count($paths)) {
-            throw new \InvalidArgumentException('Passing an empty string in the import paths to refer to the current working directory is not supported anymore. If that\'s the intended behavior, the value of "getcwd()" should be used directly instead. If this was used for resolving relative imports of the input alongside "chdir" with the source directory, the path of the input file should be passed to "compileString()" instead.');
-        }
-
-        $this->importPaths = $actualImportPaths;
-    }
-
-    /**
-     * Sets the output style.
-     *
-     * @param string $style One of the OutputStyle constants
-     *
-     * @return void
-     *
-     * @phpstan-param OutputStyle::* $style
-     */
-    public function setOutputStyle(string $style): void
-    {
-        switch ($style) {
-            case OutputStyle::EXPANDED:
-            case OutputStyle::COMPRESSED:
-                $this->outputStyle = $style;
-                break;
-
-            default:
-                throw new \InvalidArgumentException(sprintf('Invalid output style "%s".', $style));
-        }
-    }
-
-    /**
-     * Configures the handling of non-ASCII outputs.
-     *
-     * If $charset is `true`, this will include a `@charset` declaration or a
-     * UTF-8 [byte-order mark][] if the stylesheet contains any non-ASCII
-     * characters. Otherwise, it will never include a `@charset` declaration or a
-     * byte-order mark.
-     *
-     * [byte-order mark]: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8
-     */
-    public function setCharset(bool $charset): void
-    {
-        $this->charset = $charset;
-    }
-
-    /**
-     * Enable/disable source maps
-     *
-     * @param int $sourceMap
-     *
-     * @return void
-     *
-     * @phpstan-param self::SOURCE_MAP_* $sourceMap
-     */
-    public function setSourceMap(int $sourceMap): void
-    {
-        $this->sourceMap = $sourceMap;
-    }
-
-    /**
-     * Set source map options
-     *
-     * @param array $sourceMapOptions
-     *
-     * @phpstan-param  array{sourceRoot?: string, sourceMapFilename?: string|null, sourceMapURL?: string|null, sourceMapWriteTo?: string|null, outputSourceFiles?: bool, sourceMapRootpath?: string, sourceMapBasepath?: string} $sourceMapOptions
-     *
-     * @return void
-     */
-    public function setSourceMapOptions(array $sourceMapOptions): void
-    {
-        $this->sourceMapOptions = $sourceMapOptions;
-    }
-
-    /**
-     * Register function
-     *
-     * @param string   $name
-     * @param callable $callback
-     * @param string[] $argumentDeclaration
-     *
-     * @return void
-     */
-    public function registerFunction(string $name, callable $callback, array $argumentDeclaration): void
-    {
-        if (self::isNativeFunction($name)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" function is a core sass function. Overriding it with a custom implementation through "%s" is not supported .', $name, __METHOD__));
-        }
-
-        $this->userFunctions[$this->normalizeName($name)] = [$callback, $argumentDeclaration];
-    }
-
-    /**
-     * Unregister function
-     *
-     * @param string $name
-     *
-     * @return void
-     */
-    public function unregisterFunction(string $name): void
-    {
-        unset($this->userFunctions[$this->normalizeName($name)]);
     }
 
     /**
@@ -5384,18 +5557,6 @@ EOL;
     private function registerImport(?string $currentDirectory, string $path, string $filePath): void
     {
         $this->resolvedImports[] = ['currentDir' => $currentDirectory, 'path' => $path, 'filePath' => $filePath];
-    }
-
-    /**
-     * Detects whether the import is a CSS import.
-     *
-     * @param string $url
-     *
-     * @return bool
-     */
-    public static function isCssImport(string $url): bool
-    {
-        return 1 === preg_match('~\.css$|^https?://|^//~', $url);
     }
 
     /**
@@ -6450,33 +6611,6 @@ EOL;
     }
 
     /**
-     * Tries to convert an item to a Sass map
-     *
-     * @param Number|array $item
-     *
-     * @return array|null
-     */
-    private function tryMap($item)
-    {
-        if ($item instanceof Number) {
-            return null;
-        }
-
-        if ($item[0] === Type::T_MAP) {
-            return $item;
-        }
-
-        if (
-            $item[0] === Type::T_LIST &&
-            $item[2] === []
-        ) {
-            return self::$emptyMap;
-        }
-
-        return null;
-    }
-
-    /**
      * Coerce something to map
      *
      * @param array|Number $item
@@ -6758,59 +6892,6 @@ EOL;
     }
 
     /**
-     * Assert value is a string
-     *
-     * This method deals with internal implementation details of the value
-     * representation where unquoted strings can sometimes be stored under
-     * other types.
-     * The returned value is always using the T_STRING type.
-     *
-     * @param array|Number $value
-     * @param string|null  $varName
-     *
-     * @return array
-     *
-     * @throws SassScriptException
-     */
-    public function assertString($value, ?string $varName = null)
-    {
-        // case of url(...) parsed a a function
-        if ($value[0] === Type::T_FUNCTION) {
-            $value = $this->coerceString($value);
-        }
-
-        if (! \in_array($value[0], [Type::T_STRING, Type::T_KEYWORD])) {
-            $value = $this->compileValue($value);
-            throw SassScriptException::forArgument("$value is not a string.", $varName);
-        }
-
-        return $this->coerceString($value);
-    }
-
-    /**
-     * Assert value is a map
-     *
-     * @param array|Number $value
-     * @param string|null  $varName
-     *
-     * @return array
-     *
-     * @throws SassScriptException
-     */
-    public function assertMap($value, ?string $varName = null)
-    {
-        $map = $this->tryMap($value);
-
-        if ($map === null) {
-            $value = $this->compileValue($value);
-
-            throw SassScriptException::forArgument("$value is not a map.", $varName);
-        }
-
-        return $map;
-    }
-
-    /**
      * Assert value is a list
      *
      * @param array|Number $value
@@ -6827,88 +6908,6 @@ EOL;
         assert(\is_array($value));
 
         return $value;
-    }
-
-    /**
-     * Gets the keywords of an argument list.
-     *
-     * Keys in the returned array are normalized names (underscores are replaced with dashes)
-     * without the leading `$`.
-     * Calling this helper with anything that an argument list received for a rest argument
-     * of the function argument declaration is not supported.
-     *
-     * @param array|Number $value
-     *
-     * @return array<string, array|Number>
-     */
-    public function getArgumentListKeywords($value): array
-    {
-        if ($value[0] !== Type::T_LIST || !isset($value[3]) || !\is_array($value[3])) {
-            throw new \InvalidArgumentException('The argument is not a sass argument list.');
-        }
-
-        return $value[3];
-    }
-
-    /**
-     * Assert value is a color
-     *
-     * @param array|Number $value
-     * @param string|null  $varName
-     *
-     * @return array
-     *
-     * @throws SassScriptException
-     */
-    public function assertColor($value, ?string $varName = null)
-    {
-        if ($color = $this->coerceColor($value)) {
-            return $color;
-        }
-
-        $value = $this->compileValue($value);
-
-        throw SassScriptException::forArgument("$value is not a color.", $varName);
-    }
-
-    /**
-     * Assert value is a number
-     *
-     * @param array|Number $value
-     * @param string|null  $varName
-     *
-     * @return Number
-     *
-     * @throws SassScriptException
-     */
-    public function assertNumber($value, ?string $varName = null): Number
-    {
-        if (!$value instanceof Number) {
-            $value = $this->compileValue($value);
-            throw SassScriptException::forArgument("$value is not a number.", $varName);
-        }
-
-        return $value;
-    }
-
-    /**
-     * Assert value is a integer
-     *
-     * @param array|Number $value
-     * @param string|null  $varName
-     *
-     * @return int
-     *
-     * @throws SassScriptException
-     */
-    public function assertInteger($value, ?string $varName = null): int
-    {
-        $value = $this->assertNumber($value, $varName)->getDimension();
-        if (round($value - \intval($value), Number::PRECISION) > 0) {
-            throw SassScriptException::forArgument("$value is not an integer.", $varName);
-        }
-
-        return intval($value);
     }
 
     /**
