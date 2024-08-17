@@ -63,9 +63,14 @@ class ApiTest extends TestCase
         );
     }
 
+    /**
+     * @group legacy
+     */
     public function testUserFunctionKwargs()
     {
         $this->scss = new Compiler();
+
+        $this->expectDeprecation('The second argument passed to the callback of custom functions is deprecated and won\'t be supported in ScssPhp 2.0 anymore. Register a callback accepting only 1 parameter instead.');
 
         $this->scss->registerFunction(
             'divide',

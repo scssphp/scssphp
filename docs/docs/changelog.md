@@ -1,5 +1,11 @@
 # Changelog
 
+## **1.13.0** -- August 17, 2024
+
+**Deprecated**
+
+* Deprecate registering a custom function with a callable expecting 2 arguments (@stof)
+
 ## **1.12.1** -- January 13, 2024
 
 **Fixed**
