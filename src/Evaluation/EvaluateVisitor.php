@@ -2395,7 +2395,7 @@ WARNING;
         $first = $textBetweenOperands[0];
         $last = $textBetweenOperands[\strlen($textBetweenOperands) - 1];
 
-        if (!(Character::isWhitespace($first) || $first === '/') && !(Character::isWhitespace($last) || $last === '/')) {
+        if (!(Character::isWhitespace($first) || $first === '/') || !(Character::isWhitespace($last) || $last === '/')) {
             throw $this->exception('"+" and "-" must be surrounded by whitespace in calculations.', $node->getOperatorSpan());
         }
     }

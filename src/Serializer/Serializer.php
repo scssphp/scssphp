@@ -16,7 +16,6 @@ use ScssPhp\ScssPhp\Ast\Css\CssNode;
 use ScssPhp\ScssPhp\Ast\Selector\Selector;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\OutputStyle;
-use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Value\Value;
 
 /**
@@ -35,7 +34,7 @@ final class Serializer
 
         $prefix = '';
 
-        if ($charset && strlen($css) !== Util::mbStrlen($css)) {
+        if ($charset && strlen($css) !== mb_strlen($css, 'UTF-8')) {
             if ($style === OutputStyle::COMPRESSED) {
                 $prefix = "\u{FEFF}";
             } else {

@@ -45,7 +45,6 @@ use ScssPhp\ScssPhp\OutputStyle;
 use ScssPhp\ScssPhp\Parser\LineScanner;
 use ScssPhp\ScssPhp\Parser\Parser;
 use ScssPhp\ScssPhp\Parser\StringScanner;
-use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\NumberUtil;
 use ScssPhp\ScssPhp\Util\SpanUtil;
@@ -1366,7 +1365,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
         if ($extraBytes) {
             $fullChar = substr($string, $i, $extraBytes + 1);
-            $charCode = Util::mbOrd($fullChar);
+            $charCode = mb_ord($fullChar, 'UTF-8');
         } else {
             $fullChar = $char;
             $charCode = $firstByteCode;
@@ -1395,7 +1394,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
     private function writeEscape(StringBuffer $buffer, string $character, string $string, int $i): void
     {
         $buffer->writeChar('\\');
-        $buffer->write(dechex(Util::mbOrd($character)));
+        $buffer->write(dechex(mb_ord($character, 'UTF-8')));
 
         if (\strlen($string) === $i + 1) {
             return;
@@ -1724,7 +1723,8 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             return false;
         }
 
-        $endOffset = strrpos($previous->getSpan()->getText(), '{', $searchFrom);
+        $previousSpanText = $previous->getSpan()->getText();
+        $endOffset = strrpos($previousSpanText, '{', $searchFrom - \strlen($previousSpanText));
         if ($endOffset === false) {
             $endOffset = 0;
         }

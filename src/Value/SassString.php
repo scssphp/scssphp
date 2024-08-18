@@ -13,7 +13,6 @@
 namespace ScssPhp\ScssPhp\Value;
 
 use ScssPhp\ScssPhp\Exception\SassScriptException;
-use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
 /**
@@ -63,7 +62,7 @@ final class SassString extends Value
 
     public function getSassLength(): int
     {
-        return Util::mbStrlen($this->text);
+        return mb_strlen($this->text, 'UTF-8');
     }
 
     public function isSpecialNumber(): bool
@@ -175,7 +174,7 @@ final class SassString extends Value
             return 0;
         }
 
-        return \strlen(Util::mbSubstr($this->text, 0, $codepointIndex));
+        return \strlen(mb_substr($this->text, 0, $codepointIndex, 'UTF-8'));
     }
 
     /**

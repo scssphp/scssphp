@@ -669,7 +669,7 @@ abstract class SassNumber extends Value
         }
 
         if (!$other instanceof SassColor) {
-            return parent::plus($other);
+            return parent::minus($other);
         }
 
         throw new SassScriptException("Undefined operation \"$this - $other\".");
