@@ -139,4 +139,32 @@ class PathTest extends TestCase
         yield ['~/.bashrc', '~/.bashrc'];
         yield ['~/.notes.txt', '~/.notes'];
     }
+
+    /**
+     * @dataProvider provideCanonicalizeCases
+     */
+    public function testCanonicalize(string $path, string $expected): void
+    {
+        self::assertEquals($expected, Path::canonicalize($path));
+    }
+
+    public static function provideCanonicalizeCases(): iterable
+    {
+        yield [__DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'lower.txt', __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'lower.txt'];
+        yield [__DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'SubFolder' . \DIRECTORY_SEPARATOR . '..'  . \DIRECTORY_SEPARATOR . 'lower.txt', __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'lower.txt'];
+        yield [__DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'SubFolder' . \DIRECTORY_SEPARATOR . 'lower.txt', __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'SubFolder' . \DIRECTORY_SEPARATOR . 'lower.txt'];
+        yield [__DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'SubFolder' . \DIRECTORY_SEPARATOR . 'UPPER.txt', __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'SubFolder' . \DIRECTORY_SEPARATOR . 'UPPER.txt'];
+        yield [__DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'camelCase.txt', __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'camelCase.txt'];
+
+        if (!file_exists(__DIR__ . '/Fixtures/camelcase.txt')) {
+            // We are on a case-sensitive file system so other cases don't apply
+            return;
+        }
+
+        yield [__DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'Lower.txt', __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'lower.txt'];
+        yield [__DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'SubFolder' . \DIRECTORY_SEPARATOR . '..'  . \DIRECTORY_SEPARATOR . 'Lower.txt', __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'lower.txt'];
+        yield [__DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'subfolder' . \DIRECTORY_SEPARATOR . 'lower.txt', __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'SubFolder' . \DIRECTORY_SEPARATOR . 'lower.txt'];
+        yield [__DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'SubFolder' . \DIRECTORY_SEPARATOR . 'upper.txt', __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'SubFolder' . \DIRECTORY_SEPARATOR . 'UPPER.txt'];
+        yield [__DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'camelcase.txt', __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR . 'camelCase.txt'];
+    }
 }
