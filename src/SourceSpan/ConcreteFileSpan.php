@@ -104,9 +104,39 @@ final class ConcreteFileSpan implements FileSpan
         return $buffer;
     }
 
+    public function messageMultiple(string $message, string $label, array $secondarySpans): string
+    {
+        $startLine = $this->getStart()->getLine() + 1;
+        $startColumn = $this->getStart()->getColumn() + 1;
+        $sourceUrl = $this->file->getSourceUrl();
+
+        $buffer = "line $startLine, column $startColumn";
+
+        if ($sourceUrl !== null) {
+            $prettyUri = Path::prettyUri($sourceUrl);
+            $buffer .= " of $prettyUri";
+        }
+
+        $buffer .= ": $message";
+
+        $highlight = $this->highlightMultiple($label, $secondarySpans);
+        if ($highlight !== '') {
+            $buffer .= "\n";
+            $buffer .= $highlight;
+        }
+
+        return $buffer;
+    }
+
     public function highlight(): string
     {
         // TODO: Implement highlight() method.
+        return '';
+    }
+
+    public function highlightMultiple(string $label, array $secondarySpans): string
+    {
+        // TODO: Implement highlightMultiple() method.
         return '';
     }
 

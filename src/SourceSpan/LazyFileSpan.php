@@ -91,9 +91,19 @@ class LazyFileSpan implements FileSpan
         return $this->getSpan()->message($message);
     }
 
+    public function messageMultiple(string $message, string $label, array $secondarySpans): string
+    {
+        return $this->getSpan()->messageMultiple($message, $label, $secondarySpans);
+    }
+
     public function highlight(): string
     {
         return $this->getSpan()->highlight();
+    }
+
+    public function highlightMultiple(string $label, array $secondarySpans): string
+    {
+        return $this->getSpan()->highlightMultiple($label, $secondarySpans);
     }
 
     public function subspan(int $start, ?int $end = null): FileSpan
