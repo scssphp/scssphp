@@ -95,9 +95,19 @@ final class ConcreteFileSpan implements FileSpan
 
         $buffer .= ": $message";
 
-        // TODO implement the highlighting of a code snippet
+        $highlight = $this->highlight();
+        if ($highlight !== '') {
+            $buffer .= "\n";
+            $buffer .= $highlight;
+        }
 
         return $buffer;
+    }
+
+    public function highlight(): string
+    {
+        // TODO: Implement highlight() method.
+        return '';
     }
 
     public function subspan(int $start, ?int $end = null): FileSpan

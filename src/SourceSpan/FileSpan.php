@@ -43,6 +43,14 @@ interface FileSpan
     public function message(string $message): string;
 
     /**
+     * Prints the text associated with this span in a user-friendly way.
+     *
+     * This is identical to {@see message}, except that it doesn't print the file
+     * name, line number, column number, or message.
+     */
+    public function highlight(): string;
+
+    /**
      * Return a span from $start bytes (inclusive) to $end bytes
      * (exclusive) after the beginning of this span
      */

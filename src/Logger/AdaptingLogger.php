@@ -49,10 +49,9 @@ final class AdaptingLogger implements LocationAwareLoggerInterface
         } elseif ($trace !== null) {
             // If there's a span and a trace, the span's location information is
             // probably duplicated in the trace, so we just use it for highlighting.
-            $formattedMessage = $message;
-            // TODO implement the highlight of a span
+            $formattedMessage = $message . "\n\n" . $span->highlight();
         } else {
-            $formattedMessage = ' on ' . $span->message("\n" . $message);
+            $formattedMessage = 'on ' . $span->message("\n" . $message);
         }
 
         if ($trace !== null) {
