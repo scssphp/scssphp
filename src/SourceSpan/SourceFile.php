@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\SourceSpan;
 
 use League\Uri\Contracts\UriInterface;
+use ScssPhp\ScssPhp\Util\ListUtil;
 
 /**
  * @internal
@@ -60,15 +61,27 @@ final class SourceFile
 
         $prev = 0;
 
-        while (($pos = strpos($content, "\n", $prev)) !== false) {
-            $lineStarts[] = $pos + 1;
-            $prev = $pos + 1;
-        }
+        while (true) {
+            $crPos = strpos($content, "\r", $prev);
+            $lfPos = strpos($content, "\n", $prev);
 
-        $lineStarts[] = \strlen($content);
+            if ($crPos === false && $lfPos === false) {
+                break;
+            }
 
-        if (!str_ends_with($content, "\n")) {
-            $lineStarts[] = \strlen($content) + 1;
+            if ($crPos !== false) {
+                // Return not followed by newline is treated as a newline
+                if ($lfPos === false || $lfPos > $crPos + 1) {
+                    $lineStarts[] = $crPos + 1;
+                    $prev = $crPos + 1;
+                    continue;
+                }
+            }
+
+            if ($lfPos !== false) {
+                $lineStarts[] = $lfPos + 1;
+                $prev = $lfPos + 1;
+            }
         }
 
         $this->lineStarts = $lineStarts;
@@ -134,34 +147,21 @@ final class SourceFile
             throw new \OutOfRangeException('Position cannot be greater than the number of characters in the string.');
         }
 
+        if ($offset < $this->lineStarts[0]) {
+            return -1;
+        }
+
+        if ($offset >= ListUtil::last($this->lineStarts)) {
+            return \count($this->lineStarts) - 1;
+        }
+
         if ($this->isNearCacheLine($offset)) {
             assert($this->cachedLine !== null);
 
             return $this->cachedLine;
         }
 
-        $low = 0;
-        $high = \count($this->lineStarts);
-
-        while ($low < $high) {
-            $mid = (int) (($high + $low) / 2);
-
-            if ($offset < $this->lineStarts[$mid]) {
-                $high = $mid - 1;
-                continue;
-            }
-
-            if ($offset >= $this->lineStarts[$mid + 1]) {
-                $low = $mid + 1;
-                continue;
-            }
-
-            $this->cachedLine = $mid;
-
-            return $this->cachedLine;
-        }
-
-        $this->cachedLine = $low;
+        $this->cachedLine = $this->binarySearch($offset) - 1;
 
         return $this->cachedLine;
     }
@@ -199,6 +199,29 @@ final class SourceFile
         }
 
         return false;
+    }
+
+    /**
+     * Binary search through {@see $lineStarts} to find the line containing $offset.
+     *
+     * Returns the index of the line in {@see $lineStarts}.
+     */
+    private function binarySearch(int $offset): int
+    {
+        $min = 0;
+        $max = \count($this->lineStarts) - 1;
+
+        while ($min < $max) {
+            $half = $min + intdiv($max - $min, 2);
+
+            if ($this->lineStarts[$half] > $offset) {
+                $max = $half;
+            } else {
+                $min = $half + 1;
+            }
+        }
+
+        return $max;
     }
 
     /**
