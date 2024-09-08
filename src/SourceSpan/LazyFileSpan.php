@@ -81,6 +81,16 @@ class LazyFileSpan implements FileSpan
         return $this->getSpan()->getText();
     }
 
+    public function union(SourceSpan $other): SourceSpan
+    {
+        return $this->getSpan()->union($other);
+    }
+
+    public function compareTo(SourceSpan $other): int
+    {
+        return $this->getSpan()->compareTo($other);
+    }
+
     public function expand(FileSpan $other): FileSpan
     {
         return $this->getSpan()->expand($other);
@@ -109,5 +119,10 @@ class LazyFileSpan implements FileSpan
     public function subspan(int $start, ?int $end = null): FileSpan
     {
         return $this->getSpan()->subspan($start, $end);
+    }
+
+    public function getContext(): string
+    {
+        return $this->getSpan()->getContext();
     }
 }
