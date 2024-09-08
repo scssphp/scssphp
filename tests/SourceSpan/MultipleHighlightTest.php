@@ -36,8 +36,6 @@ gibble bibble bop
 TXT,
             Uri::new('file1.txt')
         );
-
-        self::markTestIncomplete('Highlighting is not implemented yet.');
     }
 
     public function testHighlightsSpansOnSeparateLines(): void

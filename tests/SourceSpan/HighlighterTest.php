@@ -28,8 +28,6 @@ zip zap zop
 
 TXT
         );
-
-        self::markTestIncomplete('Highlighting is not implemented yet.');
     }
 
     public function testPointsToSpanInTheSource(): void

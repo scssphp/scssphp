@@ -20,6 +20,91 @@ use League\Uri\Contracts\UriInterface;
 final class Util
 {
     /**
+     * @param iterable<object> $iter
+     */
+    public static function isAllTheSame(iterable $iter): bool
+    {
+        $previousValue = null;
+
+        foreach ($iter as $value) {
+            if ($previousValue === null) {
+                $previousValue = $value;
+                continue;
+            }
+
+            if (!self::isSame($value, $previousValue)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns whether 2 objects are the same, considering URIs as the same by equality rather than reference.
+     */
+    public static function isSame(object $object1, object $object2): bool
+    {
+        if ($object1 === $object2) {
+            return true;
+        }
+
+        if ($object1 instanceof UriInterface && $object2 instanceof UriInterface) {
+            return $object1->toString() === $object2->toString();
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether $span covers multiple lines.
+     */
+    public static function isMultiline(SourceSpan $span): bool
+    {
+        return $span->getStart()->getLine() !== $span->getEnd()->getLine();
+    }
+
+    /**
+     * Sets the first `null` element of $list to $element.
+     *
+     * @template E
+     * @param list<E|null> $list
+     * @param E            $element
+     */
+    public static function replaceFirstNull(array &$list, $element): void
+    {
+        $index = array_search(null, $list, true);
+
+        if ($index === false) {
+            throw new \InvalidArgumentException('The list contains no null elements.');
+        }
+
+        // @phpstan-ignore parameterByRef.type
+        $list[$index] = $element;
+        \assert(array_is_list($list));
+    }
+
+    /**
+     * Sets the element of $list that currently contains $element to `null`.
+     *
+     * @template E
+     * @param list<E|null> $list
+     * @param E            $element
+     */
+    public static function replaceWithNull(array &$list, $element): void
+    {
+        $index = array_search($element, $list, true);
+
+        if ($index === false) {
+            throw new \InvalidArgumentException('The list contains no matching elements.');
+        }
+
+        // @phpstan-ignore parameterByRef.type
+        $list[$index] = null;
+        \assert(array_is_list($list));
+    }
+
+    /**
      * Finds a line in $context containing $text at the specified column.
      *
      * Returns the index in $context where that line begins, or null if none
@@ -174,5 +259,24 @@ final class Util
         }
 
         return (string) $url1 === (string) $url2;
+    }
+
+    /**
+     * Finds the first index in the list that satisfies the provided $test.
+     *
+     * @template E
+     *
+     * @param list<E> $list
+     * @param callable(E): bool $test
+     */
+    public static function indexWhere(array $list, callable $test): ?int
+    {
+        foreach ($list as $index => $element) {
+            if ($test($element)) {
+                return $index;
+            }
+        }
+
+        return null;
     }
 }

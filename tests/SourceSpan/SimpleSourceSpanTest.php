@@ -331,8 +331,6 @@ class SimpleSourceSpanTest extends TestCase
 
     public function testMessagePrintsTheTextBeingDisplayed(): void
     {
-        self::markTestIncomplete('Highlighting is not implemented yet.');
-
         self::assertEquals(
             <<<'TXT'
 line 1, column 6 of foo.dart: oh no
@@ -348,7 +346,6 @@ TXT,
     public function testMessageGracefullyHandlesAMissingSourceUrl(): void
     {
         $span = new SimpleSourceSpan(new SimpleSourceLocation(5), new SimpleSourceLocation(12), 'foo bar');
-        self::markTestIncomplete('Highlighting is not implemented yet.');
 
         self::assertEquals(
             <<<'TXT'

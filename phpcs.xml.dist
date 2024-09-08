@@ -10,4 +10,7 @@
         <!-- PSR12 does not actually have a hard line length -->
         <exclude name="Generic.Files.LineLength"/>
     </rule>
+    <rule ref="Generic.NamingConventions.UpperCaseConstantName">
+        <exclude-pattern>*/src/SourceSpan/Highlighter/AsciiGlyph.php</exclude-pattern>
+    </rule>
 </ruleset>

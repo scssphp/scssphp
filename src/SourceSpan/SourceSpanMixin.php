@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\SourceSpan;
 
 use League\Uri\Contracts\UriInterface;
+use ScssPhp\ScssPhp\SourceSpan\Highlighter\Highlighter;
 use ScssPhp\ScssPhp\Util\Path;
 
 /**
@@ -130,13 +131,11 @@ abstract class SourceSpanMixin implements SourceSpan
             return '';
         }
 
-        // TODO: Implement highlight() method.
-        return '';
+        return Highlighter::create($this)->highlight();
     }
 
     public function highlightMultiple(string $label, array $secondarySpans): string
     {
-        // TODO: Implement highlightMultiple() method.
-        return '';
+        return Highlighter::multiple($this, $label, $secondarySpans)->highlight();
     }
 }
