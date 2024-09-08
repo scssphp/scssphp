@@ -23,6 +23,9 @@ vendor: composer.json
 phpstan: vendor-bin/phpstan/vendor
 	vendor-bin/phpstan/vendor/bin/phpstan analyse
 
+phpstan-verbose: vendor-bin/phpstan/vendor
+	vendor-bin/phpstan/vendor/bin/phpstan analyse -v
+
 phpstan-baseline: vendor-bin/phpstan/vendor
 	vendor-bin/phpstan/vendor/bin/phpstan analyse --generate-baseline
 
