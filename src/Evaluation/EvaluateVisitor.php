@@ -15,6 +15,7 @@ namespace ScssPhp\ScssPhp\Evaluation;
 use League\Uri\Uri;
 use ScssPhp\ScssPhp\Ast\AstNode;
 use ScssPhp\ScssPhp\Ast\Css\CssAtRule;
+use ScssPhp\ScssPhp\Ast\Css\CssComment;
 use ScssPhp\ScssPhp\Ast\Css\CssKeyframeBlock;
 use ScssPhp\ScssPhp\Ast\Css\CssMediaQuery;
 use ScssPhp\ScssPhp\Ast\Css\CssMediaRule;
@@ -119,6 +120,7 @@ use ScssPhp\ScssPhp\SassCallable\PlainCssCallable;
 use ScssPhp\ScssPhp\SassCallable\SassCallable;
 use ScssPhp\ScssPhp\SassCallable\UserDefinedCallable;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\SourceSpan\MultiSpan;
 use ScssPhp\ScssPhp\SourceSpan\SourceFile;
 use ScssPhp\ScssPhp\SourceSpan\SimpleSourceLocation;
 use ScssPhp\ScssPhp\StackTrace\Frame;
@@ -973,8 +975,9 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
 
                 More info: https://sass-lang.com/d/mixed-decls
                 MESSAGE,
-                // TODO use a MultiSpan
-                $node->getSpan(),
+                new MultiSpan($node->getSpan(), 'declaration', [
+                    'nested rule' => $sibling->getSpan(),
+                ]),
                 Deprecation::mixedDecls
             );
         }
@@ -1085,8 +1088,13 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             $selectorString = trim($complex);
             $verb = $complex->isUseless() ? "can't" : "shouldn't";
 
-            // TODO implement the MultiSpan
-            $this->warn("The selector \"$selectorString\" is invalid CSS and $verb be an extender.\nThis will be an error in Dart Sass 2.0.0.\n\nMore info: https://sass-lang.com/d/bogus-combinators", SpanUtil::trimRight($complex->getSpan()), Deprecation::bogusCombinators);
+            $this->warn(
+                "The selector \"$selectorString\" is invalid CSS and $verb be an extender.\nThis will be an error in Dart Sass 2.0.0.\n\nMore info: https://sass-lang.com/d/bogus-combinators",
+                new MultiSpan(SpanUtil::trimRight($complex->getSpan()), 'invalid selector', [
+                    '@extend rule' => $node->getSpan(),
+                ]),
+                Deprecation::bogusCombinators
+            );
         }
 
         [$targetText, $targetMap] = $this->performInterpolationWithMap($node->getSelector(), true);
@@ -1677,11 +1685,13 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
                         );
                     }
                 } else {
-                    // TODO add a multi-span
                     $omittedMessage = $complex->isBogusOtherThanLeadingCombinator() ? ' It will be omitted from the generated CSS.' : '';
+                    $suffix = IterableUtil::every($rule->getChildren(), fn (CssNode $child) => $child instanceof CssComment) ? "\n(try converting to a //-style comment)" : '';
                     $this->warn(
                         "The selector \"$selectorString\" is only valid for nesting and shouldn't\nhave children other than style rules. $omittedMessage\nThis will be an error in Dart Sass 2.0.0.\n\nMore info: https://sass-lang.com/d/bogus-combinators",
-                        SpanUtil::trimRight($complex->getSpan()),
+                        new MultiSpan(SpanUtil::trimRight($complex->getSpan()), 'invalid selector', [
+                            'this is not a style rule' . $suffix => $rule->getChildren()[0]->getSpan(),
+                        ]),
                         Deprecation::bogusCombinators
                     );
                 }
