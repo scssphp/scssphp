@@ -123,6 +123,8 @@ final class Compiler
      */
     private $charset = true;
 
+    private bool $verbose = false;
+
     /**
      * @var string
      * @phpstan-var OutputStyle::*
@@ -280,6 +282,18 @@ final class Compiler
     }
 
     /**
+     * Configures the verbosity of deprecation warnings.
+     *
+     * In non-verbose mode, repeated deprecations are hidden once reaching the
+     * threshold, with a summary at the end. In verbose mode, all deprecation
+     * warnings are emitted to the logger.
+     */
+    public function setVerbose(bool $verbose): void
+    {
+        $this->verbose = $verbose;
+    }
+
+    /**
      * Enable/disable source maps
      *
      * @param int $sourceMap
@@ -364,7 +378,7 @@ final class Compiler
         // Force loading the CssVisitor before using the AST classes because of a weird PHP behavior.
         class_exists(CssVisitor::class);
 
-        $logger = new DeprecationHandlingLogger(AdaptingLogger::adaptLogger($this->logger), [], []);
+        $logger = new DeprecationHandlingLogger(AdaptingLogger::adaptLogger($this->logger), [], [], !$this->verbose);
         $importCache = $this->createImportCache($logger);
 
         $importer = new FilesystemImporter(null);
@@ -398,7 +412,7 @@ final class Compiler
         // Force loading the CssVisitor before using the AST classes because of a weird PHP behavior.
         class_exists(CssVisitor::class);
 
-        $logger = new DeprecationHandlingLogger(AdaptingLogger::adaptLogger($this->logger), [], []);
+        $logger = new DeprecationHandlingLogger(AdaptingLogger::adaptLogger($this->logger), [], [], !$this->verbose);
 
         // TODO handle passing an importer and a url to this method to be consistent with dart-sass
         $sourceUrl = $path !== null ? Path::toUri($path) : null;
