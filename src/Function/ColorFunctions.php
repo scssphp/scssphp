@@ -634,6 +634,9 @@ TXT,
         $saturation = $arguments[1]->assertNumber('saturation');
         $lightness = $arguments[2]->assertNumber('lightness');
 
+        self::checkPercent($saturation, 'saturation');
+        self::checkPercent($lightness, 'lightness');
+
         return SassColor::hslInternal(
             $hue,
             NumberUtil::clamp($saturation->getValue(), 0, 100),
