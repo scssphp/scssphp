@@ -231,7 +231,7 @@ final class Highlighter
                     $this->writeFileStart($line->url);
                 } elseif ($lastLine->number + 1 !== $line->number) {
                     $this->writeSidebar(text: '...');
-                    $this->buffer .= "_n";
+                    $this->buffer .= "\n";
                 }
             }
 
