@@ -3251,7 +3251,7 @@ WARNING;
      */
     private function withStackFrame(string $member, AstNode $nodeWithSpan, callable $callback)
     {
-        $this->stack[] = [$member, $nodeWithSpan];
+        $this->stack[] = [$this->member, $nodeWithSpan];
         $oldMember = $this->member;
         $this->member = $member;
         $result = $callback();
