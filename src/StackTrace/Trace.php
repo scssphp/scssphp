@@ -48,6 +48,6 @@ final class Trace
             $longest = max($longest, $length);
         }
 
-        return implode(array_map(fn(Frame $frame) => str_pad($frame->getLocation(), $longest) . ' ' . $frame->getMember() . "\n", $this->frames));
+        return implode(array_map(fn(Frame $frame) => str_pad($frame->getLocation(), $longest) . '  ' . $frame->getMember() . "\n", $this->frames));
     }
 }

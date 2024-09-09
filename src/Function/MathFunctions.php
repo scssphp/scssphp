@@ -173,7 +173,7 @@ final class MathFunctions
 
                 To preserve current behavior: random(\$limit / 1$unitString)
 
-                More info: https://sass-lang.com/d/random-with-units
+                More info: https://sass-lang.com/d/function-units
                 TXT,
                 Deprecation::functionUnits
             );

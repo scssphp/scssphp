@@ -1688,7 +1688,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
                     $omittedMessage = $complex->isBogusOtherThanLeadingCombinator() ? ' It will be omitted from the generated CSS.' : '';
                     $suffix = IterableUtil::every($rule->getChildren(), fn (CssNode $child) => $child instanceof CssComment) ? "\n(try converting to a //-style comment)" : '';
                     $this->warn(
-                        "The selector \"$selectorString\" is only valid for nesting and shouldn't\nhave children other than style rules. $omittedMessage\nThis will be an error in Dart Sass 2.0.0.\n\nMore info: https://sass-lang.com/d/bogus-combinators",
+                        "The selector \"$selectorString\" is only valid for nesting and shouldn't\nhave children other than style rules.$omittedMessage\nThis will be an error in Dart Sass 2.0.0.\n\nMore info: https://sass-lang.com/d/bogus-combinators",
                         new MultiSpan(SpanUtil::trimRight($complex->getSpan()), 'invalid selector', [
                             'this is not a style rule' . $suffix => $rule->getChildren()[0]->getSpan(),
                         ]),
@@ -3044,7 +3044,7 @@ WARNING;
                     new StringExpression(new Interpolation([''], $interpolation->getSpan()), true),
                     $expression
                 );
-                $this->warn("You probably don't mean to use the color value $colorName in interpolation here.\nIt may end up being represented as $result, which will likely produce invalid CSS.\nAlways quote color names when using them as strings or map keys (for example, \"$colorName\").\nIf you really want to use the color value here, use '$alternative'.", $expression->getSpan());
+                $this->warn("You probably don't mean to use the color value $colorName in interpolation here.\nIt may end up represented as $result, which will likely produce invalid CSS.\nAlways quote color names when using them as strings or map keys (for example, \"$colorName\").\nIf you really want to use the color value here, use '$alternative'.", $expression->getSpan());
             }
 
             $buffer .= $this->serialize($result, $expression, false);
@@ -3251,7 +3251,7 @@ WARNING;
      */
     private function withStackFrame(string $member, AstNode $nodeWithSpan, callable $callback)
     {
-        $this->stack[] = [$member, $nodeWithSpan];
+        $this->stack[] = [$this->member, $nodeWithSpan];
         $oldMember = $this->member;
         $this->member = $member;
         $result = $callback();
