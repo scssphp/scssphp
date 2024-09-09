@@ -350,7 +350,7 @@ Passing percentage units to the global abs() function is deprecated.
 In the future, this will emit a CSS abs() function to be resolved by the browser.
 To preserve current behavior: math.abs($argument)
 
-To emit a CSS abs() now: abs(#\{$argument})
+To emit a CSS abs() now: abs(#{{$argument}})
 More info: https://sass-lang.com/d/abs-percent
 WARNING;
 
