@@ -17,7 +17,7 @@ use League\Uri\Contracts\UriInterface;
 /**
  * @internal
  */
-final class FileLocation implements SourceLocation
+final class FileLocation extends SourceLocationMixin
 {
     private readonly SourceFile $file;
 

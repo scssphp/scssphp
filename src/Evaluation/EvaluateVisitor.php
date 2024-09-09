@@ -120,7 +120,7 @@ use ScssPhp\ScssPhp\SassCallable\SassCallable;
 use ScssPhp\ScssPhp\SassCallable\UserDefinedCallable;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\SourceSpan\SourceFile;
-use ScssPhp\ScssPhp\SourceSpan\StringSourceLocation;
+use ScssPhp\ScssPhp\SourceSpan\SimpleSourceLocation;
 use ScssPhp\ScssPhp\StackTrace\Frame;
 use ScssPhp\ScssPhp\StackTrace\Trace;
 use ScssPhp\ScssPhp\Util;
@@ -3015,7 +3015,7 @@ WARNING;
 
         foreach ($interpolation->getContents() as $value) {
             if (!$first && $targetLocations !== null) {
-                $targetLocations[] = new StringSourceLocation(\strlen($buffer));
+                $targetLocations[] = new SimpleSourceLocation(\strlen($buffer));
             }
 
             $first = false;

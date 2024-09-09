@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\SourceSpan;
 
 use League\Uri\Contracts\UriInterface;
+use ScssPhp\ScssPhp\Util\ListUtil;
 
 /**
  * @internal
@@ -24,7 +25,7 @@ final class SourceFile
     private readonly ?UriInterface $sourceUrl;
 
     /**
-     * @var int[]
+     * @var list<int>
      */
     private readonly array $lineStarts;
 
@@ -39,6 +40,11 @@ final class SourceFile
      * @var int|null
      */
     private ?int $cachedLine = null;
+
+    public static function fromString(string $content, ?UriInterface $sourceUrl = null): SourceFile
+    {
+        return new SourceFile($content, $sourceUrl);
+    }
 
     public function __construct(string $content, ?UriInterface $sourceUrl = null)
     {
@@ -55,18 +61,43 @@ final class SourceFile
 
         $prev = 0;
 
-        while (($pos = strpos($content, "\n", $prev)) !== false) {
-            $lineStarts[] = $pos + 1;
-            $prev = $pos + 1;
-        }
+        while (true) {
+            $crPos = strpos($content, "\r", $prev);
+            $lfPos = strpos($content, "\n", $prev);
 
-        $lineStarts[] = \strlen($content);
+            if ($crPos === false && $lfPos === false) {
+                break;
+            }
 
-        if (!str_ends_with($content, "\n")) {
-            $lineStarts[] = \strlen($content) + 1;
+            if ($crPos !== false) {
+                // Return not followed by newline is treated as a newline
+                if ($lfPos === false || $lfPos > $crPos + 1) {
+                    $lineStarts[] = $crPos + 1;
+                    $prev = $crPos + 1;
+                    continue;
+                }
+            }
+
+            if ($lfPos !== false) {
+                $lineStarts[] = $lfPos + 1;
+                $prev = $lfPos + 1;
+            }
         }
 
         $this->lineStarts = $lineStarts;
+    }
+
+    public function getLength(): int
+    {
+        return \strlen($this->string);
+    }
+
+    /**
+     * The number of lines in the file.
+     */
+    public function getLines(): int
+    {
+        return \count($this->lineStarts);
     }
 
     public function span(int $start, ?int $end = null): FileSpan
@@ -81,13 +112,13 @@ final class SourceFile
     public function location(int $offset): FileLocation
     {
         if ($offset < 0) {
-            throw new \RangeException("Offset may not be negative, was $offset.");
+            throw new \OutOfRangeException("Offset may not be negative, was $offset.");
         }
 
         if ($offset > \strlen($this->string)) {
             $fileLength = \strlen($this->string);
 
-            throw new \RangeException("Offset $offset must not be greater than the number of characters in the file, $fileLength.");
+            throw new \OutOfRangeException("Offset $offset must not be greater than the number of characters in the file, $fileLength.");
         }
 
         return new FileLocation($this, $offset);
@@ -104,76 +135,63 @@ final class SourceFile
     }
 
     /**
-     * The 0-based line
+     * The 0-based line corresponding to that offset.
      */
-    public function getLine(int $position): int
+    public function getLine(int $offset): int
     {
-        if ($position < 0) {
-            throw new \RangeException('Position cannot be negative');
+        if ($offset < 0) {
+            throw new \OutOfRangeException('Position cannot be negative');
         }
 
-        if ($position > \strlen($this->string)) {
-            throw new \RangeException('Position cannot be greater than the number of characters in the string.');
+        if ($offset > \strlen($this->string)) {
+            throw new \OutOfRangeException('Position cannot be greater than the number of characters in the string.');
         }
 
-        if ($this->isNearCacheLine($position)) {
+        if ($offset < $this->lineStarts[0]) {
+            return -1;
+        }
+
+        if ($offset >= ListUtil::last($this->lineStarts)) {
+            return \count($this->lineStarts) - 1;
+        }
+
+        if ($this->isNearCacheLine($offset)) {
             assert($this->cachedLine !== null);
 
             return $this->cachedLine;
         }
 
-        $low = 0;
-        $high = \count($this->lineStarts);
-
-        while ($low < $high) {
-            $mid = (int) (($high + $low) / 2);
-
-            if ($position < $this->lineStarts[$mid]) {
-                $high = $mid - 1;
-                continue;
-            }
-
-            if ($position >= $this->lineStarts[$mid + 1]) {
-                $low = $mid + 1;
-                continue;
-            }
-
-            $this->cachedLine = $mid;
-
-            return $this->cachedLine;
-        }
-
-        $this->cachedLine = $low;
+        $this->cachedLine = $this->binarySearch($offset) - 1;
 
         return $this->cachedLine;
     }
 
     /**
-     * Returns `true` if $position is near {@see $cachedLine}.
+     * Returns `true` if $offset is near {@see $cachedLine}.
      *
      * Checks on {@see $cachedLine} and the next line. If it's on the next line, it
      * updates {@see $cachedLine} to point to that.
      */
-    private function isNearCacheLine(int $position): bool
+    private function isNearCacheLine(int $offset): bool
     {
         if ($this->cachedLine === null) {
             return false;
         }
 
-        if ($position < $this->lineStarts[$this->cachedLine]) {
+        if ($offset < $this->lineStarts[$this->cachedLine]) {
             return false;
         }
 
         if (
             $this->cachedLine >= \count($this->lineStarts) - 1 ||
-            $position < $this->lineStarts[$this->cachedLine + 1]
+            $offset < $this->lineStarts[$this->cachedLine + 1]
         ) {
             return true;
         }
 
         if (
             $this->cachedLine >= \count($this->lineStarts) - 2 ||
-            $position < $this->lineStarts[$this->cachedLine + 2]
+            $offset < $this->lineStarts[$this->cachedLine + 2]
         ) {
             ++$this->cachedLine;
 
@@ -184,13 +202,62 @@ final class SourceFile
     }
 
     /**
-     * The 0-based column of that position
+     * Binary search through {@see $lineStarts} to find the line containing $offset.
+     *
+     * Returns the index of the line in {@see $lineStarts}.
      */
-    public function getColumn(int $position): int
+    private function binarySearch(int $offset): int
     {
-        $line = $this->getLine($position);
+        $min = 0;
+        $max = \count($this->lineStarts) - 1;
 
-        return $position - $this->lineStarts[$line];
+        while ($min < $max) {
+            $half = $min + intdiv($max - $min, 2);
+
+            if ($this->lineStarts[$half] > $offset) {
+                $max = $half;
+            } else {
+                $min = $half + 1;
+            }
+        }
+
+        return $max;
+    }
+
+    /**
+     * The 0-based column of that offset.
+     */
+    public function getColumn(int $offset): int
+    {
+        $line = $this->getLine($offset);
+
+        return $offset - $this->lineStarts[$line];
+    }
+
+    /**
+     * Gets the offset for a line and column.
+     */
+    public function getOffset(int $line, int $column = 0): int
+    {
+        if ($line < 0) {
+            throw new \OutOfRangeException('Line may not be negative.');
+        }
+
+        if ($line >= \count($this->lineStarts)) {
+            throw new \OutOfRangeException('Line must be less than the number of lines in the file.');
+        }
+
+        if ($column < 0) {
+            throw new \OutOfRangeException('Column may not be negative.');
+        }
+
+        $result = $this->lineStarts[$line] + $column;
+
+        if ($result > \strlen($this->string) || ($line + 1 < \count($this->lineStarts) && $result >= $this->lineStarts[$line + 1])) {
+            throw new \OutOfRangeException("Line $line doesn't have $column columns.");
+        }
+
+        return $result;
     }
 
     /**
@@ -200,16 +267,20 @@ final class SourceFile
      */
     public function getText(int $start, ?int $end = null): string
     {
-        if ($end === null) {
-            return substr($this->string, $start);
+        if ($end !== null) {
+            if ($end < $start) {
+                throw new \InvalidArgumentException("End $end must come after start $start.");
+            }
+
+            if ($end > $this->getLength()) {
+                throw new \OutOfRangeException("End $end not be greater than the number of characters in the file, {$this->getLength()}.");
+            }
         }
 
-        if ($end < $start) {
-            $length = 0;
-        } else {
-            $length = $end - $start;
+        if ($start < 0) {
+            throw new \OutOfRangeException("Start may not be negative, was $start.");
         }
 
-        return substr($this->string, $start, $length);
+        return Util::substring($this->string, $start, $end);
     }
 }

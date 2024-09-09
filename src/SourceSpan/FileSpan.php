@@ -12,35 +12,18 @@
 
 namespace ScssPhp\ScssPhp\SourceSpan;
 
-use League\Uri\Contracts\UriInterface;
-
 /**
  * @internal
  */
-interface FileSpan
+interface FileSpan extends SourceSpanWithContext
 {
     public function getFile(): SourceFile;
-
-    public function getSourceUrl(): ?UriInterface;
-
-    public function getLength(): int;
 
     public function getStart(): FileLocation;
 
     public function getEnd(): FileLocation;
 
-    public function getText(): string;
-
     public function expand(FileSpan $other): FileSpan;
-
-    /**
-     * Formats $message in a human-friendly way associated with this span.
-     *
-     * @param string $message
-     *
-     * @return string
-     */
-    public function message(string $message): string;
 
     /**
      * Return a span from $start bytes (inclusive) to $end bytes

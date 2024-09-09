@@ -19,7 +19,7 @@ use ScssPhp\ScssPhp\Util\Path;
 /**
  * @internal
  */
-final class ConcreteFileSpan implements FileSpan
+final class ConcreteFileSpan extends SourceSpanMixin implements FileSpan
 {
     private readonly SourceFile $file;
 
@@ -36,6 +36,25 @@ final class ConcreteFileSpan implements FileSpan
         $this->file = $file;
         $this->start = $start;
         $this->end = $end;
+
+        \assert($this->validateSpan());
+    }
+
+    private function validateSpan(): bool
+    {
+        if ($this->end < $this->start) {
+            throw new \InvalidArgumentException("End $this->end must come after start $this->start.");
+        }
+
+        if ($this->end > $this->file->getLength()) {
+            throw new \OutOfRangeException("End $this->end not be greater than the number of characters in the file, {$this->file->getLength()}.");
+        }
+
+        if ($this->start < 0) {
+            throw new \OutOfRangeException("Start may not be negative, was $this->start.");
+        }
+
+        return true;
     }
 
     public function getFile(): SourceFile
@@ -68,6 +87,72 @@ final class ConcreteFileSpan implements FileSpan
         return $this->file->getText($this->start, $this->end);
     }
 
+    public function getContext(): string
+    {
+        $endLine = $this->file->getLine($this->end);
+        $endColumn = $this->file->getColumn($this->end);
+
+        if ($endColumn === 0 && $endLine !== 0) {
+            // If $this->end is at the very beginning of the line, the span covers the
+            // previous newline, so we only want to include the previous line in the
+            // context...
+
+            if ($this->getLength() === 0) {
+                // ...unless this is a point span, in which case we want to include the
+                // next line (or the empty string if this is the end of the file).
+                return $endLine === $this->file->getLines() - 1 ? '' : $this->file->getText($this->file->getOffset($endLine), $this->file->getOffset($endLine + 1));
+            }
+
+            $endOffset = $this->end;
+        } elseif ($endLine === $this->file->getLines() - 1) {
+            // If the span covers the last line of the file, the context should go all
+            // the way to the end of the file.
+            $endOffset = $this->file->getLength();
+        } else {
+            // Otherwise, the context should cover the full line on which [end]
+            // appears.
+            $endOffset = $this->file->getOffset($endLine + 1);
+        }
+
+        return $this->file->getText($this->file->getOffset($this->file->getLine($this->start)), $endOffset);
+    }
+
+    public function compareTo(SourceSpan $other): int
+    {
+        if (!$other instanceof ConcreteFileSpan) {
+            return parent::compareTo($other);
+        }
+
+        $result = $this->start <=> $other->start;
+
+        if ($result !== 0) {
+            return $result;
+        }
+
+        return $this->end <=> $other->end;
+    }
+
+    public function union(SourceSpan $other): SourceSpan
+    {
+        if (!$other instanceof FileSpan) {
+            return parent::union($other);
+        }
+
+        $span = $this->expand($other);
+
+        if ($other instanceof ConcreteFileSpan) {
+            if ($this->start > $other->end || $other->start > $this->end) {
+                throw new \InvalidArgumentException("Spans are disjoint.");
+            }
+        } else {
+            if ($this->start > $other->getEnd()->getOffset() || $other->getStart()->getOffset() > $this->end) {
+                throw new \InvalidArgumentException("Spans are disjoint.");
+            }
+        }
+
+        return $span;
+    }
+
     public function expand(FileSpan $other): FileSpan
     {
         if ($this->file->getSourceUrl() !== $other->getFile()->getSourceUrl()) {
@@ -78,26 +163,6 @@ final class ConcreteFileSpan implements FileSpan
         $end = max($this->end, $other->getEnd()->getOffset());
 
         return new ConcreteFileSpan($this->file, $start, $end);
-    }
-
-    public function message(string $message): string
-    {
-        $startLine = $this->getStart()->getLine() + 1;
-        $startColumn = $this->getStart()->getColumn() + 1;
-        $sourceUrl = $this->file->getSourceUrl();
-
-        $buffer = "line $startLine, column $startColumn";
-
-        if ($sourceUrl !== null) {
-            $prettyUri = Path::prettyUri($sourceUrl);
-            $buffer .= " of $prettyUri";
-        }
-
-        $buffer .= ": $message";
-
-        // TODO implement the highlighting of a code snippet
-
-        return $buffer;
     }
 
     public function subspan(int $start, ?int $end = null): FileSpan

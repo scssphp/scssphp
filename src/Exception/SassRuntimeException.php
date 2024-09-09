@@ -41,7 +41,7 @@ final class SassRuntimeException extends \Exception implements SassException
         $this->span = $span;
         $this->sassTrace = $sassTrace ?? new Trace([Util::frameForSpan($span, 'root stylesheet')]);
 
-        $formattedMessage = $span->message($message); // TODO add the highlighting
+        $formattedMessage = $message . "\n" . $span->highlight();
 
         foreach (explode("\n", $this->sassTrace->getFormattedTrace()) as $frame) {
             if ($frame === '') {
