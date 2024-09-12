@@ -13,7 +13,6 @@
 namespace ScssPhp\ScssPhp\SourceSpan;
 
 use League\Uri\Contracts\UriInterface;
-use ScssPhp\ScssPhp\Util\ListUtil;
 
 /**
  * @internal
@@ -151,7 +150,7 @@ final class SourceFile
             return -1;
         }
 
-        if ($offset >= ListUtil::last($this->lineStarts)) {
+        if ($offset >= Util::listLast($this->lineStarts)) {
             return \count($this->lineStarts) - 1;
         }
 

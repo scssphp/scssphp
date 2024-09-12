@@ -12,8 +12,6 @@
 
 namespace ScssPhp\ScssPhp\SourceSpan;
 
-use ScssPhp\ScssPhp\Util\ErrorUtil;
-
 /**
  * @internal
  */
@@ -55,7 +53,7 @@ final class SimpleSourceSpan extends SourceSpanMixin
 
     public function subspan(int $start, ?int $end = null): SourceSpan
     {
-        ErrorUtil::checkValidRange($start, $end, $this->getLength());
+        Util::checkValidRange($start, $end, $this->getLength());
 
         if ($start === 0 && ($end === null || $end === $this->getLength())) {
             return $this;

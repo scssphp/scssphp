@@ -13,8 +13,6 @@
 namespace ScssPhp\ScssPhp\SourceSpan;
 
 use League\Uri\Contracts\UriInterface;
-use ScssPhp\ScssPhp\Util\ErrorUtil;
-use ScssPhp\ScssPhp\Util\Path;
 
 /**
  * @internal
@@ -167,7 +165,7 @@ final class ConcreteFileSpan extends SourceSpanMixin implements FileSpan
 
     public function subspan(int $start, ?int $end = null): FileSpan
     {
-        ErrorUtil::checkValidRange($start, $end, $this->getLength());
+        Util::checkValidRange($start, $end, $this->getLength());
 
         if ($start === 0 && ($end === null || $end === $this->getLength())) {
             return $this;

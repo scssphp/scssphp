@@ -15,10 +15,6 @@ namespace ScssPhp\ScssPhp\SourceSpan\Highlighter;
 use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\SourceSpan\SourceSpan;
 use ScssPhp\ScssPhp\SourceSpan\Util;
-use ScssPhp\ScssPhp\Util\IterableUtil;
-use ScssPhp\ScssPhp\Util\ListUtil;
-use ScssPhp\ScssPhp\Util\Path;
-use stdClass;
 
 /**
  * A class for writing a chunk of text with a particular span highlighted.
@@ -100,7 +96,7 @@ final class Highlighter
     {
         $this->lines = $lines;
         $this->paddingBeforeSidebar = 1 + max(
-            \strlen((string) (ListUtil::last($lines)->number + 1)),
+            \strlen((string) (Util::listLast($lines)->number + 1)),
             // If $lines aren't contiguous, we'll write "..." in place of a
             // line number.
             self::contiguous($lines) ? 0 : 3
@@ -144,7 +140,7 @@ final class Highlighter
         $highlightsByUrl = [];
         $urls = [];
         foreach ($highlights as $highlight) {
-            $url = $highlight->span->getSourceUrl() ?? new stdClass();
+            $url = $highlight->span->getSourceUrl() ?? new \stdClass();
             $key = $url instanceof UriInterface ? $url->toString() : spl_object_hash($url);
             $highlightsByUrl[$key][] = $highlight;
             $urls[$key] = $url;
@@ -172,7 +168,7 @@ final class Highlighter
 
                 foreach (explode("\n", $context) as $line) {
                     // Only add a line if it hasn't already been added for a previous span
-                    if ($lines === [] || $lineNumber > ListUtil::last($lines)->number) {
+                    if ($lines === [] || $lineNumber > Util::listLast($lines)->number) {
                         $lines[] = new Line($line, $lineNumber, $urls[$urlKey]);
                     }
                     $lineNumber++;
@@ -288,7 +284,7 @@ final class Highlighter
         } else {
             $this->writeSidebar(end: AsciiGlyph::topLeftCorner);
             $this->buffer .= str_repeat(AsciiGlyph::horizontalLine, 2) . '> ';
-            $this->buffer .= Path::prettyUri($url);
+            $this->buffer .= Util::prettyUri($url);
         }
 
         $this->buffer .= "\n";
