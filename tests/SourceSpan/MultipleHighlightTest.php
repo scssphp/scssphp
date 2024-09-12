@@ -58,6 +58,27 @@ TXT,
         );
     }
 
+    public function testHighlightsNonContiguousSpans(): void
+    {
+        self::assertEquals(
+            <<<'TXT'
+    ,
+1   | foo bar baz
+    |     === three
+2   | whiz bang boom
+    |      ^^^^ one
+... |
+5   | argle bargle boo
+    |       ====== two
+    '
+TXT,
+            $this->file->span(17, 21)->highlightMultiple('one', [
+                'two' => $this->file->span(60, 66),
+                'three' => $this->file->span(4, 7),
+            ])
+        );
+    }
+
     public function testHighlightsSpansOnTheSameLine(): void
     {
         self::assertEquals(
