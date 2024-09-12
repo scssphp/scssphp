@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp\SourceSpan;
 
+use League\Uri\BaseUri;
 use League\Uri\Contracts\UriInterface;
 
 /**
@@ -278,5 +279,90 @@ final class Util
         }
 
         return null;
+    }
+
+    /**
+     * Check that a range represents a slice of an indexable object.
+     *
+     * Throws if the range is not valid for an indexable object with
+     * the given length.
+     * A range is valid for an indexable object with a given $length
+     * if `0 <= $start <= $end <= $length`.
+     * An `end` of `null` is considered equivalent to `length`.
+     *
+     * @throws \OutOfRangeException
+     */
+    public static function checkValidRange(int $start, ?int $end, int $length, ?string $startName = null, ?string $endName = null): void
+    {
+        if ($start < 0 || $start > $length) {
+            $startName ??= 'start';
+            $startNameDisplay = $startName ? " $startName" : '';
+
+            throw new \OutOfRangeException("Invalid value:$startNameDisplay must be between 0 and $length: $start.");
+        }
+
+        if ($end !== null) {
+            if ($end < $start || $end > $length) {
+                $endName ??= 'end';
+                $endNameDisplay = $endName ? " $endName" : '';
+
+                throw new \OutOfRangeException("Invalid value:$endNameDisplay must be between $start and $length: $end.");
+            }
+        }
+    }
+
+    /**
+     * @template T
+     *
+     * @param list<T> $list
+     *
+     * @return T
+     */
+    public static function listLast(array $list)
+    {
+        $count = count($list);
+
+        if ($count === 0) {
+            throw new \LogicException('The list may not be empty.');
+        }
+
+        return $list[$count - 1];
+    }
+
+    /**
+     * Returns a pretty URI for a path
+     */
+    public static function prettyUri(string|UriInterface $path): string
+    {
+        if ($path instanceof UriInterface) {
+            if ($path->getScheme() !== 'file') {
+                return (string) $path;
+            }
+
+            $path = self::pathFromUri($path);
+        }
+
+        $normalizedPath = $path;
+        $normalizedRootDirectory = getcwd() . '/';
+
+        if (\DIRECTORY_SEPARATOR === '\\') {
+            $normalizedRootDirectory = str_replace('\\', '/', $normalizedRootDirectory);
+            $normalizedPath = str_replace('\\', '/', $path);
+        }
+
+        if (str_starts_with($normalizedPath, $normalizedRootDirectory)) {
+            return substr($path, \strlen($normalizedRootDirectory));
+        }
+
+        return $path;
+    }
+
+    private static function pathFromUri(UriInterface $uri): string
+    {
+        if (\DIRECTORY_SEPARATOR === '\\') {
+            return BaseUri::from($uri)->windowsPath() ?? throw new \InvalidArgumentException("Uri $uri must have scheme 'file:'.");
+        }
+
+        return BaseUri::from($uri)->unixPath() ?? throw new \InvalidArgumentException("Uri $uri must have scheme 'file:'.");
     }
 }

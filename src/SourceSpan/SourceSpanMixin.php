@@ -14,7 +14,6 @@ namespace ScssPhp\ScssPhp\SourceSpan;
 
 use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\SourceSpan\Highlighter\Highlighter;
-use ScssPhp\ScssPhp\Util\Path;
 
 /**
  * A mixin for easily implementing {@see SourceSpan}.
@@ -86,7 +85,7 @@ abstract class SourceSpanMixin implements SourceSpan
         $buffer = "line $startLine, column $startColumn";
 
         if ($sourceUrl !== null) {
-            $prettyUri = Path::prettyUri($sourceUrl);
+            $prettyUri = Util::prettyUri($sourceUrl);
             $buffer .= " of $prettyUri";
         }
 
@@ -110,7 +109,7 @@ abstract class SourceSpanMixin implements SourceSpan
         $buffer = "line $startLine, column $startColumn";
 
         if ($sourceUrl !== null) {
-            $prettyUri = Path::prettyUri($sourceUrl);
+            $prettyUri = Util::prettyUri($sourceUrl);
             $buffer .= " of $prettyUri";
         }
 
