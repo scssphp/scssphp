@@ -9,7 +9,7 @@ use ScssPhp\ScssPhp\SourceSpan\SimpleSourceLocation;
 use ScssPhp\ScssPhp\SourceSpan\SimpleSourceSpan;
 use ScssPhp\ScssPhp\SourceSpan\SourceFile;
 
-class FileSpanTest extends TestCase
+class ConcreteFileSpanTest extends TestCase
 {
     private SourceFile $file;
 
@@ -382,5 +382,38 @@ TXT
         self::assertEquals(27, $result->getEnd()->getOffset());
         self::assertEquals(2, $result->getEnd()->getLine());
         self::assertEquals(0, $result->getEnd()->getColumn());
+    }
+
+    public function testCompareToSortsByStartLocationFirst(): void
+    {
+        $span = $this->file->span(5, 12);
+        $other = $this->file->span(6, 14);
+
+        self::assertLessThan(0, $span->compareTo($other));
+        self::assertGreaterThan(0, $other->compareTo($span));
+    }
+
+    public function testCompareToSortsByLengthSecond(): void
+    {
+        $span = $this->file->span(5, 12);
+        $other = $this->file->span(5, 14);
+
+        self::assertLessThan(0, $span->compareTo($other));
+        self::assertGreaterThan(0, $other->compareTo($span));
+    }
+
+    public function testCompareToConsidersEqualSpansEqual(): void
+    {
+        $span = $this->file->span(5, 12);
+        self::assertEquals(0, $span->compareTo($span));
+    }
+
+    public function testCompareToSupportsOtherSpans(): void
+    {
+        $span = $this->file->span(5, 12);
+        $other = new SimpleSourceSpan(new SimpleSourceLocation(6, $this->file->getSourceUrl()), new SimpleSourceLocation(14, $this->file->getSourceUrl()), 'oo bar b');
+
+        self::assertLessThan(0, $span->compareTo($other));
+        self::assertGreaterThan(0, $other->compareTo($span));
     }
 }
