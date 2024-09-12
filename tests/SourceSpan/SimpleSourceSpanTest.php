@@ -366,6 +366,48 @@ TXT,
         self::assertEquals('line 1, column 6: oh no', $span->message('oh no'));
     }
 
+    public function testMessageMultiplePrintsTheTextBeingDisplayed(): void
+    {
+        self::assertEquals(
+            <<<'TXT'
+line 1, column 6 of foo.dart: oh no
+  ,--> foo.dart
+1 | foo bar
+  | ^^^^^^^ primary
+  '
+  ,
+1 | baz
+  | === secondary
+  '
+TXT,
+            $this->span->messageMultiple('oh no', 'primary', [
+                'secondary' => new SimpleSourceSpan(new SimpleSourceLocation(0), new SimpleSourceLocation(3), 'baz'),
+            ])
+        );
+    }
+
+    public function testMessageMultipleGracefullyHandlesAMissingSourceUrl(): void
+    {
+        $span = new SimpleSourceSpan(new SimpleSourceLocation(5), new SimpleSourceLocation(12), 'foo bar');
+
+        self::assertEquals(
+            <<<'TXT'
+line 1, column 6: oh no
+  ,
+1 | foo bar
+  | ^^^^^^^ primary
+  '
+  ,
+1 | baz
+  | === secondary
+  '
+TXT,
+            $span->messageMultiple('oh no', 'primary', [
+                'secondary' => new SimpleSourceSpan(new SimpleSourceLocation(0), new SimpleSourceLocation(3), 'baz'),
+            ])
+        );
+    }
+
     public function testCompareToSortsByStartLocationFirst(): void
     {
         $other = new SimpleSourceSpan(new SimpleSourceLocation(6, $this->span->getSourceUrl()), new SimpleSourceLocation(14, $this->span->getSourceUrl()), 'oo bar b');

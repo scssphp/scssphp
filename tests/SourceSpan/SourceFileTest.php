@@ -179,6 +179,14 @@ TXT,
     {
         self::assertEquals(3, $this->file->getLines());
         self::assertEquals(38, $this->file->getLength());
+        self::assertEquals(
+            <<<'TXT'
+foo bar baz
+whiz bang boom
+zip zap zop
+TXT,
+            $this->file->getString()
+        );
     }
 
     public function testConstructorHandlesCrlfCorrectly(): void

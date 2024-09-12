@@ -123,6 +123,24 @@ class SimpleSourceSpanWithContextTest extends TestCase
         new SimpleSourceSpanWithContext($start2, $end2, 'abc', "--abc--abc--\n");
     }
 
+    public function testSubspanReturnsTheOriginalSpanWithAnImplicitEnd(): void
+    {
+        $start = new SimpleSourceLocation(2);
+        $end = new SimpleSourceLocation(5);
+        $span = new SimpleSourceSpanWithContext($start, $end, 'abc', '--abc--');
+
+        self::assertSame($span, $span->subspan(0));
+    }
+
+    public function testSubspanReturnsTheOriginalSpanWithAnExplicitEnd(): void
+    {
+        $start = new SimpleSourceLocation(2);
+        $end = new SimpleSourceLocation(5);
+        $span = new SimpleSourceSpanWithContext($start, $end, 'abc', '--abc--');
+
+        self::assertSame($span, $span->subspan(0, $span->getLength()));
+    }
+
     public function testSubspanPreservesTheContext(): void
     {
         $start = new SimpleSourceLocation(2);
