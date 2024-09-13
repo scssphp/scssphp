@@ -19,15 +19,8 @@ namespace ScssPhp\ScssPhp\Serializer;
  */
 final class SerializeResult
 {
-    private readonly string $css;
-
-    public function __construct(string $css)
-    {
-        $this->css = $css;
-    }
-
-    public function getCss(): string
-    {
-        return $this->css;
+    public function __construct(
+        public readonly string $css,
+    ) {
     }
 }
