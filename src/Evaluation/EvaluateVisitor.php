@@ -375,6 +375,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
         $sassMetaUri = Uri::new('sass:meta');
         // These functions are defined in the context of the evaluator because
         // they need access to the environment or other local state.
+        // When adding a new function here, its name must also be added in {@see FunctionRegistry::SPECIAL_META_GLOBAL_FUNCTIONS}.
         $metaFunctions = [
             BuiltInCallable::function('global-variable-exists', '$name, $module: null', function ($arguments) {
                 $variable = $arguments[0]->assertString('name');
