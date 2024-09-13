@@ -12,10 +12,19 @@
 
 namespace ScssPhp\ScssPhp\Serializer;
 
+use ScssPhp\ScssPhp\SourceMap\SingleMapping;
+use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+
 /**
+ * A buffer that doesn't actually build a source map.
+ *
+ * We implement {@see SourceMapBuffer} directly on SimpleStringBuffer to avoid
+ * an unnecessary wrapper for NoSourceMapBuffer (dart-sass has to make a wrapper
+ * because StringBuffer comes from dart core).
+ *
  * @internal
  */
-final class SimpleStringBuffer implements StringBuffer
+final class SimpleStringBuffer implements SourceMapBuffer
 {
     private string $text = '';
 
@@ -37,5 +46,15 @@ final class SimpleStringBuffer implements StringBuffer
     public function __toString(): string
     {
         return $this->text;
+    }
+
+    public function forSpan(FileSpan $span, callable $callback)
+    {
+        return $callback();
+    }
+
+    public function buildSourceMap(?string $prefix): SingleMapping
+    {
+        throw new \BadMethodCallException(__METHOD__ . ' is not supported.');
     }
 }
