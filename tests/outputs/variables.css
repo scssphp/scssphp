@@ -1,21 +1,26 @@
 div {
   height: red, two, three;
 }
+
 div {
   num: 1000;
 }
+
 div {
   num: 2000;
 }
+
 pre {
   color: blue;
 }
+
 del {
-  color: blue;
+  color: red;
 }
 del div pre {
   color: red;
 }
+
 body {
   font-family: Arial;
   font-family: Helvetica Neue;
@@ -23,18 +28,23 @@ body {
   font-family: Helvetica, Arial, sans-serif;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
 #main {
   width: 5em;
 }
+
 #sidebar {
   width: 5em;
 }
+
 A {
   color: green;
 }
+
 body {
   color: #000;
 }
+
 * {
   data: 12;
 }

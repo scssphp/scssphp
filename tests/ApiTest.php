@@ -15,10 +15,14 @@ namespace ScssPhp\ScssPhp\Tests;
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Exception\SassException;
+use ScssPhp\ScssPhp\Logger\QuietLogger;
 use ScssPhp\ScssPhp\Logger\StreamLogger;
 use ScssPhp\ScssPhp\Node\Number;
+use ScssPhp\ScssPhp\Type;
+use ScssPhp\ScssPhp\Value\SassNull;
+use ScssPhp\ScssPhp\Value\SassNumber;
+use ScssPhp\ScssPhp\Value\Value;
 use ScssPhp\ScssPhp\ValueConverter;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 
 /**
  * API test
@@ -27,14 +31,44 @@ use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
  */
 class ApiTest extends TestCase
 {
-    use ExpectDeprecationTrait;
-
     /**
      * @var Compiler
      */
     private $scss;
 
     public function testUserFunction()
+    {
+        $this->scss = new Compiler();
+
+        $this->scss->registerFunction('add-two', function ($args): Value {
+            /** @var list<Value> $args */
+            $a = $args[0]->assertNumber('number1');
+            $b = $args[1]->assertNumber('number2');
+
+            return SassNumber::create($a->getValue() + $b->getValue());
+        }, ['number1', 'number2']);
+
+        $this->assertEquals(
+            "a {\n  result: 30;\n}",
+            $this->compile('a { result: add-two(10, 20); }')
+        );
+    }
+
+    public function testUserFunctionNull()
+    {
+        $this->scss = new Compiler();
+
+        $this->scss->registerFunction('get-null', function ($args): Value {
+            return SassNull::create();
+        }, []);
+
+        $this->assertEquals(
+            '',
+            $this->compile('a { result: get-null(); }')
+        );
+    }
+
+    public function testUserFunctionLegacy()
     {
         $this->scss = new Compiler();
 
@@ -49,7 +83,7 @@ class ApiTest extends TestCase
         );
     }
 
-    public function testUserFunctionNull()
+    public function testUserFunctionLegacyNull()
     {
         $this->scss = new Compiler();
 
@@ -60,29 +94,6 @@ class ApiTest extends TestCase
         $this->assertEquals(
             '',
             $this->compile('a { result: get-null(); }')
-        );
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testUserFunctionKwargs()
-    {
-        $this->scss = new Compiler();
-
-        $this->expectDeprecation('The second argument passed to the callback of custom functions is deprecated and won\'t be supported in ScssPhp 2.0 anymore. Register a callback accepting only 1 parameter instead.');
-
-        $this->scss->registerFunction(
-            'divide',
-            function ($args, $kwargs) {
-                return new Number($kwargs['dividend'][1] / $kwargs['divisor'][1], '');
-            },
-            ['dividend', 'divisor']
-        );
-
-        $this->assertEquals(
-            "a {\n  result: 15;\n}",
-            $this->compile('a { result: divide($divisor: 2, $dividend: 30); }')
         );
     }
 
@@ -161,6 +172,7 @@ class ApiTest extends TestCase
     public function testImportCustomCallback()
     {
         $this->scss = new Compiler();
+        $this->scss->setLogger(new QuietLogger());
 
         $this->scss->addImportPath(function ($path) {
             return __DIR__ . '/inputs/' . str_replace('.foo', '.scss', $path);
@@ -169,21 +181,6 @@ class ApiTest extends TestCase
         $this->assertEquals(
             trim(file_get_contents(__DIR__ . '/outputs/variables.css')),
             $this->compile('@import "variables.foo";')
-        );
-    }
-
-    public function testImportAbsolutePath()
-    {
-        $this->scss = new Compiler();
-
-        $basePath = __DIR__ . \DIRECTORY_SEPARATOR . 'inputs';
-
-        $this->scss->addVariables(['base-path' => ValueConverter::fromPhp($basePath)]);
-        $this->scss->addImportPath(__DIR__ . \DIRECTORY_SEPARATOR . 'inputs');
-
-        $this->assertEquals(
-            trim(file_get_contents(__DIR__ . '/outputs/variables.css')),
-            $this->compile('@import $base-path + "/variables.scss";')
         );
     }
 
@@ -269,7 +266,7 @@ class ApiTest extends TestCase
         $value = 'd, /* comment */ e; trailing';
 
         $this->expectException(SassException::class);
-        $this->expectExceptionMessage('Expected end of value: failed at `; trailing`');
+        $this->expectExceptionMessage('expected ")".');
 
         ValueConverter::parseValue($value);
     }
@@ -335,7 +332,7 @@ SCSS;
     public function testGetStringText()
     {
         $compiler = new Compiler();
-        $string = ValueConverter::parseValue('"foobar"');
+        $string = [Type::T_STRING, '"', ['foobar']];
 
         $this->assertEquals('foobar', $compiler->getStringText($compiler->assertString($string)));
     }

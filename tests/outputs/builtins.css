@@ -1,5 +1,5 @@
 #color {
-  color: #22ea18;
+  color: rgb(34, 234, 24);
   red: 34;
   green: 234;
   blue: 24;
@@ -11,13 +11,15 @@
   rgba: rgba(170, 119, 204, 0.4);
   green: 139;
 }
+
 #hsl {
-  color: #79c653;
-  color: rgba(121, 198, 83, 0.5);
+  color: hsl(100, 50%, 55%);
+  color: hsla(100, 50%, 55%, 0.5);
   hue: 100deg;
   sat: 50%;
   lig: 55%;
 }
+
 #more-color {
   light: #7e3d9e;
   dark: #432154;
@@ -27,6 +29,7 @@
   comp: #48792f;
   inv: #9fd086;
 }
+
 #more-more-color {
   op: 0.5;
   opacify: rgba(1, 2, 3, 0.6);
@@ -35,6 +38,7 @@
   transparentize: rgba(1, 2, 3, 0.4);
   transparentize: rgba(52, 130, 3, 0.9);
 }
+
 #more-more-more-color {
   color: rgba(65, 110, 79, 0.4);
   color: rgba(20, 255, 216, 0);
@@ -47,6 +51,7 @@
   color: #000A0A0A;
   color: #FFAABBCC;
 }
+
 #string {
   color: hello what is going on;
   color: "yeah";
@@ -75,6 +80,7 @@
   color: string;
   color: strin;
 }
+
 #number {
   color: 250%;
   color: 50%;
@@ -87,6 +93,7 @@
   bottom: 10px;
   padding: 3em 1in 1in 1in;
 }
+
 #list {
   len: 3;
   len: 1;
@@ -96,6 +103,7 @@
   hello: one, two, three, hello;
   index: 2;
   index: 3;
+  index: 1;
   index: 1;
   index: 2;
   index: 2;
@@ -108,6 +116,7 @@
   zip: 1px solid, 2px dashed;
   zip: 1px solid red, 2px dashed green;
 }
+
 #introspection {
   t: number;
   t: string;
@@ -128,49 +137,60 @@
   c: false;
   c: true;
 }
+
 #if {
   color: yes;
   color: no;
   color: yes;
   color: yes;
 }
+
 .transparent {
   r: 0;
   g: 0;
   b: 0;
   a: 0;
 }
+
 .alpha {
   a: 1;
   a: 1;
   a: 1;
   a: 0.5;
 }
+
 #exists {
   a: true;
   b: true;
   c: false;
 }
+
 div.call-tests {
-  a: #0a64ff;
+  a: rgb(10, 100, 255);
   b: #0058ef;
   c: b;
 }
+
 div.unquote-test {
   a: [type='text'];
 }
+
 .does-compile-1 {
-  color: #666;
+  color: #666666;
 }
+
 .does-compile-2 {
-  color: #666;
+  color: #666666;
 }
+
 .does-compile-3 {
-  color: #666;
+  color: #666666;
 }
+
 .does-compile-4 {
-  color: #666;
+  color: #666666;
 }
+
 .join-list-with-or-without-interpolation {
   transition: value1 value2, value3 value4;
   transition: value1 value2, value3 value4;
@@ -179,6 +199,7 @@ div.unquote-test {
   transition: value1, value2, value3, value4;
   transition: value1, value2, value3, value4;
 }
+
 .list-zip-types {
   zip: 2px solid;
   zip: 3px "bold" blue;

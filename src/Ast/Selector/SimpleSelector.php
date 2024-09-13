@@ -13,8 +13,9 @@
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
 use League\Uri\Contracts\UriInterface;
+use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
-use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\Exception\SassRuntimeException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\SelectorParser;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
@@ -87,14 +88,14 @@ abstract class SimpleSelector extends Selector
      * written with $suffix at the end.
      *
      * Assumes $suffix is a valid identifier suffix. If this wouldn't produce a
-     * valid SimpleSelector, throws a {@see SassScriptException}.
+     * valid SimpleSelector, throws an exception.
      *
-     * @throws SassScriptException
+     * @throws SassException
      */
     public function addSuffix(string $suffix): SimpleSelector
     {
-        // TODO use a multi-span exception
-        throw new SassScriptException("Invalid parent selector \"$this\"");
+        // TODO use a multi-span exception, and not a runtime exception
+        throw new SassRuntimeException("Invalid parent selector \"$this\"", $this->getSpan());
     }
 
     /**

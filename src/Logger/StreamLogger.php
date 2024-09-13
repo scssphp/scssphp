@@ -12,12 +12,15 @@
 
 namespace ScssPhp\ScssPhp\Logger;
 
+use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\StackTrace\Trace;
+use ScssPhp\ScssPhp\Util;
+use ScssPhp\ScssPhp\Util\Path;
+
 /**
  * A logger that prints to a PHP stream (for instance stderr)
- *
- * TODO implement LocationAwareLoggerInterface once the compiler is migrated to actually provide the location
  */
-final class StreamLogger implements LoggerInterface
+final class StreamLogger implements LocationAwareLoggerInterface
 {
     private $stream;
     private $closeOnDestruct;
@@ -42,21 +45,36 @@ final class StreamLogger implements LoggerInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function warn(string $message, bool $deprecation = false)
+    public function warn(string $message, bool $deprecation = false, ?FileSpan $span = null, ?Trace $trace = null): void
     {
-        $prefix = ($deprecation ? 'DEPRECATION ' : '') . 'WARNING: ';
+        $prefix = ($deprecation ? 'DEPRECATION ' : '') . 'WARNING';
 
-        fwrite($this->stream, $prefix . $message . "\n\n");
+        if ($span === null) {
+            $formattedMessage = ': ' . $message;
+        } elseif ($trace !== null) {
+            // If there's a span and a trace, the span's location information is
+            // probably duplicated in the trace, so we just use it for highlighting.
+            $formattedMessage = ': ' . $message . "\n\n" . $span->highlight();
+        } else {
+            $formattedMessage = ' on ' . $span->message("\n" . $message);
+        }
+
+        if ($trace !== null) {
+            $formattedMessage .= "\n" . Util::indent(rtrim($trace->getFormattedTrace()), 4);
+        }
+
+        fwrite($this->stream, $prefix . $formattedMessage . "\n\n");
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function debug(string $message)
+    public function debug(string $message, ?FileSpan $span = null): void
     {
-        fwrite($this->stream, $message . "\n");
+        $location = '';
+        if ($span !== null) {
+            $url = $span->getStart()->getSourceUrl() === null ? '-' : Path::prettyUri($span->getStart()->getSourceUrl());
+            $line = $span->getStart()->getLine() + 1;
+            $location = "$url:$line ";
+        }
+
+        fwrite($this->stream, \sprintf("%sDEBUG: %s", $location, $message) . "\n");
     }
 }

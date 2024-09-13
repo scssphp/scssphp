@@ -4,12 +4,14 @@ a {
   value: 20px;
   value-type: number;
 }
+
 a {
   key: red;
   key-type: color;
   value: blue;
   value-type: color;
 }
+
 a {
   key: foo;
   key-type: string;

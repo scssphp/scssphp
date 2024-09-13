@@ -1,6 +1,7 @@
 body {
   color: red;
 }
+
 div {
   color: red;
   height: yes;
@@ -8,6 +9,7 @@ div {
 div pre {
   color: blue;
 }
+
 div {
   font: 10px hello world;
   font-size: 10px;
@@ -15,6 +17,7 @@ div {
   border-left: 1px solid blue;
   border-right: 2px dashed green;
 }
+
 #nested-nesting {
   bar: baz;
   bang-bop: bar;

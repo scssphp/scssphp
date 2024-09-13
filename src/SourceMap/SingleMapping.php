@@ -47,6 +47,11 @@ final class SingleMapping
     public readonly array $lines;
 
     /**
+     * Url of the target file.
+     */
+    public ?string $targetUrl = null;
+
+    /**
      * Source root prepended to all entries in {@see $urls}.
      */
     public ?string $sourceRoot = null;
@@ -163,10 +168,30 @@ final class SingleMapping
             'mappings' => $buff,
         ];
 
+        if ($this->targetUrl !== null) {
+            $result['file'] = $this->targetUrl;
+        }
+
         if ($includeSourceContents) {
             $result['sourcesContent'] = array_map(fn (?SourceFile $file) => $file?->getText(0), $this->files);
         }
 
         return $result;
+    }
+
+    /**
+     * Returns a new mapping with {@see $urls} transformed by $callback.
+     *
+     * @param callable(string): string $callback
+     */
+    public function mapUrls(callable $callback): self
+    {
+        $newUrls = array_map($callback, $this->urls);
+
+        $new = new self($this->files, $newUrls, $this->lines);
+        $new->targetUrl = $this->targetUrl;
+        $new->sourceRoot = $this->sourceRoot;
+
+        return $new;
     }
 }

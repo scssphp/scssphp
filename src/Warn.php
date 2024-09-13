@@ -12,14 +12,10 @@
 
 namespace ScssPhp\ScssPhp;
 
+use ScssPhp\ScssPhp\Evaluation\EvaluationContext;
+
 final class Warn
 {
-    /**
-     * @var callable|null
-     * @phpstan-var (callable(string, ?Deprecation): void)|null
-     */
-    private static $callback;
-
     /**
      * Prints a warning message associated with the current `@import` or function call.
      *
@@ -53,32 +49,8 @@ final class Warn
         self::reportWarning($message, $deprecation);
     }
 
-    /**
-     * @param callable|null $callback
-     *
-     * @return callable|null The previous warn callback
-     *
-     * @phpstan-param (callable(string, ?Deprecation): void)|null $callback
-     *
-     * @phpstan-return (callable(string, ?Deprecation): void)|null
-     *
-     * @internal
-     */
-    public static function setCallback(?callable $callback = null): ?callable
-    {
-        $previousCallback = self::$callback;
-        self::$callback = $callback;
-
-        return $previousCallback;
-    }
-
     private static function reportWarning(string $message, ?Deprecation $deprecation): void
     {
-        // TODO replace this with \ScssPhp\ScssPhp\Evaluation\EvaluationContext::warn when migrating to the new evaluation system
-        if (self::$callback === null) {
-            throw new \BadMethodCallException('The warning Reporter may only be called within a custom function or importer callback.');
-        }
-
-        \call_user_func(self::$callback, $message, $deprecation);
+        EvaluationContext::getCurrent()->warn($message, $deprecation);
     }
 }

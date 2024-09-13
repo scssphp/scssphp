@@ -144,46 +144,6 @@ final class Util
     }
 
     /**
-     * mb_chr() wrapper
-     */
-    public static function mbChr(int $code): string
-    {
-        return mb_chr($code, 'UTF-8');
-    }
-
-    /**
-     * mb_ord() wrapper
-     */
-    public static function mbOrd(string $string): int
-    {
-        return mb_ord($string, 'UTF-8');
-    }
-
-    /**
-     * mb_strlen() wrapper
-     */
-    public static function mbStrlen(string $string): int
-    {
-        return mb_strlen($string, 'UTF-8');
-    }
-
-    /**
-     * mb_substr() wrapper
-     */
-    public static function mbSubstr(string $string, int $start, ?int $length = null): string
-    {
-        return mb_substr($string, $start, $length, 'UTF-8');
-    }
-
-    /**
-     * mb_strpos wrapper
-     */
-    public static function mbStrpos(string $haystack, string $needle, int $offset = 0): int|false
-    {
-        return mb_strpos($haystack, $needle, $offset, 'UTF-8');
-    }
-
-    /**
      * Like {@see \SplObjectStorage::addAll()}, but for two-layer maps.
      *
      * This avoids copying inner maps from $source if possible.

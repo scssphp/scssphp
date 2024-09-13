@@ -20,4 +20,7 @@
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
     </listeners>
+    <php>
+        <ini name="precision" value="17" />
+    </php>
 </phpunit>

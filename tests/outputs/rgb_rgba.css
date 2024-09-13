@@ -1,46 +1,57 @@
 a {
   b: rgb(var(--foo), 3, 0.4);
 }
+
 a {
   b: rgba(17, 34, 51, 0.5);
 }
+
 a {
-  b: rgb(0, 0, 255, calc(0.4));
+  b: rgba(0, 0, 255, 0.4);
 }
+
 a {
   b: rgb(0, 0, 255, var(--foo));
 }
+
 a {
   b: rgba(0, 255, 127, 0);
 }
+
 a {
-  b: springgreen;
+  b: rgb(0, 255, 127);
 }
+
 a {
-  b: rgb(calc(1) 2 3);
+  b: rgb(1, 2, 3);
 }
+
 a {
-  b: rgba(var(--foo) / 0.4);
+  b: rgba(var(--foo)/0.4);
 }
+
 a {
-  b: rgb(calc(1), 2, 3, 0.4);
+  b: rgba(1, 2, 3, 0.4);
 }
+
 basic {
-  transparent: rgba(51, 204, 204, 0);
-  opaque: #3cc;
-  partial: rgba(51, 204, 204, 0.5);
-  named: rgba(51, 204, 204, 0.4);
+  transparent: hsla(180, 60%, 50%, 0);
+  opaque: hsl(180, 60%, 50%);
+  partial: hsla(180, 60%, 50%, 0.5);
+  named: hsla(180, 60%, 50%, 0.4);
 }
+
 basic {
-  transparent: rgba(51, 204, 204, 0);
-  opaque: #3cc;
-  partial: rgba(51, 204, 204, 0.5);
-  named: rgba(51, 204, 204, 0.4);
-  parenthesized: rgba(51, 204, 204, 0.4);
+  transparent: hsla(180, 60%, 50%, 0);
+  opaque: hsl(180, 60%, 50%);
+  partial: hsla(180, 60%, 50%, 0.5);
+  named: hsla(180, 60%, 50%, 0.4);
+  parenthesized: hsla(180, 60%, 50%, 0.4);
 }
+
 basic {
   transparent: rgba(0, 255, 127, 0);
-  opaque: #beaded;
+  opaque: rgb(190, 173, 237);
   partial: rgba(18, 52, 86, 0.5);
   percent: rgba(18, 52, 86, 0.5);
   named: rgba(0, 255, 127, 0.3);

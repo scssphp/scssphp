@@ -306,11 +306,11 @@ final class SelectorList extends Selector
         }
 
         return array_map(function (ComplexSelector $complex) use ($parentSelector, $resolvedSimples, $component) {
-            // TODO add the span on exceptions in this callback
             $lastComponent = $complex->getLastComponent();
 
             if (\count($lastComponent->getCombinators()) !== 0) {
-                throw new SassScriptException("Parent \"$complex\" is incompatible with this selector.");
+                // TODO use a SassException that is not a SassRuntimeException
+                throw new SassRuntimeException("Parent \"$complex\" is incompatible with this selector.", $parentSelector->getSpan());
             }
 
             $suffix = $parentSelector->getSuffix();

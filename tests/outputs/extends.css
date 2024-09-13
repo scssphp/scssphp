@@ -2,60 +2,78 @@ error, pre seriousError, span seriousError, other, hello {
   border: 1px #f00;
   background-color: #fdd;
 }
+
 pre seriousError, span seriousError {
   font-size: 20px;
 }
+
 hello {
   color: green;
 }
 hello div {
   margin: 10px;
 }
+
 .cool, .me {
   color: red;
 }
+
 .blue, .me {
   color: purple;
 }
+
 div.hello.world.hmm, pre div.world.hmm.okay.span, pre #butt .umm div.world.hmm.span.sure, #butt .umm pre div.world.hmm.span.sure, code div.world.hmm.okay.span, code #butt .umm div.world.hmm.span.sure, #butt .umm code div.world.hmm.span.sure {
   color: blue;
 }
-.xxxxx .xxxxx .xxxxx, code .xxxxx .xxxxx, .xxxxx code .xxxxx, .xxxxx .xxxxx code, code code .xxxxx, code .xxxxx code, code code code, .xxxxx code code {
+
+.xxxxx .xxxxx .xxxxx, code .xxxxx .xxxxx, .xxxxx code .xxxxx, code code .xxxxx, .xxxxx .xxxxx code, code .xxxxx code, .xxxxx code code, code code code {
   color: green;
 }
+
 code {
   color: red;
 }
+
 .alpha, .beta, .gama {
   color: red;
 }
+
 .beta, .gama {
   color: white;
 }
+
 .gama {
   color: blue;
 }
+
 #admin .tabbar a, #admin .tabbar #demo .overview .fakelink, #demo .overview #admin .tabbar .fakelink {
   font-weight: bold;
 }
+
 a1 b1 c1 d1, x1 y1 z1 w1 b1 c1 d1 {
   color: red;
 }
+
 a2 b2 c2 d2, a2 x2 y2 z2 w2 c2 d2, x2 y2 z2 a2 w2 c2 d2 {
   color: red;
 }
+
 a3 b3 c3 d3, a3 b3 x3 y3 z3 w3 d3, x3 y3 z3 a3 b3 w3 d3 {
   color: red;
 }
+
 a4 b4 c4 d4, a4 b4 c4 x4 y4 z4 w4, x4 y4 z4 a4 b4 c4 w4 {
   color: red;
 }
+
 #butt .yeah .okay, #butt .yeah .umm .sure, #butt .umm .yeah .sure {
   font-weight: bold;
 }
+
 a9 b9 s9 t9 v9, a9 b9 s9 t9 x9 y9 z9, a9 b9 x9 y9 s9 t9 z9 {
   color: red;
 }
+
 @media print {
   horse, man {
     color: blue;
@@ -64,30 +82,46 @@ a9 b9 s9 t9 v9, a9 b9 s9 t9 x9 y9 z9, a9 b9 x9 y9 s9 t9 z9 {
 man {
   color: red;
 }
+
 wassup {
   color: blue;
 }
+
 .foo .wassup {
   color: blue;
 }
-#something, .x, .y {
+
+#something, .y, .x {
   color: red;
 }
+
 .nav-justified, .nav-tabs.nav-justified {
   text-align: justify;
 }
-.btn:hover, .edit .actions button:hover, .edit .new .actions button:hover, .btn:active, .edit .actions button:active, .edit .new .actions button:active, .btn.active, .edit .actions button.active, .edit .new .actions button.active, .btn.disabled, .edit .actions button.disabled, .edit .new .actions button.disabled, .btn[disabled], .edit .actions button[disabled], .edit .new .actions button[disabled] {
+
+.btn:hover, .edit .actions button:hover,
+.btn:active,
+.edit .actions button:active,
+.btn.active,
+.edit .actions button.active,
+.btn.disabled,
+.edit .actions button.disabled,
+.btn[disabled],
+.edit .actions button[disabled] {
   color: red;
 }
+
 .edit .actions button {
   float: right;
 }
+
 .edit .new .actions {
   padding: 0;
 }
 .z, .parent .self.z {
   color: red;
 }
+
 #content .social-login {
   display: block;
   float: right;
@@ -116,6 +150,7 @@ wassup {
 #content .social-login .twitter:active, #content .social-login .twitter:focus {
   background-position: 0 -215px;
 }
+
 body .to-extend, body .test {
   color: red;
 }
@@ -127,18 +162,22 @@ body .to-extend, body .test {
 .foo__bar, input {
   background: red;
 }
+
 .selector1, .master-class {
   color: blue;
 }
+
 .selector2, .master-class {
   background: #ccc;
 }
+
 .main .block__element, .main .block__element--modifier {
   font-size: 14px;
 }
 .main .block__element--modifier {
   font-weight: bold;
 }
+
 .pagination-bullet {
   width: 6px;
   height: 6px;
@@ -150,49 +189,66 @@ body .to-extend, body .test {
 .is-active.pagination-bullet {
   background-color: white;
 }
+
 .parent-nested-foo-include .in-nested-foo .child-nested-foo-include, .parent-nested-foo-include .in-nested-foo .beard + .mustache {
   color: green;
 }
-.btn-group > .btn-lg, .btn-group-lg.btn-group > .btn, .edit .actions .btn-group-lg.btn-group > button, .edit .new .actions .btn-group-lg.btn-group > button {
+
+.btn-group > .btn-lg, .btn-group-lg.btn-group > .btn, .edit .actions .btn-group-lg.btn-group > button {
   padding-right: 12px;
   padding-left: 12px;
 }
+
 .fp-content-center form + div {
   padding-left: 0;
 }
+
 .form-inline + .a .form-group > b, .form-inline + .a .fp-content-center form + div > b, .fp-content-center .form-inline + .a form + div > b {
   margin-bottom: 0;
 }
-canvas, object, embed.bar {
+
+canvas, embed.bar, object {
   color: yellow;
 }
-.popup, input, img.bar, .prepend input.foo, .prepend div.foo {
+
+.popup, .prepend input.foo,
+.prepend div.foo, img.bar, input {
   color: red;
 }
-div.popup, .prepend div.foo {
+
+div.popup,
+.prepend div.foo {
   color: blue;
 }
+
 .before span.popup .after {
   color: green;
 }
-.class1:not(:last-child), .class2:not(.foo):not(:last-child), .class3:not(:last-child) {
+
+.class1:not(:last-child), .class3:not(:last-child), .class2:not(:last-child):not(.foo) {
   color: red;
 }
+
 .inline-menu:hover > .sub-menu, .header-menu:hover > .sub-menu {
   border-radius: 5px;
 }
+
 .myclass {
   color: red;
 }
+
 .foo3, .baz3, .bar3 {
   a: b;
 }
+
 .bar3, .foo3, .baz3 {
   c: d;
 }
+
 .baz3, .bar3, .foo3 {
   e: f;
 }
-.parentsub:hover:before, .parent-sub:hover:before {
+
+.parent-sub:hover:before, .parentsub:hover:before {
   display: inline-block;
 }

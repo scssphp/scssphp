@@ -326,6 +326,8 @@ class ConcreteExtensionStore implements ExtensionStore
         $newExtensionsByTarget[$target] = $newExtensions;
 
         if ($existingExtensions !== null) {
+            // Reload the list of existing extensions as it is an array, not an object.
+            $existingExtensions = $this->extensionsByExtender[$target];
             $additionalExtensions = $this->extendExistingExtensions($existingExtensions, $newExtensionsByTarget);
 
             if ($additionalExtensions !== null) {
@@ -816,7 +818,7 @@ class ConcreteExtensionStore implements ExtensionStore
             $result[] = new ComplexSelector([], [new ComplexSelectorComponent(
                 new CompoundSelector(iterator_to_array(self::expandIterable($extenderPaths[0], function (Extender $extender) {
                     \assert(\count($extender->selector->getComponents()) === 1);
-                    return $extender->selector->getComponents()[0]->getSelector()->getComponents();
+                    return ListUtil::last($extender->selector->getComponents())->getSelector()->getComponents();
                 }), false), $component->getSelector()->getSpan()),
                 $component->getCombinators(),
                 $component->getSpan(),
@@ -1134,6 +1136,8 @@ class ConcreteExtensionStore implements ExtensionStore
             $complex1 = $selectors[$i];
 
             if ($isOriginal($complex1)) {
+                // Make sure we don't include duplicate originals, which could happen if
+                // a style rule extends a component of its own selector.
                 for ($j = 0; $j < $numOriginals; $j++) {
                     if (EquatableUtil::equals($result[$j], $complex1)) {
                         // Rotates the slice one index higher
