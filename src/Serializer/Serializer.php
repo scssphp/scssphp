@@ -28,7 +28,7 @@ final class Serializer
      */
     public static function serialize(CssNode $node, bool $inspect = false, string $style = OutputStyle::EXPANDED, bool $sourceMap = false, bool $charset = true): SerializeResult
     {
-        $visitor = new SerializeVisitor($inspect, true, $style);
+        $visitor = new SerializeVisitor($inspect, true, $style, $sourceMap);
         $node->accept($visitor);
         $css = (string) $visitor->getBuffer();
 
@@ -42,9 +42,10 @@ final class Serializer
             }
         }
 
-        // TODO build the source map
-
-        return new SerializeResult($prefix . $css);
+        return new SerializeResult(
+            $prefix . $css,
+            $sourceMap ? $visitor->getBuffer()->buildSourceMap($prefix) : null,
+        );
     }
 
     /**

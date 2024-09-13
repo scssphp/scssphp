@@ -147,6 +147,6 @@ abstract class ModifiableCssNode implements CssNode
 
     public function __toString(): string
     {
-        return Serializer::serialize($this, true)->getCss();
+        return Serializer::serialize($this, true)->css;
     }
 }

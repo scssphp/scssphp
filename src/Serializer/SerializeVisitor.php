@@ -77,7 +77,7 @@ use ScssPhp\ScssPhp\Visitor\ValueVisitor;
  */
 final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisitor
 {
-    private readonly StringBuffer $buffer;
+    private readonly SourceMapBuffer $buffer;
 
     /**
      * The current indentation of the CSS output.
@@ -102,15 +102,15 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
     /**
      * @phpstan-param OutputStyle::* $style
      */
-    public function __construct(bool $inspect = false, bool $quote = true, string $style = OutputStyle::EXPANDED)
+    public function __construct(bool $inspect = false, bool $quote = true, string $style = OutputStyle::EXPANDED, bool $sourceMap = false)
     {
-        $this->buffer = new SimpleStringBuffer();
+        $this->buffer = $sourceMap ? new TrackingSourceMapBuffer() : new SimpleStringBuffer();
         $this->inspect = $inspect;
         $this->quote = $quote;
         $this->compressed = $style === OutputStyle::COMPRESSED;
     }
 
-    public function getBuffer(): StringBuffer
+    public function getBuffer(): SourceMapBuffer
     {
         return $this->buffer;
     }
@@ -346,8 +346,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             $this->writeOptionalSpace();
 
             try {
-                // TODO implement source map tracking
-                $node->getValue()->getValue()->accept($this);
+                $this->buffer->forSpan($node->getValueSpanForMap(), fn () => $node->getValue()->getValue()->accept($this));
             } catch (SassScriptException $error) {
                 throw new SassRuntimeException($error->getMessage(), $node->getValue()->getSpan(), null, $error);
             }
@@ -1340,7 +1339,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      * characters are often used for glyph fonts, where it's useful for readers
      * to be able to distinguish between them in the rendered stylesheet.
      */
-    private function tryPrivateUseCharacter(StringBuffer $buffer, string $char, string $string, int $i): ?int
+    private function tryPrivateUseCharacter(SourceMapBuffer $buffer, string $char, string $string, int $i): ?int
     {
         if ($this->compressed) {
             return null;
@@ -1391,7 +1390,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      * are used to write a trailing space after the escape if necessary to
      * disambiguate it from the next character.
      */
-    private function writeEscape(StringBuffer $buffer, string $character, string $string, int $i): void
+    private function writeEscape(SourceMapBuffer $buffer, string $character, string $string, int $i): void
     {
         $buffer->writeChar('\\');
         $buffer->write(dechex(mb_ord($character, 'UTF-8')));
@@ -1614,8 +1613,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      */
     private function for(AstNode $node, callable $callback)
     {
-        // TODO implement sourcemap tracking
-        return $callback();
+        return $this->buffer->forSpan($node->getSpan(), $callback);
     }
 
     /**
