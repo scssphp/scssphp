@@ -92,6 +92,11 @@ final class Compiler
     public static $emptyString  = [Type::T_STRING, '"', []];
 
     /**
+     * @var list<Importer>
+     */
+    private array $importers = [];
+
+    /**
      * @var array<int, string|callable(string): (string|null)>
      */
     private $importPaths = [];
@@ -207,6 +212,11 @@ final class Compiler
     public function getVariables(): array
     {
         return $this->registeredVars;
+    }
+
+    public function addImporter(Importer $importer): void
+    {
+        $this->importers[] = $importer;
     }
 
     /**
@@ -431,7 +441,7 @@ final class Compiler
 
     private function createImportCache(DeprecationAwareLoggerInterface $logger): ImportCache
     {
-        $importers = [];
+        $importers = $this->importers;
 
         foreach ($this->importPaths as $importPath) {
             if (\is_string($importPath)) {
