@@ -113,7 +113,7 @@ final class Path
         $matches = array_values(array_filter($files, fn ($realPath) => StringUtil::equalsIgnoreCase(basename($realPath), $basename)));
 
         if (\count($matches) === 1) {
-            return $matches[0];
+            return self::join($realDirname, $matches[0]);
         }
 
         // If the file doesn't exist, or if there are multiple options
