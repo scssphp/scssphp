@@ -99,10 +99,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
     private readonly bool $compressed;
 
-    /**
-     * @phpstan-param OutputStyle::* $style
-     */
-    public function __construct(bool $inspect = false, bool $quote = true, string $style = OutputStyle::EXPANDED, bool $sourceMap = false)
+    public function __construct(bool $inspect = false, bool $quote = true, OutputStyle $style = OutputStyle::EXPANDED, bool $sourceMap = false)
     {
         $this->buffer = $sourceMap ? new TrackingSourceMapBuffer() : new SimpleStringBuffer();
         $this->inspect = $inspect;

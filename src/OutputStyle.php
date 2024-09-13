@@ -12,54 +12,37 @@
 
 namespace ScssPhp\ScssPhp;
 
-/**
- * TODO convert to an enum with appropriate forward-compat/backward-compat APIs in 1.x
- */
-final class OutputStyle
+enum OutputStyle: string
 {
-    const EXPANDED = 'expanded';
-    const COMPRESSED = 'compressed';
+    case EXPANDED = 'expanded';
+    case COMPRESSED = 'compressed';
 
     /**
      * Converts a string to an output style.
      *
      * Using this method allows to write code which will support both
-     * versions 1.12+ and 2.0 of Scssphp. In 2.0, OutputStyle will be
-     * an enum instead of using string constants.
-     *
-     * @param string $string
-     *
-     * @return self::*
+     * versions 1.12+ and 2.0 of Scssphp. In 1.x, OutputStyle is using
+     * string constants.
      */
-    public static function fromString($string)
+    public static function fromString(string $string): OutputStyle
     {
-        switch ($string) {
-            case 'expanded':
-                return self::EXPANDED;
-
-            case 'compressed':
-                return self::COMPRESSED;
-
-            default:
-                throw new \InvalidArgumentException('Invalid output style');
-        }
+        return match ($string) {
+            'expanded' => self::EXPANDED,
+            'compressed' => self::COMPRESSED,
+            default => throw new \InvalidArgumentException('Invalid output style'),
+        };
     }
 
     /**
      * Converts an output style to a string supported by {@see OutputStyle::fromString()}.
      *
      * Using this method allows to write code which will support both
-     * versions 1.12+ and 2.0 of Scssphp. In 2.0, OutputStyle will be
-     * an enum instead of using string constants.
+     * versions 1.12+ and 2.0 of Scssphp.
      * The returned string representation is guaranteed to be compatible
      * between 1.12 and 2.0.
-     *
-     * @param self::* $outputStyle
-     *
-     * @return string
      */
-    public static function toString($outputStyle)
+    public static function toString(OutputStyle $outputStyle): string
     {
-        return $outputStyle;
+        return $outputStyle->value;
     }
 }
