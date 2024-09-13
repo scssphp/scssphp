@@ -104,9 +104,9 @@ final class TrackingSourceMapBuffer implements SourceMapBuffer
             if ($entry->target->getOffset() === $target->getOffset()) {
                 return;
             }
-
-            $this->entries[] = new Entry($source, $target);
         }
+
+        $this->entries[] = new Entry($source, $target);
     }
 
     public function write(string $string): void
