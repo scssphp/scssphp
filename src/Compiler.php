@@ -130,11 +130,7 @@ final class Compiler
 
     private bool $verbose = false;
 
-    /**
-     * @var string
-     * @phpstan-var OutputStyle::*
-     */
-    private $outputStyle = OutputStyle::EXPANDED;
+    private OutputStyle $outputStyle = OutputStyle::EXPANDED;
 
     /**
      * @var LoggerInterface
@@ -256,24 +252,10 @@ final class Compiler
 
     /**
      * Sets the output style.
-     *
-     * @param string $style One of the OutputStyle constants
-     *
-     * @return void
-     *
-     * @phpstan-param OutputStyle::* $style
      */
-    public function setOutputStyle(string $style): void
+    public function setOutputStyle(OutputStyle $style): void
     {
-        switch ($style) {
-            case OutputStyle::EXPANDED:
-            case OutputStyle::COMPRESSED:
-                $this->outputStyle = $style;
-                break;
-
-            default:
-                throw new \InvalidArgumentException(sprintf('Invalid output style "%s".', $style));
-        }
+        $this->outputStyle = $style;
     }
 
     /**

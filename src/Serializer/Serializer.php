@@ -23,10 +23,7 @@ use ScssPhp\ScssPhp\Value\Value;
  */
 final class Serializer
 {
-    /**
-     * @phpstan-param OutputStyle::* $style
-     */
-    public static function serialize(CssNode $node, bool $inspect = false, string $style = OutputStyle::EXPANDED, bool $sourceMap = false, bool $charset = true): SerializeResult
+    public static function serialize(CssNode $node, bool $inspect = false, OutputStyle $style = OutputStyle::EXPANDED, bool $sourceMap = false, bool $charset = true): SerializeResult
     {
         $visitor = new SerializeVisitor($inspect, true, $style, $sourceMap);
         $node->accept($visitor);

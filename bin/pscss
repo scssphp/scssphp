@@ -133,8 +133,9 @@ if ($loadPaths) {
 }
 
 if ($style) {
-    if ($style === OutputStyle::COMPRESSED || $style === OutputStyle::EXPANDED) {
-        $compiler->setOutputStyle($style);
+    $actualStyle = OutputStyle::tryFrom($style);
+    if ($actualStyle !== null) {
+        $compiler->setOutputStyle($actualStyle);
     } else {
         fwrite(STDERR, "Error: the $style style is invalid.\n");
         exit(1);
