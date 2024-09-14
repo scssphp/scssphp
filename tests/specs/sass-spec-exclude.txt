@@ -1,9 +1,3 @@
-css/plain/import/sass_takes_precedence
 directives/forward/escaped
-directives/import/load/explicit_extension/sass
-directives/import/load/index/sass
-directives/import/load/precedence/import_only/implicit_extension
-directives/import/load/precedence/sass_before_css
 directives/use/escaped
-non_conformant/sass/imported
 values/numbers/bounds/precision_limit/at/balanced

@@ -17,9 +17,9 @@ use ScssPhp\ScssPhp\Ast\Sass\Statement;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\CssParser;
+use ScssPhp\ScssPhp\Parser\SassParser;
 use ScssPhp\ScssPhp\Parser\ScssParser;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
-use ScssPhp\ScssPhp\SourceSpan\SourceFile;
 use ScssPhp\ScssPhp\Syntax;
 use ScssPhp\ScssPhp\Visitor\StatementVisitor;
 
@@ -80,10 +80,7 @@ final class Stylesheet extends ParentStatement
      */
     public static function parseSass(string $contents, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null): self
     {
-        $file = new SourceFile($contents, $sourceUrl);
-        $span = $file->span(0, 0);
-
-        throw new SassFormatException('The Sass indented syntax is not implemented.', $span);
+        return (new SassParser($contents, $logger, $sourceUrl))->parse();
     }
 
     /**
