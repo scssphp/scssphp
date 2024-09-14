@@ -19,7 +19,7 @@ use ScssPhp\ScssPhp\StackTrace\Trace;
 /**
  * @internal
  */
-interface DeprecationAwareLoggerInterface extends LocationAwareLoggerInterface
+interface DeprecationAwareLoggerInterface extends LoggerInterface
 {
     public function warnForDeprecation(Deprecation $deprecation, string $message, ?FileSpan $span = null, ?Trace $trace = null): void;
 }

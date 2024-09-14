@@ -25,7 +25,6 @@ use ScssPhp\ScssPhp\Importer\ImportCache;
 use ScssPhp\ScssPhp\Importer\Importer;
 use ScssPhp\ScssPhp\Importer\LegacyCallbackImporter;
 use ScssPhp\ScssPhp\Importer\NoOpImporter;
-use ScssPhp\ScssPhp\Logger\AdaptingLogger;
 use ScssPhp\ScssPhp\Logger\DeprecationAwareLoggerInterface;
 use ScssPhp\ScssPhp\Logger\DeprecationHandlingLogger;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
@@ -370,7 +369,7 @@ final class Compiler
         // Force loading the CssVisitor before using the AST classes because of a weird PHP behavior.
         class_exists(CssVisitor::class);
 
-        $logger = new DeprecationHandlingLogger(AdaptingLogger::adaptLogger($this->logger), [], [], !$this->verbose);
+        $logger = new DeprecationHandlingLogger($this->logger, [], [], !$this->verbose);
         $importCache = $this->createImportCache($logger);
 
         $importer = new FilesystemImporter(null);
@@ -404,7 +403,7 @@ final class Compiler
         // Force loading the CssVisitor before using the AST classes because of a weird PHP behavior.
         class_exists(CssVisitor::class);
 
-        $logger = new DeprecationHandlingLogger(AdaptingLogger::adaptLogger($this->logger), [], [], !$this->verbose);
+        $logger = new DeprecationHandlingLogger($this->logger, [], [], !$this->verbose);
 
         // TODO handle passing an importer and a url to this method to be consistent with dart-sass
         $sourceUrl = $path !== null ? Path::toUri($path) : null;

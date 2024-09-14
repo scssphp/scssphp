@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Logger;
 
 use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\SourceSpan\SourceSpan;
 use ScssPhp\ScssPhp\StackTrace\Trace;
 
 /**
@@ -21,7 +22,7 @@ use ScssPhp\ScssPhp\StackTrace\Trace;
  */
 final class AdaptingDeprecationAwareLogger implements DeprecationAwareLoggerInterface
 {
-    private function __construct(private readonly LocationAwareLoggerInterface $logger)
+    private function __construct(private readonly LoggerInterface $logger)
     {
     }
 
@@ -31,7 +32,7 @@ final class AdaptingDeprecationAwareLogger implements DeprecationAwareLoggerInte
             return $logger;
         }
 
-        return new self(AdaptingLogger::adaptLogger($logger));
+        return new self($logger);
     }
 
     public function warnForDeprecation(Deprecation $deprecation, string $message, ?FileSpan $span = null, ?Trace $trace = null): void
@@ -40,15 +41,15 @@ final class AdaptingDeprecationAwareLogger implements DeprecationAwareLoggerInte
             return;
         }
 
-        $this->logger->warn($message, true, $span, $trace);
+        $this->logger->warn($message, $deprecation, $span, $trace);
     }
 
-    public function warn(string $message, bool $deprecation = false, ?FileSpan $span = null, ?Trace $trace = null): void
+    public function warn(string $message, ?Deprecation $deprecation = null, ?FileSpan $span = null, ?Trace $trace = null): void
     {
         $this->logger->warn($message, $deprecation, $span, $trace);
     }
 
-    public function debug(string $message, ?FileSpan $span = null): void
+    public function debug(string $message, SourceSpan $span): void
     {
         $this->logger->debug($message, $span);
     }

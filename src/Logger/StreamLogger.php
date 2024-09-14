@@ -12,7 +12,9 @@
 
 namespace ScssPhp\ScssPhp\Logger;
 
+use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\SourceSpan\SourceSpan;
 use ScssPhp\ScssPhp\StackTrace\Trace;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Path;
@@ -20,7 +22,7 @@ use ScssPhp\ScssPhp\Util\Path;
 /**
  * A logger that prints to a PHP stream (for instance stderr)
  */
-final class StreamLogger implements LocationAwareLoggerInterface
+final class StreamLogger implements LoggerInterface
 {
     private $stream;
     private $closeOnDestruct;
@@ -45,9 +47,9 @@ final class StreamLogger implements LocationAwareLoggerInterface
         }
     }
 
-    public function warn(string $message, bool $deprecation = false, ?FileSpan $span = null, ?Trace $trace = null): void
+    public function warn(string $message, ?Deprecation $deprecation = null, ?FileSpan $span = null, ?Trace $trace = null): void
     {
-        $prefix = ($deprecation ? 'DEPRECATION ' : '') . 'WARNING';
+        $prefix = ($deprecation !== null ? 'DEPRECATION ' : '') . 'WARNING';
 
         if ($span === null) {
             $formattedMessage = ': ' . $message;
@@ -66,14 +68,11 @@ final class StreamLogger implements LocationAwareLoggerInterface
         fwrite($this->stream, $prefix . $formattedMessage . "\n\n");
     }
 
-    public function debug(string $message, ?FileSpan $span = null): void
+    public function debug(string $message, SourceSpan $span): void
     {
-        $location = '';
-        if ($span !== null) {
-            $url = $span->getStart()->getSourceUrl() === null ? '-' : Path::prettyUri($span->getStart()->getSourceUrl());
-            $line = $span->getStart()->getLine() + 1;
-            $location = "$url:$line ";
-        }
+        $url = $span->getStart()->getSourceUrl() === null ? '-' : Path::prettyUri($span->getStart()->getSourceUrl());
+        $line = $span->getStart()->getLine() + 1;
+        $location = "$url:$line ";
 
         fwrite($this->stream, \sprintf("%sDEBUG: %s", $location, $message) . "\n");
     }

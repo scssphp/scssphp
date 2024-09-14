@@ -17,6 +17,7 @@ use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Exception\SimpleSassException;
 use ScssPhp\ScssPhp\Exception\SimpleSassRuntimeException;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\SourceSpan\SourceSpan;
 use ScssPhp\ScssPhp\StackTrace\Trace;
 
 /**
@@ -39,14 +40,14 @@ final class DeprecationHandlingLogger implements DeprecationAwareLoggerInterface
      * @param Deprecation[] $futureDeprecations
      */
     public function __construct(
-        private readonly LocationAwareLoggerInterface $inner,
+        private readonly LoggerInterface $inner,
         private readonly array $fatalDeprecations,
         private readonly array $futureDeprecations,
         private readonly bool $limitRepetition = true
     ) {
     }
 
-    public function warn(string $message, bool $deprecation = false, ?FileSpan $span = null, ?Trace $trace = null): void
+    public function warn(string $message, ?Deprecation $deprecation = null, ?FileSpan $span = null, ?Trace $trace = null): void
     {
         $this->inner->warn($message, $deprecation, $span, $trace);
     }
@@ -90,10 +91,10 @@ final class DeprecationHandlingLogger implements DeprecationAwareLoggerInterface
             }
         }
 
-        $this->warn($message, true, $span, $trace);
+        $this->warn($message, $deprecation, $span, $trace);
     }
 
-    public function debug(string $message, ?FileSpan $span = null): void
+    public function debug(string $message, SourceSpan $span): void
     {
         $this->inner->debug($message, $span);
     }
