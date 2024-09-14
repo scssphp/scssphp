@@ -12,7 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Extend;
 
-use ScssPhp\ScssPhp\Exception\SassRuntimeException;
+use ScssPhp\ScssPhp\Exception\SimpleSassException;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 
 /**
@@ -46,8 +46,7 @@ final class MergedExtension extends Extension
         if ($left->mediaContext !== null && $right->mediaContext !== null && !EquatableUtil::listEquals($left->mediaContext, $right->mediaContext)) {
             $location = $left->span->message('');
 
-            // TODO check the exception type
-            throw new SassRuntimeException("From $location\nYou may not @extend the same selector from within different media queries.", $right->span);
+            throw new SimpleSassException("From $location\nYou may not @extend the same selector from within different media queries.", $right->span);
         }
 
         // If one extension is optional and doesn't add a special media context, it

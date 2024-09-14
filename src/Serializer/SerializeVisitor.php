@@ -39,7 +39,6 @@ use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\Ast\Selector\TypeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\UniversalSelector;
 use ScssPhp\ScssPhp\Colors;
-use ScssPhp\ScssPhp\Exception\SassRuntimeException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\OutputStyle;
 use ScssPhp\ScssPhp\Parser\LineScanner;
@@ -345,7 +344,7 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
             try {
                 $this->buffer->forSpan($node->getValueSpanForMap(), fn () => $node->getValue()->getValue()->accept($this));
             } catch (SassScriptException $error) {
-                throw new SassRuntimeException($error->getMessage(), $node->getValue()->getSpan(), null, $error);
+                throw $error->withSpan($node->getValue()->getSpan());
             }
         }
     }

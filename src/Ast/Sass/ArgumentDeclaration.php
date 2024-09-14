@@ -18,6 +18,8 @@ use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\ScssParser;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\Util\Character;
+use ScssPhp\ScssPhp\Util\SpanUtil;
 use ScssPhp\ScssPhp\Util\StringUtil;
 
 /**
@@ -85,6 +87,34 @@ final class ArgumentDeclaration implements SassNode
     public function getSpan(): FileSpan
     {
         return $this->span;
+    }
+
+    /**
+     * Returns {@see $span} expanded to include an identifier immediately before the
+     * declaration, if possible.
+     */
+    public function getSpanWithName(): FileSpan
+    {
+        $text = $this->span->getFile()->getText(0);
+
+        // Move backwards through any whitespace between the name and the arguments.
+        $i = $this->span->getStart()->getOffset() - 1;
+        while ($i > 0 && Character::isWhitespace($text[$i])) {
+            $i--;
+        }
+
+        // Then move backwards through the name itself.
+        if (!Character::isName($text[$i])) {
+            return $this->span;
+        }
+        $i--;
+        while ($i >= 0 && Character::isName($text[$i])) {
+            $i--;
+        }
+
+        // Trim because it's possible that this span is empty (for example, a mixin
+        // may be declared without an argument list).
+        return SpanUtil::trim($this->span->getFile()->span($i + 1, $this->span->getEnd()->getOffset()));
     }
 
     /**

@@ -13,9 +13,9 @@
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
 use League\Uri\Contracts\UriInterface;
+use ScssPhp\ScssPhp\Exception\MultiSpanSassException;
 use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
-use ScssPhp\ScssPhp\Exception\SassRuntimeException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\SelectorParser;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
@@ -94,8 +94,7 @@ abstract class SimpleSelector extends Selector
      */
     public function addSuffix(string $suffix): SimpleSelector
     {
-        // TODO use a multi-span exception, and not a runtime exception
-        throw new SassRuntimeException("Invalid parent selector \"$this\"", $this->getSpan());
+        throw new MultiSpanSassException("Invalid parent selector \"$this\"", $this->getSpan(), 'outer selector', []);
     }
 
     /**

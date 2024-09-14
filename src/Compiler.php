@@ -536,7 +536,6 @@ final class Compiler
                 $css .= ($this->outputStyle === OutputStyle::COMPRESSED ? '' : "\n\n") . "/*# sourceMappingURL=$escapedUrl */";
             }
         }
-        // TODO process source map processing
 
         return new CompilationResult($css, $sourceMap, $evaluateResult->getLoadedUrls());
     }

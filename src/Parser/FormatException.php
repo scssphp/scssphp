@@ -12,12 +12,14 @@
 
 namespace ScssPhp\ScssPhp\Parser;
 
+use JiriPudil\SealedClasses\Sealed;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 
 /**
  * @internal
  */
-final class FormatException extends \Exception
+#[Sealed([MultiSourceFormatException::class])]
+class FormatException extends \Exception
 {
     private readonly FileSpan $span;
 

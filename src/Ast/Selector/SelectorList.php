@@ -15,8 +15,8 @@ namespace ScssPhp\ScssPhp\Ast\Selector;
 use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Ast\Css\CssValue;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
-use ScssPhp\ScssPhp\Exception\SassRuntimeException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\Exception\SimpleSassException;
 use ScssPhp\ScssPhp\Extend\ExtendUtil;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\InterpolationMap;
@@ -171,7 +171,7 @@ final class SelectorList extends Selector
                 return $this;
             }
 
-            throw new SassRuntimeException('Top-level selectors may not contain the parent selector "&".', $parentSelector->getSpan());
+            throw new SimpleSassException('Top-level selectors may not contain the parent selector "&".', $parentSelector->getSpan());
         }
 
         return new SelectorList(ListUtil::flattenVertically(array_map(function (ComplexSelector $complex) use ($parent, $implicitParent, $preserveParentSelectors) {
@@ -287,8 +287,6 @@ final class SelectorList extends Selector
 
         $parentSelector = $simples[0];
 
-        // TODO add the span on exceptions in those 2 ifs
-
         if (!$parentSelector instanceof ParentSelector) {
             return [
                 new ComplexSelector([], [
@@ -309,8 +307,7 @@ final class SelectorList extends Selector
             $lastComponent = $complex->getLastComponent();
 
             if (\count($lastComponent->getCombinators()) !== 0) {
-                // TODO use a SassException that is not a SassRuntimeException
-                throw new SassRuntimeException("Parent \"$complex\" is incompatible with this selector.", $parentSelector->getSpan());
+                throw new SimpleSassException("Parent \"$complex\" is incompatible with this selector.", $parentSelector->getSpan());
             }
 
             $suffix = $parentSelector->getSuffix();
