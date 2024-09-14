@@ -15,6 +15,7 @@ libsass-closed-issues/issue_1163
 libsass-closed-issues/issue_1188
 libsass-closed-issues/issue_1417
 libsass-closed-issues/issue_1792
+libsass-closed-issues/issue_1926
 libsass-closed-issues/issue_2042
 libsass-closed-issues/issue_2309
 libsass-closed-issues/issue_239

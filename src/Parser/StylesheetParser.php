@@ -228,18 +228,27 @@ abstract class StylesheetParser extends Parser
                 return $this->atRule($this->statement(...), $root);
 
             case '+':
-                if (!$this->isIndented()) {
+                if (!$this->isIndented() || !$this->lookingAtIdentifier(1)) {
                     return $this->styleRule();
                 }
 
-                throw new \BadMethodCallException('The parsing of the indented syntax is not implemented.');
+                $this->isUseAllowed = false;
+                $start = $this->scanner->getPosition();
+                $this->scanner->readChar();
+
+                return $this->includeRule($start);
 
             case '=':
                 if (!$this->isIndented()) {
                     return $this->styleRule();
                 }
 
-                throw new \BadMethodCallException('The parsing of the indented syntax is not implemented.');
+                $this->isUseAllowed = false;
+                $start = $this->scanner->getPosition();
+                $this->scanner->readChar();
+                $this->whitespace();
+
+                return $this->mixinRule($start);
 
             case '}':
                 $this->scanner->error('unmatched "}".');
@@ -342,6 +351,13 @@ abstract class StylesheetParser extends Parser
             return $this->styleRule();
         }
 
+        // The indented syntax allows a single backslash to distinguish a style rule
+        // from old-style property syntax. We don't support old property syntax, but
+        // we do support the backslash because it's easy to do.
+        if ($this->isIndented() && $this->scanner->scanChar('\\')) {
+            return $this->styleRule();
+        }
+
         if (!$this->lookingAtIdentifier()) {
             return $this->styleRule();
         }
@@ -366,6 +382,13 @@ abstract class StylesheetParser extends Parser
      */
     private function declarationOrStyleRule(): Statement
     {
+        // The indented syntax allows a single backslash to distinguish a style rule
+        // from old-style property syntax. We don't support old property syntax, but
+        // we do support the backslash because it's easy to do.
+        if ($this->isIndented() && $this->scanner->scanChar('\\')) {
+            return $this->styleRule();
+        }
+
         $start = $this->scanner->getPosition();
 
         $declarationBuffer = $this->declarationOrBuffer();
@@ -450,6 +473,8 @@ abstract class StylesheetParser extends Parser
         }
 
         if ($this->isIndented() && $this->lookingAtInterpolatedIdentifier()) {
+            // In the indented syntax, `foo:bar` is always considered a selector
+            // rather than a property.
             $nameBuffer->write($midBuffer);
 
             return $nameBuffer;
@@ -571,6 +596,10 @@ abstract class StylesheetParser extends Parser
         $this->inStyleRule = true;
 
         return $this->withChildren($this->statement(...), $start, function (array $children) use ($wasInStyleRule, $start, $interpolation) {
+            if ($this->isIndented() && $children === []) {
+                $this->warn("This selector doesn't have any properties and won't be rendered.", $interpolation->getSpan());
+            }
+
             $this->inStyleRule = $wasInStyleRule;
 
             return new StyleRule($interpolation, $children, $this->scanner->spanFrom($start));
