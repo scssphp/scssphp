@@ -12,13 +12,11 @@
 
 namespace ScssPhp\ScssPhp\Node;
 
-use ScssPhp\ScssPhp\Base\Range;
 use ScssPhp\ScssPhp\Compiler;
-use ScssPhp\ScssPhp\Exception\RangeException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Node;
 use ScssPhp\ScssPhp\Type;
-use ScssPhp\ScssPhp\Util;
+use ScssPhp\ScssPhp\Util\NumberUtil;
 
 /**
  * Dimension + optional units
@@ -272,16 +270,12 @@ final class Number extends Node implements \ArrayAccess, \JsonSerializable
      * @param float|int $max
      * @param string|null $name
      *
-     * @return float|int
+     * @return float
      * @throws SassScriptException
      */
     public function valueInRange($min, $max, $name = null)
     {
-        try {
-            return Util::checkRange('', new Range($min, $max), $this);
-        } catch (RangeException $e) {
-            throw SassScriptException::forArgument(sprintf('Expected %s to be within %s%s and %s%3$s.', $this, $min, $this->unitStr(), $max), $name);
-        }
+        return NumberUtil::fuzzyCheckRange($this->dimension, $min, $max) ?? throw SassScriptException::forArgument(sprintf('Expected %s to be within %s%s and %s%3$s.', $this, $min, $this->unitStr(), $max), $name);
     }
 
     /**
@@ -290,18 +284,14 @@ final class Number extends Node implements \ArrayAccess, \JsonSerializable
      * @param string    $name
      * @param string    $unit
      *
-     * @return float|int
+     * @return float
      * @throws SassScriptException
      *
      * @internal
      */
     public function valueInRangeWithUnit($min, $max, $name, $unit)
     {
-        try {
-            return Util::checkRange('', new Range($min, $max), $this);
-        } catch (RangeException $e) {
-            throw SassScriptException::forArgument(sprintf('Expected %s to be within %s%s and %s%3$s.', $this, $min, $unit, $max), $name);
-        }
+        return NumberUtil::fuzzyCheckRange($this->dimension, $min, $max) ?? throw SassScriptException::forArgument(sprintf('Expected %s to be within %s%s and %s%3$s.', $this, $min, $unit, $max), $name);
     }
 
     /**

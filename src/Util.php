@@ -14,9 +14,6 @@ namespace ScssPhp\ScssPhp;
 
 use League\Uri\Contracts\UriInterface;
 use League\Uri\Uri;
-use ScssPhp\ScssPhp\Base\Range;
-use ScssPhp\ScssPhp\Exception\RangeException;
-use ScssPhp\ScssPhp\Node\Number;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\StackTrace\Frame;
 use ScssPhp\ScssPhp\Util\StringUtil;
@@ -38,43 +35,6 @@ final class Util
         return implode("\n", array_map(function ($line) use ($indentation) {
             return str_repeat(' ', $indentation) . $line;
         }, explode("\n", $string)));
-    }
-
-    /**
-     * Asserts that `value` falls within `range` (inclusive), leaving
-     * room for slight floating-point errors.
-     *
-     * @param string       $name  The name of the value. Used in the error message.
-     * @param Range        $range Range of values.
-     * @param array|Number $value The value to check.
-     * @param string       $unit  The unit of the value. Used in error reporting.
-     *
-     * @return mixed `value` adjusted to fall within range, if it was outside by a floating-point margin.
-     *
-     * @throws RangeException
-     */
-    public static function checkRange(string $name, Range $range, $value, string $unit = '')
-    {
-        $val = $value[1];
-        $grace = new Range(-0.00001, 0.00001);
-
-        if (! \is_numeric($val)) {
-            throw new RangeException("$name {$val} is not a number.");
-        }
-
-        if ($range->includes($val)) {
-            return $val;
-        }
-
-        if ($grace->includes($val - $range->first)) {
-            return $range->first;
-        }
-
-        if ($grace->includes($val - $range->last)) {
-            return $range->last;
-        }
-
-        throw new RangeException("$name {$val} must be between {$range->first} and {$range->last}$unit");
     }
 
     /**
