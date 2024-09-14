@@ -910,7 +910,7 @@ class Parser
      */
     protected function warn(string $message, FileSpan $span): void
     {
-        $this->logger->warn($message, false, $span);
+        $this->logger->warn($message, null, $span);
     }
 
     /**

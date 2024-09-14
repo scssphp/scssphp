@@ -1852,7 +1852,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
         $value = $this->addExceptionSpan($node, function () use ($node) {
             return $node->getExpression()->accept($this);
         });
-        $this->logger->warn($value instanceof SassString ? $value->getText() : $this->serialize($value, $node->getExpression()), false, null, $this->stackTrace($node->getSpan()));
+        $this->logger->warn($value instanceof SassString ? $value->getText() : $this->serialize($value, $node->getExpression()), null, null, $this->stackTrace($node->getSpan()));
 
         return null;
     }
@@ -3385,7 +3385,7 @@ WARNING;
         $trace = $this->stackTrace($span);
 
         if ($deprecation === null) {
-            $this->logger->warn($message, false, $span, $trace);
+            $this->logger->warn($message, null, $span, $trace);
         } else {
             $this->logger->warnForDeprecation($deprecation, $message, $span, $trace);
         }
