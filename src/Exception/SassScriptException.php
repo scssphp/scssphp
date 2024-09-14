@@ -2,6 +2,9 @@
 
 namespace ScssPhp\ScssPhp\Exception;
 
+use JiriPudil\SealedClasses\Sealed;
+use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+
 /**
  * An exception thrown by SassScript.
  *
@@ -10,7 +13,8 @@ namespace ScssPhp\ScssPhp\Exception;
  * and replace it with a SassException reporting the location of the
  * error.
  */
-final class SassScriptException extends \Exception
+#[Sealed([MultiSpanSassScriptException::class])]
+class SassScriptException extends \Exception
 {
     /**
      * Creates a SassScriptException with support for an argument name.
@@ -29,5 +33,15 @@ final class SassScriptException extends \Exception
         $varDisplay = !\is_null($name) ? "\${$name}: " : '';
 
         return new self($varDisplay . $message, 0, $previous);
+    }
+
+    /**
+     * Converts this to a {@see SassException} with the given $span.
+     *
+     * @internal
+     */
+    public function withSpan(FileSpan $span): SassException
+    {
+        return new SimpleSassException($this->message, $span, $this);
     }
 }

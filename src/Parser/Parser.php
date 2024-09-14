@@ -13,7 +13,9 @@
 namespace ScssPhp\ScssPhp\Parser;
 
 use League\Uri\Contracts\UriInterface;
+use ScssPhp\ScssPhp\Exception\MultiSpanSassFormatException;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
+use ScssPhp\ScssPhp\Exception\SimpleSassFormatException;
 use ScssPhp\ScssPhp\Logger\AdaptingDeprecationAwareLogger;
 use ScssPhp\ScssPhp\Logger\DeprecationAwareLoggerInterface;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
@@ -945,6 +947,16 @@ class Parser
 
                 throw $this->interpolationMap->mapException($e);
             }
+        } catch (MultiSourceFormatException $error) {
+            $span = $error->getSpan();
+            $secondarySpans = $error->secondarySpans;
+
+            if (0 === stripos($error->getMessage(), 'expected')) {
+                $span = $this->adjustExceptionSpan($span);
+                $secondarySpans = array_map(fn (FileSpan $span) => $this->adjustExceptionSpan($span), $secondarySpans);
+            }
+
+            throw new MultiSpanSassFormatException($error->getMessage(), $span, $error->primaryLabel, $secondarySpans, $error);
         } catch (FormatException $error) {
             $span = $error->getSpan();
 
@@ -952,9 +964,8 @@ class Parser
                 $span = $this->adjustExceptionSpan($span);
             }
 
-            throw new SassFormatException($error->getMessage(), $span, $error);
+            throw new SimpleSassFormatException($error->getMessage(), $span, $error);
         }
-        // TODO handle multi-span exceptions
     }
 
     /**

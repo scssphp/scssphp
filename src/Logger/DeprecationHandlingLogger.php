@@ -13,8 +13,9 @@
 namespace ScssPhp\ScssPhp\Logger;
 
 use ScssPhp\ScssPhp\Deprecation;
-use ScssPhp\ScssPhp\Exception\SassRuntimeException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\Exception\SimpleSassException;
+use ScssPhp\ScssPhp\Exception\SimpleSassRuntimeException;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\StackTrace\Trace;
 
@@ -67,11 +68,11 @@ final class DeprecationHandlingLogger implements DeprecationAwareLoggerInterface
             $message .= "\n\nThis is only an error because you've set the {$deprecation->value} deprecation to be fatal.\nRemove this setting if you need to keep using this feature.";
 
             if ($span !== null && $trace !== null) {
-                throw new SassRuntimeException($message, $span); // TODO add trace
+                throw new SimpleSassRuntimeException($message, $span, $trace);
             }
 
             if ($span !== null) {
-                throw new SassRuntimeException($message, $span); // TODO use the right exception type
+                throw new SimpleSassException($message, $span);
             }
 
             throw new SassScriptException($message);

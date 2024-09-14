@@ -23,6 +23,7 @@ use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\Ast\Selector\SimpleSelector;
 use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\Exception\SimpleSassException;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Box;
@@ -231,8 +232,7 @@ class ConcreteExtensionStore implements ExtensionStore
             try {
                 $selector = $this->extendList($originalSelector, $this->extensions, $mediaContext);
             } catch (SassException $e) {
-                // TODO
-                throw $e;
+                throw new SimpleSassException("From {$e->getSpan()->message('')}\n" . $e->getOriginalMessage(), $e->getSpan(), $e);
             }
         }
 
@@ -395,8 +395,7 @@ class ConcreteExtensionStore implements ExtensionStore
                     continue;
                 }
             } catch (SassException $e) {
-                // TODO add additional span
-                throw $e;
+                throw $e->withAdditionalSpan($extension->extender->selector->getSpan(), 'target selector', $e);
             }
 
             // If the output contains the original complex selector, there's no need
@@ -458,8 +457,7 @@ class ConcreteExtensionStore implements ExtensionStore
             try {
                 $selector->setValue($this->extendList($selector->getValue(), $newExtensions, $this->mediaContexts[$selector] ?? null));
             } catch (SassException $e) {
-                // TODO throw the appropriate exception.
-                throw $e;
+                throw new SimpleSassException("From {$e->getSpan()->message('')}\n" . $e->getOriginalMessage(), $e->getSpan(), $e);
             }
 
             // If no extends actually happened (for example because unification

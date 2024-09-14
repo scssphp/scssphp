@@ -18,6 +18,7 @@ use ScssPhp\ScssPhp\SourceSpan\FileLocation;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\SourceSpan\SourceLocation;
 use ScssPhp\ScssPhp\Util\Character;
+use ScssPhp\ScssPhp\Util\IterableUtil;
 
 /**
  * A class that can map locations in a string generated from an {@see Interpolation}
@@ -56,12 +57,17 @@ final class InterpolationMap
         }
     }
 
-    public function mapException(FormatException $exception): FormatException
+    public function mapException(FormatException $error): FormatException
     {
-        $source = $this->mapSpan($exception->getSpan());
+        $source = $this->mapSpan($error->getSpan());
+        $startIndex = $this->indexInContents($source->getStart());
+        $endIndex = $this->indexInContents($source->getEnd());
 
-        // TODO implement the Multi-span support here
-        return new FormatException($exception->getMessage(), $source, $exception);
+        if (!IterableUtil::any(array_slice($this->interpolation->getContents(), $startIndex, $endIndex - $startIndex + 1), fn ($content) => $content instanceof Expression)) {
+            return new FormatException($error->getMessage(), $source, $error);
+        }
+
+        return new MultiSourceFormatException($error->getMessage(), $source, '', ['error in interpolated output' => $error->getSpan()], $error);
     }
 
     public function mapSpan(FileSpan $target): FileSpan

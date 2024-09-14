@@ -14,7 +14,7 @@ namespace ScssPhp\ScssPhp\Extend;
 
 use ScssPhp\ScssPhp\Ast\Css\CssMediaQuery;
 use ScssPhp\ScssPhp\Ast\Selector\ComplexSelector;
-use ScssPhp\ScssPhp\Exception\SassRuntimeException;
+use ScssPhp\ScssPhp\Exception\SimpleSassException;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 
 /**
@@ -81,7 +81,6 @@ final class Extender
             return;
         }
 
-        // TODO check the exception type
-        throw new SassRuntimeException('You may not @extend selectors across media queries.', $this->extension->span);
+        throw new SimpleSassException('You may not @extend selectors across media queries.', $this->extension->span);
     }
 }

@@ -102,10 +102,14 @@ use ScssPhp\ScssPhp\Ast\Selector\SimpleSelector;
 use ScssPhp\ScssPhp\Collection\Map;
 use ScssPhp\ScssPhp\Colors;
 use ScssPhp\ScssPhp\Deprecation;
+use ScssPhp\ScssPhp\Exception\MultiSpanSassRuntimeException;
 use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Exception\SassRuntimeException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\Exception\SimpleSassException;
+use ScssPhp\ScssPhp\Exception\SimpleSassFormatException;
+use ScssPhp\ScssPhp\Exception\SimpleSassRuntimeException;
 use ScssPhp\ScssPhp\Extend\ConcreteExtensionStore;
 use ScssPhp\ScssPhp\Extend\Extension;
 use ScssPhp\ScssPhp\Extend\ExtensionStore;
@@ -717,8 +721,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
      */
     private function throwForUnsatisfiedExtension(Extension $extension): never
     {
-        // TODO use the proper exception type
-        throw new SassRuntimeException(
+        throw new SimpleSassException(
             "The target selector was not found.\nUse \"@extend $extension->target !optional\" to avoid this error.",
             $extension->span,
         );
@@ -1106,13 +1109,13 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             if ($compound === null) {
                 // If the selector was a compound selector but not a simple
                 // selector, emit a more explicit error.
-                throw new SassFormatException('complex selectors may not be extended.', $complex->getSpan());
+                throw new SimpleSassFormatException('complex selectors may not be extended.', $complex->getSpan());
             }
 
             $simple = $compound->getSingleSimple();
             if ($simple === null) {
                 $alternativeString = implode(', ', $compound->getComponents());
-                throw new SassFormatException("compound selectors may no longer be extended.\nConsider `@extend $alternativeString` instead.\nSee https://sass-lang.com/d/extend-compound for details.\n", $compound->getSpan());
+                throw new SimpleSassFormatException("compound selectors may no longer be extended.\nConsider `@extend $alternativeString` instead.\nSee https://sass-lang.com/d/extend-compound for details.\n", $compound->getSpan());
             }
 
             $this->getExtensionStore()->addExtension($styleRule->getSelector(), $simple, $node, $this->mediaQueries);
@@ -1283,7 +1286,11 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             if ($url !== null) {
                 $urlString = (string) $url;
                 if (array_key_exists($urlString, $this->activeModules)) {
-                    // TODO use a multispan exception when the previousLoad is available
+                    $previousLoad = $this->activeModules[$urlString];
+                    if ($previousLoad !== null) {
+                        throw $this->multiSpanException('This file is already being loaded.', 'new load', ['original load' => $previousLoad->getSpan()]);
+                    }
+
                     throw $this->exception('This file is already being loaded.');
                 }
 
@@ -1379,8 +1386,13 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             $evaluated = $this->evaluateArguments($arguments);
             /** @var ArgumentDeclaration $overload */
             [$overload,] = $mixin->callbackFor(\count($evaluated->getPositional()), $evaluated->getNamed());
-            // TODO use a multi span exception to show the definition.
-            throw new SassRuntimeException("Mixin doesn't accept a content block.", $nodeWithSpanWithoutContent->getSpan(), $this->stackTrace($nodeWithSpanWithoutContent->getSpan()));
+            throw new MultiSpanSassRuntimeException(
+                "Mixin doesn't accept a content block.",
+                $nodeWithSpanWithoutContent->getSpan(),
+                'invocation',
+                ['declaration' => $overload->getSpanWithName()],
+                $this->stackTrace($nodeWithSpanWithoutContent->getSpan())
+            );
         }
 
         if ($mixin instanceof BuiltInCallable) {
@@ -1392,8 +1404,13 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             assert($declaration instanceof MixinRule);
 
             if ($contentCallable !== null && !$declaration->hasContent()) {
-                // TODO use a multi span exception to show the definition.
-                throw new SassRuntimeException("Mixin doesn't accept a content block.", $nodeWithSpanWithoutContent->getSpan(), $this->stackTrace($nodeWithSpanWithoutContent->getSpan()));
+                throw new MultiSpanSassRuntimeException(
+                    "Mixin doesn't accept a content block.",
+                    $nodeWithSpanWithoutContent->getSpan(),
+                    'invocation',
+                    ['declaration' => $mixin->getDeclaration()->getArguments()->getSpanWithName()],
+                    $this->stackTrace($nodeWithSpanWithoutContent->getSpan())
+                );
             }
 
             $this->runUserDefinedCallable($arguments, $mixin, $nodeWithSpanWithoutContent, function () use ($contentCallable, $declaration, $nodeWithSpanWithoutContent) {
@@ -2050,8 +2067,14 @@ WARNING;
             $oldValue = $map->get($keyValue);
 
             if ($oldValue !== null) {
-                // TODO use a multi span exception
-                throw new SassRuntimeException('Duplicate key.', $pair[0]->getSpan(), $this->stackTrace($pair[0]->getSpan()));
+                $oldValueSpan = $keyNodes->get($keyValue)?->getSpan();
+                throw new MultiSpanSassRuntimeException(
+                    'Duplicate key.',
+                    $pair[0]->getSpan(),
+                    'second key',
+                    $oldValueSpan !== null ? ['first key' => $oldValueSpan] : [],
+                    $this->stackTrace($pair[0]->getSpan())
+                );
             }
 
             $map->put($keyValue, $valueValue);
@@ -2286,8 +2309,13 @@ WARNING;
                     continue;
                 }
 
-                // TODO use a multi span exception
-                throw new SassRuntimeException("$number1 and $number2 are incompatible.", $nodesWithSpans[$i]->getSpan(), $this->stackTrace($nodesWithSpans[$i]->getSpan()));
+                throw new MultiSpanSassRuntimeException(
+                    "$number1 and $number2 are incompatible.",
+                    $nodesWithSpans[$i]->getSpan(),
+                    (string) $number1,
+                    [(string) $number2 => $nodesWithSpans[$j]->getSpan()],
+                    $this->stackTrace($nodesWithSpans[$i]->getSpan())
+                );
             }
         }
     }
@@ -2555,8 +2583,13 @@ WARNING;
                         $lastName
                     );
 
-                    // TODO use a multi span exception
-                    throw new SassRuntimeException($message, $nodeWithSpan->getSpan(), $this->stackTrace($nodeWithSpan->getSpan()));
+                    throw new MultiSpanSassRuntimeException(
+                        $message,
+                        $nodeWithSpan->getSpan(),
+                        'invocation',
+                        ['declaration' => $callable->getDeclaration()->getArguments()->getSpanWithName()],
+                        $this->stackTrace($nodeWithSpan->getSpan())
+                    );
                 });
             });
         });
@@ -2620,8 +2653,13 @@ WARNING;
                     throw $e;
                 }
 
-                // TODO use a MultiSpan exception
-                throw $e;
+                throw new MultiSpanSassRuntimeException(
+                    $e->getOriginalMessage(),
+                    $e->getSpan(),
+                    'value',
+                    ['unknown function treated as plain CSS' => $nodeWithSpan->getSpan()],
+                    $e->getSassTrace()
+                );
             }
 
             $buffer .= ')';
@@ -2676,7 +2714,7 @@ WARNING;
             });
         } catch (SassException $e) {
             throw $e;
-        } catch (\Throwable $e) { // TODO check this
+        } catch (\Throwable $e) {
             throw $this->exception($e->getMessage(), $nodeWithSpan->getSpan(), $e);
         }
 
@@ -2701,8 +2739,13 @@ WARNING;
             $lastName
         );
 
-        // TODO use a multi span exception
-        throw new SassRuntimeException($message, $nodeWithSpan->getSpan(), $this->stackTrace($nodeWithSpan->getSpan()));
+        throw new MultiSpanSassRuntimeException(
+            $message,
+            $nodeWithSpan->getSpan(),
+            'invocation',
+            ['declaration' => $overload->getSpanWithName()],
+            $this->stackTrace($nodeWithSpan->getSpan())
+        );
     }
 
     private function evaluateArguments(ArgumentInvocation $arguments): ArgumentResults
@@ -3355,7 +3398,20 @@ WARNING;
      */
     private function exception(string $message, ?FileSpan $span = null, ?\Throwable $previous = null): SassRuntimeException
     {
-        return new SassRuntimeException($message, $span ?? $this->stack[\count($this->stack) - 1][1]->getSpan(), $this->stackTrace($span), $previous);
+        return new SimpleSassRuntimeException($message, $span ?? ListUtil::last($this->stack)[1]->getSpan(), $this->stackTrace($span), $previous);
+    }
+
+    /**
+     * Returns a {@see MultiSpanSassRuntimeException} with the given $message,
+     * $primaryLabel, and $secondaryLabels.
+     *
+     * The primary span is taken from the current stack trace span.
+     *
+     * @param array<string, FileSpan> $secondarySpans
+     */
+    private function multiSpanException(string $message, string $primaryLabel, array $secondarySpans): SassRuntimeException
+    {
+        return new MultiSpanSassRuntimeException($message, ListUtil::last($this->stack)[1]->getSpan(), $primaryLabel, $secondarySpans, $this->stackTrace());
     }
 
     /**
@@ -3384,9 +3440,7 @@ WARNING;
         try {
             return $callback();
         } catch (SassScriptException $e) {
-            // TODO implement SassException::withSpan
-            // TODO implement SassException::withTrace
-            throw new SassRuntimeException($e->getMessage(), $nodeWithSpan->getSpan(), $this->stackTrace($addStackFrame ? $nodeWithSpan->getSpan() : null), $e);
+            throw $e->withSpan($nodeWithSpan->getSpan())->withTrace($this->stackTrace($addStackFrame ? $nodeWithSpan->getSpan() : null), $e);
         }
     }
 
@@ -3409,8 +3463,7 @@ WARNING;
         } catch (SassRuntimeException $e) {
             throw $e;
         } catch (SassException $e) {
-            // TODO implement SassException::withTrace
-            throw $e;
+            throw $e->withTrace($this->stackTrace($e->getSpan()), $e);
         }
     }
 
@@ -3437,7 +3490,7 @@ WARNING;
                 throw $e;
             }
 
-            throw new SassRuntimeException($e->getOriginalMessage(), $nodeWithSpan->getSpan(), $this->stackTrace(), $e);
+            throw new SimpleSassRuntimeException($e->getOriginalMessage(), $nodeWithSpan->getSpan(), $this->stackTrace(), $e);
         }
     }
 }
