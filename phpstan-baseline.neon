@@ -161,16 +161,6 @@ parameters:
 			path: src/Serializer/SerializeVisitor.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Util\\:\\:checkRange\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Util.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method ScssPhp\\\\ScssPhp\\\\Base\\\\Range\\:\\:includes\\(\\) expects float\\|int, float\\|int\\|string given\\.$#"
-			count: 1
-			path: src/Util.php
-
-		-
 			message: "#^Method ScssPhp\\\\ScssPhp\\\\Value\\\\SassMap\\:\\:tryMap\\(\\) never returns null so it can be removed from the return type\\.$#"
 			count: 1
 			path: src/Value/SassMap.php
