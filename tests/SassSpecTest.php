@@ -201,7 +201,7 @@ class SassSpecTest extends TestCase
         $compiler = new Compiler();
         $compiler->setVerbose(true);
 
-        list($options, $scss, $includes, $inputDir) = $input;
+        list($options, $scss, $includes, $inputDir, $indented) = $input;
         list($css, $warning, $error, $alternativeCssOutputs, $alternativeWarnings) = $testCaseOutput;
 
         if (preg_match('/:(todo|ignore_for):\r?\n *+- dart-sass\r?\n/', $options)) {
@@ -253,7 +253,7 @@ class SassSpecTest extends TestCase
             mkdir($basedir, 0777, true);
         }
 
-        $inputPath = $basedir . '/input.scss';
+        $inputPath = $basedir . ($indented ? '/input.sass' : '/input.scss');
         file_put_contents($inputPath, $scss);
 
         // The display of pretty paths depends on the current working directory.
@@ -420,7 +420,7 @@ class SassSpecTest extends TestCase
                 $hasInput = false;
                 $hasOutput = false;
                 $baseDir = '';
-                $hasSupportedInput = false;
+                $indented = false;
 
                 $parts = explode('<===>', $subTest);
 
@@ -458,7 +458,7 @@ class SassSpecTest extends TestCase
 
                             $baseDir = $subDir;
                             $hasInput = true;
-                            $hasSupportedInput = $what === 'input.scss';
+                            $indented = $what === 'input.sass';
                             $input = $part;
                             break;
 
@@ -525,14 +525,11 @@ class SassSpecTest extends TestCase
                 $sizeLimit = 1024 * 1024;
                 $test = [
                     $baseTestName . $subNname,
-                    [$options, $input, $includes, $baseDir],
+                    [$options, $input, $includes, $baseDir, $indented],
                     [$output, $warning, $error, $alternativeOutputs, $alternativeWarnings]
                 ];
 
-                if ($hasInput && !$hasSupportedInput) {
-                    // this is a test using the sass indented syntax for the input
-                    $skippedTests[] = $test;
-                } elseif (
+                if (
                     ! $hasInput ||
                     (! $hasOutput && ! $error) ||
                     strlen($input) > $sizeLimit
