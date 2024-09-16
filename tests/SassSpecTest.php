@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Tests;
 
 use PHPUnit\Framework\TestCase;
 use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Logger\StreamLogger;
 
@@ -200,6 +201,7 @@ class SassSpecTest extends TestCase
 
         $compiler = new Compiler();
         $compiler->setVerbose(true);
+        $compiler->setSilenceDeprecations([Deprecation::mixedDecls]);
 
         list($options, $scss, $includes, $inputDir, $indented) = $input;
         list($css, $warning, $error, $alternativeCssOutputs, $alternativeWarnings) = $testCaseOutput;
