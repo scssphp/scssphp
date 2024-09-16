@@ -927,12 +927,12 @@ abstract class StylesheetParser extends Parser
         $buffer->write('(');
         $this->whitespace();
 
-        $buffer->add($this->expression());
+        $this->addOrInject($buffer, $this->expression());
 
         if ($this->scanner->scanChar(':')) {
             $this->whitespace();
             $buffer->write(': ');
-            $buffer->add($this->expression());
+            $this->addOrInject($buffer, $this->expression());
         }
 
         $this->scanner->expectChar(')');
@@ -4252,6 +4252,19 @@ WARNING;
         }
 
         $this->error("Private members can't be accessed from outside their modules.", $span());
+    }
+
+    /**
+     * Adds $expression to $buffer, or if it's an unquoted string adds the
+     * interpolation it contains instead.
+     */
+    private function addOrInject(InterpolationBuffer $buffer, Expression $expression): void
+    {
+        if ($expression instanceof StringExpression && !$expression->hasQuotes()) {
+            $buffer->addInterpolation($expression->getText());
+        } else {
+            $buffer->add($expression);
+        }
     }
 
     /**
