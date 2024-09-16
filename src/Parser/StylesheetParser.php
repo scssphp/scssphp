@@ -82,6 +82,7 @@ use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
+use ScssPhp\ScssPhp\Util\LoggerUtil;
 use ScssPhp\ScssPhp\Util\Path;
 use ScssPhp\ScssPhp\Util\StringUtil;
 use ScssPhp\ScssPhp\Value\ListSeparator;
@@ -309,7 +310,7 @@ abstract class StylesheetParser extends Parser
             $flag = $this->identifier();
             if ($flag === 'default') {
                 if ($guarded) {
-                    $this->logger->warnForDeprecation(Deprecation::duplicateVarFlags, "!default should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", $this->scanner->spanFrom($flagStart));
+                    LoggerUtil::warnForDeprecation($this->logger, Deprecation::duplicateVarFlags, "!default should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", $this->scanner->spanFrom($flagStart));
                 }
 
                 $guarded = true;
@@ -317,7 +318,7 @@ abstract class StylesheetParser extends Parser
                 if ($namespace !== null) {
                     $this->error("!global isn't allowed for variables in other modules.", $this->scanner->spanFrom($flagStart));
                 } elseif ($global) {
-                    $this->logger->warnForDeprecation(Deprecation::duplicateVarFlags, "!global should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", $this->scanner->spanFrom($flagStart));
+                    LoggerUtil::warnForDeprecation($this->logger, Deprecation::duplicateVarFlags, "!global should only be written once for each variable.\nThis will be an error in Dart Sass 2.0.0.", $this->scanner->spanFrom($flagStart));
                 }
 
                 $global = true;
@@ -1067,7 +1068,8 @@ abstract class StylesheetParser extends Parser
         $name = $this->identifier();
 
         if (str_starts_with($name, '--')) {
-            $this->logger->warnForDeprecation(
+            LoggerUtil::warnForDeprecation(
+                $this->logger,
                 Deprecation::cssFunctionMixin,
                 "Sass @function names beginning with -- are deprecated for forward-compatibility with plain CSS mixins.\n\nFor details, see https://sass-lang.com/d/css-function-mixin",
                 $this->scanner->spanFrom($beforeName)
@@ -1508,7 +1510,8 @@ abstract class StylesheetParser extends Parser
         $name = $this->identifier();
 
         if (str_starts_with($name, '--')) {
-            $this->logger->warnForDeprecation(
+            LoggerUtil::warnForDeprecation(
+                $this->logger,
                 Deprecation::cssFunctionMixin,
                 "Sass @mixin names beginning with -- are deprecated for forward-compatibility with plain CSS mixins.\n\nFor details, see https://sass-lang.com/d/css-function-mixin",
                 $this->scanner->spanFrom($beforeName)
@@ -1616,7 +1619,7 @@ abstract class StylesheetParser extends Parser
 
         return $this->withChildren($this->statement(...), $start, function (array $children, FileSpan $span) use ($name, $value, $needsDeprecationWarning) {
             if ($needsDeprecationWarning) {
-                $this->logger->warnForDeprecation(Deprecation::mozDocument, "@-moz-document is deprecated and support will be removed in Dart Sass 2.0.0.\n\nFor details, see https://sass-lang.com/d/moz-document.", $span);
+                LoggerUtil::warnForDeprecation($this->logger, Deprecation::mozDocument, "@-moz-document is deprecated and support will be removed in Dart Sass 2.0.0.\n\nFor details, see https://sass-lang.com/d/moz-document.", $span);
             }
 
             return new AtRule($name, $span, $value, $children);
@@ -1973,7 +1976,7 @@ versions of Sass.
 More info and automated migrator: https://sass-lang.com/d/strict-unary
 WARNING;
 
-                        $this->logger->warnForDeprecation(Deprecation::strictUnary, $message, $singleExpression->getSpan());
+                        LoggerUtil::warnForDeprecation($this->logger, Deprecation::strictUnary, $message, $singleExpression->getSpan());
                     }
                 }
             }

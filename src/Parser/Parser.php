@@ -16,8 +16,6 @@ use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Exception\MultiSpanSassFormatException;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Exception\SimpleSassFormatException;
-use ScssPhp\ScssPhp\Logger\AdaptingDeprecationAwareLogger;
-use ScssPhp\ScssPhp\Logger\DeprecationAwareLoggerInterface;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
 use ScssPhp\ScssPhp\SourceSpan\FileLocation;
@@ -33,7 +31,7 @@ class Parser
 {
     protected readonly StringScanner $scanner;
 
-    protected readonly DeprecationAwareLoggerInterface $logger;
+    protected readonly LoggerInterface $logger;
 
     /**
      * A map used to map source spans in the text being parsed back to their
@@ -69,7 +67,7 @@ class Parser
     public function __construct(string $contents, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null, ?InterpolationMap $interpolationMap = null)
     {
         $this->scanner = new StringScanner($contents, $sourceUrl);
-        $this->logger = AdaptingDeprecationAwareLogger::adaptLogger($logger ?? new QuietLogger());
+        $this->logger = $logger ?? new QuietLogger();
         $this->interpolationMap = $interpolationMap;
     }
 

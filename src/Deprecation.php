@@ -126,6 +126,17 @@ enum Deprecation: string
         };
     }
 
+    /**
+     * The version this feature was fully removed in, making the
+     * deprecation obsolete.
+     *
+     * For deprecations that are not yet obsolete, this should be null.
+     */
+    public function getObsoleteIn(): ?string
+    {
+        return null; // For now, no deprecation is obsolete
+    }
+
     public function isFuture(): bool
     {
         if ($this === self::userAuthored) {
@@ -143,6 +154,10 @@ enum Deprecation: string
 
         if ($this->isFuture()) {
             return DeprecationStatus::future;
+        }
+
+        if ($this->getObsoleteIn() !== null) {
+            return DeprecationStatus::obsolete;
         }
 
         return DeprecationStatus::active;

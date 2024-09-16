@@ -25,8 +25,7 @@ use ScssPhp\ScssPhp\Importer\ImportCache;
 use ScssPhp\ScssPhp\Importer\Importer;
 use ScssPhp\ScssPhp\Importer\LegacyCallbackImporter;
 use ScssPhp\ScssPhp\Importer\NoOpImporter;
-use ScssPhp\ScssPhp\Logger\DeprecationAwareLoggerInterface;
-use ScssPhp\ScssPhp\Logger\DeprecationHandlingLogger;
+use ScssPhp\ScssPhp\Logger\DeprecationProcessingLogger;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\StreamLogger;
 use ScssPhp\ScssPhp\Node\Number;
@@ -126,6 +125,33 @@ final class Compiler
      * @var bool
      */
     private $charset = true;
+
+    private bool $quietDeps = false;
+
+    /**
+     * Deprecation warnings of these types will be ignored.
+     *
+     * @var Deprecation[]
+     */
+    private array $silenceDeprecations = [];
+
+    /**
+     * Deprecation warnings of one of these types will cause an error to be
+     * thrown.
+     *
+     * Future deprecations in this list will still cause an error even if they
+     * are not also in {@see $futureDeprecations}.
+     *
+     * @var Deprecation[]
+     */
+    private array $fatalDeprecations = [];
+
+    /**
+     * Future deprecations that the user has explicitly opted into.
+     *
+     * @var Deprecation[]
+     */
+    private array $futureDeprecations = [];
 
     private bool $verbose = false;
 
@@ -273,6 +299,44 @@ final class Compiler
     }
 
     /**
+     * If set to `true`, this will silence compiler warnings emitted for stylesheets loaded through {@see $importers} or {@see $importPaths}
+     */
+    public function setQuietDeps(bool $quietDeps): void
+    {
+        $this->quietDeps = $quietDeps;
+    }
+
+    /**
+     * Configures the deprecation warning types that will be ignored.
+     *
+     * @param Deprecation[] $silenceDeprecations
+     */
+    public function setSilenceDeprecations(array $silenceDeprecations): void
+    {
+        $this->silenceDeprecations = $silenceDeprecations;
+    }
+
+    /**
+     * Configures the deprecation warning types that will cause an error to be thrown.
+     *
+     * @param Deprecation[] $fatalDeprecations
+     */
+    public function setFatalDeprecations(array $fatalDeprecations): void
+    {
+        $this->fatalDeprecations = $fatalDeprecations;
+    }
+
+    /**
+     * Configures the opt-in for future deprecation warning types.
+     *
+     * @param Deprecation[] $futureDeprecations
+     */
+    public function setFutureDeprecations(array $futureDeprecations): void
+    {
+        $this->futureDeprecations = $futureDeprecations;
+    }
+
+    /**
      * Configures the verbosity of deprecation warnings.
      *
      * In non-verbose mode, repeated deprecations are hidden once reaching the
@@ -369,7 +433,8 @@ final class Compiler
         // Force loading the CssVisitor before using the AST classes because of a weird PHP behavior.
         class_exists(CssVisitor::class);
 
-        $logger = new DeprecationHandlingLogger($this->logger, [], [], !$this->verbose);
+        $logger = new DeprecationProcessingLogger($this->logger, $this->silenceDeprecations, $this->fatalDeprecations, $this->futureDeprecations, !$this->verbose);
+        $logger->validate();
         $importCache = $this->createImportCache($logger);
 
         $importer = new FilesystemImporter(null);
@@ -403,7 +468,8 @@ final class Compiler
         // Force loading the CssVisitor before using the AST classes because of a weird PHP behavior.
         class_exists(CssVisitor::class);
 
-        $logger = new DeprecationHandlingLogger($this->logger, [], [], !$this->verbose);
+        $logger = new DeprecationProcessingLogger($this->logger, $this->silenceDeprecations, $this->fatalDeprecations, $this->futureDeprecations, !$this->verbose);
+        $logger->validate();
 
         // TODO handle passing an importer and a url to this method to be consistent with dart-sass
         $sourceUrl = $path !== null ? Path::toUri($path) : null;
@@ -420,7 +486,7 @@ final class Compiler
         return $result;
     }
 
-    private function createImportCache(DeprecationAwareLoggerInterface $logger): ImportCache
+    private function createImportCache(LoggerInterface $logger): ImportCache
     {
         $importers = $this->importers;
 
@@ -436,7 +502,7 @@ final class Compiler
         return new ImportCache($importers, $logger);
     }
 
-    private function compileStylesheet(Stylesheet $stylesheet, ImportCache $importCache, DeprecationAwareLoggerInterface $logger, Importer $importer): CompilationResult
+    private function compileStylesheet(Stylesheet $stylesheet, ImportCache $importCache, LoggerInterface $logger, Importer $importer): CompilationResult
     {
         $wantsSourceMap = $this->sourceMap !== self::SOURCE_MAP_NONE;
 
@@ -477,7 +543,7 @@ final class Compiler
             $initialVariables[$variableName] = $variable;
         }
 
-        $evaluateResult = (new EvaluateVisitor($importCache, $functions, $logger, sourceMap: $wantsSourceMap))->run($importer, $stylesheet, $initialVariables);
+        $evaluateResult = (new EvaluateVisitor($importCache, $functions, $logger, $this->quietDeps, sourceMap: $wantsSourceMap))->run($importer, $stylesheet, $initialVariables);
 
         $serializeResult = Serializer::serialize($evaluateResult->getStylesheet(), style: $this->outputStyle, sourceMap: $wantsSourceMap, charset: $this->charset);
 

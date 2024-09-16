@@ -20,16 +20,9 @@ use ScssPhp\ScssPhp\StackTrace\Trace;
 /**
  * A logger that silently ignores all messages.
  */
-final class QuietLogger implements LoggerInterface, DeprecationAwareLoggerInterface
+final class QuietLogger implements LoggerInterface
 {
     public function warn(string $message, ?Deprecation $deprecation = null, ?FileSpan $span = null, ?Trace $trace = null): void
-    {
-    }
-
-    /**
-     * @internal
-     */
-    public function warnForDeprecation(Deprecation $deprecation, string $message, ?FileSpan $span = null, ?Trace $trace = null): void
     {
     }
 
