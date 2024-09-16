@@ -201,7 +201,11 @@ class SassSpecTest extends TestCase
 
         $compiler = new Compiler();
         $compiler->setVerbose(true);
-        $compiler->setSilenceDeprecations([Deprecation::mixedDecls]);
+        // Silence deprecations that don't exist yet in the version of sass-spec that we use.
+        $compiler->setSilenceDeprecations([
+            Deprecation::mixedDecls,
+            Deprecation::featureExists,
+        ]);
 
         list($options, $scss, $includes, $inputDir, $indented) = $input;
         list($css, $warning, $error, $alternativeCssOutputs, $alternativeWarnings) = $testCaseOutput;
