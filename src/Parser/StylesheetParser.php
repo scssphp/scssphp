@@ -907,7 +907,7 @@ abstract class StylesheetParser extends Parser
             return $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new AtRootRule($children, $span, $query));
         }
 
-        if ($this->lookingAtChildren()) {
+        if ($this->lookingAtChildren() || ($this->isIndented() && $this->atEndOfStatement())) {
             return $this->withChildren($this->statement(...), $start, fn(array $children, FileSpan $span) => new AtRootRule($children, $span));
         }
 
