@@ -1469,7 +1469,13 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             $this->endOfImports++;
         }
 
-        $this->getParent()->addChild(new ModifiableCssComment($this->performInterpolation($node->getText()), $node->getSpan()));
+        $text = $this->performInterpolation($node->getText());
+        // Indented syntax doesn't require */
+        if (!str_ends_with($text, '*/')) {
+            $text .= ' */';
+        }
+
+        $this->getParent()->addChild(new ModifiableCssComment($text, $node->getSpan()));
 
         return null;
     }

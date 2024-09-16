@@ -355,10 +355,6 @@ final class SassParser extends StylesheetParser
             $this->readIndentation();
         }
 
-        if (!str_ends_with(rtrim($buffer->getTrailingString()), '*/')) {
-            $buffer->write(' */');
-        }
-
         return new LoudComment($buffer->buildInterpolation($this->scanner->spanFrom($start)));
     }
 
