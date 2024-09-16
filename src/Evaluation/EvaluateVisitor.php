@@ -104,7 +104,6 @@ use ScssPhp\ScssPhp\Colors;
 use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\MultiSpanSassRuntimeException;
 use ScssPhp\ScssPhp\Exception\SassException;
-use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Exception\SassRuntimeException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Exception\SimpleSassException;
@@ -116,7 +115,7 @@ use ScssPhp\ScssPhp\Extend\ExtensionStore;
 use ScssPhp\ScssPhp\Function\FunctionRegistry;
 use ScssPhp\ScssPhp\Importer\ImportCache;
 use ScssPhp\ScssPhp\Importer\Importer;
-use ScssPhp\ScssPhp\Logger\DeprecationAwareLoggerInterface;
+use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\InterpolationMap;
 use ScssPhp\ScssPhp\Parser\KeyframeSelectorParser;
 use ScssPhp\ScssPhp\SassCallable\BuiltInCallable;
@@ -135,6 +134,7 @@ use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Util\IterableUtil;
 use ScssPhp\ScssPhp\Util\ListUtil;
+use ScssPhp\ScssPhp\Util\LoggerUtil;
 use ScssPhp\ScssPhp\Util\SpanUtil;
 use ScssPhp\ScssPhp\Util\StringUtil;
 use ScssPhp\ScssPhp\Value\CalculationOperation;
@@ -176,7 +176,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
      */
     private array $builtInFunctions = [];
 
-    private readonly DeprecationAwareLoggerInterface $logger;
+    private readonly LoggerInterface $logger;
 
     /**
      * A set of message/location pairs for warnings that have been emitted via
@@ -368,7 +368,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
     /**
      * @param SassCallable[] $functions
      */
-    public function __construct(ImportCache $importCache, array $functions, DeprecationAwareLoggerInterface $logger, bool $quietDeps = false, bool $sourceMap = false)
+    public function __construct(ImportCache $importCache, array $functions, LoggerInterface $logger, bool $quietDeps = false, bool $sourceMap = false)
     {
         $this->importCache = $importCache;
         $this->logger = $logger;
@@ -3387,7 +3387,7 @@ WARNING;
         if ($deprecation === null) {
             $this->logger->warn($message, null, $span, $trace);
         } else {
-            $this->logger->warnForDeprecation($deprecation, $message, $span, $trace);
+            LoggerUtil::warnForDeprecation($this->logger, $deprecation, $message, $span, $trace);
         }
     }
 

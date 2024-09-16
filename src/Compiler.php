@@ -25,8 +25,7 @@ use ScssPhp\ScssPhp\Importer\ImportCache;
 use ScssPhp\ScssPhp\Importer\Importer;
 use ScssPhp\ScssPhp\Importer\LegacyCallbackImporter;
 use ScssPhp\ScssPhp\Importer\NoOpImporter;
-use ScssPhp\ScssPhp\Logger\DeprecationAwareLoggerInterface;
-use ScssPhp\ScssPhp\Logger\DeprecationHandlingLogger;
+use ScssPhp\ScssPhp\Logger\DeprecationProcessingLogger;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\StreamLogger;
 use ScssPhp\ScssPhp\Node\Number;
@@ -369,7 +368,8 @@ final class Compiler
         // Force loading the CssVisitor before using the AST classes because of a weird PHP behavior.
         class_exists(CssVisitor::class);
 
-        $logger = new DeprecationHandlingLogger($this->logger, [], [], !$this->verbose);
+        $logger = new DeprecationProcessingLogger($this->logger, [], [], [], !$this->verbose);
+        $logger->validate();
         $importCache = $this->createImportCache($logger);
 
         $importer = new FilesystemImporter(null);
@@ -403,7 +403,8 @@ final class Compiler
         // Force loading the CssVisitor before using the AST classes because of a weird PHP behavior.
         class_exists(CssVisitor::class);
 
-        $logger = new DeprecationHandlingLogger($this->logger, [], [], !$this->verbose);
+        $logger = new DeprecationProcessingLogger($this->logger, [], [], [], !$this->verbose);
+        $logger->validate();
 
         // TODO handle passing an importer and a url to this method to be consistent with dart-sass
         $sourceUrl = $path !== null ? Path::toUri($path) : null;
@@ -420,7 +421,7 @@ final class Compiler
         return $result;
     }
 
-    private function createImportCache(DeprecationAwareLoggerInterface $logger): ImportCache
+    private function createImportCache(LoggerInterface $logger): ImportCache
     {
         $importers = $this->importers;
 
@@ -436,7 +437,7 @@ final class Compiler
         return new ImportCache($importers, $logger);
     }
 
-    private function compileStylesheet(Stylesheet $stylesheet, ImportCache $importCache, DeprecationAwareLoggerInterface $logger, Importer $importer): CompilationResult
+    private function compileStylesheet(Stylesheet $stylesheet, ImportCache $importCache, LoggerInterface $logger, Importer $importer): CompilationResult
     {
         $wantsSourceMap = $this->sourceMap !== self::SOURCE_MAP_NONE;
 

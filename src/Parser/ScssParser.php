@@ -17,6 +17,7 @@ use ScssPhp\ScssPhp\Ast\Sass\Statement\LoudComment;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\SilentComment;
 use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Util\Character;
+use ScssPhp\ScssPhp\Util\LoggerUtil;
 
 /**
  * A parser for the CSS-compatible syntax.
@@ -81,7 +82,7 @@ class ScssParser extends StylesheetParser
             }
 
             if ($this->scanIdentifier('elseif', true)) {
-                $this->logger->warnForDeprecation(Deprecation::elseif, "@elseif is deprecated and will not be supported in future Sass versions.\n\nRecommendation: @else if", $this->scanner->spanFrom($beforeAt));
+                LoggerUtil::warnForDeprecation($this->logger, Deprecation::elseif, "@elseif is deprecated and will not be supported in future Sass versions.\n\nRecommendation: @else if", $this->scanner->spanFrom($beforeAt));
 
                 $this->scanner->setPosition($this->scanner->getPosition() - 2);
 
