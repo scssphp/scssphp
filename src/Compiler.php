@@ -126,6 +126,33 @@ final class Compiler
      */
     private $charset = true;
 
+    private bool $quietDeps = false;
+
+    /**
+     * Deprecation warnings of these types will be ignored.
+     *
+     * @var Deprecation[]
+     */
+    private array $silenceDeprecations = [];
+
+    /**
+     * Deprecation warnings of one of these types will cause an error to be
+     * thrown.
+     *
+     * Future deprecations in this list will still cause an error even if they
+     * are not also in {@see $futureDeprecations}.
+     *
+     * @var Deprecation[]
+     */
+    private array $fatalDeprecations = [];
+
+    /**
+     * Future deprecations that the user has explicitly opted into.
+     *
+     * @var Deprecation[]
+     */
+    private array $futureDeprecations = [];
+
     private bool $verbose = false;
 
     private OutputStyle $outputStyle = OutputStyle::EXPANDED;
@@ -272,6 +299,44 @@ final class Compiler
     }
 
     /**
+     * If set to `true`, this will silence compiler warnings emitted for stylesheets loaded through {@see $importers} or {@see $importPaths}
+     */
+    public function setQuietDeps(bool $quietDeps): void
+    {
+        $this->quietDeps = $quietDeps;
+    }
+
+    /**
+     * Configures the deprecation warning types that will be ignored.
+     *
+     * @param Deprecation[] $silenceDeprecations
+     */
+    public function setSilenceDeprecations(array $silenceDeprecations): void
+    {
+        $this->silenceDeprecations = $silenceDeprecations;
+    }
+
+    /**
+     * Configures the deprecation warning types that will cause an error to be thrown.
+     *
+     * @param Deprecation[] $fatalDeprecations
+     */
+    public function setFatalDeprecations(array $fatalDeprecations): void
+    {
+        $this->fatalDeprecations = $fatalDeprecations;
+    }
+
+    /**
+     * Configures the opt-in for future deprecation warning types.
+     *
+     * @param Deprecation[] $futureDeprecations
+     */
+    public function setFutureDeprecations(array $futureDeprecations): void
+    {
+        $this->futureDeprecations = $futureDeprecations;
+    }
+
+    /**
      * Configures the verbosity of deprecation warnings.
      *
      * In non-verbose mode, repeated deprecations are hidden once reaching the
@@ -368,7 +433,7 @@ final class Compiler
         // Force loading the CssVisitor before using the AST classes because of a weird PHP behavior.
         class_exists(CssVisitor::class);
 
-        $logger = new DeprecationProcessingLogger($this->logger, [], [], [], !$this->verbose);
+        $logger = new DeprecationProcessingLogger($this->logger, $this->silenceDeprecations, $this->fatalDeprecations, $this->futureDeprecations, !$this->verbose);
         $logger->validate();
         $importCache = $this->createImportCache($logger);
 
@@ -403,7 +468,7 @@ final class Compiler
         // Force loading the CssVisitor before using the AST classes because of a weird PHP behavior.
         class_exists(CssVisitor::class);
 
-        $logger = new DeprecationProcessingLogger($this->logger, [], [], [], !$this->verbose);
+        $logger = new DeprecationProcessingLogger($this->logger, $this->silenceDeprecations, $this->fatalDeprecations, $this->futureDeprecations, !$this->verbose);
         $logger->validate();
 
         // TODO handle passing an importer and a url to this method to be consistent with dart-sass
@@ -478,7 +543,7 @@ final class Compiler
             $initialVariables[$variableName] = $variable;
         }
 
-        $evaluateResult = (new EvaluateVisitor($importCache, $functions, $logger, sourceMap: $wantsSourceMap))->run($importer, $stylesheet, $initialVariables);
+        $evaluateResult = (new EvaluateVisitor($importCache, $functions, $logger, $this->quietDeps, sourceMap: $wantsSourceMap))->run($importer, $stylesheet, $initialVariables);
 
         $serializeResult = Serializer::serialize($evaluateResult->getStylesheet(), style: $this->outputStyle, sourceMap: $wantsSourceMap, charset: $this->charset);
 
