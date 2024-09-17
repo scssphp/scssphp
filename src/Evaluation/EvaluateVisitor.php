@@ -1959,7 +1959,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
 
         if ($left instanceof SassNumber && $right instanceof SassNumber) {
             $recommendation = function (Expression $expression) use (&$recommendation): string {
-                if ($expression instanceof BinaryOperationExpression) {
+                if ($expression instanceof BinaryOperationExpression && $expression->getOperator() === BinaryOperator::DIVIDED_BY) {
                     $leftRecommendation = $recommendation($expression->getLeft());
                     $rightRecommendation = $recommendation($expression->getRight());
 
