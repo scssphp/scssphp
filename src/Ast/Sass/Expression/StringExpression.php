@@ -58,6 +58,15 @@ final class StringExpression implements Expression
         return $buffer;
     }
 
+    /**
+     * Interpolation that, when evaluated, produces the contents of this string.
+     *
+     * Unlike {@see asInterpolation}, escapes are resolved and quotes are not
+     * included.
+     * If this is a quoted string, escapes are resolved and quotes are not
+     * included in this text (unlike {@see asInterpolation}). If it's an unquoted
+     * string, escapes are *not* resolved.
+     */
     public function getText(): Interpolation
     {
         return $this->text;
