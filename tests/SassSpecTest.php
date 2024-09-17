@@ -206,6 +206,8 @@ class SassSpecTest extends TestCase
             Deprecation::mixedDecls,
             Deprecation::featureExists,
         ]);
+        // Report deprecations for slashDiv even though we still consider it as a future deprecation until we support modules
+        $compiler->setFutureDeprecations([Deprecation::slashDiv]);
 
         list($options, $scss, $includes, $inputDir, $indented) = $input;
         list($css, $warning, $error, $alternativeCssOutputs, $alternativeWarnings) = $testCaseOutput;
