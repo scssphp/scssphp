@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use ScssPhp\ScssPhp\StackTrace\Trace;
 use ScssPhp\ScssPhp\Value\SassString;
 use ScssPhp\ScssPhp\Value\Value;
 use ScssPhp\ScssPhp\Visitor\ModifiableCssVisitor;
@@ -34,6 +35,13 @@ final class ModifiableCssDeclaration extends ModifiableCssNode implements CssDec
      */
     private readonly CssValue $value;
 
+    /**
+     * @var list<CssStyleRule>
+     */
+    private readonly array $interleavedRules;
+
+    private readonly ?Trace $trace;
+
     private readonly bool $parsedAsCustomProperty;
 
     private readonly FileSpan $valueSpanForMap;
@@ -43,12 +51,15 @@ final class ModifiableCssDeclaration extends ModifiableCssNode implements CssDec
     /**
      * @param CssValue<string> $name
      * @param CssValue<Value> $value
+     * @param list<CssStyleRule> $interleavedRules
      */
-    public function __construct(CssValue $name, CssValue $value, FileSpan $span, bool $parsedAsCustomProperty, ?FileSpan $valueSpanForMap = null)
+    public function __construct(CssValue $name, CssValue $value, FileSpan $span, bool $parsedAsCustomProperty, array $interleavedRules = [], ?Trace $trace = null, ?FileSpan $valueSpanForMap = null)
     {
         $this->name = $name;
         $this->value = $value;
         $this->parsedAsCustomProperty = $parsedAsCustomProperty;
+        $this->interleavedRules = $interleavedRules;
+        $this->trace = $trace;
         $this->valueSpanForMap = $valueSpanForMap ?? $value->getSpan();
         $this->span = $span;
 
@@ -71,6 +82,16 @@ final class ModifiableCssDeclaration extends ModifiableCssNode implements CssDec
     public function getValue(): CssValue
     {
         return $this->value;
+    }
+
+    public function getInterleavedRules(): array
+    {
+        return $this->interleavedRules;
+    }
+
+    public function getTrace(): ?Trace
+    {
+        return $this->trace;
     }
 
     public function isParsedAsCustomProperty(): bool

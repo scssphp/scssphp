@@ -15,6 +15,7 @@ namespace ScssPhp\ScssPhp\Serializer;
 use ScssPhp\ScssPhp\Ast\Css\CssNode;
 use ScssPhp\ScssPhp\Ast\Selector\Selector;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\OutputStyle;
 use ScssPhp\ScssPhp\Value\Value;
 
@@ -23,9 +24,9 @@ use ScssPhp\ScssPhp\Value\Value;
  */
 final class Serializer
 {
-    public static function serialize(CssNode $node, bool $inspect = false, OutputStyle $style = OutputStyle::EXPANDED, bool $sourceMap = false, bool $charset = true): SerializeResult
+    public static function serialize(CssNode $node, bool $inspect = false, OutputStyle $style = OutputStyle::EXPANDED, bool $sourceMap = false, bool $charset = true, ?LoggerInterface $logger = null): SerializeResult
     {
-        $visitor = new SerializeVisitor($inspect, true, $style, $sourceMap);
+        $visitor = new SerializeVisitor($inspect, true, $style, $sourceMap, $logger);
         $node->accept($visitor);
         $css = (string) $visitor->getBuffer();
 

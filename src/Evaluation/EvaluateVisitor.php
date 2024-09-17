@@ -967,23 +967,48 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
         }
 
         \assert($this->getParent()->getParent() !== null);
-        $sibling = ListUtil::last($this->getParent()->getParent()->getChildren());
+        $siblings = $this->getParent()->getParent()->getChildren();
+        $interleavedRules = [];
 
-        if ($sibling !== $this->getParent()) {
-            $this->warn(
-                <<<'MESSAGE'
-                Sass's behavior for declarations that appear after nested
-                rules will be changing to match the behavior specified by CSS in an upcoming
-                version. To keep the existing behavior, move the declaration above the nested
-                rule. To opt into the new behavior, wrap the declaration in `& {}`.
+        if (
+            ListUtil::last($siblings) !== $this->getParent()
+            // Reproduce this condition from {@see warn} so that we don't add anything to
+            // $interleavedRules for declarations in dependencies.
+            && !($this->quietDeps && ($this->inDependency || ($this->currentCallable?->isInDependency() ?? false)))
+        ) {
+            $parentOffset = array_search($this->getParent(), $siblings, true);
+            if ($parentOffset === false) {
+                $parentOffset = -1;
+            }
+            foreach (array_slice($siblings, $parentOffset + 1) as $sibling) {
+                if ($sibling instanceof CssComment) {
+                    continue;
+                }
 
-                More info: https://sass-lang.com/d/mixed-decls
-                MESSAGE,
-                new MultiSpan($node->getSpan(), 'declaration', [
-                    'nested rule' => $sibling->getSpan(),
-                ]),
-                Deprecation::mixedDecls
-            );
+                if ($sibling instanceof CssStyleRule) {
+                    $interleavedRules[] = $sibling;
+                    continue;
+                }
+
+                // Always warn for siblings that aren't style rules, because they
+                // add no specificity and they're nested in the same parent as this
+                // declaration.
+                $this->warn(
+                    <<<'MESSAGE'
+                    Sass's behavior for declarations that appear after nested
+                    rules will be changing to match the behavior specified by CSS in an upcoming
+                    version. To keep the existing behavior, move the declaration above the nested
+                    rule. To opt into the new behavior, wrap the declaration in `& {}`.
+
+                    More info: https://sass-lang.com/d/mixed-decls
+                    MESSAGE,
+                    new MultiSpan($node->getSpan(), 'declaration', [
+                        'nested rule' => $sibling->getSpan(),
+                    ]),
+                    Deprecation::mixedDecls
+                );
+                $interleavedRules = [];
+            }
         }
 
         $name = $this->interpolationToValue($node->getName(), true);
@@ -1005,7 +1030,15 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
                     $valueSpanForMap = $this->expressionNode($node->getValue())->getSpan();
                 }
 
-                $this->getParent()->addChild(new ModifiableCssDeclaration($name, new CssValue($value, $expression->getSpan()), $node->getSpan(), $node->isCustomProperty(), $valueSpanForMap));
+                $this->getParent()->addChild(new ModifiableCssDeclaration(
+                    $name,
+                    new CssValue($value, $expression->getSpan()),
+                    $node->getSpan(),
+                    $node->isCustomProperty(),
+                    $interleavedRules,
+                    $interleavedRules === [] ? null : $this->stackTrace($node->getSpan()),
+                    $valueSpanForMap,
+                ));
             } elseif (str_starts_with($name->getValue(), '--')) {
                 throw $this->exception('Custom property values may not be empty.', $expression->getSpan());
             }
@@ -1469,7 +1502,13 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             $this->endOfImports++;
         }
 
-        $this->getParent()->addChild(new ModifiableCssComment($this->performInterpolation($node->getText()), $node->getSpan()));
+        $text = $this->performInterpolation($node->getText());
+        // Indented syntax doesn't require */
+        if (!str_ends_with($text, '*/')) {
+            $text .= ' */';
+        }
+
+        $this->getParent()->addChild(new ModifiableCssComment($text, $node->getSpan()));
 
         return null;
     }

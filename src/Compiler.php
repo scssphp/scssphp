@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp;
 
 use League\Uri\Uri;
+use ScssPhp\ScssPhp\Ast\Css\CssParentNode;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\Stylesheet;
 use ScssPhp\ScssPhp\Collection\Map;
 use ScssPhp\ScssPhp\Compiler\LegacyValueVisitor;
@@ -430,7 +431,8 @@ final class Compiler
      */
     public function compileFile(string $path): CompilationResult
     {
-        // Force loading the CssVisitor before using the AST classes because of a weird PHP behavior.
+        // Force loading the CssParentNode and CssVisitor before using the AST classes because of a weird PHP behavior.
+        class_exists(CssParentNode::class);
         class_exists(CssVisitor::class);
 
         $logger = new DeprecationProcessingLogger($this->logger, $this->silenceDeprecations, $this->fatalDeprecations, $this->futureDeprecations, !$this->verbose);
@@ -465,7 +467,8 @@ final class Compiler
      */
     public function compileString(string $source, ?string $path = null): CompilationResult
     {
-        // Force loading the CssVisitor before using the AST classes because of a weird PHP behavior.
+        // Force loading the CssParentNode and CssVisitor before using the AST classes because of a weird PHP behavior.
+        class_exists(CssParentNode::class);
         class_exists(CssVisitor::class);
 
         $logger = new DeprecationProcessingLogger($this->logger, $this->silenceDeprecations, $this->fatalDeprecations, $this->futureDeprecations, !$this->verbose);
@@ -545,7 +548,7 @@ final class Compiler
 
         $evaluateResult = (new EvaluateVisitor($importCache, $functions, $logger, $this->quietDeps, sourceMap: $wantsSourceMap))->run($importer, $stylesheet, $initialVariables);
 
-        $serializeResult = Serializer::serialize($evaluateResult->getStylesheet(), style: $this->outputStyle, sourceMap: $wantsSourceMap, charset: $this->charset);
+        $serializeResult = Serializer::serialize($evaluateResult->getStylesheet(), style: $this->outputStyle, sourceMap: $wantsSourceMap, charset: $this->charset, logger: $logger);
 
         $css = $serializeResult->css;
         $sourceMap = null;

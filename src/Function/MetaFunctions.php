@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Function;
 
 use ScssPhp\ScssPhp\Collection\Map;
+use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Value\SassArgumentList;
 use ScssPhp\ScssPhp\Value\SassBoolean;
@@ -26,6 +27,7 @@ use ScssPhp\ScssPhp\Value\SassNull;
 use ScssPhp\ScssPhp\Value\SassNumber;
 use ScssPhp\ScssPhp\Value\SassString;
 use ScssPhp\ScssPhp\Value\Value;
+use ScssPhp\ScssPhp\Warn;
 
 /**
  * @internal
@@ -37,6 +39,8 @@ final class MetaFunctions
      */
     public static function featureExists(array $arguments): Value
     {
+        Warn::forDeprecation("The feature-exists() function is deprecated.\n\nMore info: https://sass-lang.com/d/feature-exists", Deprecation::featureExists);
+
         $feature = $arguments[0]->assertString('feature');
 
         return SassBoolean::create(\in_array($feature->getText(), ['global-variable-shadowing', 'extend-selector-pseudoclass', 'units-level-3', 'at-error', 'custom-property'], true));

@@ -44,7 +44,7 @@ final class SelectorList extends Selector
      *
      * This is never empty.
      *
-     * @var list<ComplexSelector>
+     * @var non-empty-list<ComplexSelector>
      */
     private readonly array $components;
 
@@ -80,7 +80,7 @@ final class SelectorList extends Selector
     }
 
     /**
-     * @return list<ComplexSelector>
+     * @return non-empty-list<ComplexSelector>
      */
     public function getComponents(): array
     {

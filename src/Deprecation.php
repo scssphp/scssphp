@@ -81,6 +81,11 @@ enum Deprecation: string
     case mixedDecls = 'mixed-decls';
 
     /**
+     * Deprecation for meta.feature-exists.
+     */
+    case featureExists = 'feature-exists';
+
+    /**
      * Used for deprecations coming from user-authored code.
      */
     case userAuthored = 'user-authored';
@@ -100,6 +105,7 @@ enum Deprecation: string
             self::absPercent => 'Passing percentages to the Sass abs() function.',
             self::cssFunctionMixin => 'Function and mixin names beginning with --.',
             self::mixedDecls => 'Declarations after or between nested rules.',
+            self::featureExists => 'meta.feature-exists',
             self::userAuthored => null,
         };
     }
@@ -122,6 +128,7 @@ enum Deprecation: string
             self::absPercent => '2.0.0',
             self::cssFunctionMixin => '2.0.0',
             self::mixedDecls => '2.0.0',
+            self::featureExists => '2.0.0',
             self::userAuthored => null,
         };
     }

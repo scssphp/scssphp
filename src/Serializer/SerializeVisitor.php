@@ -39,12 +39,18 @@ use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\Ast\Selector\TypeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\UniversalSelector;
 use ScssPhp\ScssPhp\Colors;
+use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\Logger\LoggerInterface;
+use ScssPhp\ScssPhp\Logger\QuietLogger;
 use ScssPhp\ScssPhp\OutputStyle;
 use ScssPhp\ScssPhp\Parser\LineScanner;
 use ScssPhp\ScssPhp\Parser\Parser;
 use ScssPhp\ScssPhp\Parser\StringScanner;
+use ScssPhp\ScssPhp\SourceSpan\MultiSpan;
 use ScssPhp\ScssPhp\Util\Character;
+use ScssPhp\ScssPhp\Util\IterableUtil;
+use ScssPhp\ScssPhp\Util\LoggerUtil;
 use ScssPhp\ScssPhp\Util\NumberUtil;
 use ScssPhp\ScssPhp\Util\SpanUtil;
 use ScssPhp\ScssPhp\Util\StringUtil;
@@ -96,13 +102,16 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
      */
     private readonly bool $quote;
 
+    private readonly LoggerInterface $logger;
+
     private readonly bool $compressed;
 
-    public function __construct(bool $inspect = false, bool $quote = true, OutputStyle $style = OutputStyle::EXPANDED, bool $sourceMap = false)
+    public function __construct(bool $inspect = false, bool $quote = true, OutputStyle $style = OutputStyle::EXPANDED, bool $sourceMap = false, ?LoggerInterface $logger = null)
     {
         $this->buffer = $sourceMap ? new TrackingSourceMapBuffer() : new SimpleStringBuffer();
         $this->inspect = $inspect;
         $this->quote = $quote;
+        $this->logger = $logger ?? new QuietLogger();
         $this->compressed = $style === OutputStyle::COMPRESSED;
     }
 
@@ -323,6 +332,39 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
     public function visitCssDeclaration(CssDeclaration $node): void
     {
+        if ($node->getInterleavedRules() !== []) {
+            \assert($node->getParent() !== null);
+            $declSpecificities = $this->specificities($node->getParent());
+
+            foreach ($node->getInterleavedRules() as $rule) {
+                $ruleSpecificities = $this->specificities($rule);
+
+                // If the declaration can never match with the same specificity as one
+                // of its sibling rules, then ordering will never matter and there's no
+                // need to warn about the declaration being re-ordered.
+                if (!IterableUtil::any($declSpecificities, fn ($s) => \in_array($s, $ruleSpecificities, true))) {
+                    continue;
+                }
+
+                LoggerUtil::warnForDeprecation(
+                    $this->logger,
+                    Deprecation::mixedDecls,
+                    <<<'MESSAGE'
+                    Sass's behavior for declarations that appear after nested
+                    rules will be changing to match the behavior specified by CSS in an upcoming
+                    version. To keep the existing behavior, move the declaration above the nested
+                    rule. To opt into the new behavior, wrap the declaration in `& {}`.
+
+                    More info: https://sass-lang.com/d/mixed-decls
+                    MESSAGE,
+                    new MultiSpan($node->getSpan(), 'declaration', [
+                        'nested rule' => $rule->getSpan(),
+                    ]),
+                    $node->getTrace()
+                );
+            }
+        }
+
         $this->writeIndentation();
         $this->write($node->getName());
         $this->buffer->writeChar(':');
@@ -347,6 +389,33 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                 throw $error->withSpan($node->getValue()->getSpan());
             }
         }
+    }
+
+    /**
+     * Returns the set of possible specificities with which $node might match.
+     *
+     * @return non-empty-array<int>
+     */
+    private function specificities(CssParentNode $node): array
+    {
+        if ($node instanceof CssStyleRule) {
+            // Plain CSS style rule nesting implicitly wraps parent selectors in
+            // `:is()`, so they all match with the highest specificity among any of
+            // them.
+            if ($node->getParent() !== null) {
+                $parent = max($this->specificities($node->getParent()));
+            } else {
+                $parent = 0;
+            }
+
+            return array_map(fn (ComplexSelector $selector) => $parent + $selector->getSpecificity(), $node->getSelector()->getComponents());
+        }
+
+        if ($node->getParent() !== null) {
+            return $this->specificities($node->getParent());
+        }
+
+        return [0];
     }
 
     /**
