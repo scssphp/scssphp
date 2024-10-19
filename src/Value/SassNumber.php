@@ -597,7 +597,8 @@ abstract class SassNumber extends Value
         }
 
         try {
-            $this->greaterThan($other);
+            $other->coerceValueToMatch($this);
+
             return true;
         } catch (SassScriptException) {
             return false;
