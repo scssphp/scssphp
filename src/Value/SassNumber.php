@@ -597,8 +597,7 @@ abstract class SassNumber extends Value
         }
 
         try {
-            $other->coerceValueToMatch($this);
-
+            $this->greaterThan($other);
             return true;
         } catch (SassScriptException) {
             return false;
@@ -608,7 +607,14 @@ abstract class SassNumber extends Value
     public function greaterThan(Value $other): SassBoolean
     {
         if ($other instanceof SassNumber) {
-            return SassBoolean::create($this->coerceUnits($other, NumberUtil::fuzzyGreaterThan(...)));
+            // Not using a first-class callable for NumberUtil::fuzzyGreaterThan(),
+            // because of a PHP 8.1 bug that results in a segmentation
+            // fault, when an Exception is thrown from a function taking the FCC as
+            // a parameter.
+            //
+            // see: https://github.com/php/php-src/commit/b3e26c3036a54e9821ea7119c26cdabe484fe36d
+            // see: https://github.com/scssphp/scssphp/issues/752#issuecomment-2423857568
+            return SassBoolean::create($this->coerceUnits($other, [NumberUtil::class, 'fuzzyGreaterThan']));
         }
 
         throw new SassScriptException("Undefined operation \"$this > $other\".");
