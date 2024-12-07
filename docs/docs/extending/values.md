@@ -1,12 +1,27 @@
 # Working with Sass values
 
-Note: this documentation applies to working with values inside Sass functions.
-When working on the internals of the compiler, things are more complex.
+## Modern value representation
 
-scssphp represents Sass values using `array|\ScssPhp\ScssPhp\Node\Number`. The
-index `0` of the array will be the type of value (one of the
-`\ScssPhp\ScssPhp\Type` constants, but not all these constants are about value
-types).
+scssphp represents Sass values using the `\ScssPhp\ScssPhp\Value\Value`
+class and its subclasses.
+
+The `Value` class exposes various `assert*` methods to check the type of
+values. These methods return the value refined to the proper type or throw a
+`SassScriptException` about the unexpected type. Those methods accept a name
+argument (without the leading `$`) in case the asserted value correspond to
+an argument of a Sass function, to provide a better error message.
+
+The scssphp value API is strongly typed. It is recommended to use static analysis
+on your code when using it to catch invalid usages.
+
+## Legacy value representation
+
+scssphp used to represent Sass values using `array|\ScssPhp\ScssPhp\Node\Number`.
+The index `0` of the array will be the type of value (one of the
+`\ScssPhp\ScssPhp\Type` constants).
+
+> [!NOTE]
+> The legacy value representation is deprecated. Migrate to the modern representation instead.
 
 The `Compiler` class exposes various `assert*` methods to check the type of
 values. These methods return the asserted value (which may not be exactly the
@@ -15,8 +30,6 @@ should be used).
 
 If a string representation of a value is needed to include it in an error
 message, the `Compiler::compileValue` method can be used.
-
-## Value representation
 
 ### Null
 
@@ -45,7 +58,7 @@ Sass' strings are represented as an array with 3 elements:
 - the string content, as an array of string parts. The exact structure for parts
   is considered an internal implementation detail. Use `Compiler::getStringText`
   to get the text of the string. When creating new strings, put the string
-  content as the single item in the array (or use `ValueConverter::fromPhp`).
+  content as the single item in the array.
 
 Note: arguments received by functions may not always use the `Type::T_STRING`
 due to internal details. However, `Compiler::assertString` guarantees that its
