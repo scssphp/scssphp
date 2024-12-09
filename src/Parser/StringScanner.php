@@ -47,7 +47,7 @@ class StringScanner
     public function __construct(string $content, ?UriInterface $sourceUrl = null)
     {
         $this->string = $content;
-        $this->sourceFile = new SourceFile($content, $sourceUrl);
+        $this->sourceFile = SourceFile::fromString($content, $sourceUrl);
     }
 
     public function getString(): string

@@ -23,7 +23,7 @@ final class SpanUtil
 {
     public static function bogusSpan(): FileSpan
     {
-        return (new SourceFile(''))->span(0);
+        return SourceFile::fromString('')->span(0);
     }
 
     /**

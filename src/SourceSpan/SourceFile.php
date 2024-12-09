@@ -45,7 +45,7 @@ final class SourceFile
         return new SourceFile($content, $sourceUrl);
     }
 
-    public function __construct(string $content, ?UriInterface $sourceUrl = null)
+    private function __construct(string $content, ?UriInterface $sourceUrl = null)
     {
         $this->string = $content;
         $this->sourceUrl = $sourceUrl;

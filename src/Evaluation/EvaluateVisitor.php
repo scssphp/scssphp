@@ -638,7 +638,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
     {
         $environment = Environment::create();
         foreach ($initialVariables as $variableName => $initialVariable) {
-            $environment->setVariable($variableName, $initialVariable, new FakeAstNode(fn () => (new SourceFile(''))->span(0)));
+            $environment->setVariable($variableName, $initialVariable, new FakeAstNode(fn () => SourceFile::fromString('')->span(0)));
         }
 
         $css = null;
