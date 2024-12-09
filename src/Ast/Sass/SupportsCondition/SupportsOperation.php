@@ -13,7 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Sass\SupportsCondition;
 
 use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * An operation defining the relationship between two conditions.

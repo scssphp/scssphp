@@ -13,9 +13,9 @@
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
 use ScssPhp\ScssPhp\Ast\Css\CssValue;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\Equatable;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
+use SourceSpan\FileSpan;
 
 /**
  * A component of a {@see ComplexSelector}.

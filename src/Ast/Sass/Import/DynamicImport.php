@@ -16,7 +16,7 @@ use League\Uri\Contracts\UriInterface;
 use League\Uri\Uri;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\StringExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Import;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * An import that will load a Sass file at runtime.

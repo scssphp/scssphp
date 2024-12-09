@@ -13,11 +13,11 @@
 namespace ScssPhp\ScssPhp\Logger;
 
 use ScssPhp\ScssPhp\Deprecation;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
-use ScssPhp\ScssPhp\SourceSpan\SourceSpan;
 use ScssPhp\ScssPhp\StackTrace\Trace;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Path;
+use SourceSpan\FileSpan;
+use SourceSpan\SourceSpan;
 
 /**
  * A logger that prints to a PHP stream (for instance stderr)

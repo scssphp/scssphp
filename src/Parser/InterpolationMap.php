@@ -14,11 +14,11 @@ namespace ScssPhp\ScssPhp\Parser;
 
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\Ast\Sass\Interpolation;
-use ScssPhp\ScssPhp\SourceSpan\FileLocation;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
-use ScssPhp\ScssPhp\SourceSpan\SourceLocation;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\IterableUtil;
+use SourceSpan\FileLocation;
+use SourceSpan\FileSpan;
+use SourceSpan\SourceLocation;
 
 /**
  * A class that can map locations in a string generated from an {@see Interpolation}

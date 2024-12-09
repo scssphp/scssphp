@@ -12,10 +12,9 @@
 
 namespace ScssPhp\ScssPhp\Exception;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\StackTrace\Trace;
-use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\ErrorUtil;
+use SourceSpan\FileSpan;
 
 /**
  * @internal

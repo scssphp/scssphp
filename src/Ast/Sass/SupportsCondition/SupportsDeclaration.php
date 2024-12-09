@@ -15,7 +15,7 @@ namespace ScssPhp\ScssPhp\Ast\Sass\SupportsCondition;
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\StringExpression;
 use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * A condition that selects for browsers where a given declaration is

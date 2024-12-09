@@ -12,10 +12,10 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
+use SourceSpan\FileSpan;
 
 /**
  * A pseudo-class or pseudo-element selector.

@@ -16,9 +16,9 @@ use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Exception\SimpleSassException;
 use ScssPhp\ScssPhp\Exception\SimpleSassRuntimeException;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
-use ScssPhp\ScssPhp\SourceSpan\SourceSpan;
 use ScssPhp\ScssPhp\StackTrace\Trace;
+use SourceSpan\FileSpan;
+use SourceSpan\SourceSpan;
 
 /**
  * A logger that wraps an inner logger to have special handling for

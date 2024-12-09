@@ -14,7 +14,7 @@ namespace ScssPhp\ScssPhp\Parser;
 
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\Ast\Sass\Interpolation;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * A buffer that iteratively builds up an {@see Interpolation}.

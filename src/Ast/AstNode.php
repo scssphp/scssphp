@@ -12,7 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * A node in an abstract syntax tree.

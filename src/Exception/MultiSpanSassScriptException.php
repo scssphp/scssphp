@@ -12,7 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Exception;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * @internal

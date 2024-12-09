@@ -13,7 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Sass;
 
 use ScssPhp\ScssPhp\Parser\InterpolationBuffer;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * Plain text interpolated with Sass expressions.

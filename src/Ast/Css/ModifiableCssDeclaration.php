@@ -12,11 +12,11 @@
 
 namespace ScssPhp\ScssPhp\Ast\Css;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\StackTrace\Trace;
 use ScssPhp\ScssPhp\Value\SassString;
 use ScssPhp\ScssPhp\Value\Value;
 use ScssPhp\ScssPhp\Visitor\ModifiableCssVisitor;
+use SourceSpan\FileSpan;
 
 /**
  * A modifiable version of {@see CssDeclaration} for use in the evaluation step.

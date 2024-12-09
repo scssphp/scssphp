@@ -79,7 +79,6 @@ use ScssPhp\ScssPhp\Colors;
 use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\LoggerUtil;
@@ -88,6 +87,7 @@ use ScssPhp\ScssPhp\Util\StringUtil;
 use ScssPhp\ScssPhp\Value\ListSeparator;
 use ScssPhp\ScssPhp\Value\SassColor;
 use ScssPhp\ScssPhp\Value\SpanColorFormat;
+use SourceSpan\FileSpan;
 
 /**
  * @internal

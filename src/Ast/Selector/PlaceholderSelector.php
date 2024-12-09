@@ -12,9 +12,9 @@
 
 namespace ScssPhp\ScssPhp\Ast\Selector;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
+use SourceSpan\FileSpan;
 
 /**
  * A placeholder selector.

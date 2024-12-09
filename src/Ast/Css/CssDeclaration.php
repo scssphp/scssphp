@@ -12,9 +12,9 @@
 
 namespace ScssPhp\ScssPhp\Ast\Css;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\StackTrace\Trace;
 use ScssPhp\ScssPhp\Value\Value;
+use SourceSpan\FileSpan;
 
 /**
  * A plain CSS declaration (that is, a `name: value` pair).

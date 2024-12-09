@@ -13,7 +13,7 @@
 namespace ScssPhp\ScssPhp\Evaluation;
 
 use ScssPhp\ScssPhp\Deprecation;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * @internal

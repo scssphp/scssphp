@@ -13,9 +13,9 @@
 namespace ScssPhp\ScssPhp\Logger;
 
 use ScssPhp\ScssPhp\Deprecation;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
-use ScssPhp\ScssPhp\SourceSpan\SourceSpan;
 use ScssPhp\ScssPhp\StackTrace\Trace;
+use SourceSpan\FileSpan;
+use SourceSpan\SourceSpan;
 
 /**
  * A logger that silently ignores all messages.

@@ -13,9 +13,9 @@
 namespace ScssPhp\ScssPhp\Parser;
 
 use League\Uri\Contracts\UriInterface;
-use ScssPhp\ScssPhp\SourceSpan\FileLocation;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
-use ScssPhp\ScssPhp\SourceSpan\SourceFile;
+use SourceSpan\FileLocation;
+use SourceSpan\FileSpan;
+use SourceSpan\SourceFile;
 
 /**
  * A port of Dart's string_scanner package to be used by the parser.
@@ -47,7 +47,7 @@ class StringScanner
     public function __construct(string $content, ?UriInterface $sourceUrl = null)
     {
         $this->string = $content;
-        $this->sourceFile = new SourceFile($content, $sourceUrl);
+        $this->sourceFile = SourceFile::fromString($content, $sourceUrl);
     }
 
     public function getString(): string

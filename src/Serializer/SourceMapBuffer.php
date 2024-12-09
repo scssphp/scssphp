@@ -13,7 +13,7 @@
 namespace ScssPhp\ScssPhp\Serializer;
 
 use ScssPhp\ScssPhp\SourceMap\SingleMapping;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * @internal

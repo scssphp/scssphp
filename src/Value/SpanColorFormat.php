@@ -12,7 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * @internal

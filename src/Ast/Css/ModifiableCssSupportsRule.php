@@ -12,9 +12,9 @@
 
 namespace ScssPhp\ScssPhp\Ast\Css;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Visitor\ModifiableCssVisitor;
+use SourceSpan\FileSpan;
 
 /**
  * A modifiable version of {@see CssSupportsRule} for use in the evaluation step.

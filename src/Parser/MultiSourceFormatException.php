@@ -12,7 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Parser;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 class MultiSourceFormatException extends FormatException
 {

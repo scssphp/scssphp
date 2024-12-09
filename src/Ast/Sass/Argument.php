@@ -12,9 +12,9 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\SpanUtil;
+use SourceSpan\FileSpan;
 
 /**
  * An argument declared as part of an {@see ArgumentDeclaration}.

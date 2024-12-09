@@ -14,9 +14,9 @@ namespace ScssPhp\ScssPhp;
 
 use League\Uri\Contracts\UriInterface;
 use League\Uri\Uri;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\StackTrace\Frame;
 use ScssPhp\ScssPhp\Util\StringUtil;
+use SourceSpan\FileSpan;
 
 /**
  * Utility functions

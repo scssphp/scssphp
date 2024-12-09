@@ -13,8 +13,8 @@
 namespace ScssPhp\ScssPhp\Ast\Sass;
 
 use ScssPhp\ScssPhp\Ast\Sass\Expression\ListExpression;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Value\ListSeparator;
+use SourceSpan\FileSpan;
 
 /**
  * A set of arguments passed in to a function or mixin.

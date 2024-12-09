@@ -24,13 +24,13 @@ use ScssPhp\ScssPhp\Ast\Selector\SimpleSelector;
 use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Exception\SimpleSassException;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Util\Box;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Util\IterableUtil;
 use ScssPhp\ScssPhp\Util\ListUtil;
 use ScssPhp\ScssPhp\Util\ModifiableBox;
+use SourceSpan\FileSpan;
 
 class ConcreteExtensionStore implements ExtensionStore
 {
