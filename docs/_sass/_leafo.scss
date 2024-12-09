@@ -12,25 +12,6 @@ $btn_color: desaturate(#FF3D7F, 10%);
     color: white;
 }
 
-@mixin unselectable {
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-@mixin grad($top, $bottom) {
-    background-color: mix($top, $bottom);
-    background-image: linear-gradient(bottom, $bottom 0%, $top 100%);
-    background-image: -webkit-linear-gradient(bottom, $bottom 0%, $top 100%);
-    background-image: -moz-linear-gradient(bottom, $bottom 0%, $top 100%);
-    background-image: -o-linear-gradient(bottom, $bottom 0%, $top 100%);
-    background-image: -ms-linear-gradient(bottom, $bottom 0%, $top 100%);
-}
-
-@mixin autograd($color, $amount: 10%) {
-    @include grad($color, darken($color, $amount));
-}
-
 html {
     box-sizing: border-box;
 }
@@ -60,6 +41,7 @@ body {
     text-shadow: 0px -1px 0px darken($teal, 15%);
 
     .color {
+      display: flow-root;
         background: $teal url(../img/tile.png);
         border-top: 4px solid $light_teal;
         box-shadow: inset 0px 1px 0px rgba(255,255,255, 0.5), inset 0px 8px 8px -8px #37505A, inset 0px -1px 0px rgba(255,255,255, 0.3);
@@ -98,64 +80,6 @@ body {
 
             &:hover {
                 text-decoration: underline;
-            }
-        }
-    }
-
-    .download-area {
-        background: rgba(255,255,255, 0.3);
-        border-radius: 8px;
-        display: inline-block;
-        margin-bottom: 25px;
-        padding: 5px;
-
-        a {
-            text-decoration: none;
-        }
-
-        .download-button {
-            $height: 8px;
-            $depress: 4px;
-
-            @include unselectable;
-
-            color: white;
-            text-align: center;
-
-            @include autograd($btn_color);
-
-            position: relative;
-            top: -1 * $height;
-
-            padding: 8px 20px;
-            border-radius: 8px;
-            text-shadow: none;
-
-            box-shadow: 0px $height 0px darken($btn_color, 30%), inset 0px -1px 0px rgba(255,255,255, 0.2), inset 0px 1px 0px rgba(0,0,0, 0.2);
-            text-shadow: 0px 1px 2px darken($btn_color, 40%);
-
-            cursor: pointer;
-
-            -webkit-transition: all 0.05s ease-in-out;
-            -moz-transition: all 0.05s ease-in-out;
-            transition: all 0.05s ease-in-out;
-
-            &:hover {
-                @include autograd(lighten($btn_color, 3%));
-            }
-
-            &:active {
-                box-shadow: 0px $height - $depress 0px darken($btn_color, 30%), inset 0px -1px 0px rgba(255,255,255, 0.2), inset 0px 1px 0px rgba(0,0,0, 0.2);
-                top: -1 * ($height - $depress);
-            }
-
-            .top {
-                font-weight: bold;
-                font-size: 16px;
-            }
-
-            .sub {
-                font-size: 14px;
             }
         }
     }

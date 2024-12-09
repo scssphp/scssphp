@@ -17,7 +17,8 @@ normalized name, the last one wins (as they are declared in order). The
 recommendation is to stick with normalized names (no leading `$` and dashes
 rather than underscores) to avoid confusion.
 
-Variable values must be converted to the [internal representation of Sass values](./values.md)
+Variable values must be provided using the [modern representation of Sass values](./values.md).
+They can either be build directly using the Value API or can be converted
 using the `\ScssPhp\ScssPhp\ValueConverter` API. This API exposes 2 helpers:
 
 - `ValueConverter::parseValue` parses a string containing a SCSS representation

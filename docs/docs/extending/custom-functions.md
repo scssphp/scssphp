@@ -20,18 +20,16 @@ We can add and remove functions using the methods `registerFunction` and
 * `unregisterFunction($functionName)` removes `$functionName` from the list of
   available functions.
 
-Functions should declare explicitly their argument, to allow the compiler to
-validate arguments and support keyword arguments for them. However, a deprecated
-alternative API also exists accepting any arguments with a different signature
-for the callable.
+Functions must declare explicitly their argument, to allow the compiler to
+validate arguments and support keyword arguments for them.
 
 Custom host functions have to work with Sass values which are described in the
 [documentation about values](./values.md).
 
-Functions must return either `null` or a Sass value. Returning `null` means that
-the function call will be compiled as a CSS function call. This is generally not
-needed for custom functions as they should probably not shadow CSS functions to
-avoid confusion (some built-in Sass functions rely on that however, like `rgb()`).
+Modern functions **must** use `\ScssPhp\ScssPhp\Value\Value` as native return
+type. The compiler uses this return type to distinguish modern implementations
+(using the modern representation) from legacy implementations (using the
+deprecated legacy representation of values).
 
 ## Argument declaration
 
@@ -49,19 +47,59 @@ There are 3 kinds of arguments that can be declared:
 The compiler will take care of validating arguments against the function
 signature, supporting the same features as for calls to functions defined in
 Sass directly. However, it is still the responsibility of the callable to
-validate the values themselves. The `Compiler::assert*` helpers should be used
-to validate the type, providing the argument name for better error reporting.
-To report custom errors, the callable must use the
-`\ScssPhp\ScssPhp\Exception\SassScriptException` to ensure proper error
-reporting.
+validate the values themselves.
+
+## Reporting errors or warnings
+
+Errors in the execution of functions must be reported by using the
+`\ScssPhp\ScssPhp\Exception\SassScriptException` for proper error reporting.
+When the error is related to the validation of an argument, the
+`SassScriptException::forArgument` method should be used to instantiate the
+exception.
+
+Warnings can be reported using the `\ScssPhp\ScssPhp\Warn` API.
 
 ## Implementing the function
 
-### Functions declaring their arguments
+### Modern functions
 
-The callable receives 2 arguments. However, the second one is passed only for
-historical reasons (and for some special internal usages) and should not be used
-anymore. Registering a function that requires 2 parameters to be passed is deprecated.
+The callable is expected to have the signature `callable(array $args): Value`,
+where the type passed for arguments is `list<\ScssPhp\ScssPhp\Value\Value>`.
+
+The argument is a list of Sass values, with one value per declared
+arguments. The compiler guarantees that all arguments are always provided to the
+callable. A rest argument receives a `\ScssPhp\ScssPhp\Value\SassArgumentList` as
+the value.
+
+```php
+use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Value\SassNumber;
+use ScssPhp\ScssPhp\Value\Value;
+
+$compiler = new Compiler();
+
+$compiler->registerFunction(
+  'add-two',
+  /** @param list<Value> $args */
+  function(array $args): Value {
+    $number1 = $args[0]->assertNumber('number1');
+    $number2 = $args[1]->assertNumber('number2');
+
+    $number1->assertNoUnits('number1');
+    $number2->assertNoUnits('number2');
+
+    return SassNumber::create($number1->getValue() + $number2->getValue());
+  },
+  ['number1', 'number2']
+);
+
+$compiler->compileString('.ex1 { result: add-two(10, 10); }')->getCss();
+$compiler->compileString('.ex1 { result: add-two($number1: 10, $number2: 10); }')->getCss();
+```
+
+### Legacy functions declaring their arguments
+
+The callable receives 1 argument.
 
 The first argument is an array of Sass values, with one value per declared
 arguments. The compiler guarantees that all arguments are always provided to the
@@ -95,7 +133,12 @@ $compiler->compileString('.ex1 { result: add-two(10, 10); }')->getCss();
 $compiler->compileString('.ex1 { result: add-two($number1: 10, $number2: 10); }')->getCss();
 ```
 
-### Functions not declaring their arguments
+Functions must return either `null` or a Sass value. Returning `null` means that
+the function call will be compiled as a CSS function call. This is generally not
+needed for custom functions as they should probably not shadow CSS functions to
+avoid confusion (some built-in Sass functions rely on that however, like `rgb()`).
+
+### Legacy functions not declaring their arguments
 
 When arguments are not declared (`null` is passed as the argument declaration
 when registering the function), the compiler will accept any arguments when
@@ -103,7 +146,7 @@ calling the function. The callable will receive 2 arguments: a list of
 positional arguments and a list of keyword arguments (with names which are not
 normalized, and so confusing to use).
 
-This usage is deprecated as of scssphp 1.5 and will not be supported in 2.0.
+This usage was deprecated as of scssphp 1.5 and is not supported anymore in 2.0.
 
 The direct migration is to declare the function with a rest argument:
 
@@ -125,13 +168,3 @@ The direct migration is to declare the function with a rest argument:
 However, in most cases, functions actually expect a given signature implicitly
 rather than accepting anything. In such case, it is better to migrate to an
 explicit signature and to rework the callable to account for that.
-
-## Reporting errors or warnings
-
-Errors in the execution of functions must be reported by using the
-`\ScssPhp\ScssPhp\Exception\SassScriptException` for proper error reporting.
-When the error is related to the validation of an argument, the
-`SassScriptException::forArgument` method should be used to instantiate the
-exception.
-
-Warnings can be reported using the `\ScssPhp\ScssPhp\Warn` API.
