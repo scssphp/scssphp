@@ -13,6 +13,10 @@
 namespace ScssPhp\ScssPhp\SourceSpan;
 
 use League\Uri\Contracts\UriInterface;
+use SourceSpan\FileLocation;
+use SourceSpan\FileSpan;
+use SourceSpan\SourceFile;
+use SourceSpan\SourceSpan;
 
 /**
  * A FileSpan wrapper that with secondary spans attached, so that

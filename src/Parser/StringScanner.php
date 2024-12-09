@@ -13,9 +13,9 @@
 namespace ScssPhp\ScssPhp\Parser;
 
 use League\Uri\Contracts\UriInterface;
-use ScssPhp\ScssPhp\SourceSpan\FileLocation;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
-use ScssPhp\ScssPhp\SourceSpan\SourceFile;
+use SourceSpan\FileLocation;
+use SourceSpan\FileSpan;
+use SourceSpan\SourceFile;
 
 /**
  * A port of Dart's string_scanner package to be used by the parser.

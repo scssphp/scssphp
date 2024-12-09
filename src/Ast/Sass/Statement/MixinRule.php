@@ -15,9 +15,9 @@ namespace ScssPhp\ScssPhp\Ast\Sass\Statement;
 use ScssPhp\ScssPhp\Ast\Sass\ArgumentDeclaration;
 use ScssPhp\ScssPhp\Ast\Sass\SassDeclaration;
 use ScssPhp\ScssPhp\Ast\Sass\Statement;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\SpanUtil;
 use ScssPhp\ScssPhp\Visitor\StatementVisitor;
+use SourceSpan\FileSpan;
 
 /**
  * A mixin declaration.

@@ -13,8 +13,8 @@
 namespace ScssPhp\ScssPhp\Util;
 
 use ScssPhp\ScssPhp\Parser\StringScanner;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
-use ScssPhp\ScssPhp\SourceSpan\SourceFile;
+use SourceSpan\FileSpan;
+use SourceSpan\SourceFile;
 
 /**
  * @internal

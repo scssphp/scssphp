@@ -12,7 +12,7 @@
 
 namespace ScssPhp\ScssPhp\SourceMap\Builder;
 
-use ScssPhp\ScssPhp\SourceSpan\SourceLocation;
+use SourceSpan\SourceLocation;
 
 /**
  * An entry in the source map builder.

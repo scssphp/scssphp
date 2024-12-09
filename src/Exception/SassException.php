@@ -12,8 +12,8 @@
 
 namespace ScssPhp\ScssPhp\Exception;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\StackTrace\Trace;
+use SourceSpan\FileSpan;
 
 interface SassException extends \Throwable
 {

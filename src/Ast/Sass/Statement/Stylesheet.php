@@ -19,9 +19,9 @@ use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\CssParser;
 use ScssPhp\ScssPhp\Parser\SassParser;
 use ScssPhp\ScssPhp\Parser\ScssParser;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Syntax;
 use ScssPhp\ScssPhp\Visitor\StatementVisitor;
+use SourceSpan\FileSpan;
 
 /**
  * A Sass stylesheet.

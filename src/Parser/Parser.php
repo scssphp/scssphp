@@ -18,11 +18,11 @@ use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Exception\SimpleSassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
-use ScssPhp\ScssPhp\SourceSpan\FileLocation;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\SourceSpan\LazyFileSpan;
 use ScssPhp\ScssPhp\Util\Character;
 use ScssPhp\ScssPhp\Util\ParserUtil;
+use SourceSpan\FileLocation;
+use SourceSpan\FileSpan;
 
 /**
  * @internal

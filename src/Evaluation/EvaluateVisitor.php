@@ -122,10 +122,7 @@ use ScssPhp\ScssPhp\SassCallable\BuiltInCallable;
 use ScssPhp\ScssPhp\SassCallable\PlainCssCallable;
 use ScssPhp\ScssPhp\SassCallable\SassCallable;
 use ScssPhp\ScssPhp\SassCallable\UserDefinedCallable;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\SourceSpan\MultiSpan;
-use ScssPhp\ScssPhp\SourceSpan\SourceFile;
-use ScssPhp\ScssPhp\SourceSpan\SimpleSourceLocation;
 use ScssPhp\ScssPhp\StackTrace\Frame;
 use ScssPhp\ScssPhp\StackTrace\Trace;
 use ScssPhp\ScssPhp\Util;
@@ -155,6 +152,9 @@ use ScssPhp\ScssPhp\Value\Value;
 use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
 use ScssPhp\ScssPhp\Visitor\StatementVisitor;
 use ScssPhp\ScssPhp\Warn;
+use SourceSpan\FileSpan;
+use SourceSpan\SourceFile;
+use SourceSpan\SimpleSourceLocation;
 
 /**
  * A visitor that executes Sass code to produce a CSS tree.

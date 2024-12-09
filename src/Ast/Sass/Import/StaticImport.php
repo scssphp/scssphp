@@ -14,7 +14,7 @@ namespace ScssPhp\ScssPhp\Ast\Sass\Import;
 
 use ScssPhp\ScssPhp\Ast\Sass\Import;
 use ScssPhp\ScssPhp\Ast\Sass\Interpolation;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * An import that produces a plain CSS `@import` rule.

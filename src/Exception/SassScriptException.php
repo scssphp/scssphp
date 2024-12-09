@@ -3,7 +3,7 @@
 namespace ScssPhp\ScssPhp\Exception;
 
 use JiriPudil\SealedClasses\Sealed;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * An exception thrown by SassScript.

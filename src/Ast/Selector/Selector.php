@@ -16,10 +16,10 @@ use ScssPhp\ScssPhp\Ast\AstNode;
 use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\SassException;
 use ScssPhp\ScssPhp\Serializer\Serializer;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\Equatable;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
 use ScssPhp\ScssPhp\Warn;
+use SourceSpan\FileSpan;
 
 /**
  * A node in the abstract syntax tree for a selector.

@@ -15,8 +15,8 @@ namespace ScssPhp\ScssPhp\Util;
 use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Logger\DeprecationProcessingLogger;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\StackTrace\Trace;
+use SourceSpan\FileSpan;
 
 /**
  * @internal

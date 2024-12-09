@@ -21,13 +21,13 @@ use ScssPhp\ScssPhp\Extend\ExtendUtil;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Parser\InterpolationMap;
 use ScssPhp\ScssPhp\Parser\SelectorParser;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Util\ListUtil;
 use ScssPhp\ScssPhp\Value\ListSeparator;
 use ScssPhp\ScssPhp\Value\SassList;
 use ScssPhp\ScssPhp\Value\SassString;
 use ScssPhp\ScssPhp\Visitor\SelectorVisitor;
+use SourceSpan\FileSpan;
 
 /**
  * A selector list.

@@ -13,7 +13,7 @@
 namespace ScssPhp\ScssPhp\Parser;
 
 use JiriPudil\SealedClasses\Sealed;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * @internal

@@ -14,7 +14,7 @@ namespace ScssPhp\ScssPhp\Ast\Sass\SupportsCondition;
 
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * An interpolated condition.

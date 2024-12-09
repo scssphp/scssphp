@@ -14,12 +14,12 @@ namespace ScssPhp\ScssPhp\Serializer;
 
 use ScssPhp\ScssPhp\SourceMap\Builder\Entry;
 use ScssPhp\ScssPhp\SourceMap\SingleMapping;
-use ScssPhp\ScssPhp\SourceSpan\FileLocation;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
-use ScssPhp\ScssPhp\SourceSpan\SimpleSourceLocation;
-use ScssPhp\ScssPhp\SourceSpan\SourceLocation;
-use ScssPhp\ScssPhp\SourceSpan\SourceSpan;
 use ScssPhp\ScssPhp\Util\ListUtil;
+use SourceSpan\FileLocation;
+use SourceSpan\FileSpan;
+use SourceSpan\SimpleSourceLocation;
+use SourceSpan\SourceLocation;
+use SourceSpan\SourceSpan;
 
 /**
  * A {@see SourceMapBuffer} that builds a source map.

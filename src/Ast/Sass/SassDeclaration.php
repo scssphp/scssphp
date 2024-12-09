@@ -12,7 +12,7 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * A common interface for any node that declares a Sass member.

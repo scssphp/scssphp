@@ -16,9 +16,9 @@ use ScssPhp\ScssPhp\Ast\Sass\ArgumentInvocation;
 use ScssPhp\ScssPhp\Ast\Sass\CallableInvocation;
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\Ast\Sass\SassReference;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\SpanUtil;
 use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
+use SourceSpan\FileSpan;
 
 /**
  * A function invocation.

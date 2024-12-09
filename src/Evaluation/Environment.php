@@ -15,8 +15,8 @@ namespace ScssPhp\ScssPhp\Evaluation;
 use ScssPhp\ScssPhp\Ast\AstNode;
 use ScssPhp\ScssPhp\SassCallable\SassCallable;
 use ScssPhp\ScssPhp\SassCallable\UserDefinedCallable;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Value\Value;
+use SourceSpan\FileSpan;
 
 /**
  * The lexical environment in which Sass is executed.

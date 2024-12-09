@@ -14,8 +14,8 @@ namespace ScssPhp\ScssPhp\Ast\Sass\Expression;
 
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\Ast\Sass\SupportsCondition;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Visitor\ExpressionVisitor;
+use SourceSpan\FileSpan;
 
 /**
  * An expression-level `@supports` condition.

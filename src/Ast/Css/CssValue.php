@@ -14,9 +14,9 @@ namespace ScssPhp\ScssPhp\Ast\Css;
 
 use ScssPhp\ScssPhp\Ast\AstNode;
 use ScssPhp\ScssPhp\Ast\Selector\Combinator;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\Equatable;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
+use SourceSpan\FileSpan;
 
 /**
  * A value in a plain CSS tree.

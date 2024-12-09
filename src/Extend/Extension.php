@@ -15,7 +15,7 @@ namespace ScssPhp\ScssPhp\Extend;
 use ScssPhp\ScssPhp\Ast\Css\CssMediaQuery;
 use ScssPhp\ScssPhp\Ast\Selector\ComplexSelector;
 use ScssPhp\ScssPhp\Ast\Selector\SimpleSelector;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
+use SourceSpan\FileSpan;
 
 /**
  * The state of an extension for a given extender.

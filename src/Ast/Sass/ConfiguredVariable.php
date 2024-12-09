@@ -12,8 +12,8 @@
 
 namespace ScssPhp\ScssPhp\Ast\Sass;
 
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\SpanUtil;
+use SourceSpan\FileSpan;
 
 /**
  * A variable configured by a `with` clause in a `@use` or `@forward` rule.

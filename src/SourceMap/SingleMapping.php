@@ -13,8 +13,8 @@
 namespace ScssPhp\ScssPhp\SourceMap;
 
 use ScssPhp\ScssPhp\SourceMap\Builder\Entry;
-use ScssPhp\ScssPhp\SourceSpan\FileLocation;
-use ScssPhp\ScssPhp\SourceSpan\SourceFile;
+use SourceSpan\FileLocation;
+use SourceSpan\SourceFile;
 
 /**
  * @internal

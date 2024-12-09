@@ -31,6 +31,7 @@
         "ext-json": "*",
         "league/uri": "^7.4",
         "league/uri-interfaces": "^7.4",
+        "scssphp/source-span": "^1.0",
         "symfony/filesystem": "^5.4 || ^6.0 || ^7.0",
         "symfony/polyfill-mbstring": "^1.30"
     },

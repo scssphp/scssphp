@@ -25,11 +25,11 @@ use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
 use ScssPhp\ScssPhp\Ast\Selector\SimpleSelector;
 use ScssPhp\ScssPhp\Ast\Selector\TypeSelector;
 use ScssPhp\ScssPhp\Ast\Selector\UniversalSelector;
-use ScssPhp\ScssPhp\SourceSpan\FileSpan;
 use ScssPhp\ScssPhp\Util\EquatableUtil;
 use ScssPhp\ScssPhp\Util\IterableUtil;
 use ScssPhp\ScssPhp\Util\ListUtil;
 use ScssPhp\ScssPhp\Util\SpanUtil;
+use SourceSpan\FileSpan;
 
 /**
  * @internal
