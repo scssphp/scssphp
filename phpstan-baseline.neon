@@ -1,171 +1,193 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:assertColor\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:assertColor\(\) has parameter \$value with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:assertColor\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:assertColor\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:assertInteger\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:assertInteger\(\) has parameter \$value with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:assertMap\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:assertMap\(\) has parameter \$value with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:assertMap\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:assertMap\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:assertNumber\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:assertNumber\(\) has parameter \$value with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:assertString\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:assertString\(\) has parameter \$value with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:assertString\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:assertString\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileStringContent\\(\\) has parameter \\$string with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:compileStringContent\(\) has parameter \$string with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:compileValue\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:compileValue\(\) has parameter \$value with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:getArgumentListKeywords\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:getArgumentListKeywords\(\) has parameter \$value with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:getArgumentListKeywords\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:getArgumentListKeywords\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:getStringText\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:getStringText\(\) has parameter \$value with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:isTruthy\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:isTruthy\(\) has parameter \$value with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:legacyValueToValue\\(\\) has parameter \\$legacyValue with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:legacyValueToValue\(\) has parameter \$legacyValue with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:registerFunction\\(\\) has parameter \\$callback with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:registerFunction\(\) has parameter \$callback with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 2
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:toBool\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:toBool\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:tryMap\\(\\) has parameter \\$item with no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:tryMap\(\) has parameter \$item with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:tryMap\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:tryMap\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:valueToLegacyValue\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Compiler\:\:valueToLegacyValue\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$stream of class ScssPhp\\\\ScssPhp\\\\Logger\\\\StreamLogger constructor expects resource, resource\\|false given\\.$#"
+			message: '#^Parameter \#1 \$stream of class ScssPhp\\ScssPhp\\Logger\\StreamLogger constructor expects resource, resource\|false given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$emptyList has no type specified\\.$#"
+			message: '#^Property ScssPhp\\ScssPhp\\Compiler\:\:\$emptyList has no type specified\.$#'
+			identifier: missingType.property
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$emptyMap has no type specified\\.$#"
+			message: '#^Property ScssPhp\\ScssPhp\\Compiler\:\:\$emptyMap has no type specified\.$#'
+			identifier: missingType.property
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$emptyString has no type specified\\.$#"
+			message: '#^Property ScssPhp\\ScssPhp\\Compiler\:\:\$emptyString has no type specified\.$#'
+			identifier: missingType.property
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$false has no type specified\\.$#"
+			message: '#^Property ScssPhp\\ScssPhp\\Compiler\:\:\$false has no type specified\.$#'
+			identifier: missingType.property
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$null has no type specified\\.$#"
+			message: '#^Property ScssPhp\\ScssPhp\\Compiler\:\:\$null has no type specified\.$#'
+			identifier: missingType.property
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Property ScssPhp\\\\ScssPhp\\\\Compiler\\:\\:\\$true has no type specified\\.$#"
+			message: '#^Property ScssPhp\\ScssPhp\\Compiler\:\:\$true has no type specified\.$#'
+			identifier: missingType.property
 			count: 1
 			path: src/Compiler.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Deprecation\\:\\:getObsoleteIn\\(\\) never returns string so it can be removed from the return type\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Deprecation\:\:getObsoleteIn\(\) never returns string so it can be removed from the return type\.$#'
+			identifier: return.unusedType
 			count: 1
 			path: src/Deprecation.php
 
 		-
-			message: "#^Parameter \\#1 \\$uri of static method League\\\\Uri\\\\Uri\\:\\:new\\(\\) expects string\\|Stringable, array\\<string, array\\<int, string\\>\\>\\|string given\\.$#"
-			count: 1
-			path: src/Function/FunctionRegistry.php
-
-		-
-			message: "#^Parameter \\#2 \\$overloads of static method ScssPhp\\\\ScssPhp\\\\SassCallable\\\\BuiltInCallable\\:\\:overloadedFunction\\(\\) expects array\\<string, callable\\(list\\<ScssPhp\\\\ScssPhp\\\\Value\\\\Value\\>\\)\\: ScssPhp\\\\ScssPhp\\\\Value\\\\Value\\>, 'sass\\:color'\\|'sass\\:list'\\|'sass\\:map'\\|'sass\\:math'\\|'sass\\:meta'\\|'sass\\:selector'\\|'sass\\:string'\\|non\\-empty\\-array\\<literal\\-string, array\\{'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\ColorFunctions', 'adjust'\\|'adjustHue'\\|'alpha'\\|'alphaMicrosoft'\\|'blue'\\|'change'\\|'complement'\\|'darken'\\|'desaturate'\\|'grayscale'\\|'green'\\|'hsl'\\|'hsla'\\|'hslaOneArgs'\\|'hslaTwoArgs'\\|'hslOneArgs'\\|'hslTwoArgs'\\|'hue'\\|'ieHexStr'\\|'invert'\\|'lighten'\\|'lightness'\\|'mix'\\|'opacify'\\|'opacity'\\|'red'\\|'rgb'\\|'rgba'\\|'rgbaOneArgs'\\|'rgbaTwoArgs'\\|'rgbOneArgs'\\|'rgbTwoArgs'\\|'saturate'\\|'saturateCss'\\|'saturation'\\|'scale'\\|'transparentize'\\}\\|array\\{'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\ListFunctions'\\|'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\SelectorFunctions'\\|'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\StringFunctions', 'append'\\|'extend'\\|'index'\\|'insert'\\|'isBracketed'\\|'isSuperselector'\\|'join'\\|'length'\\|'nest'\\|'nth'\\|'parse'\\|'quote'\\|'replace'\\|'separator'\\|'setNth'\\|'simpleSelectors'\\|'slice'\\|'toLowerCase'\\|'toUpperCase'\\|'unify'\\|'uniqueId'\\|'unquote'\\|'zip'\\}\\|array\\{'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\MapFunctions', 'get'\\|'hasKey'\\|'keys'\\|'mergeTwoArgs'\\|'mergeVariadic'\\|'remove'\\|'removeNoKeys'\\|'values'\\}\\|array\\{'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\MathFunctions', 'abs'\\|'ceil'\\|'compatible'\\|'floor'\\|'isUnitless'\\|'max'\\|'min'\\|'percentage'\\|'random'\\|'round'\\|'unit'\\}\\|array\\{'ScssPhp\\\\\\\\ScssPhp\\\\\\\\Function\\\\\\\\MetaFunctions', 'featureExists'\\|'inspect'\\|'keywords'\\|'typeof'\\}\\> given\\.$#"
-			count: 1
-			path: src/Function/FunctionRegistry.php
-
-		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Importer\\\\FilesystemImporter\\:\\:load\\(\\) never returns null so it can be removed from the return type\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Importer\\FilesystemImporter\:\:load\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
 			count: 1
 			path: src/Importer/FilesystemImporter.php
 
 		-
-			message: "#^Call to function assert\\(\\) with false and 'unknown format' will always evaluate to false\\.$#"
+			message: '#^Call to function assert\(\) with false and ''unknown format'' will always evaluate to false\.$#'
+			identifier: function.impossibleType
 			count: 1
 			path: src/Serializer/SerializeVisitor.php
 
 		-
-			message: "#^Negated boolean expression is always true\\.$#"
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
 			count: 1
 			path: src/Serializer/SerializeVisitor.php
 
 		-
-			message: "#^Method ScssPhp\\\\ScssPhp\\\\Value\\\\SassMap\\:\\:tryMap\\(\\) never returns null so it can be removed from the return type\\.$#"
+			message: '#^Method ScssPhp\\ScssPhp\\Value\\SassMap\:\:tryMap\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
 			count: 1
 			path: src/Value/SassMap.php
