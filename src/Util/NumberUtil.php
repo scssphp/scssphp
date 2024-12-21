@@ -257,7 +257,13 @@ final class NumberUtil
         $base->assertNoUnits('base');
         $exponent->assertNoUnits('exponent');
 
-        return SassNumber::create($base->getValue() ** $exponent->getValue());
+        if (\PHP_VERSION_ID >= 80400) {
+            $value = fpow($base->getValue(), $exponent->getValue());
+        } else {
+            $value = $base->getValue() ** $exponent->getValue();
+        }
+
+        return SassNumber::create($value);
     }
 
     public static function atan2(SassNumber $y, SassNumber $x): SassNumber
