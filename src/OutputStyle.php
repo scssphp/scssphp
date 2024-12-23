@@ -21,7 +21,7 @@ enum OutputStyle: string
      * Converts a string to an output style.
      *
      * Using this method allows to write code which will support both
-     * versions 1.12+ and 2.0 of Scssphp. In 1.x, OutputStyle is using
+     * versions 1.12+ and 2.0 of Scssphp. In 1.x, OutputStyle was using
      * string constants.
      */
     public static function fromString(string $string): OutputStyle

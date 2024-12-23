@@ -37,8 +37,6 @@ interface LoggerInterface
      * If $deprecation is non-null, it indicates that this is a deprecation
      * warning. Implementations should surface all this information to
      * the end user.
-     *
-     * @return void
      */
     public function warn(string $message, ?Deprecation $deprecation = null, ?FileSpan $span = null, ?Trace $trace = null): void;
 

@@ -18,7 +18,7 @@ namespace ScssPhp\ScssPhp\Util;
 final class StringUtil
 {
     /**
-     * @phpstan-param non-empty-array<string> $iter
+     * @param non-empty-array<string> $iter
      */
     public static function toSentence(array $iter, string $conjunction = 'and'): string
     {

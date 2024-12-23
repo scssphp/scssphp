@@ -22,11 +22,7 @@ class SassScriptException extends \Exception
      * This helper ensures a consistent handling of argument names in the
      * error message, without duplicating it.
      *
-     * @param string          $message
-     * @param string|null     $name     The argument name, without $
-     * @param \Throwable|null $previous
-     *
-     * @return SassScriptException
+     * @param string|null $name The argument name, without $
      */
     public static function forArgument(string $message, ?string $name = null, ?\Throwable $previous = null): SassScriptException
     {

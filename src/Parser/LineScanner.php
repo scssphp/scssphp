@@ -164,7 +164,7 @@ final class LineScanner extends StringScanner
     }
 
     /**
-     * @phpstan-return list<array{string, int}>
+     * @return list<array{string, int}>
      */
     private function newlinesIn(string $text): array
     {

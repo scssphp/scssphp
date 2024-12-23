@@ -675,8 +675,6 @@ WARNING;
      * Note that this is equivalent to calling `inspect()` on the value, and thus
      * won't reflect the user's output settings. {@see toCssString} should be used
      * instead to convert $this to CSS.
-     *
-     * @return string
      */
     final public function __toString(): string
     {

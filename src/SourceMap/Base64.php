@@ -24,7 +24,7 @@ final class Base64
     /**
      * @var array<int, string>
      */
-    private static $encodingMap = [
+    private const ENCODING_MAP = [
         0 => 'A',
         1 => 'B',
         2 => 'C',
@@ -93,13 +93,9 @@ final class Base64
 
     /**
      * Convert to base64
-     *
-     * @param int $value
-     *
-     * @return string
      */
-    public static function encode($value)
+    public static function encode(int $value): string
     {
-        return self::$encodingMap[$value];
+        return self::ENCODING_MAP[$value];
     }
 }

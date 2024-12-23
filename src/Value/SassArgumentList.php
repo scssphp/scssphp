@@ -51,8 +51,6 @@ final class SassArgumentList extends SassList
     }
 
     /**
-     * @return bool
-     *
      * @internal
      */
     public function wereKeywordAccessed(): bool

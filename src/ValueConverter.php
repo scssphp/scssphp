@@ -66,10 +66,8 @@ final class ValueConverter
      * Compiler methods for registering custom variables. No other
      * guarantee about it is provided. It should be considered
      * opaque values by the caller.
-     *
-     * @param mixed $value
      */
-    public static function fromPhp($value): Value
+    public static function fromPhp(mixed $value): Value
     {
         if ($value instanceof Value) {
             return $value;
