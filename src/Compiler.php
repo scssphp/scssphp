@@ -46,38 +46,6 @@ use ScssPhp\ScssPhp\Value\SassString;
 use ScssPhp\ScssPhp\Value\Value;
 use ScssPhp\ScssPhp\Visitor\CssVisitor;
 
-/**
- * The scss compiler and parser.
- *
- * Converting SCSS to CSS is a three stage process. The incoming file is parsed
- * by `Parser` into a syntax tree, then it is compiled into another tree
- * representing the CSS structure by `Compiler`. The CSS tree is fed into a
- * formatter, like `Formatter` which then outputs CSS as a string.
- *
- * During the first compile, all values are *reduced*, which means that their
- * types are brought to the lowest form before being dump as strings. This
- * handles math equations, variable dereferences, and the like.
- *
- * The `compile` function of `Compiler` is the entry point.
- *
- * In summary:
- *
- * The `Compiler` class creates an instance of the parser, feeds it SCSS code,
- * then transforms the resulting tree to a CSS tree. This class also holds the
- * evaluation context, such as all available mixins and variables at any given
- * time.
- *
- * The `Parser` class is only concerned with parsing its input.
- *
- * The `Formatter` takes a CSS tree, and dumps it to a formatted string,
- * handling things like indentation.
- */
-
-/**
- * SCSS compiler
- *
- * @author Leaf Corcoran <leafot@gmail.com>
- */
 final class Compiler
 {
     const SOURCE_MAP_NONE   = 0;
@@ -99,34 +67,29 @@ final class Compiler
     /**
      * @var array<int, string|callable(string): (string|null)>
      */
-    private $importPaths = [];
+    private array $importPaths = [];
 
     /**
-     * @var array
-     * @phpstan-var array<string, array{0: callable, 1: string[]}>
+     * @var array<string, array{0: callable, 1: string[]}>
      */
-    private $userFunctions = [];
+    private array $userFunctions = [];
+
     /**
      * @var array<string, Value>
      */
-    private $registeredVars = [];
+    private array $registeredVars = [];
 
     /**
-     * @var int
-     * @phpstan-var self::SOURCE_MAP_*
+     * @var self::SOURCE_MAP_*
      */
-    private $sourceMap = self::SOURCE_MAP_NONE;
+    private int $sourceMap = self::SOURCE_MAP_NONE;
 
     /**
-     * @var array
-     * @phpstan-var array{sourceRoot?: string, sourceMapFilename?: string|null, sourceMapURL?: string|null, sourceMapWriteTo?: string|null, outputSourceFiles?: bool, sourceMapRootpath?: string, sourceMapBasepath?: string}
+     * @var array{sourceRoot?: string, sourceMapFilename?: string|null, sourceMapURL?: string|null, outputSourceFiles?: bool, sourceMapRootpath?: string, sourceMapBasepath?: string}
      */
-    private $sourceMapOptions = [];
+    private array $sourceMapOptions = [];
 
-    /**
-     * @var bool
-     */
-    private $charset = true;
+    private bool $charset = true;
 
     private bool $quietDeps = false;
 
@@ -159,10 +122,7 @@ final class Compiler
 
     private OutputStyle $outputStyle = OutputStyle::EXPANDED;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     public function __construct()
     {
@@ -174,10 +134,6 @@ final class Compiler
      *
      * Changing the logger in the middle of the compilation is not
      * supported and will result in an undefined behavior.
-     *
-     * @param LoggerInterface $logger
-     *
-     * @return void
      */
     public function setLogger(LoggerInterface $logger): void
     {
@@ -188,8 +144,6 @@ final class Compiler
      * Replaces variables.
      *
      * @param array<string, Value> $variables
-     *
-     * @return void
      */
     public function replaceVariables(array $variables): void
     {
@@ -201,8 +155,6 @@ final class Compiler
      * Replaces variables.
      *
      * @param array<string, Value> $variables
-     *
-     * @return void
      */
     public function addVariables(array $variables): void
     {
@@ -217,10 +169,6 @@ final class Compiler
 
     /**
      * Unset variable
-     *
-     * @param string $name
-     *
-     * @return void
      */
     public function unsetVariable(string $name): void
     {
@@ -246,10 +194,8 @@ final class Compiler
      * Add import path
      *
      * @param string|callable(string): (string|null) $path
-     *
-     * @return void
      */
-    public function addImportPath($path): void
+    public function addImportPath(string|callable $path): void
     {
         if (! \in_array($path, $this->importPaths)) {
             $this->importPaths[] = $path;
@@ -260,8 +206,6 @@ final class Compiler
      * Set import paths
      *
      * @param string|array<string|callable(string): (string|null)> $path
-     *
-     * @return void
      */
     public function setImportPaths($path): void
     {
@@ -353,11 +297,7 @@ final class Compiler
     /**
      * Enable/disable source maps
      *
-     * @param int $sourceMap
-     *
-     * @return void
-     *
-     * @phpstan-param self::SOURCE_MAP_* $sourceMap
+     * @param self::SOURCE_MAP_* $sourceMap
      */
     public function setSourceMap(int $sourceMap): void
     {
@@ -367,11 +307,7 @@ final class Compiler
     /**
      * Set source map options
      *
-     * @param array $sourceMapOptions
-     *
-     * @phpstan-param  array{sourceRoot?: string, sourceMapFilename?: string|null, sourceMapURL?: string|null, sourceMapWriteTo?: string|null, outputSourceFiles?: bool, sourceMapRootpath?: string, sourceMapBasepath?: string} $sourceMapOptions
-     *
-     * @return void
+     * @param array{sourceRoot?: string, sourceMapFilename?: string|null, sourceMapURL?: string|null, outputSourceFiles?: bool, sourceMapRootpath?: string, sourceMapBasepath?: string} $sourceMapOptions
      */
     public function setSourceMapOptions(array $sourceMapOptions): void
     {
@@ -379,13 +315,10 @@ final class Compiler
     }
 
     /**
-     * Register function
+     * Registers a custom function
      *
-     * @param string   $name
      * @param (callable(list<Value>): Value)|(callable(list<array|Number>): (array|Number)) $callback
      * @param string[] $argumentDeclaration
-     *
-     * @return void
      */
     public function registerFunction(string $name, callable $callback, array $argumentDeclaration): void
     {
@@ -398,24 +331,13 @@ final class Compiler
     }
 
     /**
-     * Unregister function
-     *
-     * @param string $name
-     *
-     * @return void
+     * Unregisters a custom function
      */
     public function unregisterFunction(string $name): void
     {
         unset($this->userFunctions[$this->normalizeName($name)]);
     }
 
-    /**
-     * Normalize name
-     *
-     * @param string $name
-     *
-     * @return string
-     */
     private function normalizeName(string $name): string
     {
         return str_replace('-', '_', $name);
@@ -628,8 +550,6 @@ final class Compiler
     /**
      * Converts a Sass value to its legacy representation.
      *
-     * @param Value $value
-     *
      * @return array|Number
      */
     private function valueToLegacyValue(Value $value)
@@ -643,8 +563,6 @@ final class Compiler
      * Converts a legacy Sass value to its modern representation.
      *
      * @param array|Number $legacyValue
-     *
-     * @return Value
      */
     private function legacyValueToValue($legacyValue): Value
     {
@@ -713,10 +631,6 @@ final class Compiler
 
     /**
      * Detects whether the import is a CSS import.
-     *
-     * @param string $url
-     *
-     * @return bool
      */
     public static function isCssImport(string $url): bool
     {
@@ -727,8 +641,6 @@ final class Compiler
      * Is truthy?
      *
      * @param array|Number $value
-     *
-     * @return bool
      */
     public function isTruthy($value): bool
     {
@@ -736,13 +648,9 @@ final class Compiler
     }
 
     /**
-     * Cast to boolean
-     *
-     * @param bool $thing
-     *
-     * @return array
+     * Cast to Sass boolean
      */
-    public function toBool(bool $thing)
+    public function toBool(bool $thing): array
     {
         return $thing ? self::$true : self::$false;
     }
@@ -752,10 +660,6 @@ final class Compiler
      *
      * Calling this method on anything else than a SassString is unsupported. Use {@see assertString} first
      * to ensure that the value is indeed a string.
-     *
-     * @param array $value
-     *
-     * @return string
      */
     public function getStringText(array $value): string
     {
@@ -768,12 +672,8 @@ final class Compiler
 
     /**
      * Compile string content
-     *
-     * @param array $string
-     *
-     * @return string
      */
-    private function compileStringContent($string): string
+    private function compileStringContent(array $string): string
     {
         $parts = [];
 
@@ -797,13 +697,10 @@ final class Compiler
      * The returned value is always using the T_STRING type.
      *
      * @param array|Number $value
-     * @param string|null  $varName
-     *
-     * @return array
      *
      * @throws SassScriptException
      */
-    public function assertString($value, ?string $varName = null)
+    public function assertString($value, ?string $varName = null): array
     {
         if ($value[0] === Type::T_STRING) {
             assert(\is_array($value));
@@ -819,13 +716,10 @@ final class Compiler
      * Assert value is a map
      *
      * @param array|Number $value
-     * @param string|null  $varName
-     *
-     * @return array
      *
      * @throws SassScriptException
      */
-    public function assertMap($value, ?string $varName = null)
+    public function assertMap($value, ?string $varName = null): array
     {
         $map = $this->tryMap($value);
 
@@ -842,10 +736,8 @@ final class Compiler
      * Tries to convert an item to a Sass map
      *
      * @param Number|array $item
-     *
-     * @return array|null
      */
-    private function tryMap($item)
+    private function tryMap($item): ?array
     {
         if ($item instanceof Number) {
             return null;
@@ -890,13 +782,10 @@ final class Compiler
      * Assert value is a color
      *
      * @param array|Number $value
-     * @param string|null  $varName
-     *
-     * @return array
      *
      * @throws SassScriptException
      */
-    public function assertColor($value, ?string $varName = null)
+    public function assertColor($value, ?string $varName = null): array
     {
         if ($value[0] === Type::T_COLOR) {
             assert(\is_array($value));
@@ -913,9 +802,6 @@ final class Compiler
      * Assert value is a number
      *
      * @param array|Number $value
-     * @param string|null  $varName
-     *
-     * @return Number
      *
      * @throws SassScriptException
      */
@@ -933,9 +819,6 @@ final class Compiler
      * Assert value is a integer
      *
      * @param array|Number $value
-     * @param string|null  $varName
-     *
-     * @return int
      *
      * @throws SassScriptException
      */
@@ -950,19 +833,14 @@ final class Compiler
     }
 
     /**
-     * Compiles a primitive value into a CSS property value.
+     * Compiles a primitive value into a string for debugging purposes.
      *
      * Values in scssphp are typed by being wrapped in arrays, their format is
      * typically:
      *
      *     array(type, contents [, additional_contents]*)
      *
-     * The input is expected to be reduced. This function will not work on
-     * things like expressions and variables.
-     *
      * @param array|Number $value
-     *
-     * @return string
      */
     public function compileValue($value): string
     {
