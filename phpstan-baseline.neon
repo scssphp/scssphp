@@ -187,6 +187,12 @@ parameters:
 			path: src/Serializer/SerializeVisitor.php
 
 		-
+			message: '#^Strict comparison using \=\=\= between ''\-0'' and ''0'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: src/Util/NumberUtil.php
+
+		-
 			message: '#^Method ScssPhp\\ScssPhp\\Value\\SassMap\:\:tryMap\(\) never returns null so it can be removed from the return type\.$#'
 			identifier: return.unusedType
 			count: 1

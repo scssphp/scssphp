@@ -6,5 +6,8 @@
         "jiripudil/phpstan-sealed-classes": "^1.3",
         "phpstan/phpstan": "^2.0",
         "phpstan/phpstan-deprecation-rules": "^2.0"
+    },
+    "require-dev": {
+        "symfony/polyfill-php84": "^1.32@dev"
     }
 }

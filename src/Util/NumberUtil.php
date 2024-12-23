@@ -257,7 +257,13 @@ final class NumberUtil
         $base->assertNoUnits('base');
         $exponent->assertNoUnits('exponent');
 
-        return SassNumber::create($base->getValue() ** $exponent->getValue());
+        if (\PHP_VERSION_ID >= 80400) {
+            $value = fpow($base->getValue(), $exponent->getValue());
+        } else {
+            $value = $base->getValue() ** $exponent->getValue();
+        }
+
+        return SassNumber::create($value);
     }
 
     public static function atan2(SassNumber $y, SassNumber $x): SassNumber
@@ -286,11 +292,11 @@ final class NumberUtil
     public static function signIncludingZero(float $num): int
     {
         // In PHP, negative 0 and positive 0 are equal even for strict equality, so we need a different detection
-        if ($num ** -1 === -INF) {
-            return -1;
-        }
-
         if ($num === 0.0) {
+            if ('-0' === (string) $num) {
+                return -1;
+            }
+
             return 1;
         }
 
