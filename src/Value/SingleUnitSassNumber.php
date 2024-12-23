@@ -277,11 +277,8 @@ final class SingleUnitSassNumber extends SassNumber
     }
 
     /**
-     * @param float        $value
      * @param list<string> $otherNumerators
      * @param list<string> $otherDenominators
-     *
-     * @return SassNumber
      */
     protected function multiplyUnits(float $value, array $otherNumerators, array $otherDenominators): SassNumber
     {

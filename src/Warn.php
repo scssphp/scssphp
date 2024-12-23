@@ -20,10 +20,6 @@ final class Warn
      * Prints a warning message associated with the current `@import` or function call.
      *
      * This may only be called within a custom function or importer callback.
-     *
-     * @param string $message
-     *
-     * @return void
      */
     public static function warning(string $message): void
     {
@@ -34,10 +30,6 @@ final class Warn
      * Prints a deprecation warning message associated with the current `@import` or function call.
      *
      * This may only be called within a custom function or importer callback.
-     *
-     * @param string $message
-     *
-     * @return void
      */
     public static function deprecation(string $message): void
     {

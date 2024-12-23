@@ -31,7 +31,7 @@ use SourceSpan\FileSpan;
 final class CssValue implements AstNode, Equatable
 {
     /**
-     * @phpstan-var T
+     * @var T
      */
     private readonly mixed $value;
 

@@ -331,7 +331,7 @@ final class ExtendUtil
         $groups1 = self::groupSelectors($queue1);
         $groups2 = self::groupSelectors($queue2);
 
-        /** @phpstan-var list<list<ComplexSelectorComponent>> $lcs */
+        /** @var list<list<ComplexSelectorComponent>> $lcs */
         $lcs = ListUtil::longestCommonSubsequence($groups2, $groups1, function ($group1, $group2) use ($span) {
             if (EquatableUtil::listEquals($group1, $group2)) {
                 return $group1;
@@ -621,8 +621,6 @@ final class ExtendUtil
      *
      * @param list<ComplexSelectorComponent> $complex1
      * @param list<ComplexSelectorComponent> $complex2
-     *
-     * @return bool
      */
     private static function mustUnify(array $complex1, array $complex2): bool
     {
@@ -797,8 +795,6 @@ final class ExtendUtil
      *
      * @param list<ComplexSelector> $list1
      * @param list<ComplexSelector> $list2
-     *
-     * @return bool
      */
     public static function listIsSuperselector(array $list1, array $list2): bool
     {
@@ -825,8 +821,6 @@ final class ExtendUtil
      *
      * @param list<ComplexSelectorComponent> $complex1
      * @param list<ComplexSelectorComponent> $complex2
-     *
-     * @return bool
      */
     private static function complexIsParentSuperselector(array $complex1, array $complex2): bool
     {
@@ -851,8 +845,6 @@ final class ExtendUtil
      *
      * @param list<ComplexSelectorComponent> $complex1
      * @param list<ComplexSelectorComponent> $complex2
-     *
-     * @return bool
      */
     public static function complexIsSuperselector(array $complex1, array $complex2): bool
     {
@@ -1017,11 +1009,7 @@ final class ExtendUtil
      * relevant for pseudo selectors with selector arguments, where we may need to
      * know if the parent selectors in the selector argument match $parents.
      *
-     * @param CompoundSelector                    $compound1
-     * @param CompoundSelector                    $compound2
      * @param list<ComplexSelectorComponent>|null $parents
-     *
-     * @return bool
      */
     public static function compoundIsSuperselector(CompoundSelector $compound1, CompoundSelector $compound2, ?array $parents = null): bool
     {
@@ -1107,8 +1095,6 @@ final class ExtendUtil
      * @param list<SimpleSelector>                $compound1
      * @param list<SimpleSelector>                $compound2
      * @param list<ComplexSelectorComponent>|null $parents
-     *
-     * @return bool
      */
     private static function compoundComponentsIsSuperselector(array $compound1, array $compound2, ?array $parents = null): bool
     {

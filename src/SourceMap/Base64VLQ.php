@@ -50,12 +50,8 @@ final class Base64VLQ
 
     /**
      * Returns the VLQ encoded value.
-     *
-     * @param int $value
-     *
-     * @return string
      */
-    public static function encode($value)
+    public static function encode(int $value): string
     {
         $encoded = '';
         $vlq = self::toVLQSigned($value);
@@ -81,17 +77,13 @@ final class Base64VLQ
      * is placed in the least significant bit.  For example, as decimals:
      *   1 becomes 2 (10 binary), -1 becomes 3 (11 binary)
      *   2 becomes 4 (100 binary), -2 becomes 5 (101 binary)
-     *
-     * @param int $value
-     *
-     * @return int
      */
-    private static function toVLQSigned($value)
+    private static function toVLQSigned(int $value): int
     {
         if ($value < 0) {
             return ((-$value) << 1) + 1;
         }
 
-        return ($value << 1) + 0;
+        return $value << 1;
     }
 }

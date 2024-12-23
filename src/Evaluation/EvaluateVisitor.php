@@ -2868,7 +2868,7 @@ WARNING;
      * Returns the arguments as expressions so that they can be lazily evaluated
      * for macros such as `if()`.
      *
-     * @phpstan-return array{list<Expression>, array<string, Expression>}
+     * @return array{list<Expression>, array<string, Expression>}
      */
     private function evaluateMacroArguments(CallableInvocation $invocation): array
     {
@@ -2928,11 +2928,7 @@ WARNING;
      * @template T
      *
      * @param array<string, T>   $values
-     * @param SassMap            $map
-     * @param AstNode            $nodeWithSpan
      * @param callable(Value): T $convert
-     *
-     * @return void
      *
      * @param-immediately-invoked-callable $convert
      */
@@ -3012,8 +3008,6 @@ WARNING;
      *
      * @param T[]                 $list
      * @param callable(T): ?Value $callback
-     *
-     * @return Value|null
      *
      * @param-immediately-invoked-callable $callback
      */
