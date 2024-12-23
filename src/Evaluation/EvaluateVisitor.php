@@ -1379,7 +1379,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
             throw new \Exception("Can't find stylesheet to import.");
         } catch (SassException $e) {
             throw $e;
-        } catch (\Throwable $e) {// TODO restrict exception type ?
+        } catch (\Throwable $e) {
             throw $this->exception($e->getMessage(), null, $e);
         } finally {
             $this->importSpan = null;

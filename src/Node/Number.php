@@ -104,7 +104,6 @@ final class Number extends Node implements \ArrayAccess, \JsonSerializable
         if (is_string($numeratorUnits)) {
             $numeratorUnits = $numeratorUnits ? [$numeratorUnits] : [];
         } elseif (isset($numeratorUnits['numerator_units'], $numeratorUnits['denominator_units'])) {
-            // TODO get rid of this once `$number[2]` is not used anymore
             $denominatorUnits = $numeratorUnits['denominator_units'];
             $numeratorUnits = $numeratorUnits['numerator_units'];
         }
