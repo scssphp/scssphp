@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp;
 
+use League\Uri\Contracts\UriInterface;
 use League\Uri\Uri;
 use ScssPhp\ScssPhp\Ast\Css\CssParentNode;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\Stylesheet;
@@ -423,9 +424,14 @@ final class Compiler
     /**
      * Compiles the provided scss file into CSS.
      *
-     * @param string $path
+     * Imports are resolved by trying, in order:
      *
-     * @return CompilationResult
+     * * Loading a file relative to $path.
+     *
+     * * Each importer in {@see $importers}.
+     *
+     * * Each load path in {@see $importPaths}. Note that this is a shorthand for adding
+     *   {@see FilesystemImporter}s to {@see $importers}.
      *
      * @throws SassException when the source fails to compile
      */
@@ -455,17 +461,22 @@ final class Compiler
     /**
      * Compiles the provided scss source code into CSS.
      *
-     * If provided, the path is considered to be the path from which the source code comes
-     * from, which will be used to resolve relative imports.
+     * Imports are resolved by trying, in order:
      *
-     * @param string      $source
-     * @param string|null $path   The path for the source, used to resolve relative imports
+     * * The given $importer, with the imported URL resolved relative to $url.
      *
-     * @return CompilationResult
+     * * Each importer in {@see $importers}.
+     *
+     * * Each load path in {@see $importPaths}. Note that this is a shorthand for adding
+     *   {@see FilesystemImporter}s to {@see $importers}.
+     *
+     * The $url indicates the location from which $source was loaded. If $importer is
+     * passed, $url must be passed as well and `$importer->load($url)` should
+     * return `$source`.
      *
      * @throws SassException when the source fails to compile
      */
-    public function compileString(string $source, ?string $path = null): CompilationResult
+    public function compileString(string $source, UriInterface|string|null $url = null, ?Importer $importer = null, Syntax $syntax = Syntax::SCSS): CompilationResult
     {
         // Force loading the CssParentNode and CssVisitor before using the AST classes because of a weird PHP behavior.
         class_exists(CssParentNode::class);
@@ -474,13 +485,16 @@ final class Compiler
         $logger = new DeprecationProcessingLogger($this->logger, $this->silenceDeprecations, $this->fatalDeprecations, $this->futureDeprecations, !$this->verbose);
         $logger->validate();
 
-        // TODO handle passing an importer and a url to this method to be consistent with dart-sass
-        $sourceUrl = $path !== null ? Path::toUri($path) : null;
+        if (\is_string($url)) {
+            @trigger_error('Passing a path to "Compiler::compileString" is deprecated. Use `Compiler::compileFile" or pass a "UriInterface" instead.', E_USER_DEPRECATED);
+            $url = Path::toUri($url);
+            $importer ??= new FilesystemImporter(null);
+        }
 
         $importCache = $this->createImportCache($logger);
-        $stylesheet = Stylesheet::parse($source, Syntax::SCSS, $logger, $sourceUrl);
+        $stylesheet = Stylesheet::parse($source, $syntax, $logger, $url);
 
-        $importer = $path === null ? new NoOpImporter() : new FilesystemImporter(null);
+        $importer ??= $url === null ? new NoOpImporter() : new FilesystemImporter(null);
 
         $result = $this->compileStylesheet($stylesheet, $importCache, $logger, $importer);
 
@@ -505,6 +519,9 @@ final class Compiler
         return new ImportCache($importers, $logger);
     }
 
+    /**
+     * @throws SassException
+     */
     private function compileStylesheet(Stylesheet $stylesheet, ImportCache $importCache, LoggerInterface $logger, Importer $importer): CompilationResult
     {
         $wantsSourceMap = $this->sourceMap !== self::SOURCE_MAP_NONE;

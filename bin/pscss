@@ -173,7 +173,7 @@ try {
             $data .= fread(STDIN, 8192);
         }
 
-        $result = $compiler->compileString($data, $inputFile);
+        $result = $compiler->compileString($data);
     }
 } catch (SassException $e) {
     fwrite(STDERR, 'Error: '.$e->getMessage() . "\n");
