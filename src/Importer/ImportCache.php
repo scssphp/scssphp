@@ -284,7 +284,6 @@ final class ImportCache
         }
 
         if ($shortestUrl !== null) {
-            // TODO check if basename is safe to use for the URL context
             return UriUtil::resolve($shortestUrl, basename($canonicalUrl->getPath()));
         }
 
