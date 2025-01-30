@@ -526,7 +526,7 @@ final class Compiler
             $sourceMapUrl = null;
 
             switch ($this->sourceMap) {
-                case self::SOURCE_MAP_NONE:
+                case self::SOURCE_MAP_INLINE:
                     $sourceMapUrl = 'data:application/json;charset=utf-8,' . Util::encodeURIComponent($sourceMap);
                     break;
 
