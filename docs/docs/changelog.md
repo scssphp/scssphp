@@ -1,5 +1,11 @@
 # Changelog
 
+## **2.0.1** -- January 31, 2025
+
+**Fixed**
+
+* Fix the generation of inline source maps (@ArnaudLigny)
+
 ## **2.0.0** -- December 23, 2024
 
 This release is a full rewrite of the compiler. The new implementation is a port of dart-sass,
