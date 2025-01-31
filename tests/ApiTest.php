@@ -329,6 +329,30 @@ SCSS;
         $this->assertNotEmpty($result->getSourceMap());
     }
 
+    public function testInlineSourceMap()
+    {
+        $source = <<<'SCSS'
+@import "test.css";
+
+body {
+  background-color: orange;
+
+  h1 {
+    border: 2rem dashed black;
+  }
+}
+
+SCSS;
+
+        $compiler = new Compiler();
+        $compiler->setSourceMap(Compiler::SOURCE_MAP_INLINE);
+
+        $result = $compiler->compileString($source);
+
+        $this->assertStringContainsString('/*# sourceMappingURL=data:application/json;charset=utf-8,', $result->getCss());
+        $this->assertNotEmpty($result->getSourceMap());
+    }
+
     public function testGetStringText()
     {
         $compiler = new Compiler();
