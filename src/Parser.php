@@ -12,6 +12,7 @@
 
 namespace ScssPhp\ScssPhp;
 
+use ScssPhp\ScssPhp\Block;
 use ScssPhp\ScssPhp\Block\AtRootBlock;
 use ScssPhp\ScssPhp\Block\CallableBlock;
 use ScssPhp\ScssPhp\Block\ContentBlock;
@@ -24,6 +25,7 @@ use ScssPhp\ScssPhp\Block\IfBlock;
 use ScssPhp\ScssPhp\Block\MediaBlock;
 use ScssPhp\ScssPhp\Block\NestedPropertyBlock;
 use ScssPhp\ScssPhp\Block\WhileBlock;
+use ScssPhp\ScssPhp\Cache;
 use ScssPhp\ScssPhp\Exception\ParserException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
