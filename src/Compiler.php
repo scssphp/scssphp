@@ -444,7 +444,8 @@ class Compiler
     /**
      * @throws SassFormatException when parsing fails
      */
-    public static function parseStylesheet(string $contents, Syntax $syntax, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null): Stylesheet {
+    public static function parseStylesheet(string $contents, Syntax $syntax, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null): Stylesheet
+    {
         return Stylesheet::parse($contents, $syntax, $logger, $sourceUrl);
     }
 
