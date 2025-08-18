@@ -25,6 +25,8 @@ use ScssPhp\ScssPhp\Function\FunctionRegistry;
 use ScssPhp\ScssPhp\Importer\FilesystemImporter;
 use ScssPhp\ScssPhp\Importer\ImportCache;
 use ScssPhp\ScssPhp\Importer\Importer;
+use ScssPhp\ScssPhp\Importer\ImportParserInterface;
+use ScssPhp\ScssPhp\Importer\ImportParser;
 use ScssPhp\ScssPhp\Importer\LegacyCallbackImporter;
 use ScssPhp\ScssPhp\Importer\NoOpImporter;
 use ScssPhp\ScssPhp\Logger\DeprecationProcessingLogger;
@@ -68,6 +70,8 @@ final class Compiler
      * @var array<int, string|callable(string): (string|null)>
      */
     private array $importPaths = [];
+
+    private ImportParserInterface $importParser;
 
     /**
      * @var array<string, array{0: callable, 1: string[]}>
@@ -127,6 +131,22 @@ final class Compiler
     public function __construct()
     {
         $this->logger = new StreamLogger(fopen('php://stderr', 'w'), true);
+        $this->importParser = new ImportParser();
+    }
+
+    /**
+     * Sets an alternatife importParser
+     * for parser caching for instance
+     *
+     * Changing the importParser in the middle of the compilation is not
+     * supported and will result in an undefined behavior.
+     *
+     * @param ImportParserInterface $importParser
+     * @return void
+     */
+    public function setImportParser(ImportParserInterface $importParser): void
+    {
+        $this->importParser = $importParser;
     }
 
     /**
@@ -414,7 +434,7 @@ final class Compiler
         }
 
         $importCache = $this->createImportCache($logger);
-        $stylesheet = Stylesheet::parse($source, $syntax, $logger, $url);
+        $stylesheet = ($this->importParser)::parse($source, $syntax, $logger, $url);
 
         $importer ??= $url === null ? new NoOpImporter() : new FilesystemImporter(null);
 
@@ -438,7 +458,7 @@ final class Compiler
             }
         }
 
-        return new ImportCache($importers, $logger);
+        return new ImportCache($importers, $logger, $this->importParser);
     }
 
     /**
