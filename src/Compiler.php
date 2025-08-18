@@ -46,7 +46,7 @@ use ScssPhp\ScssPhp\Value\SassString;
 use ScssPhp\ScssPhp\Value\Value;
 use ScssPhp\ScssPhp\Visitor\CssVisitor;
 
-final class Compiler
+class Compiler
 {
     const SOURCE_MAP_NONE   = 0;
     const SOURCE_MAP_INLINE = 1;
@@ -67,29 +67,29 @@ final class Compiler
     /**
      * @var array<int, string|callable(string): (string|null)>
      */
-    private array $importPaths = [];
+    protected array $importPaths = [];
 
     /**
      * @var array<string, array{0: callable, 1: string[]}>
      */
-    private array $userFunctions = [];
+    protected array $userFunctions = [];
 
     /**
      * @var array<string, Value>
      */
-    private array $registeredVars = [];
+    protected array $registeredVars = [];
 
     /**
      * @var self::SOURCE_MAP_*
      */
-    private int $sourceMap = self::SOURCE_MAP_NONE;
+    protected int $sourceMap = self::SOURCE_MAP_NONE;
 
     /**
      * @var array{sourceRoot?: string, sourceMapFilename?: string|null, sourceMapURL?: string|null, outputSourceFiles?: bool, sourceMapRootpath?: string, sourceMapBasepath?: string}
      */
-    private array $sourceMapOptions = [];
+    protected array $sourceMapOptions = [];
 
-    private bool $charset = true;
+    protected bool $charset = true;
 
     private bool $quietDeps = false;
 
@@ -120,7 +120,7 @@ final class Compiler
 
     private bool $verbose = false;
 
-    private OutputStyle $outputStyle = OutputStyle::EXPANDED;
+    protected OutputStyle $outputStyle = OutputStyle::EXPANDED;
 
     private LoggerInterface $logger;
 
@@ -414,7 +414,7 @@ final class Compiler
         }
 
         $importCache = $this->createImportCache($logger);
-        $stylesheet = Stylesheet::parse($source, $syntax, $logger, $url);
+        $stylesheet = static::parseStylesheet($source, $syntax, $logger, $url);
 
         $importer ??= $url === null ? new NoOpImporter() : new FilesystemImporter(null);
 
@@ -438,13 +438,20 @@ final class Compiler
             }
         }
 
-        return new ImportCache($importers, $logger);
+        return new ImportCache($importers, $logger, $this);
+    }
+
+    /**
+     * @throws SassFormatException when parsing fails
+     */
+    public static function parseStylesheet(string $contents, Syntax $syntax, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null): Stylesheet {
+        return Stylesheet::parse($contents, $syntax, $logger, $sourceUrl);
     }
 
     /**
      * @throws SassException
      */
-    private function compileStylesheet(Stylesheet $stylesheet, ImportCache $importCache, LoggerInterface $logger, Importer $importer): CompilationResult
+    protected function compileStylesheet(Stylesheet $stylesheet, ImportCache $importCache, LoggerInterface $logger, Importer $importer): CompilationResult
     {
         $wantsSourceMap = $this->sourceMap !== self::SOURCE_MAP_NONE;
 

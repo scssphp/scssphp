@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Importer;
 
 use League\Uri\Contracts\UriInterface;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\Stylesheet;
+use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
 use ScssPhp\ScssPhp\Util\UriUtil;
@@ -31,6 +32,8 @@ final class ImportCache
     private readonly array $importers;
 
     private readonly LoggerInterface $logger;
+
+    private readonly Compiler $compiler;
 
     /**
      * The canonicalized URLs for each non-canonical URL.
@@ -75,10 +78,11 @@ final class ImportCache
     /**
      * @param list<Importer> $importers
      */
-    public function __construct(array $importers, LoggerInterface $logger)
+    public function __construct(array $importers, LoggerInterface $logger, Compiler $compiler)
     {
         $this->importers = $importers;
         $this->logger = $logger;
+        $this->compiler = $compiler;
         $this->perImporterCanonicalizeCache = new \SplObjectStorage();
     }
 
@@ -256,7 +260,7 @@ final class ImportCache
 
         $this->resultsCache[(string) $canonicalUrl] = $result;
 
-        return Stylesheet::parse($result->getContents(), $result->getSyntax(), $quiet ? new QuietLogger() : $this->logger, self::resolveUri($originalUrl, $canonicalUrl));
+        return $this->compiler::parseStylesheet($result->getContents(), $result->getSyntax(), $quiet ? new QuietLogger() : $this->logger, self::resolveUri($originalUrl, $canonicalUrl));
     }
 
     public function humanize(UriInterface $canonicalUrl): UriInterface
