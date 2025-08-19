@@ -60,9 +60,7 @@ final class Interpolation implements SassNode
     public function __construct(array $contents, FileSpan $span)
     {
         for ($i = 0; $i < \count($contents); $i++) {
-            if (!\is_string($contents[$i]) && !$contents[$i] instanceof Expression) {
-                throw new \TypeError('The contents of an Interpolation may only contain strings or Expression instances.');
-            }
+            // Dart-sass has a validation on the type of elements here. This is useless for us because phpstan supports union types, unlike the Dart type system
 
             if ($i != 0 && \is_string($contents[$i]) && \is_string($contents[$i - 1])) {
                 throw new \InvalidArgumentException('The contents of an Interpolation may not contain adjacent strings.');
