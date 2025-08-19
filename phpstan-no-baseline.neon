@@ -19,6 +19,6 @@ parameters:
             path: src/Compiler/LegacyValueVisitor.php
 
 includes:
-    - vendor-bin/phpstan/vendor/phpstan/phpstan/conf/bleedingEdge.neon
-    - vendor-bin/phpstan/vendor/phpstan/phpstan-deprecation-rules/rules.neon
-    - vendor-bin/phpstan/vendor/jiripudil/phpstan-sealed-classes/extension.neon
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - vendor/jiripudil/phpstan-sealed-classes/extension.neon

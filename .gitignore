@@ -8,6 +8,5 @@ composer.lock
 /sass/
 /compass/
 /vendor/
-/vendor-bin/*/vendor/
 /frameworks/
 .phpunit.result.cache
