@@ -1,6 +1,5 @@
 parameters:
     level: 8
-    inferPrivatePropertyTypeFromConstructor: true
     treatPhpDocTypesAsCertain: false
     paths:
         - ./src/
