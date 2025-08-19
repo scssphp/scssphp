@@ -20,17 +20,13 @@ vendor: composer.json
 	composer update
 	touch $@
 
-phpstan: vendor-bin/phpstan/vendor
-	vendor-bin/phpstan/vendor/bin/phpstan analyse
+phpstan: vendor
+	vendor/bin/phpstan analyse
 
-phpstan-verbose: vendor-bin/phpstan/vendor
-	vendor-bin/phpstan/vendor/bin/phpstan analyse -v
+phpstan-verbose: vendor
+	vendor/bin/phpstan analyse -v
 
-phpstan-baseline: vendor-bin/phpstan/vendor
-	vendor-bin/phpstan/vendor/bin/phpstan analyse --generate-baseline
+phpstan-baseline: vendor
+	vendor/bin/phpstan analyse --generate-baseline
 
-vendor-bin/phpstan/vendor: vendor vendor-bin/phpstan/composer.json
-	composer bin phpstan update
-	touch $@
-
-.PHONY: test sass-spec rebuild-sass-spec rebuild-outputs standard fix-cs phpstan phpstan-baseline
+.PHONY: test sass-spec rebuild-sass-spec rebuild-outputs standard fix-cs phpstan phpstan-verbose phpstan-baseline
