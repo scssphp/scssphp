@@ -1,5 +1,25 @@
-# All config actually goes into phpstan-no-baseline.neon to be able to disable the baseline
-# easily by using it as the config file with `phpstan analyse -c phpstan-no-baseline.neon`
+parameters:
+    level: 8
+    inferPrivatePropertyTypeFromConstructor: true
+    treatPhpDocTypesAsCertain: false
+    paths:
+        - ./src/
+    ignoreErrors:
+        # This variable is modified by reference in some Closure and may be assigned null later. Without this type, phpstan does not detect it properly.
+        -
+            message: '#^PHPDoc tag @var with type ScssPhp\\ScssPhp\\Ast\\Sass\\Expression\|null is not subtype of native type ScssPhp\\ScssPhp\\Ast\\Sass\\Expression\.$#'
+            path: src/Parser/StylesheetParser.php
+
+        # Ignore errors about not specifying the array iterable type for legacy AST nodes
+        -
+            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\\\LegacyValueVisitor\\:\\:visit[\\w]+\\(\\) return type has no value type specified in iterable type array\\.$#"
+            path: src/Compiler/LegacyValueVisitor.php
+        -
+            message: "#^Method ScssPhp\\\\ScssPhp\\\\Compiler\\\\LegacyValueVisitor\\:\\:visit[\\w]+\\(\\) never returns (ScssPhp\\\\ScssPhp\\\\Node\\\\Number|array) so it can be removed from the return type\\.$#"
+            path: src/Compiler/LegacyValueVisitor.php
+
 includes:
-    - phpstan-no-baseline.neon
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - vendor/jiripudil/phpstan-sealed-classes/extension.neon
     - phpstan-baseline.neon
