@@ -259,7 +259,7 @@ final class ImportCache
 
         $this->resultsCache[(string) $canonicalUrl] = $result;
 
-        return ($this->importParser)::parse($result->getContents(), $result->getSyntax(), $quiet ? new QuietLogger() : $this->logger, self::resolveUri($originalUrl, $canonicalUrl));
+        return $this->importParser->parse($result->getContents(), $result->getSyntax(), $quiet ? new QuietLogger() : $this->logger, self::resolveUri($originalUrl, $canonicalUrl));
     }
 
     public function humanize(UriInterface $canonicalUrl): UriInterface

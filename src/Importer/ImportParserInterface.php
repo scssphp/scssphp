@@ -19,13 +19,10 @@ use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
 use ScssPhp\ScssPhp\Syntax;
 
-
 interface ImportParserInterface
 {
-
     /**
      * @throws SassFormatException when parsing fails
      */
-    public static function parse(string $contents, Syntax $syntax, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null): Stylesheet;
-
+    public function parse(string $contents, Syntax $syntax, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null): Stylesheet;
 }

@@ -434,7 +434,7 @@ final class Compiler
         }
 
         $importCache = $this->createImportCache($logger);
-        $stylesheet = ($this->importParser)::parse($source, $syntax, $logger, $url);
+        $stylesheet = $this->importParser->parse($source, $syntax, $logger, $url);
 
         $importer ??= $url === null ? new NoOpImporter() : new FilesystemImporter(null);
 

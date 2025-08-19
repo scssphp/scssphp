@@ -21,11 +21,10 @@ use ScssPhp\ScssPhp\Syntax;
 
 final class ImportParser implements ImportParserInterface
 {
-
     /**
      * @throws SassFormatException when parsing fails
      */
-    public static function parse(string $contents, Syntax $syntax, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null): Stylesheet
+    public function parse(string $contents, Syntax $syntax, ?LoggerInterface $logger = null, ?UriInterface $sourceUrl = null): Stylesheet
     {
         return Stylesheet::parse($contents, $syntax, $logger, $sourceUrl);
     }
