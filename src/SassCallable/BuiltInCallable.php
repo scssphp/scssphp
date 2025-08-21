@@ -196,4 +196,12 @@ class BuiltInCallable implements SassCallable
 
         throw new \LogicException("BuiltInCallable {$this->name} may not have empty overloads.");
     }
+
+    /**
+     * Returns a copy of this callable with the given $name.
+     */
+    public function withName(string $name): BuiltInCallable
+    {
+        return new BuiltInCallable($name, $this->overloads, $this->acceptsContent);
+    }
 }
