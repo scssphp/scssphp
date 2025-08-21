@@ -145,6 +145,9 @@ class FunctionRegistry
         'str-insert' => ['overloads' => ['$string, $insert, $index' => [StringFunctions::class, 'insert']], 'url' => 'sass:string', 'canonical_name' => 'insert'],
         'str-index' => ['overloads' => ['$string, $substring' => [StringFunctions::class, 'index']], 'url' => 'sass:string', 'canonical_name' => 'index'],
         'str-slice' => ['overloads' => ['$string, $start-at, $end-at: -1' => [StringFunctions::class, 'slice']], 'url' => 'sass:string', 'canonical_name' => 'slice'],
+        // special
+        // This is only invoked using `call()`. Hand-authored `if()`s are parsed as IfExpression.
+        'if' => ['overloads' => ['$condition, $if-true, $if-false' => [self::class, 'if']]],
     ];
 
     /**
@@ -186,5 +189,13 @@ class FunctionRegistry
     public static function isBuiltinFunction(string $name): bool
     {
         return isset(self::BUILTIN_FUNCTIONS[$name]) || \in_array($name, self::SPECIAL_META_GLOBAL_FUNCTIONS, true);
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function if(array $arguments): Value
+    {
+        return $arguments[0]->isTruthy() ? $arguments[1] : $arguments[2];
     }
 }
