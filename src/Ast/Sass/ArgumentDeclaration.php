@@ -130,13 +130,13 @@ final class ArgumentDeclaration implements SassNode
             if ($i < $positional) {
                 if (isset($names[$argument->getName()])) {
                     $originalName = $this->originalArgumentName($argument->getName());
-                    throw new SassScriptException(sprintf('Argument $%s was passed both by position and by name.', $originalName));
+                    throw new SassScriptException(sprintf('Argument %s was passed both by position and by name.', $originalName));
                 }
             } elseif (isset($names[$argument->getName()])) {
                 $nameUsed++;
             } elseif ($argument->getDefaultValue() === null) {
                 $originalName = $this->originalArgumentName($argument->getName());
-                throw new SassScriptException(sprintf('Missing argument $%s', $originalName));
+                throw new SassScriptException(sprintf('Missing argument %s.', $originalName));
             }
         }
 
