@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Ast\Sass;
 
 use League\Uri\Contracts\UriInterface;
+use ScssPhp\ScssPhp\Exception\MultiSpanSassScriptException;
 use ScssPhp\ScssPhp\Exception\SassFormatException;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Logger\LoggerInterface;
@@ -136,7 +137,7 @@ final class ArgumentDeclaration implements SassNode
                 $nameUsed++;
             } elseif ($argument->getDefaultValue() === null) {
                 $originalName = $this->originalArgumentName($argument->getName());
-                throw new SassScriptException(sprintf('Missing argument %s.', $originalName));
+                throw new MultiSpanSassScriptException(sprintf('Missing argument %s.', $originalName), 'invocation', ['declaration' => $this->getSpanWithName()]);
             }
         }
 
@@ -153,7 +154,7 @@ final class ArgumentDeclaration implements SassNode
                 $positional,
                 StringUtil::pluralize('was', $positional, 'were')
             );
-            throw new SassScriptException($message);
+            throw new MultiSpanSassScriptException($message, 'invocation', ['declaration' => $this->getSpanWithName()]);
         }
 
         if ($nameUsed < \count($names)) {
@@ -164,7 +165,7 @@ final class ArgumentDeclaration implements SassNode
                 StringUtil::pluralize('argument', \count($unknownNames)),
                 StringUtil::toSentence(array_map(fn ($name) => '$' . $name, $unknownNames), 'or')
             );
-            throw new SassScriptException($message);
+            throw new MultiSpanSassScriptException($message, 'invocation', ['declaration' => $this->getSpanWithName()]);
         }
     }
 
