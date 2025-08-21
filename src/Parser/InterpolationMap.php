@@ -63,15 +63,16 @@ final class InterpolationMap
             return new FormatException($error->getMessage(), $this->interpolation->getSpan(), $error);
         }
 
-        $source = $this->mapSpan($error->getSpan());
-        $startIndex = $this->indexInContents($source->getStart());
-        $endIndex = $this->indexInContents($source->getEnd());
+        $target = $error->getSpan();
+        $source = $this->mapSpan($target);
+        $startIndex = $this->indexInContents($target->getStart());
+        $endIndex = $this->indexInContents($target->getEnd());
 
         if (!IterableUtil::any(array_slice($this->interpolation->getContents(), $startIndex, $endIndex - $startIndex + 1), fn ($content) => $content instanceof Expression)) {
             return new FormatException($error->getMessage(), $source, $error);
         }
 
-        return new MultiSourceFormatException($error->getMessage(), $source, '', ['error in interpolated output' => $error->getSpan()], $error);
+        return new MultiSourceFormatException($error->getMessage(), $source, '', ['error in interpolated output' => $target], $error);
     }
 
     public function mapSpan(FileSpan $target): FileSpan
