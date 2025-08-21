@@ -29,6 +29,7 @@ $encoding = false;
 $sourceMap = false;
 $embedSources = false;
 $embedSourceMap = false;
+$trace = false;
 
 /**
  * Parse argument
@@ -74,6 +75,7 @@ Options include:
     --embed-sources     Embed source file contents in source maps
     --embed-source-map  Embed the source map contents in CSS (default if writing to stdout)
     --style=FORMAT      Set the output style (compressed or expanded) [-s, -t]
+    --trace             Show the full PHP stack trace of exceptions
     --version           Print the version [-v]
 
 EOT;
@@ -96,6 +98,11 @@ EOT;
 
     if ($argv[$i] === '--embed-source-map') {
         $embedSourceMap = true;
+        continue;
+    }
+
+    if ($argv[$i] === '--trace') {
+        $trace = true;
         continue;
     }
 
@@ -177,6 +184,13 @@ try {
     }
 } catch (SassException $e) {
     fwrite(STDERR, 'Error: '.$e->getMessage() . "\n");
+    if ($trace) {
+        fwrite(STDERR, "\n" . $e::class . ' in ' . $e->getFile() . '(' . $e->getLine() . ")\n\n" . $e->getTraceAsString() . "\n");
+
+        while ($e = $e->getPrevious()) {
+            fwrite(STDERR, "\n\nCaused by " . $e::class . ' in ' . $e->getFile() . '(' . $e->getLine() . '): ' . $e->getMessage() . "\n\n" . $e->getTraceAsString() . "\n");
+        }
+    }
     exit(1);
 }
 
