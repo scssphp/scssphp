@@ -457,7 +457,7 @@ class ConcreteExtensionStore implements ExtensionStore
             try {
                 $selector->setValue($this->extendList($selector->getValue(), $newExtensions, $this->mediaContexts[$selector] ?? null));
             } catch (SassException $e) {
-                throw new SimpleSassException("From {$e->getSpan()->message('')}\n" . $e->getOriginalMessage(), $e->getSpan(), $e);
+                throw new SimpleSassException("From {$oldValue->getSpan()->message('')}\n" . $e->getOriginalMessage(), $e->getSpan(), $e);
             }
 
             // If no extends actually happened (for example because unification
