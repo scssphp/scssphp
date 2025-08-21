@@ -27,6 +27,7 @@ class SassSpecTest extends TestCase
 {
     private const EXCLUSION_LIST_FILE = __DIR__ . '/specs/sass-spec-exclude.txt';
     private const WARNING_EXCLUSION_LIST_FILE = __DIR__ . '/specs/sass-spec-exclude-warning.txt';
+    private const ERROR_EXCLUSION_LIST_FILE = __DIR__ . '/specs/sass-spec-exclude-error.txt';
 
     /**
      * @var string[]|null
@@ -36,6 +37,10 @@ class SassSpecTest extends TestCase
      * @var string[]|null
      */
     private static ?array $warningExclusionList = null;
+    /**
+     * @var string[]|null
+     */
+    private static ?array $errorExclusionList = null;
 
     private ?string $dirToClean = null;
 
@@ -129,14 +134,34 @@ class SassSpecTest extends TestCase
     }
 
     /**
+     * List of tests excluding the assertion on error messages if not in TEST_SASS_SPEC mode
+     *
+     * @return string[]
+     */
+    private function getErrorExclusionList(): array
+    {
+        if (is_null(self::$errorExclusionList)) {
+            if (!file_exists(self::ERROR_EXCLUSION_LIST_FILE)) {
+                self::$errorExclusionList = [];
+            } else {
+                self::$errorExclusionList = array_filter(array_map('trim', file(self::ERROR_EXCLUSION_LIST_FILE)));
+            }
+        }
+
+        return self::$errorExclusionList;
+    }
+
+    /**
      * RAZ the file that lists excluded tests
      */
     private function resetExclusionList(): void
     {
         self::$exclusionList = [];
         self::$warningExclusionList = [];
+        self::$errorExclusionList = [];
         file_put_contents(self::EXCLUSION_LIST_FILE, '');
         file_put_contents(self::WARNING_EXCLUSION_LIST_FILE, '');
+        file_put_contents(self::ERROR_EXCLUSION_LIST_FILE, '');
     }
 
     /**
@@ -155,6 +180,15 @@ class SassSpecTest extends TestCase
     {
         self::$warningExclusionList[] = $this->canonicalTestName($testName);
         file_put_contents(self::WARNING_EXCLUSION_LIST_FILE, implode("\n", self::$warningExclusionList) . "\n");
+    }
+
+    /**
+     * Append a test name to the list of excluded tests
+     */
+    private function appendToErrorExclusionList(string $testName): void
+    {
+        self::$errorExclusionList[] = $this->canonicalTestName($testName);
+        file_put_contents(self::ERROR_EXCLUSION_LIST_FILE, implode("\n", self::$errorExclusionList) . "\n");
     }
 
     /**
@@ -339,24 +373,47 @@ class SassSpecTest extends TestCase
                 }
             }
         } else {
-            if (getenv('BUILD')) {
-                try {
-                    $compiler->compileFile($inputPath);
-                    throw new \Exception('Expecting a SassException for error tests');
-                } catch (SassException) {
-                    // TODO assert the error message ?
-                    // Keep the test
-                } catch (\Throwable) {
-                    $this->appendToExclusionList($name);
-                }
-                $this->assertNull(null);
-            } else {
-                $this->expectException(SassException::class);
-                $compiler->compileFile($inputPath);
-                // TODO assert the error message ?
+            if (str_starts_with($error, 'Error: ') && \strlen($error) > \strlen('Error: ')) {
+                $error = substr($error, \strlen('Error: ')); // Remove the `Error: ` prefix added by the sass CLI when outputting errors.
             }
+            $error = self::normalizeOutput($error);
 
-            fclose($fp_err_stream);
+            try {
+                $compiler->compileFile($inputPath);
+
+                if (getenv('BUILD')) {
+                    $this->appendToExclusionList($name);
+                    $this->addToAssertionCount(1);
+                    return;
+                }
+
+                // Let PHPUnit report that the expected exception did not happen
+                $this->expectException(SassException::class);
+                return;
+            } catch (SassException $e) {
+                if ($e->getOriginalMessage() === 'Sass modules are not implemented yet.') {
+                    $this->markTestSkipped('Sass modules are not supported.');
+                }
+
+                $this->addToAssertionCount(1); // We simulate asserting the expected exception in a successful way.
+
+                if (str_contains($error, 'WARNING')) {
+                    return; // TODO add support for asserting error output with warnings
+                }
+
+                $normalizedExceptionMessage = self::normalizeOutput($e->getMessage());
+
+                if (getenv('BUILD')) {
+                    if ($normalizedExceptionMessage !== $error) {
+                        $this->appendToErrorExclusionList($name);
+                    }
+                    $this->addToAssertionCount(1);
+                } elseif (getenv('TEST_SASS_SPEC') || !$this->matchExclusionList($name, $this->getErrorExclusionList())) {
+                    $this->assertEquals($error, $normalizedExceptionMessage);
+                }
+            } finally {
+                fclose($fp_err_stream);
+            }
         }
     }
 
