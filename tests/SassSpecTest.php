@@ -246,7 +246,7 @@ class SassSpecTest extends TestCase
         list($options, $scss, $includes, $inputDir, $indented) = $input;
         list($css, $warning, $error, $alternativeCssOutputs, $alternativeWarnings) = $testCaseOutput;
 
-        if (preg_match('/:(todo|ignore_for):\r?\n *+- dart-sass\r?\n/', $options)) {
+        if (preg_match('/:(todo|ignore_for):\r?\n *+- dart-sass(?:\r?\n|$)/', $options)) {
             self::markTestSkipped('This test does not apply to dart-sass so it does not apply to our port either.');
         }
 
@@ -493,6 +493,13 @@ class SassSpecTest extends TestCase
                     $partLines = explode("\n", $part);
                     $first = array_shift($partLines);
                     $first = ltrim($first, ' ');
+
+                    // Remove the last line which corresponds to the beginning of the `<===>` separator line due to the way we read the file instead of an actual HRX reader
+                    $last = array_pop($partLines);
+                    if ($last !== '') {
+                        $partLines[] = $last;
+                    }
+
                     $part = implode("\n", $partLines);
                     $subDir = dirname($first);
 
