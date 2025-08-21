@@ -112,7 +112,7 @@ class BuiltInCallable implements SassCallable
         foreach ($overloads as $args => $callback) {
             $processedOverloads[] = [
                 ArgumentDeclaration::parse("@function $name($args) {", url: $url),
-                $callback
+                $callback,
             ];
         }
 
@@ -175,7 +175,7 @@ class BuiltInCallable implements SassCallable
             $mismatchDistance = \count($overload[0]->getArguments()) - $positional;
 
             if ($minMismatchDistance !== null) {
-                if (abs($mismatchDistance) > $minMismatchDistance) {
+                if (abs($mismatchDistance) > abs($minMismatchDistance)) {
                     continue;
                 }
 
