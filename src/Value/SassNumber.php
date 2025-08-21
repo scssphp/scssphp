@@ -644,7 +644,7 @@ abstract class SassNumber extends Value
             return SassBoolean::create($this->coerceUnits($other, NumberUtil::fuzzyLessThanOrEquals(...)));
         }
 
-        throw new SassScriptException("Undefined operation \"$this > $other\".");
+        throw new SassScriptException("Undefined operation \"$this <= $other\".");
     }
 
     public function modulo(Value $other): SassNumber
@@ -907,7 +907,7 @@ abstract class SassNumber extends Value
                 $message .= " \$$otherName:";
             }
 
-            $message .= "$other have incompatible units";
+            $message .= " $other have incompatible units";
 
             if (!$this->hasUnits() || !$otherHasUnits) {
                 $message .= " (one has units and the other doesn't)";
