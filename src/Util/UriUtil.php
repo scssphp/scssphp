@@ -12,8 +12,8 @@
 
 namespace ScssPhp\ScssPhp\Util;
 
-use League\Uri\BaseUri;
 use League\Uri\Contracts\UriInterface;
+use League\Uri\Uri;
 
 /**
  * @internal
@@ -22,19 +22,19 @@ final class UriUtil
 {
     public static function resolve(UriInterface $baseUrl, string $reference): UriInterface
     {
-        $resolvedUri = BaseUri::from($baseUrl)->resolve($reference)->getUri();
+        $baseUri = Uri::new($baseUrl);
 
-        \assert($resolvedUri instanceof UriInterface);
-
-        return $resolvedUri;
+        return !$baseUri->isAbsolute()
+            ? Uri::new($reference)
+            : $baseUri->resolve($reference);
     }
 
     public static function resolveUri(UriInterface $baseUrl, UriInterface $url): UriInterface
     {
-        $resolvedUri = BaseUri::from($baseUrl)->resolve($url)->getUri();
+        $baseUri = Uri::new($baseUrl);
 
-        \assert($resolvedUri instanceof UriInterface);
-
-        return $resolvedUri;
+        return !$baseUri->isAbsolute()
+            ? $url
+            : $baseUri->resolve($url);
     }
 }
