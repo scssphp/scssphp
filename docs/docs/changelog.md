@@ -1,5 +1,11 @@
 # Changelog
 
+## **2.0.2** -- unreleased
+
+**Added**
+
+* Fix deprecations on PHP 8.5 (@cedric-anne)
+
 ## **2.0.1** -- January 31, 2025
 
 **Fixed**

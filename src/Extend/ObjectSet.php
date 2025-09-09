@@ -33,7 +33,7 @@ class ObjectSet implements \IteratorAggregate
      */
     public function contains(object $value): bool
     {
-        return $this->storage->contains($value);
+        return $this->storage->offsetExists($value);
     }
 
     /**
@@ -41,7 +41,7 @@ class ObjectSet implements \IteratorAggregate
      */
     public function add(object $value): void
     {
-        $this->storage->attach($value);
+        $this->storage->offsetSet($value);
     }
 
     /**
