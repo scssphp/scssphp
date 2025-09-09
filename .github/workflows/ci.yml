@@ -17,7 +17,7 @@ jobs:
                 extensions: [ '' ]
                 os: [ubuntu-latest]
                 include:
-                    - php: '8.4'
+                    - php: '8.3'
                       os: ubuntu-latest
                       extensions: ':mbstring'
                       name_suffix: ' without mbstring'
