@@ -294,6 +294,7 @@ class SassSpecTest extends TestCase
         if (!is_dir($basedir)) {
             mkdir($basedir, 0777, true);
         }
+        $basedir = realpath($basedir) ?: $basedir;
 
         $inputPath = $basedir . ($indented ? '/input.sass' : '/input.scss');
         file_put_contents($inputPath, $scss);
