@@ -116,6 +116,9 @@ final class InterpolationMap
         return $previousLocation->getFile()->location($previousLocation->getOffset() + $offsetInString);
     }
 
+    /**
+     * @return int<0, max>
+     */
     private function indexInContents(SourceLocation $target): int
     {
         foreach ($this->targetLocations as $i => $location) {
@@ -123,6 +126,8 @@ final class InterpolationMap
                 return $i;
             }
         }
+
+        \assert(\count($this->interpolation->getContents()) > 0);
 
         return \count($this->interpolation->getContents()) - 1;
     }
