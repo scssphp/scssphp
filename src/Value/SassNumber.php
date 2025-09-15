@@ -759,6 +759,7 @@ abstract class SassNumber extends Value
     {
         foreach (self::CONVERSIONS as $canonicalUnit => $conversions) {
             if (isset($conversions[$unit])) {
+                \assert(isset($conversions[$canonicalUnit]));
                 return $conversions[$canonicalUnit] / $conversions[$unit];
             }
         }
