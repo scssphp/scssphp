@@ -2,7 +2,6 @@
 
 namespace ScssPhp\ScssPhp\Exception;
 
-use JiriPudil\SealedClasses\Sealed;
 use SourceSpan\FileSpan;
 
 /**
@@ -12,8 +11,9 @@ use SourceSpan\FileSpan;
  * never be returned to the outside code. The compilation will catch it
  * and replace it with a SassException reporting the location of the
  * error.
+ *
+ * @phpstan-sealed MultiSpanSassScriptException
  */
-#[Sealed([MultiSpanSassScriptException::class])]
 class SassScriptException extends \Exception
 {
     /**
