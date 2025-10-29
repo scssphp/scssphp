@@ -42,7 +42,7 @@ class ExceptionTest extends TestCase
     /**
      * @return array
      */
-    public function provideScss()
+    public static function provideScss()
     {
         return [
             [<<<'END_OF_SCSS'

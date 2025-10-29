@@ -70,7 +70,7 @@ class SassSpecTest extends TestCase
         self::removeDirectory($this->dirToClean);
     }
 
-    private function sassSpecDir(): string
+    private static function sassSpecDir(): string
     {
         return dirname(__DIR__) . '/vendor/sass/sass-spec/spec';
     }
@@ -154,7 +154,7 @@ class SassSpecTest extends TestCase
     /**
      * RAZ the file that lists excluded tests
      */
-    private function resetExclusionList(): void
+    private static function resetExclusionList(): void
     {
         self::$exclusionList = [];
         self::$warningExclusionList = [];
@@ -318,7 +318,7 @@ class SassSpecTest extends TestCase
         chdir($basedir);
 
         // SassSpec use @import "core_functions/.../..."
-        $compiler->addImportPath($this->sassSpecDir());
+        $compiler->addImportPath(self::sassSpecDir());
 
         $fp_err_stream = fopen("php://memory", 'r+');
         $compiler->setLogger(new StreamLogger($fp_err_stream));
@@ -451,14 +451,14 @@ class SassSpecTest extends TestCase
         return self::normalizeOutput($warning);
     }
 
-    public function provideTests(): iterable
+    public static function provideTests(): iterable
     {
-        $dir = $this->sassSpecDir();
+        $dir = self::sassSpecDir();
         $specs = [];
         $subdir = '';
 
         if (getenv('BUILD')) {
-            $this->resetExclusionList();
+            self::resetExclusionList();
         }
 
         for ($depth = 0; $depth < 7; $depth++) {

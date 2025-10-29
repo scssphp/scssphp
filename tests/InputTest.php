@@ -60,7 +60,7 @@ class InputTest extends TestCase
         $this->assertEquals(trim($output), trim($css));
     }
 
-    public function fileNameProvider()
+    public static function fileNameProvider()
     {
         return array_map(
             function ($a) {
