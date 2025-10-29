@@ -59,6 +59,10 @@ final class InterpolationMap
 
     public function mapException(FormatException $error): FormatException
     {
+        if (\count($this->interpolation->getContents()) === 0) {
+            return new FormatException($error->getMessage(), $this->interpolation->getSpan(), $error);
+        }
+
         $source = $this->mapSpan($error->getSpan());
         $startIndex = $this->indexInContents($source->getStart());
         $endIndex = $this->indexInContents($source->getEnd());
@@ -95,6 +99,10 @@ final class InterpolationMap
      */
     private function mapLocation(SourceLocation $target): object
     {
+        if (\count($this->interpolation->getContents()) === 0) {
+            return $this->interpolation->getSpan();
+        }
+
         $index = $this->indexInContents($target);
 
         $components = $this->interpolation->getContents();
