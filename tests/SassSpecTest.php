@@ -27,6 +27,7 @@ class SassSpecTest extends TestCase
 {
     private const EXCLUSION_LIST_FILE = __DIR__ . '/specs/sass-spec-exclude.txt';
     private const WARNING_EXCLUSION_LIST_FILE = __DIR__ . '/specs/sass-spec-exclude-warning.txt';
+    private const ERROR_EXCLUSION_LIST_FILE = __DIR__ . '/specs/sass-spec-exclude-error.txt';
 
     /**
      * @var string[]|null
@@ -36,6 +37,10 @@ class SassSpecTest extends TestCase
      * @var string[]|null
      */
     private static ?array $warningExclusionList = null;
+    /**
+     * @var string[]|null
+     */
+    private static ?array $errorExclusionList = null;
 
     private ?string $dirToClean = null;
 
@@ -129,14 +134,34 @@ class SassSpecTest extends TestCase
     }
 
     /**
+     * List of tests excluding the assertion on error messages if not in TEST_SASS_SPEC mode
+     *
+     * @return string[]
+     */
+    private function getErrorExclusionList(): array
+    {
+        if (is_null(self::$errorExclusionList)) {
+            if (!file_exists(self::ERROR_EXCLUSION_LIST_FILE)) {
+                self::$errorExclusionList = [];
+            } else {
+                self::$errorExclusionList = array_filter(array_map('trim', file(self::ERROR_EXCLUSION_LIST_FILE)));
+            }
+        }
+
+        return self::$errorExclusionList;
+    }
+
+    /**
      * RAZ the file that lists excluded tests
      */
     private function resetExclusionList(): void
     {
         self::$exclusionList = [];
         self::$warningExclusionList = [];
+        self::$errorExclusionList = [];
         file_put_contents(self::EXCLUSION_LIST_FILE, '');
         file_put_contents(self::WARNING_EXCLUSION_LIST_FILE, '');
+        file_put_contents(self::ERROR_EXCLUSION_LIST_FILE, '');
     }
 
     /**
@@ -158,6 +183,15 @@ class SassSpecTest extends TestCase
     }
 
     /**
+     * Append a test name to the list of excluded tests
+     */
+    private function appendToErrorExclusionList(string $testName): void
+    {
+        self::$errorExclusionList[] = $this->canonicalTestName($testName);
+        file_put_contents(self::ERROR_EXCLUSION_LIST_FILE, implode("\n", self::$errorExclusionList) . "\n");
+    }
+
+    /**
      * Do some normalization on css output, for comparison purpose
      *
      * @param string $css
@@ -169,6 +203,19 @@ class SassSpecTest extends TestCase
         $css = preg_replace('/[-_\/a-zA-Z0-9]+(input\.s[ca]ss)/', '$1', $css);
 
         return rtrim($css);
+    }
+
+    private static function normalizeErrorOutput(string $output): string
+    {
+        $output = self::normalizeOutput($output);
+
+        if (\DIRECTORY_SEPARATOR === '\\') {
+            $output = preg_replace_callback('/[-_\/a-zA-Z0-9\\\\]+\w\.s[ca]ss/', function ($matches) {
+                return str_replace('\\', '/', $matches[0]);
+            }, $output);
+        }
+
+        return $output;
     }
 
     /**
@@ -212,7 +259,7 @@ class SassSpecTest extends TestCase
         list($options, $scss, $includes, $inputDir, $indented) = $input;
         list($css, $warning, $error, $alternativeCssOutputs, $alternativeWarnings) = $testCaseOutput;
 
-        if (preg_match('/:(todo|ignore_for):\r?\n *+- dart-sass\r?\n/', $options)) {
+        if (preg_match('/:(todo|ignore_for):\r?\n *+- dart-sass(?:\r?\n|$)/', $options)) {
             self::markTestSkipped('This test does not apply to dart-sass so it does not apply to our port either.');
         }
 
@@ -260,6 +307,7 @@ class SassSpecTest extends TestCase
         if (!is_dir($basedir)) {
             mkdir($basedir, 0777, true);
         }
+        $basedir = realpath($basedir) ?: $basedir;
 
         $inputPath = $basedir . ($indented ? '/input.sass' : '/input.scss');
         file_put_contents($inputPath, $scss);
@@ -296,7 +344,7 @@ class SassSpecTest extends TestCase
             rewind($fp_err_stream);
             $output = stream_get_contents($fp_err_stream);
             fclose($fp_err_stream);
-            $output = self::normalizeOutput($output);
+            $output = self::normalizeErrorOutput($output);
 
             // if several outputs check if we match one alternative if not the first
             if (
@@ -339,24 +387,47 @@ class SassSpecTest extends TestCase
                 }
             }
         } else {
-            if (getenv('BUILD')) {
-                try {
-                    $compiler->compileFile($inputPath);
-                    throw new \Exception('Expecting a SassException for error tests');
-                } catch (SassException) {
-                    // TODO assert the error message ?
-                    // Keep the test
-                } catch (\Throwable) {
-                    $this->appendToExclusionList($name);
-                }
-                $this->assertNull(null);
-            } else {
-                $this->expectException(SassException::class);
-                $compiler->compileFile($inputPath);
-                // TODO assert the error message ?
+            if (str_starts_with($error, 'Error: ') && \strlen($error) > \strlen('Error: ')) {
+                $error = substr($error, \strlen('Error: ')); // Remove the `Error: ` prefix added by the sass CLI when outputting errors.
             }
+            $error = self::normalizeOutput($error);
 
-            fclose($fp_err_stream);
+            try {
+                $compiler->compileFile($inputPath);
+
+                if (getenv('BUILD')) {
+                    $this->appendToExclusionList($name);
+                    $this->addToAssertionCount(1);
+                    return;
+                }
+
+                // Let PHPUnit report that the expected exception did not happen
+                $this->expectException(SassException::class);
+                return;
+            } catch (SassException $e) {
+                if ($e->getOriginalMessage() === 'Sass modules are not implemented yet.') {
+                    $this->markTestSkipped('Sass modules are not supported.');
+                }
+
+                $this->addToAssertionCount(1); // We simulate asserting the expected exception in a successful way.
+
+                if (str_contains($error, 'WARNING')) {
+                    return; // TODO add support for asserting error output with warnings
+                }
+
+                $normalizedExceptionMessage = self::normalizeErrorOutput($e->getMessage());
+
+                if (getenv('BUILD')) {
+                    if ($normalizedExceptionMessage !== $error) {
+                        $this->appendToErrorExclusionList($name);
+                    }
+                    $this->addToAssertionCount(1);
+                } elseif (getenv('TEST_SASS_SPEC') || !$this->matchExclusionList($name, $this->getErrorExclusionList())) {
+                    $this->assertEquals($error, $normalizedExceptionMessage);
+                }
+            } finally {
+                fclose($fp_err_stream);
+            }
         }
     }
 
@@ -436,6 +507,13 @@ class SassSpecTest extends TestCase
                     $partLines = explode("\n", $part);
                     $first = array_shift($partLines);
                     $first = ltrim($first, ' ');
+
+                    // Remove the last line which corresponds to the beginning of the `<===>` separator line due to the way we read the file instead of an actual HRX reader
+                    $last = array_pop($partLines);
+                    if ($last !== '') {
+                        $partLines[] = $last;
+                    }
+
                     $part = implode("\n", $partLines);
                     $subDir = dirname($first);
 
