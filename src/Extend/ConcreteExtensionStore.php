@@ -1122,6 +1122,11 @@ class ConcreteExtensionStore implements ExtensionStore
      */
     private function trim(array $selectors, callable $isOriginal): array
     {
+        // Avoid truly horrific quadratic behavior.
+        if (\count($selectors) > 100) {
+            return $selectors;
+        }
+
         // This is n² on the sequences, but only comparing between separate
         // sequences should limit the quadratic behavior. We iterate from last to
         // first and reverse the result so that, if two selectors are identical, we
