@@ -12,12 +12,10 @@
 
 namespace ScssPhp\ScssPhp\Ast\Css;
 
-use JiriPudil\SealedClasses\Sealed;
-
 /**
+ * @phpstan-sealed CssMediaQuery|MediaQuerySingletonMergeResult
  * @internal
  */
-#[Sealed(permits: [CssMediaQuery::class, MediaQuerySingletonMergeResult::class])]
 interface MediaQueryMergeResult
 {
 }

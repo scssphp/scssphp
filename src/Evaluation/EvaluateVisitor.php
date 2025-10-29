@@ -1619,7 +1619,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
                     return null;
                 }
 
-                // Always true but not detected due to https://github.com/jiripudil/phpstan-sealed-classes/issues/2
+                // Always true but not detected due to https://github.com/phpstan/phpstan/issues/10148
                 \assert($result instanceof CssMediaQuery);
 
                 $queries[] = $result;

@@ -24,5 +24,4 @@ parameters:
 includes:
     - vendor/phpstan/phpstan/conf/bleedingEdge.neon
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
-    - vendor/jiripudil/phpstan-sealed-classes/extension.neon
     - phpstan-baseline.neon

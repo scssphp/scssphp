@@ -12,7 +12,6 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
-use JiriPudil\SealedClasses\Sealed;
 use ScssPhp\ScssPhp\Ast\Selector\ComplexSelector;
 use ScssPhp\ScssPhp\Ast\Selector\CompoundSelector;
 use ScssPhp\ScssPhp\Ast\Selector\SelectorList;
@@ -32,8 +31,9 @@ use ScssPhp\ScssPhp\Warn;
  * subclass constructors like `new SassString`. Untyped values can be cast to
  * particular types using `assert*()` functions like {@see assertString}, which
  * throw user-friendly error messages if they fail.
+ *
+ * @phpstan-sealed SassBoolean|SassCalculation|SassColor|SassFunction|SassList|SassMap|SassMixin|SassNull|SassNumber|SassString
  */
-#[Sealed(permits: [SassBoolean::class, SassCalculation::class, SassColor::class, SassFunction::class, SassList::class, SassMap::class, SassMixin::class, SassNull::class, SassNumber::class, SassString::class])]
 abstract class Value implements Equatable, \Stringable
 {
     /**

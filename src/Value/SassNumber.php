@@ -12,7 +12,6 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
-use JiriPudil\SealedClasses\Sealed;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\Util\NumberUtil;
 use ScssPhp\ScssPhp\Util\StringUtil;
@@ -25,8 +24,9 @@ use ScssPhp\ScssPhp\Visitor\ValueVisitor;
  * support scientific-style numerator and denominator units (for example,
  * `miles/hour`). These are expected to be resolved before being emitted to
  * CSS.
+ *
+ * @phpstan-sealed UnitlessSassNumber|SingleUnitSassNumber|ComplexSassNumber
  */
-#[Sealed(permits: [UnitlessSassNumber::class, SingleUnitSassNumber::class, ComplexSassNumber::class])]
 abstract class SassNumber extends Value
 {
     final const PRECISION = 10;
