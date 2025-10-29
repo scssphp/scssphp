@@ -109,4 +109,17 @@ SCSS;
             yield substr($file->getRealPath(), strlen($baseDir) + 1) => [$file->getRealPath()];
         }
     }
+
+    public function testBulma(): void
+    {
+        $compiler = new Compiler();
+        $compiler->setLogger(new QuietLogger());
+        $compiler->setSourceMap(Compiler::SOURCE_MAP_INLINE);
+
+        $entrypoint = \dirname(__DIR__) . '/vendor/jgthms/bulma/bulma.sass';
+
+        $result = $compiler->compileFile($entrypoint);
+
+        $this->assertNotEmpty($result->getCss());
+    }
 }

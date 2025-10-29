@@ -39,6 +39,7 @@
         "ext-mbstring": "For best performance, mbstring should be installed as it is faster than the polyfill"
     },
     "require-dev": {
+        "jgthms/bulma": "~0.9.4",
         "jiripudil/phpstan-sealed-classes": "^1.3",
         "phpstan/phpstan": "^2.1.31",
         "phpstan/phpstan-deprecation-rules": "^2.0",
@@ -86,6 +87,24 @@
                     "type": "zip",
                     "url": "https://api.github.com/repos/thoughtbot/bourbon/zipball/fbe338ee6807e7f7aa996d82c8a16f248bb149b3",
                     "reference": "fbe338ee6807e7f7aa996d82c8a16f248bb149b3",
+                    "shasum": ""
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "jgthms/bulma",
+                "version": "v0.9.4",
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/jgthms/bulma.git",
+                    "reference": "3e00a8e6d0d0e566d507328f0185ef84854effba"
+                },
+                "dist": {
+                    "type": "zip",
+                    "url": "https://api.github.com/repos/jgthms/bulma/zipball/3e00a8e6d0d0e566d507328f0185ef84854effba",
+                    "reference": "3e00a8e6d0d0e566d507328f0185ef84854effba",
                     "shasum": ""
                 }
             }
