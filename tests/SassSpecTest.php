@@ -205,6 +205,19 @@ class SassSpecTest extends TestCase
         return rtrim($css);
     }
 
+    private static function normalizeErrorOutput(string $output): string
+    {
+        $output = self::normalizeOutput($output);
+
+        if (\DIRECTORY_SEPARATOR === '\\') {
+            $output = preg_replace_callback('/[-_\/a-zA-Z0-9\\\\]+\w\.s[ca]ss/', function ($matches) {
+                return str_replace('\\', '/', $matches[0]);
+            }, $output);
+        }
+
+        return $output;
+    }
+
     /**
      * @dataProvider provideTests
      */
@@ -331,7 +344,7 @@ class SassSpecTest extends TestCase
             rewind($fp_err_stream);
             $output = stream_get_contents($fp_err_stream);
             fclose($fp_err_stream);
-            $output = self::normalizeOutput($output);
+            $output = self::normalizeErrorOutput($output);
 
             // if several outputs check if we match one alternative if not the first
             if (
@@ -402,7 +415,7 @@ class SassSpecTest extends TestCase
                     return; // TODO add support for asserting error output with warnings
                 }
 
-                $normalizedExceptionMessage = self::normalizeOutput($e->getMessage());
+                $normalizedExceptionMessage = self::normalizeErrorOutput($e->getMessage());
 
                 if (getenv('BUILD')) {
                     if ($normalizedExceptionMessage !== $error) {
