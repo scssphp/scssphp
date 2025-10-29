@@ -12,13 +12,13 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
-use JiriPudil\SealedClasses\Sealed;
 use ScssPhp\ScssPhp\Visitor\ValueVisitor;
 
 /**
  * A SassScript list.
+ *
+ * @phpstan-sealed SassArgumentList
  */
-#[Sealed(permits: [SassArgumentList::class])]
 class SassList extends Value
 {
     /**

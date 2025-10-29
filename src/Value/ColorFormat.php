@@ -12,12 +12,10 @@
 
 namespace ScssPhp\ScssPhp\Value;
 
-use JiriPudil\SealedClasses\Sealed;
-
 /**
+ * @phpstan-sealed ColorFormatEnum|SpanColorFormat
  * @internal
  */
-#[Sealed(permits: [ColorFormatEnum::class, SpanColorFormat::class])]
 interface ColorFormat
 {
 }
