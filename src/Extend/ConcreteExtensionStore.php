@@ -32,7 +32,10 @@ use ScssPhp\ScssPhp\Util\ListUtil;
 use ScssPhp\ScssPhp\Util\ModifiableBox;
 use SourceSpan\FileSpan;
 
-class ConcreteExtensionStore implements ExtensionStore
+/**
+ * @internal
+ */
+final class ConcreteExtensionStore implements ExtensionStore
 {
     /**
      * A map from all simple selectors in the stylesheet to the selector lists

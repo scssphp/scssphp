@@ -15,8 +15,10 @@ namespace ScssPhp\ScssPhp\Extend;
 /**
  * @template T of object
  * @template-implements \IteratorAggregate<int, T>
+ *
+ * @internal
  */
-class ObjectSet implements \IteratorAggregate
+final class ObjectSet implements \IteratorAggregate
 {
     /**
      * @var \SplObjectStorage<T, mixed>
