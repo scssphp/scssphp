@@ -12,9 +12,9 @@
 
 namespace ScssPhp\ScssPhp\Util;
 
-use League\Uri\BaseUri;
 use League\Uri\Contracts\UriInterface;
 use League\Uri\Uri;
+use League\Uri\UriString;
 
 /**
  * @internal
@@ -28,31 +28,61 @@ final class UriUtil
 
     public static function resolveUri(UriInterface $baseUrl, UriInterface $url): UriInterface
     {
-        // Relative path reference handling
-        if ($url->getScheme() === null && $url->getAuthority() === null && $url->getPath() !== '' && $url->getPath()[0] !== '/') {
+        if ($baseUrl->getScheme() !== null) {
             // non-RFC3986 behavior in Dart-Sass when resolving relative reference with a base url with no authority and a relative path (where they consider the base path as absolute)
-            if ($baseUrl->getScheme() !== null && $baseUrl->getAuthority() === null && $baseUrl->getPath() !== '' && $baseUrl->getPath()[0] !== '/') {
+            if ($baseUrl->getAuthority() === null && $baseUrl->getPath() !== '' && $baseUrl->getPath()[0] !== '/' && $url->getScheme() === null && $url->getAuthority() === null && $url->getPath() !== '' && $url->getPath()[0] !== '/') {
                 return self::resolveLeagueUri($baseUrl->withPath('/' . $baseUrl->getPath()), $url);
             }
 
-            // Pure path resolution between 2 relative path URLs
-            if ($baseUrl->getScheme() === null && $baseUrl->getAuthority() === null && $baseUrl->getPath() !== '' && $baseUrl->getPath()[0] !== '/') {
-                $mergedPath = self::normalizeRelativePath(self::mergePaths($baseUrl->getPath(), $url->getPath()));
-
-                return $url->withPath($mergedPath);
-            }
+            return self::resolveLeagueUri($baseUrl, $url);
         }
 
-        return self::resolveLeagueUri($baseUrl, $url);
+        if ($url->getScheme() !== null) {
+            return $url->withPath(UriString::removeDotSegments($url->getPath()));
+        }
+
+        if ($baseUrl->getAuthority() !== null || $url->getAuthority() !== null) {
+            return self::resolveLeagueUri($baseUrl->withScheme('scssphp-resolve'), $url)->withScheme(null);
+        }
+
+        if ($url->getPath() === '') {
+            if ($url->getQuery() !== null) {
+                return $baseUrl->withQuery($url->getQuery())->withFragment($url->getFragment());
+            }
+
+            if ($url->getFragment() !== null) {
+                return $baseUrl->withFragment($url->getFragment());
+            }
+
+            return $baseUrl;
+        }
+
+        if ($url->getPath()[0] === '/') {
+            return $url->withPath(UriString::removeDotSegments($url->getPath()));
+        }
+
+        if ($baseUrl->getPath() === '') {
+            return $url;
+        }
+
+        if ($baseUrl->getPath()[0] !== '/') {
+            // Pure path resolution between 2 relative path URLs
+            $mergedPath = self::normalizeRelativePath(self::mergePaths($baseUrl->getPath(), $url->getPath()));
+
+            return $url->withPath($mergedPath);
+        }
+
+        return self::resolveLeagueUri($baseUrl->withScheme('scssphp-resolve')->withHost('localhost'), $url)->withScheme(null)->withHost(null);
     }
 
     private static function resolveLeagueUri(UriInterface $baseUrl, UriInterface $url): UriInterface
     {
-        $resolvedUri = BaseUri::from($baseUrl)->resolve($url)->getUri();
+        // Custom implementations of UriInterface might not implement the resolve method yet, until version 8.0 of the interface.
+        if (!$baseUrl instanceof Uri && !method_exists($baseUrl, 'resolve')) {
+            $baseUrl = Uri::new($baseUrl);
+        }
 
-        \assert($resolvedUri instanceof UriInterface);
-
-        return $resolvedUri;
+        return $baseUrl->resolve($url);
     }
 
     /**
