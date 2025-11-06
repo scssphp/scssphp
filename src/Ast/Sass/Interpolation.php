@@ -30,31 +30,6 @@ final class Interpolation implements SassNode
     private readonly FileSpan $span;
 
     /**
-     * Creates a new {@see Interpolation} by concatenating a sequence of strings,
-     * {@see Expression}s, or nested {@see Interpolation}s.
-     *
-     * @param array<string|Expression|Interpolation> $contents
-     */
-    public static function concat(array $contents, FileSpan $span): Interpolation
-    {
-        $buffer = new InterpolationBuffer();
-
-        foreach ($contents as $element) {
-            if (\is_string($element)) {
-                $buffer->write($element);
-            } elseif ($element instanceof Expression) {
-                $buffer->add($element);
-            } elseif ($element instanceof Interpolation) {
-                $buffer->addInterpolation($element);
-            } else {
-                throw new \InvalidArgumentException(sprintf('The elements in $contents may only contains strings, Expressions, or Interpolations, "%s" given.', get_debug_type($element)));
-            }
-        }
-
-        return $buffer->buildInterpolation($span);
-    }
-
-    /**
      * @param list<string|Expression> $contents
      */
     public function __construct(array $contents, FileSpan $span)
