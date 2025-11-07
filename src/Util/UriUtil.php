@@ -58,7 +58,12 @@ final class UriUtil
         }
 
         if ($url->getPath()[0] === '/') {
-            return $url->withPath(UriString::removeDotSegments($url->getPath()));
+            $newPath = UriString::removeDotSegments($url->getPath());
+            if ($newPath !== '' && $newPath[0] !== '/') {
+                $newPath = '/' . $newPath;
+            }
+
+            return $url->withPath($newPath);
         }
 
         if ($baseUrl->getPath() === '') {
