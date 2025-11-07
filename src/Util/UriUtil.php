@@ -50,15 +50,16 @@ final class UriUtil
                 return $baseUrl->withQuery($url->getQuery())->withFragment($url->getFragment());
             }
 
-            if ($url->getFragment() !== null) {
-                return $baseUrl->withFragment($url->getFragment());
-            }
-
-            return $baseUrl;
+            return $baseUrl->withFragment($url->getFragment());
         }
 
         if ($url->getPath()[0] === '/') {
-            return $url->withPath(UriString::removeDotSegments($url->getPath()));
+            $newPath = UriString::removeDotSegments($url->getPath());
+            if ($newPath !== '' && $newPath[0] !== '/') {
+                $newPath = '/' . $newPath;
+            }
+
+            return $url->withPath($newPath);
         }
 
         if ($baseUrl->getPath() === '') {
