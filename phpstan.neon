@@ -4,10 +4,6 @@ parameters:
     paths:
         - ./src/
     ignoreErrors:
-        # Ignore error
-        -
-            message: '#^Method ScssPhp\\ScssPhp\\Value\\Sass\w+::assert\w+\(\) has ScssPhp\\ScssPhp\\Exception\\SassScriptException in PHPDoc @throws tag but it''s not thrown\.$#'
-            identifier: throws.unusedType
         # This variable is modified by reference in some Closure and may be assigned null later. Without this type, phpstan does not detect it properly.
         -
             message: '#^PHPDoc tag @var with type ScssPhp\\ScssPhp\\Ast\\Sass\\Expression\|null is not subtype of native type ScssPhp\\ScssPhp\\Ast\\Sass\\Expression\.$#'

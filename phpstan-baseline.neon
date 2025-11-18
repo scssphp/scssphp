@@ -187,6 +187,12 @@ parameters:
 			path: src/Serializer/SerializeVisitor.php
 
 		-
+			rawMessage: 'Call to function method_exists() with League\Uri\Contracts\UriInterface and ''resolve'' will always evaluate to true.'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/Util/UriUtil.php
+
+		-
 			rawMessage: 'Method ScssPhp\ScssPhp\Value\SassMap::tryMap() never returns null so it can be removed from the return type.'
 			identifier: return.unusedType
 			count: 1
