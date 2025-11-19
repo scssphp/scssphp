@@ -22,7 +22,7 @@ class UriUtilTest extends TestCase
      */
     public function testResolveUri(UriInterface $base, string $expected, string $relative): void
     {
-        self::assertEquals($expected, UriUtil::resolve($base, Uri::new($relative))->toString());
+        self::assertEquals($expected, UriUtil::resolveUri($base, Uri::new($relative))->toString());
     }
 
     /**
