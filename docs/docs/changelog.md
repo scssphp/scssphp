@@ -1,10 +1,29 @@
 # Changelog
 
-## **2.0.2** -- unreleased
+## **2.1.0** -- November 21, 2025
 
 **Added**
 
-* Fix deprecations on PHP 8.5 (@cedric-anne)
+* Fix deprecations on PHP 8.5 (@cedric-anne, @stof)
+* Implement the `if` function for usage with `get-function` and `call (@stof)
+* Add support for converting PHP arrays to Sass values in `ValueConverter::fromPhp` (@stof)
+* Add support for Symfony 8 components (@stof)
+
+**Fixed**
+
+* Fix crash when writing `@extend` without selector (@stof)
+* Fix the serialization of values when using them outside the compiler (@stof)
+* Fix compatibility with `league/uri` 7.6 (@stof)
+
+**Changed**
+
+* No longer fully trim redundant selectors in `@extend` as this caused performance issues (@stof)
+* Update error messages to be consistent with dart-sass (@stof)
+* Add missing `@interna` tags for internal APIs (@stof)
+* Declare a requirement on `ext-mbstring` instead of requiring `symfony/polyfill-mbstring`.
+  Projects can still decide to install that polyfill package to satisfy the requirement if
+  they want to support PHP setups that don't have the extension, but the polyfill package
+  will not be installed by default anymore. (@stof)
 
 ## **2.0.1** -- January 31, 2025
 
