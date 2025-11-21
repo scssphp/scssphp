@@ -81,12 +81,47 @@ class UriUtilTest extends TestCase
         yield [Uri::new('foo://a/b/c/d;p?q'), 'foo:g', 'foo:g'];
         yield [$base, 'http://a/b/g;p/h;s', '../g;p/h;s'];
 
+        $base = Uri::new('http://a?q');
+        yield [$base, 'http://a?p', '?p'];
+        yield [$base, 'http://a/b/c', 'b/c'];
+
+        $base = Uri::new('foo:/a/b?q');
+        yield [$base, 'foo:/a/b?p', '?p'];
+        yield [$base, 'foo:/c', '../c'];
+        yield [$base, 'foo:/a/c', 'c'];
+        yield [$base, 'foo:/c', '../../c'];
+        yield [$base, 'foo:/c', '/c'];
+
         // Test non-URI base (no scheme, no authority, relative path).
         $base = Uri::new('a/b/c?_#_');
         yield [$base, 'a/b/g?q#f', 'g?q#f'];
         yield [$base, '../', '../../..'];
+        yield [$base, './', '../..'];
         yield [$base, 'a/b/', '.'];
         yield [$base, 'c', '../../c'];
+        yield [$base, '//foo/a', '//foo/a'];
+        yield [$base, 'a/b/c?_#f', '#f'];
+        yield [$base, 'a/b/c?q', '?q'];
+        yield [$base, 'a/b/c?q#c', '?q#c'];
+        yield [$base, 'a/b/c?_#_', ''];
+        yield [$base, '/a', '/a'];
+        yield [$base, '/b', '/a/../../b'];
+
+        $base = Uri::new('/a/b?_#_');
+        yield [$base, '/a/c', 'c'];
+        yield [$base, '/c', '../../c'];
+
+        $base = Uri::new('//foo/a');
+        yield [$base, '//foo/b', 'b'];
+        yield [$base, '//foo/', '..'];
+        yield [$base, '//foo/c', '../c'];
+        yield [$base, 's:/a/b', 's:/a/b'];
+        yield [$base, '//bar/b', '//bar/b'];
+
+        $base = Uri::new('?_#_');
+        yield [$base, '?q', '?q'];
+        yield [$base, '?_#f', '#f'];
+        yield [$base, 'a/b', 'a/b'];
 
         $base = Uri::new('s:a/b');
         yield [$base, 's:/c', '../c'];
