@@ -1,6 +1,6 @@
 # Site settings
 title: SCSS Compiler in PHP
-current_version: v2.0.1
+current_version: v2.1.0
 description: >
   SCSS compiler written in PHP
 url: https://scssphp.github.io
