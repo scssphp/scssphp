@@ -3,7 +3,7 @@
     "type": "library",
     "description": "scssphp is a compiler for SCSS written in PHP.",
     "keywords": ["css", "stylesheet", "scss", "sass", "less"],
-    "homepage": "http://scssphp.github.io/scssphp/",
+    "homepage": "https://scssphp.github.io/scssphp/",
     "license": [
         "MIT"
     ],
@@ -29,14 +29,11 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-json": "*",
+        "ext-mbstring": "*",
         "league/uri": "^7.6",
         "league/uri-interfaces": "^7.6",
         "scssphp/source-span": "^1.1",
-        "symfony/filesystem": "^5.4 || ^6.0 || ^7.0 || ^8.0",
-        "symfony/polyfill-mbstring": "^1.30"
-    },
-    "suggest": {
-        "ext-mbstring": "For best performance, mbstring should be installed as it is faster than the polyfill"
+        "symfony/filesystem": "^5.4 || ^6.0 || ^7.0 || ^8.0"
     },
     "require-dev": {
         "jgthms/bulma": "~0.9.4",

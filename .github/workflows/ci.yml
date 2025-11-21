@@ -14,13 +14,8 @@ jobs:
             fail-fast: false
             matrix:
                 php: [ '8.1', '8.2', '8.3', '8.4', '8.5' ]
-                extensions: [ '' ]
                 os: [ubuntu-latest]
                 include:
-                    - php: '8.3'
-                      os: ubuntu-latest
-                      extensions: ':mbstring'
-                      name_suffix: ' without mbstring'
                     - php: '8.4'
                       os: windows-latest
                       name_suffix: ' on Windows'
@@ -40,21 +35,10 @@ jobs:
                 with:
                     coverage: "none"
                     php-version: "${{ matrix.php }}"
-                    extensions: "${{ matrix.extensions }}"
                     ini-file: development
 
-            # PHPUnit 8.5.18+ and 9.5.7+ contains a runtime check for ext-mbstring, so we need to use an older version
-            # for running tests without ext-mbstring.
-            -   name: Force the PHPUnit version
-                if: ${{ matrix.extensions == ':mbstring' }}
-                run: composer require --dev --no-update phpunit/phpunit 9.5.6
-
             -   name: Install dependencies
-                # PHPUnit requires ext-mbstring. But it is only necessary for features that we don't currently use:
-                # - the testdox, JUnit and XML result printers
-                # - the StringContains assertion when ignoring case
-                # Ignoring the requirement is necessary for the job running the testsuite without mbstring
-                run: composer update --ansi --no-progress --ignore-platform-req=ext-mbstring --ignore-platform-req=php+
+                run: composer update --ansi --no-progress --ignore-platform-req=php+
 
             -   name: Run tests
                 run: vendor/bin/phpunit --colors=always
