@@ -87,6 +87,7 @@ final class SingleMapping
         foreach ($sourceEntries as $sourceEntry) {
             if ($lineNum === null || $sourceEntry->target->getLine() > $lineNum) {
                 $lineNum = $sourceEntry->target->getLine();
+                /** @var \ArrayObject<int, TargetEntry> $targetEntries */
                 $targetEntries = new \ArrayObject();
                 $lines[] = new TargetLineEntry($lineNum, $targetEntries);
             }
