@@ -1,0 +1,51 @@
+@use "sass:math";
+@use "sass:math" as m;
+
+.div {
+    a: math.div(10px, 2);
+    b: math.div(1, 3);
+    c: m.div(6, 2);
+}
+
+.constants {
+    pi: math.$pi;
+    e: math.$e;
+}
+
+.canonical {
+    compatible: math.compatible(1px, 2px);
+    unitless: math.is-unitless(5);
+    unit: math.unit(5px);
+}
+
+.bounding {
+    clamp: math.clamp(1px, 5px, 3px);
+    clamp-mid: math.clamp(0, 5, 10);
+    hypot: math.hypot(3, 4);
+    hypot-units: math.hypot(3px, 4px);
+}
+
+.exponent {
+    sqrt: math.sqrt(9);
+    pow: math.pow(2, 10);
+    pow-frac: math.pow(8, math.div(1, 3));
+    log: math.log(2.718281828459045);
+    log-base: math.log(8, 2);
+}
+
+.trig {
+    cos: math.cos(0);
+    sin-rad: math.sin(1rad);
+    sin-deg: math.sin(90deg);
+    tan: math.tan(0);
+    acos: math.acos(1);
+    asin: math.asin(1);
+    atan: math.atan(1);
+    atan2: math.atan2(1, 1);
+}
+
+.more-constants {
+    epsilon: math.$epsilon;
+    max-safe-integer: math.$max-safe-integer;
+    min-safe-integer: math.$min-safe-integer;
+}
