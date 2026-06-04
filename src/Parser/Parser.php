@@ -298,7 +298,7 @@ class Parser
         $quote = $this->scanner->readChar();
 
         if ($quote !== '"' && $quote !== "'") {
-            $this->scanner->error('Expected string.');
+            $this->scanner->error('Expected string.', $this->scanner->getPosition() - 1);
         }
 
         $buffer = '';

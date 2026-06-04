@@ -13,7 +13,9 @@
 namespace ScssPhp\ScssPhp\Function;
 
 use League\Uri\Uri;
+use ScssPhp\ScssPhp\Evaluation\Module;
 use ScssPhp\ScssPhp\SassCallable\BuiltInCallable;
+use ScssPhp\ScssPhp\Value\SassNumber;
 use ScssPhp\ScssPhp\Value\Value;
 
 /**
@@ -151,6 +153,35 @@ class FunctionRegistry
     ];
 
     /**
+     * Functions that are only available inside a module, never in the global
+     * namespace.
+     *
+     * These have the same shape as {@see BUILTIN_FUNCTIONS} but are not exposed
+     * to {@see has}, {@see get} or global function introspection; they're only
+     * reachable through a namespace such as `math.div()`. Several of them
+     * (`clamp`, `sin`, ...) share a name with a plain CSS function that's
+     * handled as a calculation when used without a namespace.
+     *
+     * @var array<string, array{overloads: array<string, callable(list<Value>): Value>, url: string}>
+     */
+    private const MODULE_ONLY_FUNCTIONS = [
+        // sass:math
+        'div' => ['overloads' => ['$number1, $number2' => [MathFunctions::class, 'div']], 'url' => 'sass:math'],
+        'clamp' => ['overloads' => ['$min, $number, $max' => [MathFunctions::class, 'clamp']], 'url' => 'sass:math'],
+        'hypot' => ['overloads' => ['$numbers...' => [MathFunctions::class, 'hypot']], 'url' => 'sass:math'],
+        'log' => ['overloads' => ['$number, $base: null' => [MathFunctions::class, 'log']], 'url' => 'sass:math'],
+        'pow' => ['overloads' => ['$base, $exponent' => [MathFunctions::class, 'pow']], 'url' => 'sass:math'],
+        'sqrt' => ['overloads' => ['$number' => [MathFunctions::class, 'sqrt']], 'url' => 'sass:math'],
+        'cos' => ['overloads' => ['$number' => [MathFunctions::class, 'cos']], 'url' => 'sass:math'],
+        'sin' => ['overloads' => ['$number' => [MathFunctions::class, 'sin']], 'url' => 'sass:math'],
+        'tan' => ['overloads' => ['$number' => [MathFunctions::class, 'tan']], 'url' => 'sass:math'],
+        'acos' => ['overloads' => ['$number' => [MathFunctions::class, 'acos']], 'url' => 'sass:math'],
+        'asin' => ['overloads' => ['$number' => [MathFunctions::class, 'asin']], 'url' => 'sass:math'],
+        'atan' => ['overloads' => ['$number' => [MathFunctions::class, 'atan']], 'url' => 'sass:math'],
+        'atan2' => ['overloads' => ['$y, $x' => [MathFunctions::class, 'atan2']], 'url' => 'sass:math'],
+    ];
+
+    /**
      * Special meta functions defined directly in the {@see EvaluateVisitor} constructor
      */
     private const SPECIAL_META_GLOBAL_FUNCTIONS = [
@@ -189,6 +220,91 @@ class FunctionRegistry
     public static function isBuiltinFunction(string $name): bool
     {
         return isset(self::BUILTIN_FUNCTIONS[$name]) || \in_array($name, self::SPECIAL_META_GLOBAL_FUNCTIONS, true);
+    }
+
+    /**
+     * The URLs of the built-in modules that scssphp supports loading with `@use`.
+     *
+     * Only `sass:math` is implemented so far. The other `sass:*` modules expose
+     * their members globally but can't yet be loaded as modules (they're missing
+     * their module-exclusive members and aren't covered by the spec suite), so
+     * `@use`-ing them must fail rather than half-work.
+     */
+    private const BUILTIN_MODULES = [
+        'sass:math',
+    ];
+
+    /**
+     * A cache of the built-in modules that have been loaded so far, keyed by URL.
+     *
+     * @var array<string, Module>
+     */
+    private static array $modules = [];
+
+    /**
+     * Returns whether $url refers to a built-in module that can be loaded with
+     * `@use`.
+     */
+    public static function isBuiltinModule(string $url): bool
+    {
+        return \in_array($url, self::BUILTIN_MODULES, true);
+    }
+
+    /**
+     * Returns the built-in {@see Module} for the given $url.
+     *
+     * @throws \InvalidArgumentException if $url is not a built-in module
+     */
+    public static function getModule(string $url): Module
+    {
+        if (isset(self::$modules[$url])) {
+            return self::$modules[$url];
+        }
+
+        if (!self::isBuiltinModule($url)) {
+            throw new \InvalidArgumentException("There is no built-in module named $url.");
+        }
+
+        $uri = Uri::new($url);
+        $functions = [];
+        foreach ([self::BUILTIN_FUNCTIONS, self::MODULE_ONLY_FUNCTIONS] as $definitions) {
+            foreach ($definitions as $name => $definition) {
+                if (($definition['url'] ?? null) !== $url) {
+                    continue;
+                }
+
+                // Within a module, functions are exposed under their canonical name
+                // (e.g. `comparable` is `compatible` and `str-length` is `length`),
+                // unlike the global namespace which uses the legacy name.
+                $canonicalName = $definition['canonical_name'] ?? $name;
+                $functions[$canonicalName] = BuiltInCallable::overloadedFunction($canonicalName, $definition['overloads'], $uri);
+            }
+        }
+
+        return self::$modules[$url] = new Module($uri, $functions, self::moduleVariables($url));
+    }
+
+    /**
+     * Returns the variables exposed by the built-in module at $url, keyed by
+     * their name without the leading `$`.
+     *
+     * @return array<string, Value>
+     */
+    private static function moduleVariables(string $url): array
+    {
+        if ($url === 'sass:math') {
+            return [
+                'e' => SassNumber::create(M_E),
+                'pi' => SassNumber::create(M_PI),
+                'epsilon' => SassNumber::create(2.220446049250313e-16),
+                'max-safe-integer' => SassNumber::create(9007199254740991),
+                'min-safe-integer' => SassNumber::create(-9007199254740991),
+                'max-number' => SassNumber::create(PHP_FLOAT_MAX),
+                'min-number' => SassNumber::create(PHP_FLOAT_MIN),
+            ];
+        }
+
+        return [];
     }
 
     /**

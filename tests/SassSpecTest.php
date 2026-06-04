@@ -265,7 +265,22 @@ class SassSpecTest extends TestCase
 
         $fullInputs = $scss . "\n" . implode("\n", $includes);
 
-        if (str_contains($fullInputs, '@forward ') || str_contains($fullInputs, '@use ')) {
+        // `@use` is currently only supported for the built-in `sass:math`
+        // module. Other built-in modules, userland modules and `@forward` are
+        // not implemented yet, so their specs stay skipped.
+        if (str_contains($fullInputs, '@forward ')) {
+            $this->markTestSkipped('Sass module forwarding is not supported.');
+        }
+
+        if (preg_match_all('/@use\s+(["\'])([^"\']*+)\1/', $fullInputs, $useMatches)) {
+            foreach ($useMatches[2] as $useUrl) {
+                if ($useUrl !== 'sass:math') {
+                    $this->markTestSkipped('Only the built-in sass:math module is supported.');
+                }
+            }
+        } elseif (str_contains($fullInputs, '@use ')) {
+            // A `@use` we couldn't parse a plain URL out of (e.g. interpolated);
+            // treat it as unsupported to stay conservative.
             $this->markTestSkipped('Sass modules are not supported.');
         }
 
