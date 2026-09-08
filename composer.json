@@ -28,7 +28,6 @@
     "require": {
         "php": ">=8.1",
         "ext-ctype": "*",
-        "ext-json": "*",
         "ext-mbstring": "*",
         "league/uri": "^7.6",
         "league/uri-interfaces": "^7.6",
