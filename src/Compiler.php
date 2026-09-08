@@ -360,8 +360,8 @@ final class Compiler
     public function compileFile(string $path): CompilationResult
     {
         // Force loading the CssParentNode and CssVisitor before using the AST classes because of a weird PHP behavior.
-        class_exists(CssParentNode::class);
-        class_exists(CssVisitor::class);
+        interface_exists(CssParentNode::class);
+        interface_exists(CssVisitor::class);
 
         $logger = new DeprecationProcessingLogger($this->logger, $this->silenceDeprecations, $this->fatalDeprecations, $this->futureDeprecations, !$this->verbose);
         $logger->validate();
@@ -401,8 +401,8 @@ final class Compiler
     public function compileString(string $source, UriInterface|string|null $url = null, ?Importer $importer = null, Syntax $syntax = Syntax::SCSS): CompilationResult
     {
         // Force loading the CssParentNode and CssVisitor before using the AST classes because of a weird PHP behavior.
-        class_exists(CssParentNode::class);
-        class_exists(CssVisitor::class);
+        interface_exists(CssParentNode::class);
+        interface_exists(CssVisitor::class);
 
         $logger = new DeprecationProcessingLogger($this->logger, $this->silenceDeprecations, $this->fatalDeprecations, $this->futureDeprecations, !$this->verbose);
         $logger->validate();

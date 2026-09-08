@@ -37,7 +37,7 @@
     },
     "require-dev": {
         "jgthms/bulma": "~0.9.4",
-        "phpstan/phpstan": "^2.1.42",
+        "phpstan/phpstan": "^2.2.13",
         "phpstan/phpstan-deprecation-rules": "^2.0.4",
         "phpunit/phpunit": "^9.5.6",
         "sass/sass-spec": "*",
