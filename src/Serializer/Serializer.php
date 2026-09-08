@@ -62,8 +62,8 @@ final class Serializer
     public static function serializeValue(Value $value, bool $inspect = false, bool $quote = true): string
     {
         // Force loading the CssParentNode and CssVisitor before using the visitor because of a weird PHP behavior.
-        class_exists(CssParentNode::class);
-        class_exists(CssVisitor::class);
+        interface_exists(CssParentNode::class);
+        interface_exists(CssVisitor::class);
 
         $visitor = new SerializeVisitor($inspect, $quote);
         $value->accept($visitor);
@@ -82,8 +82,8 @@ final class Serializer
     public static function serializeSelector(Selector $selector, bool $inspect = false): string
     {
         // Force loading the CssParentNode and CssVisitor before using the visitor because of a weird PHP behavior.
-        class_exists(CssParentNode::class);
-        class_exists(CssVisitor::class);
+        interface_exists(CssParentNode::class);
+        interface_exists(CssVisitor::class);
 
         $visitor = new SerializeVisitor($inspect);
         $selector->accept($visitor);

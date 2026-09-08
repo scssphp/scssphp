@@ -175,16 +175,16 @@ parameters:
 			path: src/Importer/FilesystemImporter.php
 
 		-
+			rawMessage: Offset int on string on left side of ?? always exists and is not nullable.
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Parser/InterpolationMap.php
+
+		-
 			rawMessage: 'Call to function assert() with false and ''unknown format'' will always evaluate to false.'
 			identifier: function.impossibleType
 			count: 1
 			path: src/Serializer/SerializeVisitor.php
-
-		-
-			rawMessage: 'Call to function method_exists() with League\Uri\Contracts\UriInterface and ''resolve'' will always evaluate to true.'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Util/UriUtil.php
 
 		-
 			rawMessage: 'Method ScssPhp\ScssPhp\Value\SassMap::tryMap() never returns null so it can be removed from the return type.'
