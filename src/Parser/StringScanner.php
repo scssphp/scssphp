@@ -135,6 +135,39 @@ class StringScanner
     }
 
     /**
+     * Consumes the longest run of characters at the current position that are
+     * all contained in $characters (a plain set of bytes, no ranges) and
+     * returns it. Returns an empty string if the next character is not part of
+     * the set.
+     *
+     * @phpstan-impure
+     */
+    public function scanCharacterSet(string $characters): string
+    {
+        $length = \strspn($this->string, $characters, $this->position);
+
+        if ($length === 0) {
+            return '';
+        }
+
+        $result = \substr($this->string, $this->position, $length);
+        $this->position += $length;
+
+        return $result;
+    }
+
+    /**
+     * Skips the longest run of characters at the current position that are all
+     * contained in $characters (a plain set of bytes, no ranges).
+     *
+     * @phpstan-impure
+     */
+    public function skipCharacterSet(string $characters): void
+    {
+        $this->position += \strspn($this->string, $characters, $this->position);
+    }
+
+    /**
      * Consumes the next character in the string if it is the provided character.
      *
      * @return bool Whether the character was consumed.

@@ -29,6 +29,19 @@ use SourceSpan\FileSpan;
  */
 class Parser
 {
+    /**
+     * The ASCII characters that are legal in the body of a Sass identifier,
+     * as a set usable with {@see StringScanner::scanCharacterSet()}.
+     */
+    protected const ASCII_NAME_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-';
+
+    protected const ASCII_NAME_CHARACTERS_WITHOUT_HYPHEN = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
+
+    /**
+     * The characters matched by {@see Character::isWhitespace()}.
+     */
+    protected const WHITESPACE_CHARACTERS = " \t\n\r\f";
+
     protected readonly StringScanner $scanner;
 
     protected readonly LoggerInterface $logger;
@@ -91,7 +104,7 @@ class Parser
     {
         do {
             $this->whitespaceWithoutComments();
-        } while ($this->scanComment());
+        } while ($this->scanner->peekChar() === '/' && $this->scanComment());
     }
 
     /**
@@ -99,9 +112,7 @@ class Parser
      */
     protected function whitespaceWithoutComments(): void
     {
-        while (!$this->scanner->isDone() && Character::isWhitespace($this->scanner->peekChar())) {
-            $this->scanner->readChar();
-        }
+        $this->scanner->skipCharacterSet(self::WHITESPACE_CHARACTERS);
     }
 
     /**
@@ -256,8 +267,16 @@ class Parser
     private function consumeIdentifierBody(bool $normalize = false, bool $unit = false): string
     {
         $text = '';
+        // In unit mode a hyphen needs a lookahead, so it is left to the slow path below.
+        $plainCharacters = $unit ? self::ASCII_NAME_CHARACTERS_WITHOUT_HYPHEN : self::ASCII_NAME_CHARACTERS;
 
         while (true) {
+            $chunk = $this->scanner->scanCharacterSet($plainCharacters);
+
+            if ($chunk !== '') {
+                $text .= $normalize ? \str_replace('_', '-', $chunk) : $chunk;
+            }
+
             $next = $this->scanner->peekChar();
 
             if ($next === null) {
@@ -272,10 +291,7 @@ class Parser
                 }
 
                 $text .= $this->scanner->readChar();
-            } elseif ($normalize && $next === '_') {
-                $this->scanner->readChar();
-                $text .= '-';
-            } elseif (Character::isName($next)) {
+            } elseif (\ord($next) >= 0x80) {
                 $text .= $this->scanner->readUtf8Char();
             } elseif ($next === '\\') {
                 $text .= $this->escape();

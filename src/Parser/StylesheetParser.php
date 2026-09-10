@@ -3657,13 +3657,19 @@ WARNING;
     private function interpolatedIdentifierBody(InterpolationBuffer $buffer): void
     {
         while (true) {
+            $chunk = $this->scanner->scanCharacterSet(self::ASCII_NAME_CHARACTERS);
+
+            if ($chunk !== '') {
+                $buffer->write($chunk);
+            }
+
             $next = $this->scanner->peekChar();
 
             if ($next === null) {
                 break;
             }
 
-            if ($next === '_' || $next === '-' || Character::isAlphanumeric($next) || \ord($next) >= 0x80) {
+            if (\ord($next) >= 0x80) {
                 $buffer->write($this->scanner->readUtf8Char());
             } elseif ($next === '\\') {
                 $buffer->write($this->escape());
