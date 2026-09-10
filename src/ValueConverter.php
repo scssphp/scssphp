@@ -13,8 +13,11 @@
 namespace ScssPhp\ScssPhp;
 
 use ScssPhp\ScssPhp\Collection\Map;
+use ScssPhp\ScssPhp\Evaluation\EvaluateVisitor;
+use ScssPhp\ScssPhp\Importer\ImportCache;
 use ScssPhp\ScssPhp\Logger\QuietLogger;
 use ScssPhp\ScssPhp\Node\Number;
+use ScssPhp\ScssPhp\Parser\ScssParser;
 use ScssPhp\ScssPhp\Value\ListSeparator;
 use ScssPhp\ScssPhp\Value\SassBoolean;
 use ScssPhp\ScssPhp\Value\SassList;
@@ -41,26 +44,13 @@ final class ValueConverter
      */
     public static function parseValue(string $source): Value
     {
-        $value = null;
+        $logger = new QuietLogger();
+        // The parentheses allow top-level comma lists and an empty source,
+        // and yield the parenthesized value otherwise.
+        $expression = (new ScssParser("($source)", $logger))->parseExpression();
+        $visitor = new EvaluateVisitor(new ImportCache([], $logger), [], $logger);
 
-        $compiler = new Compiler();
-        $compiler->setLogger(new QuietLogger());
-        $compiler->registerFunction('scssphp-parse-value', function (array $arguments) use (&$value): Value {
-            \assert(\count($arguments) === 1);
-            \assert($arguments[0] instanceof Value);
-            $value = $arguments[0];
-
-            return SassNull::create();
-        }, ['arg']);
-        $scss = <<<SCSS
-        a {b: scssphp-parse-value(($source))}
-        SCSS;
-
-        $compiler->compileString($scss);
-
-        \assert($value !== null);
-
-        return $value;
+        return $visitor->runExpression(null, $expression);
     }
 
     /**

@@ -216,6 +216,21 @@ abstract class StylesheetParser extends Parser
     }
 
     /**
+     * Parses a single expression that must span the whole source.
+     *
+     * @throws SassFormatException when parsing fails
+     */
+    public function parseExpression(): Expression
+    {
+        return $this->wrapSpanFormatException(function () {
+            $expression = $this->expression();
+            $this->scanner->expectDone();
+
+            return $expression;
+        });
+    }
+
+    /**
      * Consumes a statement that's allowed at the top level of the stylesheet or
      * within nested style and at rules.
      *
