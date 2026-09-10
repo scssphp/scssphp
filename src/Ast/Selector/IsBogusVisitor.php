@@ -31,6 +31,17 @@ final class IsBogusVisitor extends AnySelectorVisitor
         $this->includeLeadingCombinator = $includeLeadingCombinator;
     }
 
+    public function visitSelectorList(SelectorList $list): bool
+    {
+        foreach ($list->getComponents() as $complex) {
+            if ($this->includeLeadingCombinator ? $complex->isBogus() : $complex->isBogusOtherThanLeadingCombinator()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function visitComplexSelector(ComplexSelector $complex): bool
     {
         if (\count($complex->getComponents()) === 0) {

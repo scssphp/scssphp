@@ -261,12 +261,15 @@ final class ConcreteExtensionStore implements ExtensionStore
         foreach ($list->getComponents() as $complex) {
             foreach ($complex->getComponents() as $component) {
                 foreach ($component->getSelector()->getComponents() as $simple) {
-                    if (!isset($this->selectors[$simple])) {
+                    $set = $this->selectors[$simple] ?? null;
+
+                    if ($set === null) {
                         /** @var ObjectSet<ModifiableBox<SelectorList>> $set */
                         $set = new ObjectSet();
                         $this->selectors->offsetSet($simple, $set);
                     }
-                    $this->selectors[$simple]->add($selector);
+
+                    $set->add($selector);
 
                     if ($simple instanceof PseudoSelector && $simple->getSelector() !== null) {
                         $this->registerSelector($simple->getSelector(), $selector);
@@ -572,7 +575,7 @@ final class ConcreteExtensionStore implements ExtensionStore
         foreach ($list->getComponents() as $i => $complex) {
             $result = $this->extendComplex($complex, $extensions, $mediaQueryContext);
 
-            \assert($result === null || \count($result) > 0, "extendComplex($complex) should return null rather than [] if extension fails.");
+            \assert($result === null || \count($result) > 0, 'extendComplex() should return null rather than [] if extension fails.');
 
             if ($result === null) {
                 if ($extended !== null) {
@@ -626,7 +629,7 @@ final class ConcreteExtensionStore implements ExtensionStore
         foreach ($complex->getComponents() as $i => $component) {
             $extended = $this->extendCompound($component, $extensions, $mediaQueryContext, $isOriginal);
 
-            \assert($extended === null || \count($extended) > 0, "extendCompound($component) should return null rather than [] if extension fails.");
+            \assert($extended === null || \count($extended) > 0, 'extendCompound() should return null rather than [] if extension fails.');
 
             if ($extended === null) {
                 if ($extendedNotExpanded !== null) {
@@ -723,7 +726,7 @@ final class ConcreteExtensionStore implements ExtensionStore
         foreach ($simples as $i => $simple) {
             $extended = $this->extendSimple($simple, $extensions, $mediaQueryContext, $targetsUsed);
 
-            \assert($extended === null || \count($extended) > 0, "extendSimple($simple) should return null rather than [] if extension fails.");
+            \assert($extended === null || \count($extended) > 0, 'extendSimple() should return null rather than [] if extension fails.');
 
             if ($extended === null) {
                 if ($options !== null) {

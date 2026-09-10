@@ -67,6 +67,12 @@ final class ComplexSelector extends Selector
 
     private ?int $specificity = null;
 
+    // The visibility checks run for every nested style rule, on immutable
+    // selectors, so their results are memoized.
+    private ?bool $isInvisible = null;
+    private ?bool $isInvisibleOtherThanBogusCombinators = null;
+    private ?bool $isBogusOtherThanLeadingCombinator = null;
+
     /**
      * @param list<CssValue<Combinator>>     $leadingCombinators
      * @param list<ComplexSelectorComponent> $components
@@ -185,6 +191,32 @@ final class ComplexSelector extends Selector
     public function equals(object $other): bool
     {
         return $other instanceof ComplexSelector && EquatableUtil::listEquals($this->leadingCombinators, $other->leadingCombinators) && EquatableUtil::listEquals($this->components, $other->components);
+    }
+
+    public function isInvisible(): bool
+    {
+        return $this->isInvisible ??= parent::isInvisible();
+    }
+
+    public function isInvisibleOtherThanBogusCombinators(): bool
+    {
+        return $this->isInvisibleOtherThanBogusCombinators ??= parent::isInvisibleOtherThanBogusCombinators();
+    }
+
+    public function isBogusOtherThanLeadingCombinator(): bool
+    {
+        return $this->isBogusOtherThanLeadingCombinator ??= parent::isBogusOtherThanLeadingCombinator();
+    }
+
+    public function isBogus(): bool
+    {
+        // A leading combinator is always bogus, and without one both variants
+        // of the check agree.
+        if (\count($this->leadingCombinators) > 0) {
+            return true;
+        }
+
+        return $this->isBogusOtherThanLeadingCombinator();
     }
 
     /**
