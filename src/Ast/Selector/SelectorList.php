@@ -50,6 +50,11 @@ final class SelectorList extends Selector
      */
     private readonly array $components;
 
+    private ?bool $isInvisible = null;
+    private ?bool $isInvisibleOtherThanBogusCombinators = null;
+    private ?bool $isBogusOtherThanLeadingCombinator = null;
+    private ?bool $isBogus = null;
+
     /**
      * Parses a selector list from $contents.
      *
@@ -87,6 +92,26 @@ final class SelectorList extends Selector
     public function getComponents(): array
     {
         return $this->components;
+    }
+
+    public function isInvisible(): bool
+    {
+        return $this->isInvisible ??= parent::isInvisible();
+    }
+
+    public function isInvisibleOtherThanBogusCombinators(): bool
+    {
+        return $this->isInvisibleOtherThanBogusCombinators ??= parent::isInvisibleOtherThanBogusCombinators();
+    }
+
+    public function isBogusOtherThanLeadingCombinator(): bool
+    {
+        return $this->isBogusOtherThanLeadingCombinator ??= parent::isBogusOtherThanLeadingCombinator();
+    }
+
+    public function isBogus(): bool
+    {
+        return $this->isBogus ??= parent::isBogus();
     }
 
     /**

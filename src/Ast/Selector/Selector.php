@@ -35,6 +35,12 @@ abstract class Selector implements AstNode, Equatable
 {
     private readonly FileSpan $span;
 
+    /**
+     * Selectors are immutable, so the inspect-mode serialization used as the
+     * hash of {@see \ScssPhp\ScssPhp\Extend\SimpleSelectorMap} can be computed once.
+     */
+    private ?string $stringRepresentation = null;
+
     public function __construct(FileSpan $span)
     {
         $this->span = $span;
@@ -122,6 +128,6 @@ abstract class Selector implements AstNode, Equatable
 
     final public function __toString(): string
     {
-        return Serializer::serializeSelector($this, true);
+        return $this->stringRepresentation ??= Serializer::serializeSelector($this, true);
     }
 }

@@ -1282,6 +1282,20 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
         $this->buffer->writeChar($quote);
 
+        // Without quotes, backslashes, control characters and, in expanded
+        // mode, private-use characters the content is copied verbatim.
+        if (
+            !$includesDoubleQuote
+            && !$includesSingleQuote
+            && !preg_match('/[\x00-\x1F\x7F\\\\]/', $string)
+            && ($this->compressed || !self::containsNonAscii($string))
+        ) {
+            $this->buffer->write($string);
+            $this->buffer->writeChar($quote);
+
+            return;
+        }
+
         $length = \strlen($string);
 
         for ($i = 0; $i < $length; $i++) {
@@ -1357,6 +1371,14 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
     private function visitUnquotedString(string $string): void
     {
+        // Only newlines and, in expanded mode, private-use characters need any
+        // treatment. Everything else is copied verbatim, so skip the byte loop.
+        if (!str_contains($string, "\n") && ($this->compressed || !self::containsNonAscii($string))) {
+            $this->buffer->write($string);
+
+            return;
+        }
+
         $afterNewline = false;
         $length = \strlen($string);
 
@@ -1388,6 +1410,11 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
                     break;
             }
         }
+    }
+
+    private static function containsNonAscii(string $string): bool
+    {
+        return preg_match('/[\x80-\xFF]/', $string) === 1;
     }
 
     /**
@@ -1816,8 +1843,8 @@ final class SerializeVisitor implements CssVisitor, ValueVisitor, SelectorVisito
 
     private function writeIndentation(): void
     {
-        if (!$this->compressed) {
-            $this->writeTimes(' ', $this->indentation * 2);
+        if (!$this->compressed && $this->indentation > 0) {
+            $this->buffer->write(str_repeat(' ', $this->indentation * 2));
         }
     }
 

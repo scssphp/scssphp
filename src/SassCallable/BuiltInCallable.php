@@ -40,6 +40,17 @@ class BuiltInCallable implements SassCallable
     private readonly bool $acceptsContent;
 
     /**
+     * Parsed argument declarations, keyed by module URL and declaration source.
+     *
+     * The evaluator re-creates its meta functions for every compilation, so
+     * without this cache every {@see Compiler::compileString()} call would
+     * re-parse the same signatures.
+     *
+     * @var array<string, ArgumentDeclaration>
+     */
+    private static array $parsedDeclarations = [];
+
+    /**
      * Creates a function with a single $arguments declaration and a single
      * $callback.
      *
@@ -57,7 +68,7 @@ class BuiltInCallable implements SassCallable
     {
         return self::parsed(
             $name,
-            ArgumentDeclaration::parse("@function $name($arguments) {", url: $url),
+            self::parseDeclaration("@function $name($arguments) {", $url),
             $callback
         );
     }
@@ -80,7 +91,7 @@ class BuiltInCallable implements SassCallable
     {
         return self::parsed(
             $name,
-            ArgumentDeclaration::parse("@mixin $name($arguments) {", url: $url),
+            self::parseDeclaration("@mixin $name($arguments) {", $url),
             function ($arguments) use ($callback) {
                 $callback($arguments);
 
@@ -111,12 +122,22 @@ class BuiltInCallable implements SassCallable
 
         foreach ($overloads as $args => $callback) {
             $processedOverloads[] = [
-                ArgumentDeclaration::parse("@function $name($args) {", url: $url),
+                self::parseDeclaration("@function $name($args) {", $url),
                 $callback,
             ];
         }
 
         return new BuiltInCallable($name, $processedOverloads, false);
+    }
+
+    /**
+     * @throws SassFormatException
+     */
+    private static function parseDeclaration(string $contents, ?UriInterface $url): ArgumentDeclaration
+    {
+        $key = ($url === null ? '' : (string) $url) . "\0" . $contents;
+
+        return self::$parsedDeclarations[$key] ??= ArgumentDeclaration::parse($contents, url: $url);
     }
 
     /**

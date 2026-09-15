@@ -216,6 +216,21 @@ abstract class StylesheetParser extends Parser
     }
 
     /**
+     * Parses a single expression that must span the whole source.
+     *
+     * @throws SassFormatException when parsing fails
+     */
+    public function parseExpression(): Expression
+    {
+        return $this->wrapSpanFormatException(function () {
+            $expression = $this->expression();
+            $this->scanner->expectDone();
+
+            return $expression;
+        });
+    }
+
+    /**
      * Consumes a statement that's allowed at the top level of the stylesheet or
      * within nested style and at rules.
      *
@@ -3642,13 +3657,19 @@ WARNING;
     private function interpolatedIdentifierBody(InterpolationBuffer $buffer): void
     {
         while (true) {
+            $chunk = $this->scanner->scanCharacterSet(self::ASCII_NAME_CHARACTERS);
+
+            if ($chunk !== '') {
+                $buffer->write($chunk);
+            }
+
             $next = $this->scanner->peekChar();
 
             if ($next === null) {
                 break;
             }
 
-            if ($next === '_' || $next === '-' || Character::isAlphanumeric($next) || \ord($next) >= 0x80) {
+            if (\ord($next) >= 0x80) {
                 $buffer->write($this->scanner->readUtf8Char());
             } elseif ($next === '\\') {
                 $buffer->write($this->escape());

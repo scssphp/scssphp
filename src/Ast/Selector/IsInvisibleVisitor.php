@@ -34,7 +34,7 @@ final class IsInvisibleVisitor extends AnySelectorVisitor
     public function visitSelectorList(SelectorList $list): bool
     {
         foreach ($list->getComponents() as $complex) {
-            if (!$this->visitComplexSelector($complex)) {
+            if (!($this->includeBogus ? $complex->isInvisible() : $complex->isInvisibleOtherThanBogusCombinators())) {
                 return false;
             }
         }

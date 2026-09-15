@@ -630,6 +630,45 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
     }
 
     /**
+     * Evaluates a single $expression outside of any stylesheet.
+     *
+     * Relative imports are resolved through $importer, if any.
+     */
+    public function runExpression(?Importer $importer, Expression $expression): Value
+    {
+        return EvaluationContext::withEvaluationContext(new VisitorEvaluationContext($this, $expression), function () use ($importer, $expression) {
+            return $this->withFakeStylesheet($importer, $expression, fn () => $this->addExceptionTrace(fn () => $expression->accept($this)));
+        });
+    }
+
+    /**
+     * Runs $callback with an empty stylesheet whose span is $nodeWithSpan's,
+     * for evaluating nodes that don't belong to any stylesheet.
+     *
+     * @template T
+     *
+     * @param callable(): T $callback
+     *
+     * @return T
+     *
+     * @param-immediately-invoked-callable $callback
+     */
+    private function withFakeStylesheet(?Importer $importer, AstNode $nodeWithSpan, callable $callback)
+    {
+        $oldImporter = $this->importer;
+        $this->importer = $importer;
+        \assert($this->stylesheet === null);
+        $this->stylesheet = new Stylesheet([], $nodeWithSpan->getSpan());
+
+        try {
+            return $callback();
+        } finally {
+            $this->importer = $oldImporter;
+            $this->stylesheet = null;
+        }
+    }
+
+    /**
      * @param array<string, Value> $initialVariables
      *
      * @return array{CssStylesheet, ExtensionStore}
