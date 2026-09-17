@@ -32,6 +32,8 @@ final class ImportCache
 
     private readonly LoggerInterface $logger;
 
+    private ImportParserInterface $importParser;
+
     /**
      * The canonicalized URLs for each non-canonical URL.
      *
@@ -75,10 +77,11 @@ final class ImportCache
     /**
      * @param list<Importer> $importers
      */
-    public function __construct(array $importers, LoggerInterface $logger)
+    public function __construct(array $importers, LoggerInterface $logger, ImportParserInterface $importParser)
     {
         $this->importers = $importers;
         $this->logger = $logger;
+        $this->importParser = $importParser;
         $this->perImporterCanonicalizeCache = new \SplObjectStorage();
     }
 
@@ -256,7 +259,7 @@ final class ImportCache
 
         $this->resultsCache[(string) $canonicalUrl] = $result;
 
-        return Stylesheet::parse($result->getContents(), $result->getSyntax(), $quiet ? new QuietLogger() : $this->logger, self::resolveUri($originalUrl, $canonicalUrl));
+        return $this->importParser->parse($result->getContents(), $result->getSyntax(), $quiet ? new QuietLogger() : $this->logger, self::resolveUri($originalUrl, $canonicalUrl));
     }
 
     public function humanize(UriInterface $canonicalUrl): UriInterface
