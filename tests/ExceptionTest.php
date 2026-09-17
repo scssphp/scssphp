@@ -155,7 +155,49 @@ END_OF_SCSS
             [
                 ".foo { } .bar { } /* comment with \xd6-character */",
                 'expected utf-8 char.',
-            ]
+            ],
+            [
+                '@use "library";',
+                "Can't find stylesheet to import.",
+            ],
+            [
+                '@use "sass:math" with ($x: 1);',
+                "Built-in modules can't be configured.",
+            ],
+            [<<<'END_OF_SCSS'
+@use "sass:math";
+math.$pi: 4;
+END_OF_SCSS
+                ,
+                'Cannot modify built-in variable.'
+            ],
+            [<<<'END_OF_SCSS'
+.a { color: red; }
+@use "sass:math";
+END_OF_SCSS
+                ,
+                '@use rules must be written before any other rules.'
+            ],
+            [
+                '.a { width: math.div(1, 2); }',
+                'There is no module with the namespace "math".',
+            ],
+            [
+                '@use "sass:math"; .a { x: math.sqrt(9px); }',
+                'Expected 9px to have no units.',
+            ],
+            [
+                '@use "sass:math"; .a { x: math.pow(2px, 3); }',
+                'Expected 2px to have no units.',
+            ],
+            [
+                '@use "sass:math"; .a { x: math.hypot(3px, 4em); }',
+                '4em and $numbers[1]: 3px have incompatible units.',
+            ],
+            [
+                '@use "sass:math"; .a { x: math.clamp(1px, 5em, 3px); }',
+                '5em and $min: 1px have incompatible units.',
+            ],
         ];
     }
 

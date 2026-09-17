@@ -14,6 +14,7 @@ namespace ScssPhp\ScssPhp\Function;
 
 use ScssPhp\ScssPhp\Deprecation;
 use ScssPhp\ScssPhp\Exception\SassScriptException;
+use ScssPhp\ScssPhp\Util\NumberUtil;
 use ScssPhp\ScssPhp\Value\SassBoolean;
 use ScssPhp\ScssPhp\Value\SassNull;
 use ScssPhp\ScssPhp\Value\SassNumber;
@@ -103,6 +104,164 @@ final class MathFunctions
     public static function round(array $arguments): Value
     {
         return self::numberFunction($arguments, round(...));
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function clamp(array $arguments): Value
+    {
+        $min = $arguments[0]->assertNumber('min');
+        $number = $arguments[1]->assertNumber('number');
+        $max = $arguments[2]->assertNumber('max');
+
+        // Call this purely for its error-checking side effect.
+        $number->convertValueToMatch($min, 'number', 'min');
+        $max->convertValueToMatch($min, 'max', 'min');
+
+        if ($min->greaterThanOrEquals($max)->isTruthy()) {
+            return $min;
+        }
+        if ($min->greaterThanOrEquals($number)->isTruthy()) {
+            return $min;
+        }
+        if ($number->greaterThanOrEquals($max)->isTruthy()) {
+            return $max;
+        }
+
+        return $number;
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function hypot(array $arguments): Value
+    {
+        $numbers = array_map(fn(Value $argument) => $argument->assertNumber(), $arguments[0]->asList());
+
+        if ($numbers === []) {
+            throw new SassScriptException('At least one argument must be passed.');
+        }
+
+        $subtotal = 0.0;
+        foreach ($numbers as $i => $number) {
+            $value = $number->convertValueToMatch($numbers[0], 'numbers[' . ($i + 1) . ']', 'numbers[1]');
+            $subtotal += $value ** 2;
+        }
+
+        return SassNumber::withUnits(sqrt($subtotal), $numbers[0]->getNumeratorUnits(), $numbers[0]->getDenominatorUnits());
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function log(array $arguments): Value
+    {
+        $number = $arguments[0]->assertNumber('number');
+        $base = $arguments[1]->realNull()?->assertNumber('base');
+
+        if ($number->hasUnits()) {
+            throw new SassScriptException("\$number: Expected $number to have no units.");
+        }
+
+        if ($base !== null && $base->hasUnits()) {
+            throw new SassScriptException("\$base: Expected $base to have no units.");
+        }
+
+        return NumberUtil::log($number, $base);
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function pow(array $arguments): Value
+    {
+        $base = $arguments[0]->assertNumber('base');
+        $exponent = $arguments[1]->assertNumber('exponent');
+
+        return NumberUtil::pow($base, $exponent);
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function sqrt(array $arguments): Value
+    {
+        return NumberUtil::sqrt($arguments[0]->assertNumber('number'));
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function sin(array $arguments): Value
+    {
+        return NumberUtil::sin($arguments[0]->assertNumber('number'));
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function cos(array $arguments): Value
+    {
+        return NumberUtil::cos($arguments[0]->assertNumber('number'));
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function tan(array $arguments): Value
+    {
+        return NumberUtil::tan($arguments[0]->assertNumber('number'));
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function asin(array $arguments): Value
+    {
+        return NumberUtil::asin($arguments[0]->assertNumber('number'));
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function acos(array $arguments): Value
+    {
+        return NumberUtil::acos($arguments[0]->assertNumber('number'));
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function atan(array $arguments): Value
+    {
+        return NumberUtil::atan($arguments[0]->assertNumber('number'));
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function atan2(array $arguments): Value
+    {
+        $y = $arguments[0]->assertNumber('y');
+        $x = $arguments[1]->assertNumber('x');
+
+        return NumberUtil::atan2($y, $x);
+    }
+
+    /**
+     * @param list<Value> $arguments
+     */
+    public static function div(array $arguments): Value
+    {
+        $number1 = $arguments[0];
+        $number2 = $arguments[1];
+
+        if (!$number1 instanceof SassNumber || !$number2 instanceof SassNumber) {
+            Warn::warning("math.div() will only support number arguments in a future release.\nUse list.slash() instead for a slash separator.");
+        }
+
+        return $number1->dividedBy($number2);
     }
 
     /**

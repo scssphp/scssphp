@@ -18,6 +18,7 @@ use League\Uri\Uri;
 use ScssPhp\ScssPhp\Ast\Sass\Argument;
 use ScssPhp\ScssPhp\Ast\Sass\ArgumentDeclaration;
 use ScssPhp\ScssPhp\Ast\Sass\ArgumentInvocation;
+use ScssPhp\ScssPhp\Ast\Sass\ConfiguredVariable;
 use ScssPhp\ScssPhp\Ast\Sass\Expression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\BinaryOperationExpression;
 use ScssPhp\ScssPhp\Ast\Sass\Expression\BinaryOperator;
@@ -65,6 +66,7 @@ use ScssPhp\ScssPhp\Ast\Sass\Statement\SilentComment;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\StyleRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\Stylesheet;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\SupportsRule;
+use ScssPhp\ScssPhp\Ast\Sass\Statement\UseRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\VariableDeclaration;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\WarnRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\WhileRule;
@@ -331,11 +333,6 @@ abstract class StylesheetParser extends Parser
         }
 
         $this->expectStatementSeparator('variable declaration');
-
-        // TODO remove this when implementing modules
-        if ($namespace !== null) {
-            $this->error('Sass modules are not implemented yet.', $this->scanner->spanFrom($start));
-        }
 
         $declaration = new VariableDeclaration($name, $value, $this->scanner->spanFrom($start), $namespace, $guarded, $global, $precedingComment);
 
@@ -778,8 +775,7 @@ abstract class StylesheetParser extends Parser
                     $this->disallowedAtRule($start);
                 }
 
-                // TODO remove this when implementing modules
-                $this->error('Sass modules are not implemented yet.', $this->scanner->spanFrom($start));
+                return $this->useRule($start);
             case 'warn':
                 return $this->warnRule($start);
             case 'while':
@@ -1308,6 +1304,127 @@ abstract class StylesheetParser extends Parser
         }
 
         return str_starts_with($url, 'http://') || str_starts_with($url, 'https://');
+    }
+
+    /**
+     * Consumes a `@use` rule.
+     *
+     * $start should point before the `@`.
+     */
+    private function useRule(int $start): UseRule
+    {
+        $this->whitespace();
+        $urlString = $this->string();
+        $url = $this->parseUseUrl($urlString, $start);
+        $this->whitespace();
+        $namespace = $this->useNamespace($url, $start);
+        $this->whitespace();
+        $configuration = $this->configuration();
+        $this->whitespace();
+
+        $span = $this->scanner->spanFrom($start);
+
+        if (!$this->isUseAllowed) {
+            $this->error('@use rules must be written before any other rules.', $span);
+        }
+
+        $this->expectStatementSeparator('@use rule');
+
+        return new UseRule($url, $namespace, $span, $configuration);
+    }
+
+    /**
+     * Parses the URL of a `@use` rule.
+     */
+    private function parseUseUrl(string $url, int $start): UriInterface
+    {
+        try {
+            return Uri::new($url);
+        } catch (SyntaxError $e) {
+            $this->error('Invalid URL: ' . $e->getMessage(), $this->scanner->spanFrom($start), $e);
+        }
+    }
+
+    /**
+     * Consumes the namespace of a `@use` rule.
+     *
+     * Returns `null` if the rule has an `as *` clause. $start should point
+     * before the `@`.
+     */
+    private function useNamespace(UriInterface $url, int $start): ?string
+    {
+        if ($this->scanIdentifier('as')) {
+            $this->whitespace();
+
+            return $this->scanner->scanChar('*') ? null : $this->identifier();
+        }
+
+        $path = $url->getPath();
+        $slash = strrpos($path, '/');
+        $basename = $slash === false ? $path : substr($path, $slash + 1);
+        $dot = strpos($basename, '.');
+        $namespace = substr(
+            $basename,
+            str_starts_with($basename, '_') ? 1 : 0,
+            $dot === false ? null : $dot - (str_starts_with($basename, '_') ? 1 : 0)
+        );
+
+        try {
+            return Parser::parseIdentifier($namespace, $this->logger);
+        } catch (SassFormatException $e) {
+            $this->error("The default namespace \"$namespace\" is not a valid Sass identifier.\n\nRecommendation: add an \"as\" clause to define an explicit namespace.", $this->scanner->spanFrom($start), $e);
+        }
+    }
+
+    /**
+     * Consumes a `with` clause of a `@use` rule, returning the list of
+     * configured variables, or an empty list if there is no `with` clause.
+     *
+     * @return list<ConfiguredVariable>
+     */
+    private function configuration(): array
+    {
+        if (!$this->scanIdentifier('with')) {
+            return [];
+        }
+
+        $variableNames = [];
+        $configuration = [];
+        $this->whitespace();
+        $this->scanner->expectChar('(');
+
+        while (true) {
+            $this->whitespace();
+            $variableStart = $this->scanner->getPosition();
+            $name = $this->variableName();
+            $this->whitespace();
+            $this->scanner->expectChar(':');
+            $this->whitespace();
+            $expression = $this->expressionUntilComma();
+
+            $span = $this->scanner->spanFrom($variableStart);
+
+            if (isset($variableNames[$name])) {
+                $this->error('The same variable may only be configured once.', $span);
+            }
+            $variableNames[$name] = true;
+
+            $configuration[] = new ConfiguredVariable($name, $expression, $span);
+
+            if (!$this->scanner->scanChar(',')) {
+                break;
+            }
+
+            $this->whitespace();
+
+            if (!$this->lookingAtExpression()) {
+                break;
+            }
+        }
+
+        $this->scanner->expectChar(')');
+
+        return $configuration;
     }
 
     /**
@@ -3134,15 +3251,10 @@ WARNING;
             $name = $this->variableName();
             $this->assertPublic($name, fn() => $this->scanner->spanFrom($start));
 
-            // TODO remove this when implementing modules
-            $this->error('Sass modules are not implemented yet.', $this->scanner->spanFrom($start));
-            // return new VariableExpression($name, $this->scanner->spanFrom($start), $plain);
+            return new VariableExpression($name, $this->scanner->spanFrom($start), $namespace);
         }
 
-        // TODO remove this when implementing modules
-        $this->publicIdentifier();
-        $this->error('Sass modules are not implemented yet.', $this->scanner->spanFrom($start));
-        // return new FunctionExpression($this->publicIdentifier(), $this->argumentInvocation(), $this->scanner->spanFrom($start), $plain);
+        return new FunctionExpression($this->publicIdentifier(), $this->argumentInvocation(), $this->scanner->spanFrom($start), $namespace);
     }
 
     /**

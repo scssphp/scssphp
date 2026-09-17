@@ -13,6 +13,7 @@
 namespace ScssPhp\ScssPhp\Evaluation;
 
 use ScssPhp\ScssPhp\Ast\AstNode;
+use ScssPhp\ScssPhp\Exception\SassScriptException;
 use ScssPhp\ScssPhp\SassCallable\SassCallable;
 use ScssPhp\ScssPhp\SassCallable\UserDefinedCallable;
 use ScssPhp\ScssPhp\Value\Value;
@@ -103,6 +104,25 @@ final class Environment
     private array $mixinIndices = [];
 
     /**
+     * The modules loaded by `@use` rules, keyed by their namespace.
+     *
+     * A module loaded with `@use "..." as *` is not stored here; its members
+     * are made available without a namespace instead (which is not yet
+     * supported for built-in modules).
+     *
+     * @var array<string, Module>
+     */
+    private array $modules;
+
+    /**
+     * The nodes of the `@use` rule for each module in {@see modules}, used for
+     * error reporting.
+     *
+     * @var array<string, AstNode>
+     */
+    private array $namespaceNodes;
+
+    /**
      * The content block passed to the lexically-enclosing mixin, or `null` if
      * this is not in a mixin, or if no content block was passed.
      */
@@ -136,7 +156,7 @@ final class Environment
 
     public static function create(): Environment
     {
-        return new Environment([new \ArrayObject()], [new \ArrayObject()], [new \ArrayObject()], [new \ArrayObject()]);
+        return new Environment([new \ArrayObject()], [new \ArrayObject()], [new \ArrayObject()], [new \ArrayObject()], [], []);
     }
 
     /**
@@ -144,13 +164,17 @@ final class Environment
      * @param array<int, \ArrayObject<string, AstNode>>      $variableNodes
      * @param array<int, \ArrayObject<string, SassCallable>> $functions
      * @param array<int, \ArrayObject<string, SassCallable>> $mixins
+     * @param array<string, Module>                          $modules
+     * @param array<string, AstNode>                         $namespaceNodes
      */
-    private function __construct(array $variables, array $variableNodes, array $functions, array $mixins, ?UserDefinedCallable $content = null)
+    private function __construct(array $variables, array $variableNodes, array $functions, array $mixins, array $modules, array $namespaceNodes, ?UserDefinedCallable $content = null)
     {
         $this->variables = $variables;
         $this->variableNodes = $variableNodes;
         $this->functions = $functions;
         $this->mixins = $mixins;
+        $this->modules = $modules;
+        $this->namespaceNodes = $namespaceNodes;
         $this->content = $content;
     }
 
@@ -181,7 +205,7 @@ final class Environment
      */
     public function closure(): Environment
     {
-        return new Environment($this->variables, $this->variableNodes, $this->functions, $this->mixins, $this->content);
+        return new Environment($this->variables, $this->variableNodes, $this->functions, $this->mixins, $this->modules, $this->namespaceNodes, $this->content);
     }
 
     /**
@@ -193,11 +217,56 @@ final class Environment
      */
     public function forImport(): Environment
     {
-        return new Environment($this->variables, $this->variableNodes, $this->functions, $this->mixins, $this->content);
+        return new Environment($this->variables, $this->variableNodes, $this->functions, $this->mixins, $this->modules, $this->namespaceNodes, $this->content);
     }
 
-    public function getVariable(string $name): ?Value
+    /**
+     * Adds $module to the set of modules visible in this environment under
+     * $namespace.
+     *
+     * If $namespace is `null`, the module's members are added to the global
+     * scope rather than being namespaced.
+     *
+     * @throws SassScriptException if there's already a module with the given namespace
+     */
+    public function addModule(Module $module, AstNode $nodeWithSpan, ?string $namespace): void
     {
+        if ($namespace === null) {
+            // `@use "..." as *` makes the module's members available globally.
+            // This isn't reachable for built-in modules yet because resolving a
+            // built-in member without a namespace would require merging it into
+            // the global scope, which isn't supported.
+            throw new SassScriptException('Cannot use a built-in module without a namespace.');
+        }
+
+        if (isset($this->modules[$namespace])) {
+            throw new SassScriptException("There's already a module with namespace \"$namespace\".");
+        }
+
+        $this->modules[$namespace] = $module;
+        $this->namespaceNodes[$namespace] = $nodeWithSpan;
+    }
+
+    /**
+     * Returns the module loaded under $namespace.
+     *
+     * @throws SassScriptException if there's no module with the given namespace
+     */
+    private function getModule(string $namespace): Module
+    {
+        if (isset($this->modules[$namespace])) {
+            return $this->modules[$namespace];
+        }
+
+        throw new SassScriptException("There is no module with the namespace \"$namespace\".");
+    }
+
+    public function getVariable(string $name, ?string $namespace = null): ?Value
+    {
+        if ($namespace !== null) {
+            return $this->getModule($namespace)->getVariable($name);
+        }
+
         if ($this->lastVariableName === $name) {
             assert($this->lastVariableIndex !== null);
 
@@ -259,9 +328,9 @@ final class Environment
     /**
      * Returns whether a variable named $name exists.
      */
-    public function variableExists(string $name): bool
+    public function variableExists(string $name, ?string $namespace = null): bool
     {
-        return $this->getVariable($name) !== null;
+        return $this->getVariable($name, $namespace) !== null;
     }
 
     /**
@@ -294,8 +363,21 @@ final class Environment
      * Otherwise, if the variable was already defined, it'll set it in the
      * previous scope. If it's undefined, it'll set it in the current scope.
      */
-    public function setVariable(string $name, Value $value, AstNode $nodeWithSpan, bool $global = false): void
+    public function setVariable(string $name, Value $value, AstNode $nodeWithSpan, ?string $namespace = null, bool $global = false): void
     {
+        if ($namespace !== null) {
+            $module = $this->getModule($namespace);
+
+            // Match dart-sass: assigning to a member that doesn't exist is an
+            // "Undefined variable" error, while assigning to an existing
+            // built-in member is rejected because built-in modules are immutable.
+            if (!$module->variableExists($name)) {
+                throw new SassScriptException('Undefined variable.');
+            }
+
+            throw new SassScriptException('Cannot modify built-in variable.');
+        }
+
         if ($global || $this->atRoot()) {
             // Don't set the index if there's already a variable with the given name,
             // since local accesses should still return the local variable.
@@ -347,8 +429,12 @@ final class Environment
         $this->variableNodes[$index][$name] = $nodeWithSpan;
     }
 
-    public function getFunction(string $name): ?SassCallable
+    public function getFunction(string $name, ?string $namespace = null): ?SassCallable
     {
+        if ($namespace !== null) {
+            return $this->getModule($namespace)->getFunction($name);
+        }
+
         $index = $this->functionIndices[$name] ?? null;
 
         if ($index !== null) {
@@ -383,9 +469,9 @@ final class Environment
     /**
      * Returns whether a function named $name exists.
      */
-    public function functionExists(string $name): bool
+    public function functionExists(string $name, ?string $namespace = null): bool
     {
-        return $this->getFunction($name) !== null;
+        return $this->getFunction($name, $namespace) !== null;
     }
 
     public function setFunction(SassCallable $callable): void
@@ -396,8 +482,16 @@ final class Environment
         $this->functions[$index][$name] = $callable;
     }
 
-    public function getMixin(string $name): ?SassCallable
+    public function getMixin(string $name, ?string $namespace = null): ?SassCallable
     {
+        if ($namespace !== null) {
+            // Built-in modules don't expose any mixins, but we still resolve the
+            // module so an unknown namespace produces the right error.
+            $this->getModule($namespace);
+
+            return null;
+        }
+
         $index = $this->mixinIndices[$name] ?? null;
 
         if ($index !== null) {
@@ -432,9 +526,9 @@ final class Environment
     /**
      * Returns whether a mixin named $name exists.
      */
-    public function mixinExists(string $name): bool
+    public function mixinExists(string $name, ?string $namespace = null): bool
     {
-        return $this->getMixin($name) !== null;
+        return $this->getMixin($name, $namespace) !== null;
     }
 
     public function setMixin(SassCallable $callable): void

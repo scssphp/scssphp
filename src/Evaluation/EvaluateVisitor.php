@@ -78,6 +78,7 @@ use ScssPhp\ScssPhp\Ast\Sass\Statement\ForRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\FunctionRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\IfRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\ImportRule;
+use ScssPhp\ScssPhp\Ast\Sass\Statement\UseRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\IncludeRule;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\LoudComment;
 use ScssPhp\ScssPhp\Ast\Sass\Statement\MediaRule;
@@ -1305,6 +1306,28 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
         return null;
     }
 
+    public function visitUseRule(UseRule $node): ?Value
+    {
+        $url = (string) $node->getUrl();
+
+        if (!FunctionRegistry::isBuiltinModule($url)) {
+            // Userland modules aren't supported yet; only built-in `sass:*`
+            // modules can be loaded with `@use`.
+            throw $this->exception("Can't find stylesheet to import.", $node->getSpan());
+        }
+
+        if ($node->getConfiguration() !== []) {
+            throw $this->exception("Built-in modules can't be configured.", $node->getConfiguration()[0]->getSpan());
+        }
+
+        $module = FunctionRegistry::getModule($url);
+        $this->addExceptionSpan($node, function () use ($module, $node) {
+            $this->environment->addModule($module, $node, $node->getNamespace());
+        });
+
+        return null;
+    }
+
     /**
      * Adds the stylesheet imported by $import to the current document.
      */
@@ -1463,7 +1486,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
     public function visitIncludeRule(IncludeRule $node): ?Value
     {
         $mixin = $this->addExceptionSpan($node, function () use ($node) {
-            return $this->environment->getMixin($node->getName());
+            return $this->environment->getMixin($node->getName(), $node->getNamespace());
         });
 
         if (str_starts_with($node->getOriginalName(), '--') && $mixin instanceof UserDefinedCallable && !str_starts_with($mixin->getDeclaration()->getOriginalName(), '--')) {
@@ -1859,12 +1882,14 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
     public function visitVariableDeclaration(VariableDeclaration $node): ?Value
     {
         if ($node->isGuarded()) {
-            $value = $this->addExceptionSpan($node, function () use ($node) {
-                return $this->environment->getVariable($node->getName());
-            });
+            if ($node->getNamespace() === null) {
+                $value = $this->addExceptionSpan($node, function () use ($node) {
+                    return $this->environment->getVariable($node->getName());
+                });
 
-            if ($value !== null && $value !== SassNull::create()) {
-                return null;
+                if ($value !== null && $value !== SassNull::create()) {
+                    return null;
+                }
             }
         }
 
@@ -1880,7 +1905,7 @@ class EvaluateVisitor implements StatementVisitor, ExpressionVisitor
 
         $value = $this->withoutSlash($node->getExpression()->accept($this), $node->getExpression());
         $this->addExceptionSpan($node, function () use ($value, $node) {
-            $this->environment->setVariable($node->getName(), $value, $this->expressionNode($node->getExpression()), $node->isGlobal());
+            $this->environment->setVariable($node->getName(), $value, $this->expressionNode($node->getExpression()), $node->getNamespace(), $node->isGlobal());
         });
 
         return null;
@@ -2019,7 +2044,7 @@ WARNING;
     public function visitVariableExpression(VariableExpression $node): Value
     {
         $result = $this->addExceptionSpan($node, function () use ($node) {
-            return $this->environment->getVariable($node->getName());
+            return $this->environment->getVariable($node->getName(), $node->getNamespace());
         });
 
         if ($result !== null) {
@@ -2135,7 +2160,7 @@ WARNING;
     public function visitFunctionExpression(FunctionExpression $node): Value
     {
         $function = $this->getStylesheet()->isPlainCss() ? null : $this->addExceptionSpan($node, function () use ($node) {
-            return $this->environment->getFunction($node->getName());
+            return $this->environment->getFunction($node->getName(), $node->getNamespace());
         });
 
         if ($function === null) {

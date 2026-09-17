@@ -1,0 +1,48 @@
+.div {
+  a: 5px;
+  b: 0.3333333333;
+  c: 3;
+}
+
+.constants {
+  pi: 3.1415926536;
+  e: 2.7182818285;
+}
+
+.canonical {
+  compatible: true;
+  unitless: true;
+  unit: "px";
+}
+
+.bounding {
+  clamp: 3px;
+  clamp-mid: 5;
+  hypot: 5;
+  hypot-units: 5px;
+}
+
+.exponent {
+  sqrt: 3;
+  pow: 1024;
+  pow-frac: 2;
+  log: 1;
+  log-base: 3;
+}
+
+.trig {
+  cos: 1;
+  sin-rad: 0.8414709848;
+  sin-deg: 1;
+  tan: 0;
+  acos: 0deg;
+  asin: 90deg;
+  atan: 45deg;
+  atan2: 45deg;
+}
+
+.more-constants {
+  epsilon: 0;
+  max-safe-integer: 9007199254740991;
+  min-safe-integer: -9007199254740991;
+}

@@ -218,7 +218,7 @@ final class InterpolationMap
                         }
 
                         do {
-                            $char = $source[$i++] ?? null;
+                            $char = $source[$i++];
                         } while ($char === '*');
 
                         if ($char === '/') {
